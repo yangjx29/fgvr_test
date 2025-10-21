@@ -1,35 +1,3 @@
-"""
-快慢思考细粒度图像识别系统 (Fast-Slow Thinking Fine-Grained Visual Recognition)
-
-基于双系统理论的细粒度图像分类方法：
-
-1. 快思考系统 (Fast Thinking System)
-   - 使用CLIP进行双模态检索，无需MLLM
-   - 图像-图像检索：测试图像与知识库图像比较
-   - 图像-文本检索：测试图像与知识库文本描述比较
-   - 触发器机制：判断两个模态结果是否一致
-   - 如果一致且置信度高，直接返回结果
-
-2. 慢思考系统 (Slow Thinking System)  
-   - 当快思考结果不确定时启动
-   - 让MLLM分析分类困难点，识别关键区域
-   - 提取关键区域特征，生成结构化描述
-   - 使用增强特征重新检索
-   - MLLM进行最终推理和决策
-
-3. 知识库设计
-   - 图像知识库：原始图像 + 数据增强图像
-   - 文本知识库：类别描述 + 属性描述
-   - 支持多种数据增强策略
-   - 支持Wikipedia和MLLM生成的描述
-
-4. 系统优势
-   - 效率：简单案例快速处理
-   - 准确性：复杂案例深度分析
-   - 可解释性：提供推理过程
-   - 可扩展性：支持不同数据集和模型
-"""
-
 import torch 
 import os 
 import argparse 
@@ -418,7 +386,7 @@ if __name__ == "__main__":
     if args.mode == 'build_knowledge_base':
         """
         构建快慢思考系统的知识库
-        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=4 --knowledge_base_dir=/data/yjx/MLLM/Try/experiments/dog120/knowledge_base 2>&1 | tee ./logs/build_knowledge_base_dog120.log
+        CUDA_VISIBLE_DEVICES=3 python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base 2>&1 | tee ./logs/build_knowledge_base_dog120.log
         """
         # 初始化快慢思考系统
         system = FastSlowThinkingSystem(
@@ -433,11 +401,13 @@ if __name__ == "__main__":
         train_samples = defaultdict(list)
         # {"Chihuaha": "./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", "Poodle": "./datasets/dogs_120/images_discovery_all_3/001.Poodle_000000.jpg", ...}
         for name, path in data_discovery.subcat_to_sample.items():
-            train_samples[name].append(path)
+            for p in path:
+                train_samples[name].append(p)
         
         print(f"构建知识库，包含 {len(train_samples)} 个类别, dog datasets:{len(DATA_STATS[cfg['dataset_name']]['class_names'])}")
         
         # 构建知识库
+        system.load_knowledge_base(args.knowledge_base_dir) # 方便构建stats
         image_kb, text_kb = system.build_knowledge_base(
             train_samples, 
             save_dir=args.knowledge_base_dir,
@@ -527,7 +497,7 @@ if __name__ == "__main__":
     
     elif args.mode == 'fastonly':
         """
-        CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=fastonly --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_1 --knowledge_base_dir=/data/yjx/MLLM/Try/experiments/dog120/knowledge_base --results_out=./logs/fastonly_eval.json 2>&1 | tee ./logs/fastonly_eval_direct.log
+        CUDA_VISIBLE_DEVICES=2 python discovering.py --mode=fastonly --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fastonly_eval.json 2>&1 | tee ./logs/fastonly_eval_lcb.log
         """
 
         # 初始化系统（仅用于加载组件），随后只用fast模块
@@ -672,7 +642,7 @@ if __name__ == "__main__":
         
     elif args.mode == 'fast_slow':
         """
-        CUDA_VISIBLE_DEVICES=2 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_1 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_1.log
+        CUDA_VISIBLE_DEVICES=2 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_1 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_update_lcb_1_context256.log
         """
 
         # 初始化完整的快慢思考系统
@@ -713,34 +683,29 @@ if __name__ == "__main__":
         from tqdm import tqdm
         for true_cat, paths in tqdm(test_samples.items(), desc="Processing fast and slow thinking"):
             for path in paths:
-                try:
-                    # 使用完整的快慢思考系统分类
-                    result = system.classify_single_image(path, use_slow_thinking=None, top_k=5)
-                    
-                    pred = result.get('final_prediction', 'unknown')
-                    ok = is_similar(pred, true_cat, threshold=0.5)
-                    used_slow = result.get('used_slow_thinking', False)
-                    
-                    if ok:
-                        print(f"succ. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
-                        correct += 1
-                        if not used_slow:
-                            fast_only_correct += 1
-                        if used_slow:
-                            slow_triggered_correct += 1
-                        else:
-                            print(f"failed. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
-                        # if used_slow:
-                        #     slow_triggered_correct += 1  # 即使错误也统计
-                    
+                # 使用完整的快慢思考系统分类
+                result = system.classify_single_image(path, use_slow_thinking=None, top_k=5)
+                
+                pred = result.get('final_prediction', 'unknown')
+                ok = is_similar(pred, true_cat, threshold=0.5)
+                used_slow = result.get('used_slow_thinking', False)
+                
+                if ok:
+                    print(f"succ. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
+                    correct += 1
+                    if not used_slow:
+                        fast_only_correct += 1
                     if used_slow:
-                        slow_triggered += 1
-                    
-                    total += 1
-
-                except Exception as e:
-                    print(f'Exception:{e}')
-                    total += 1
+                        slow_triggered_correct += 1
+                else:
+                    print(f"failed. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
+                    # if used_slow:
+                    #     slow_triggered_correct += 1  # 即使错误也统计
+                
+                if used_slow:
+                    slow_triggered += 1
+                
+                total += 1
 
         acc = correct / total if total > 0 else 0.0
         fast_only_acc = fast_only_correct / (total-slow_triggered) if total > 0 else 0.0

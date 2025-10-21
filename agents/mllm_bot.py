@@ -282,7 +282,7 @@ class MLLMBot:
         with torch.no_grad():
             generated_ids = self.qwen2_5.generate(
                 **inputs,
-                max_new_tokens=512,
+                max_new_tokens=256,
                 # logits_processor=logits_processors
             )
         generated_ids_trimmed = [

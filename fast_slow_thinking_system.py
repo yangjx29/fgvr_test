@@ -104,13 +104,20 @@ class FastSlowThinkingSystem:
         print(f"训练样本包含 {len(train_samples)} 个类别")
         
         # 构建知识库
-        image_kb, text_kb = self.kb_builder.build_knowledge_base(
-            self.mllm_bot, train_samples, augmentation
-        )
+        # image_kb, text_kb = self.kb_builder.build_knowledge_base(
+        #     self.mllm_bot, train_samples, augmentation
+        # )
         
         # 保存知识库
-        self.kb_builder.save_knowledge_base(save_dir)
+        # self.kb_builder.save_knowledge_base(save_dir)
         
+        # 使用训练集初始化LCB统计参数
+        print("\n开始初始化LCB统计参数...")
+        stats_summary = self.kb_builder.initialize_lcb_stats_with_labels(
+            train_samples, self.fast_thinking, top_k=5
+        )
+        print(f"初始化准确率: {stats_summary['initialization_accuracy']:.4f}")
+
         print("知识库构建完成!")
         return image_kb, text_kb
     
@@ -123,8 +130,8 @@ class FastSlowThinkingSystem:
         """
         print(f"从 {load_dir} 加载知识库...")
         self.kb_builder.load_knowledge_base(load_dir)
-        print("知识库加载完成!")
-    
+        print("知识库加载完成!")   
+        
     def classify_single_image(self, query_image_path: str, 
                             use_slow_thinking: bool = None,
                             top_k: int = 5) -> Dict:
@@ -162,7 +169,10 @@ class FastSlowThinkingSystem:
             slow_start_time = time.time()
             
             # 3. 慢思考
-            slow_result = self.slow_thinking.slow_thinking_pipeline(
+            # slow_result = self.slow_thinking.slow_thinking_pipeline(
+            #     query_image_path, fast_result, top_k
+            # )
+            slow_result = self.slow_thinking.slow_thinking_pipeline_update(
                 query_image_path, fast_result, top_k
             )
             slow_time = time.time() - slow_start_time

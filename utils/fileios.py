@@ -22,26 +22,21 @@ def dump_json(filename: str, in_data):
         filename += '.json'
     data_to_write = []
     if os.path.exists(filename):
-        try:
-            # 1. 读取现有数据
-            with open(filename, 'r') as fbj:
-                existing_data = json.load(fbj)
-                if isinstance(existing_data, list):
-                    # 如果现有数据是列表，直接将新数据作为元素添加
-                    data_to_write = existing_data
-                    data_to_write.append(in_data)
-                elif isinstance(existing_data, dict):
-                    if "entries" in existing_data and isinstance(existing_data["entries"], list):
-                        existing_data["entries"].append(in_data)
-                    else:
-                        existing_data["entries"] = [in_data]
-                    data_to_write = existing_data
+        # 1. 读取现有数据
+        with open(filename, 'r') as fbj:
+            existing_data = json.load(fbj)
+            if isinstance(existing_data, list):
+                # 如果现有数据是列表，直接将新数据作为元素添加
+                data_to_write = existing_data
+                data_to_write.append(in_data)
+            elif isinstance(existing_data, dict):
+                if "entries" in existing_data and isinstance(existing_data["entries"], list):
+                    existing_data["entries"].append(in_data)
                 else:
-                    raise TypeError(f"Existing data has wrong data type {type(existing_data)}")
-        except json.JSONDecodeError:
-            # 如果文件存在但内容不是有效的JSON（例如空文件或损坏的文件）
-            # 我们将其视为一个空列表
-            data_to_write = [in_data]
+                    existing_data["entries"] = [in_data]
+                data_to_write = existing_data
+            else:
+                raise TypeError(f"Existing data has wrong data type {type(existing_data)}")
     else:
         data_to_write = [in_data]
     with open(filename, 'w') as fbj:
@@ -54,6 +49,11 @@ def dump_json(filename: str, in_data):
     #     else:
     #         raise TypeError(f"in_data has wrong data type {type(in_data)}")
 
+def dump_json_override(filename: str, data):
+    if not filename.endswith('.json'):
+        filename += '.json'
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 def load_json(filename: str):
     if not filename.endswith('.json'):

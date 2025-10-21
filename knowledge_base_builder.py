@@ -24,7 +24,7 @@ from collections import defaultdict
 
 from agents.mllm_bot import MLLMBot
 from retrieval.multimodal_retrieval import MultimodalRetrieval
-from utils.fileios import dump_json, load_json
+from utils.fileios import dump_json, load_json, dump_json_override
 
 
 class KnowledgeBaseBuilder:
@@ -226,22 +226,22 @@ class KnowledgeBaseBuilder:
                     continue
                 
                 # 数据增强
-                if augmentation:
-                    try:
-                        augmented_paths = self.augment_image(img_path, "all")
-                        for aug_path in augmented_paths:
-                            try:
-                                aug_feat = self.retrieval.extract_image_feat(aug_path)
-                                category_features.append(aug_feat)
-                            except Exception as e:
-                                print(f"提取增强图像特征失败 {aug_path}: {e}")
-                                continue
-                            # 清理临时文件
-                            if os.path.exists(aug_path):
-                                os.remove(aug_path)
-                    except Exception as e:
-                        print(f"图像增强失败 {img_path}: {e}")
-                        continue
+                # if augmentation:
+                #     try:
+                #         augmented_paths = self.augment_image(img_path, "all")
+                #         for aug_path in augmented_paths:
+                #             try:
+                #                 aug_feat = self.retrieval.extract_image_feat(aug_path)
+                #                 category_features.append(aug_feat)
+                #             except Exception as e:
+                #                 print(f"提取增强图像特征失败 {aug_path}: {e}")
+                #                 continue
+                #             # 清理临时文件
+                #             if os.path.exists(aug_path):
+                #                 os.remove(aug_path)
+                #     except Exception as e:
+                #         print(f"图像增强失败 {img_path}: {e}")
+                #         continue
             
             if category_features:
                 # 计算类别平均特征
@@ -316,6 +316,85 @@ class KnowledgeBaseBuilder:
         
         return image_kb, text_kb
     
+    def initialize_lcb_stats_with_labels(self, train_samples: Dict[str, List[str]], 
+                                       fast_thinking_module, top_k: int = 5) -> Dict:
+        """
+        使用有标签的训练集初始化LCB统计参数
+        
+        Args:
+            train_samples: {category: [image_paths]} 训练样本
+            fast_thinking_module
+            top_k: 检索top-k结果
+            
+        Returns:
+            Dict: 初始化统计结果
+        """
+        stats_summary = {
+            "total_samples": 0,
+            "correct_predictions": 0,
+            "category_stats": {},
+            "initialization_accuracy": 0.0
+        }
+        
+        # 重置统计量
+        fast_thinking_module.category_stats = defaultdict(lambda: {"n": 0, "m": 0})
+        fast_thinking_module.total_predictions = 0
+        
+        correct_count = 0
+        total_count = 0
+        
+        print(f'test train_samples:{train_samples}')
+        for category, image_paths in train_samples.items():
+            # print(f"处理类别: {category} ({len(image_paths)} 张图像)")
+            category_correct = 0
+            category_total = 0
+            # print(f'image_paths:{image_paths}')
+            for img_path in image_paths:
+                # 执行快思考流程
+                # print(f'path test: {img_path}')
+                result = fast_thinking_module.fast_thinking_pipeline(img_path, top_k)
+                
+                predicted_category = result.get("fused_top1", "unknown")
+                
+                # 判断预测是否正确
+                from utils.util import is_similar
+                is_correct = is_similar(predicted_category, category, threshold=0.5)
+                
+                # 更新统计量
+                fast_thinking_module.update_stats(category, is_correct)
+                
+                if is_correct:
+                    correct_count += 1
+                    category_correct += 1
+                
+                total_count += 1
+                category_total += 1
+            
+            # 记录类别统计
+            stats_summary["category_stats"][category] = {
+                "total_samples": category_total,
+                "correct_predictions": category_correct,
+                "accuracy": category_correct / category_total if category_total > 0 else 0.0
+            }
+            
+            print(f"类别 {category}: {category_correct}/{category_total} 正确")
+        
+        # 计算整体统计
+        stats_summary["total_samples"] = total_count
+        stats_summary["correct_predictions"] = correct_count
+        stats_summary["initialization_accuracy"] = correct_count / total_count if total_count > 0 else 0.0
+        
+        # 保存统计量
+        fast_thinking_module.save_stats()
+        
+        print(f"LCB统计参数初始化完成!")
+        print(f"总样本数: {total_count}")
+        print(f"正确预测: {correct_count}")
+        print(f"初始化准确率: {stats_summary['initialization_accuracy']:.4f}")
+        print(f"总预测次数: {fast_thinking_module.total_predictions}")
+        
+        return stats_summary
+    
     def save_knowledge_base(self, save_dir: str):
         """
         保存知识库到文件
@@ -340,6 +419,31 @@ class KnowledgeBaseBuilder:
         dump_json(desc_path, self.category_descriptions)
         
         print(f"知识库已保存到: {save_dir}")
+    
+    def update_knowledge_base(self, save_dir: str):
+        """
+        保存知识库到文件
+        
+        Args:
+            save_dir: 保存目录
+        """
+        os.makedirs(save_dir, exist_ok=True)
+        
+        # 保存图像知识库
+        image_kb_path = os.path.join(save_dir, "image_knowledge_base.json")
+        image_kb_to_save = {cat: feat.tolist() for cat, feat in self.image_knowledge_base.items()}
+        dump_json_override(image_kb_path, image_kb_to_save)
+        
+        # 保存文本知识库
+        text_kb_path = os.path.join(save_dir, "text_knowledge_base.json")
+        text_kb_to_save = {cat: feat.tolist() for cat, feat in self.text_knowledge_base.items()}
+        dump_json_override(text_kb_path, text_kb_to_save)
+        
+        # 保存类别描述
+        desc_path = os.path.join(save_dir, "category_descriptions.json")
+        dump_json_override(desc_path, self.category_descriptions)
+
+        print(f"知识库已更新: {save_dir}")
     
     def load_knowledge_base(self, load_dir: str):
         """
@@ -420,6 +524,185 @@ class KnowledgeBaseBuilder:
         # 排序并返回top-k
         similarities.sort(key=lambda x: x[1], reverse=True)
         return similarities[:top_k]
+    
+    def incremental_update(self, category: str, image_path: str, structured_description: str,key_regions: List[Dict], confidence: float, mllm_bot, save_dir: str,
+                         signals: Dict = None) -> bool:
+        """
+        增量更新知识库：严格的质量控制 + 平滑更新机制
+        
+        Args:
+            category: 预测类别
+            image_path: 图像路径
+            structured_description: 结构化描述
+            key_regions: 关键区域信息
+            confidence: 预测置信度
+            mllm_bot: MLLM模型
+            save_dir: 保存目录
+            signals: 辅助信号（LCB、一致性等）
+            
+        Returns:
+            bool: 是否成功更新
+        """
+        signals = signals or {}
+        
+        # === 严格的质量判断机制 ===
+        quality_score = self._evaluate_update_quality(category, confidence, signals)
+        
+        if quality_score < 0.6:  # 质量阈值
+            print(f"跳过更新：质量分数过低 {quality_score:.3f}")
+            return False
+        
+        print(f"质量分数: {quality_score:.3f}，开始增量更新...")
+        # === 图像知识库更新 ===
+        self._update_image_knowledge_base(category, image_path, quality_score)
+        
+        # === 文本知识库更新 ===
+        # self._update_text_knowledge_base(category, structured_description, mllm_bot, quality_score)
+        
+        # === 保存更新后的知识库 ===
+        self.update_knowledge_base(save_dir)
+        
+        print(f"知识库增量更新完成: {category}")
+        return True
+
+    
+    def _evaluate_update_quality(self, category: str, confidence: float, signals: Dict) -> float:
+        """
+        评估更新质量：综合多个指标
+        
+        Args:
+            category: 预测类别
+            confidence: 预测置信度
+            signals: 辅助信号
+            
+        Returns:
+            float: 质量分数 [0, 1]
+        """
+        quality_factors = []
+        
+        # 1. 置信度因子 (权重: 0.3)
+        conf_factor = min(1.0, confidence / 0.8)  # 0.8为高置信度基准
+        quality_factors.append(("confidence", conf_factor, 0.3))
+        
+        # 2. LCB因子 (权重: 0.25)
+        lcb_value = signals.get('lcb', 0.5)
+        lcb_factor = min(1.0, lcb_value / 0.7)  # 0.7为LCB高值基准
+        quality_factors.append(("lcb", lcb_factor, 0.25))
+        
+        # 3. 快慢思考一致性因子 (权重: 0.2)
+        fast_slow_consistent = signals.get('fast_slow_consistent', False)
+        consistency_factor = 1.0 if fast_slow_consistent else 0.3
+        quality_factors.append(("consistency", consistency_factor, 0.2))
+        
+        # 4. 融合Top-1概率因子 (权重: 0.15)
+        fused_prob = signals.get('fused_top1_prob', 0.5)
+        fused_factor = min(1.0, fused_prob / 0.7)
+        quality_factors.append(("fused_prob", fused_factor, 0.15))
+        
+        # 5. 排名因子 (权重: 0.1)
+        rank_fast = signals.get('rank_in_fast_topk', 10)  # 默认排名靠后
+        rank_enh = signals.get('rank_in_enhanced_topk', 10)
+        rank_factor = max(0.0, 1.0 - (min(rank_fast, rank_enh) / 5.0))  # 排名越靠前越好
+        quality_factors.append(("ranking", rank_factor, 0.1))
+        
+        # 计算加权质量分数
+        total_score = sum(factor * weight for _, factor, weight in quality_factors)
+        
+        print(f"质量评估详情: {[(name, f'{factor:.3f}', f'{weight:.2f}') for name, factor, weight in quality_factors]}")
+        
+        return total_score
+    
+    def _update_image_knowledge_base(self, category: str, image_path: str, quality_score: float):
+        """
+        平滑更新图像知识库
+        
+        Args:
+            category: 类别
+            image_path: 图像路径
+            quality_score: 质量分数
+        """
+        # 提取新图像特征
+        new_feat = self.retrieval.extract_image_feat(image_path)
+        
+        if category in self.image_knowledge_base:
+            # 平滑更新：新特征权重基于质量分数
+            old_feat = self.image_knowledge_base[category]
+            
+            # 动态权重：质量越高，新特征权重越大，但不超过0.1
+            new_weight = min(0.1, quality_score * 0.04)
+            old_weight = 1.0 - new_weight
+            
+            # 加权平均更新
+            updated_feat = old_weight * old_feat + new_weight * new_feat
+            self.image_knowledge_base[category] = updated_feat
+            
+            print(f"图像知识库平滑更新: {category}, 新权重={new_weight:.3f}")
+        else:
+            # 新类别：直接添加
+            # self.image_knowledge_base[category] = new_feat
+            # print(f"图像知识库新增类别: {category}")
+            print(f'图像知识库跳过新增类别: {category}')
+    
+    def _update_text_knowledge_base(self, category: str, structured_description: str, 
+                                  mllm_bot, quality_score: float):
+        """
+        平滑更新文本知识库
+        
+        Args:
+            category: 类别
+            structured_description: 结构化描述
+            mllm_bot: MLLM模型
+            quality_score: 质量分数
+        """
+        try:
+            # 生成新的文本描述（基于结构化描述）
+            if structured_description and len(structured_description.strip()) > 10:
+                # 使用结构化描述生成更精确的类别描述
+                prompt = f"""Based on the detailed structured description of this {category} image, generate a concise but discriminative text description that captures the key visual characteristics for fine-grained recognition.
+
+Structured description: {structured_description}
+
+Focus on distinctive features that help distinguish this category from similar ones."""
+                
+                try:
+                    # 这里需要根据实际的MLLM接口调整
+                    new_description = structured_description  # 暂时使用结构化描述
+                except:
+                    new_description = f"Updated description for {category}: {structured_description[:100]}..."
+            else:
+                new_description = f"Updated description for {category} category."
+            
+            # 提取新文本特征
+            new_text_feat = self.retrieval.extract_text_feat(new_description)
+            
+            if category in self.text_knowledge_base:
+                # 平滑更新文本特征
+                old_text_feat = self.text_knowledge_base[category]
+                
+                # 文本特征更新权重更保守
+                new_weight = min(0.2, quality_score * 0.3)
+                old_weight = 1.0 - new_weight
+                
+                updated_text_feat = old_weight * old_text_feat + new_weight * new_text_feat
+                self.text_knowledge_base[category] = updated_text_feat
+                
+                # 更新描述
+                if category in self.category_descriptions:
+                    old_desc = self.category_descriptions[category]
+                    self.category_descriptions[category] = f"{old_desc}\n\nUpdated: {new_description}"
+                else:
+                    self.category_descriptions[category] = new_description
+                
+                print(f"文本知识库平滑更新: {category}, 新权重={new_weight:.3f}")
+            else:
+                # 新类别
+                self.text_knowledge_base[category] = new_text_feat
+                self.category_descriptions[category] = new_description
+                print(f"文本知识库新增类别: {category}")
+                
+        except Exception as e:
+            print(f"文本知识库更新失败: {e}")
+            raise
 
 
 # 示例使用

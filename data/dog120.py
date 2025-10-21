@@ -204,7 +204,7 @@ class DogDiscovery120:
             # label = label - 1
             file_names = os.listdir(folder) # ["000.Chihuaha_000000.jpg", "000.Chihuaha_000001.jpg", ...]
             for name in file_names:
-                subcat = name.split('.')[1].replace('_', ' ') # "Chihuaha"
+                subcat = name.split('.')[1].replace('_', ' ') # "Chihuaha 000000"
                 for class_name in self.classes:
                     if class_name.lower().replace('-', ' ') in subcat.lower():
                         subcat = class_name
@@ -212,7 +212,13 @@ class DogDiscovery120:
                 self.subcategories.append(subcat) # ["Chihuaha", "Poodle", ...]
                 self.samples.append(os.path.join(folder, name)) # ["./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", ...]
                 self.targets.append(label) # [0, 1, 2, ...]
-        self.subcat_to_sample = dict(zip(self.subcategories, self.samples)) # {"Chihuaha": "./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", "Poodle": "./datasets/dogs_120/images_discovery_all_3/001.Poodle_000000.jpg", ...}
+        # self.subcat_to_sample = dict(zip(self.subcategories, self.samples)) # {"Chihuaha": "./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", "Poodle": "./datasets/dogs_120/images_discovery_all_3/001.Poodle_000000.jpg", ...}
+        from collections import defaultdict
+        self.subcat_to_sample = defaultdict(list)
+        for subcat, sample in zip(self.subcategories, self.samples):
+            self.subcat_to_sample[subcat].append(sample)
+        # print(f'self.subcategories:{self.subcategories}')
+        # print(f'self.samples:{self.samples}')
         print(f'subcat_to_sample: {self.subcat_to_sample}')
         self.index = 0
 

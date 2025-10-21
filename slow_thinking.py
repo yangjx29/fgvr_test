@@ -538,6 +538,153 @@ class SlowThinking:
         
         return result
     
+    def slow_thinking_pipeline_update(self, query_image_path: str, fast_result: Dict, top_k: int = 5, save_dir = '/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base') -> Dict:
+        """
+        慢思考完整流程
+        
+        Args:
+            query_image_path: 查询图像路径
+            fast_result: 快思考结果
+            top_k: 检索top-k结果
+            
+        Returns:
+            Dict: 包含最终预测结果和详细分析
+        """
+        print(f"开始慢思考流程，查询图像: {query_image_path}")
+        
+        # 1. 分析困难点
+        print("步骤1: 调用模型去分析识别困难点...")
+        difficulty_analysis = self.analyze_difficulty(query_image_path, fast_result)
+        print(f"困难点分析: {difficulty_analysis}")
+        
+        # 2. 提取关键区域特征
+        print("步骤2: 提取关键区域特征...")
+        key_regions = difficulty_analysis.get("key_regions", ["overall appearance"])
+        region_descriptions = self.extract_key_regions(query_image_path, key_regions)
+        print(f"区域描述: {region_descriptions}")
+        
+        # 3. 生成结构化描述
+        print("步骤3: 生成结构化描述,去除冗余信息...")
+        structured_description = self.generate_structured_description(
+            query_image_path, region_descriptions, key_regions, difficulty_analysis
+        )
+        print(f"结构化描述: {structured_description}")
+        
+        # 4. 多模态检索
+        print("步骤4: 执行多模态检索...")
+        enhanced_results = self.multi_modal_retrieval(query_image_path, structured_description, top_k)
+        print(f"多模态检索结果: {enhanced_results}")
+        
+        # 如果多模态检索失败，使用增强检索作为fallback
+        if not enhanced_results:
+            print("多模态检索失败，使用增强检索...")
+            enhanced_results = self.enhanced_retrieval(query_image_path, structured_description, top_k)
+            print(f"增强检索结果: {enhanced_results}")
+        
+        # 5. 最终推理
+        print("步骤5: 最终推理...")
+        predicted_category, confidence, reasoning = self.final_reasoning(
+            query_image_path, enhanced_results, structured_description
+        )
+        # predicted_category, confidence, reasoning = self.final_reasoning_simple(
+        #     query_image_path, fast_result, enhanced_results, top_k
+        # )
+        print(f"最终预测: {predicted_category} (置信度: {confidence:.4f})")
+        print(f"推理过程: {reasoning}")
+
+        # 6. 统计更新 + 持续学习：基于最终预测进行自适应更新 上面代码没变
+        # 更严格的置信标准：结合LCB、一致性、置信度等多重指标
+        enhanced_top1_score = float((enhanced_results or [("", 0.0)])[0][1]) if enhanced_results else 0.0
+        fused_top1_prob = float(fast_result.get("fused_top1_prob", 0.0))
+        fused_margin = float(fast_result.get("fused_margin", 0.0))
+        fused_top1 = str(fast_result.get("fused_top1", "unknown"))
+        fast_slow_consistent = is_similar(fused_top1, predicted_category, threshold=0.5)
+        
+        # 获取LCB值
+        lcb_map = fast_result.get('lcb_map', {}) or {}
+        lcb_value = float(lcb_map.get(predicted_category, 0.5)) if isinstance(lcb_map, dict) else 0.5
+        
+        # 多重置信度检查
+        confidence_checks = [
+            float(confidence) >= 0.80,  # 慢思考高置信度
+            enhanced_top1_score >= 0.75,  # 增强检索高分数
+            (fused_top1_prob >= 0.85 and fused_margin >= 0.15),  # 融合结果高置信度+大margin
+            (fast_slow_consistent and lcb_value >= 0.7),  # 一致性+高LCB
+            (float(confidence) >= 0.70 and lcb_value >= 0.6)  # 中等置信度+中等LCB
+        ]
+        
+        is_confident_for_stats = any(confidence_checks)
+        
+        # 更新统计：只有高置信度预测才更新m（正确次数）
+        self.fast_thinking.update_stats(predicted_category, is_confident_for_stats)
+        
+        print(f"统计更新: 类别={predicted_category}, 置信度={confidence:.3f}, LCB={lcb_value:.3f}, " f"一致性={fast_slow_consistent}, 更新m={is_confident_for_stats}")
+
+        # 仅当预测到具体类别名时进行更新
+        if isinstance(predicted_category, str) and len(predicted_category) > 0 and predicted_category.lower() != 'unknown':
+            # 组装持续学习的辅助信号（用于自适应权重）
+            fast = fast_result
+            fused_prob = float(fast.get('fused_top1_prob', 0.5))
+            fused_margin = float(fast.get('fused_margin', 0.1))
+            fast_slow_consistent = is_similar(predicted_category, fast.get('fused_top1', 'unknown'), threshold=0.5)
+
+            # 获取 LCB 值：优先使用预测类别的LCB，否则使用融合Top-1的LCB
+            lcb_map = fast.get('lcb_map', {})
+            lcb_value = float(lcb_map.get(predicted_category, lcb_map.get(fused_top1, 0.5))) if isinstance(lcb_map, dict) else 0.5
+
+            # 估计候选排名（越靠前越可信）
+            rank_fast = len(fast.get('fused_results', [])) - 1  # 默认排名为最后
+            rank_enh = len(enhanced_results) - 1   # 默认排名为最后
+            # fused_results = fast.get('fused_results')
+            # print(f'fused_results:{fused_results}')
+            if isinstance(fast.get('fused_results'), list):
+                for idx, (cat, _) in enumerate(fast['fused_results']):
+                    if is_similar(cat, predicted_category, threshold=0.5):
+                        rank_fast = idx
+                        break
+            if isinstance(enhanced_results, list):
+                for idx, (cat, _) in enumerate(enhanced_results):
+                    if is_similar(cat, predicted_category, threshold=0.5):
+                        rank_enh = idx
+                        break
+            # print(f'候选排名: fast={rank_fast}, enhanced={rank_enh} ')
+            signals = {
+                'lcb': lcb_value,
+                'fast_slow_consistent': fast_slow_consistent,
+                'fused_top1_prob': fused_prob,
+                'fused_margin': fused_margin,
+                'rank_in_fast_topk': rank_fast,
+                'rank_in_enhanced_topk': rank_enh
+            }
+
+            self.kb_builder.incremental_update(
+                category=predicted_category,
+                image_path=query_image_path,
+                structured_description=structured_description,
+                key_regions=key_regions,
+                confidence=float(confidence),
+                mllm_bot=self.mllm_bot,
+                save_dir=save_dir,
+                signals=signals
+            )
+            print(f"已对知识库进行增量更新: 类别={predicted_category}, 置信度={confidence:.4f}, signals={signals}")
+        else:
+            print("跳过增量更新：预测类别未知或为空")
+        
+        result = {
+            "predicted_category": predicted_category,
+            "confidence": confidence,
+            "reasoning": reasoning,
+            "difficulty_analysis": difficulty_analysis,
+            "key_regions": key_regions,
+            "region_descriptions": region_descriptions,
+            "structured_description": structured_description,
+            "enhanced_results": enhanced_results,
+            "fast_result": fast_result
+        }
+        
+        return result
+    
     def batch_slow_thinking(self, query_image_paths: List[str], fast_results: List[Dict], 
                            top_k: int = 5) -> List[Dict]:
         """

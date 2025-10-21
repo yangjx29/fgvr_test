@@ -17,7 +17,8 @@ import json
 
 from knowledge_base_builder import KnowledgeBaseBuilder
 from utils.util import is_similar
-
+import os
+from collections import Counter, defaultdict
 
 class FastThinking:
     """快思考模块"""
@@ -32,7 +33,15 @@ class FastThinking:
                  fused_margin_threshold: float = 0.12,
                  per_modality_conf_threshold: float = 0.5,
                  consider_topk_overlap: bool = True,
-                 topk_for_overlap: int = 3):
+                 topk_for_overlap: int = 3,
+                 # —— LCB 相关默认参数 ——
+                 stats_file: str = "/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base/stats.json",
+                 lcb_threshold: float = 0.7,
+                 prior_strength: float = 2.0,
+                 prior_p: float = 0.6,
+                 lcb_eta: float = 1.0,
+                 lcb_alpha: float = 0.5,
+                 lcb_epsilon: float = 1e-6):
         """
         初始化快思考模块
         
@@ -53,7 +62,33 @@ class FastThinking:
         self.per_modality_conf_threshold = per_modality_conf_threshold
         self.consider_topk_overlap = consider_topk_overlap
         self.topk_for_overlap = max(1, topk_for_overlap)
-        
+        # LCB 参数与状态
+        self.lcb_threshold = lcb_threshold
+        self.prior_strength = prior_strength
+        self.prior_p = prior_p
+        self.lcb_eta = lcb_eta
+        self.lcb_alpha = lcb_alpha
+        self.lcb_epsilon = lcb_epsilon
+        self.stats_file = stats_file
+        self.total_predictions = 1  # 避免对数为0
+        # category -> {"n": 历史命中次数, "m": 历史正确次数}
+        self.category_stats = defaultdict(lambda: {"n": 0, "m": 0})  # n: 检索命中次数, m: 预测正确次数
+        # 加载历史统计量
+        self.load_stats()
+
+
+
+    def load_stats(self):
+        """加载历史统计量"""
+        if os.path.exists(self.stats_file):
+            with open(self.stats_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                self.category_stats = defaultdict(lambda: {"n": 0, "m": 0}, data.get("category_stats", {}))
+                self.total_predictions = data.get("total_predictions", 0)
+            print(f"已加载历史统计量: {self.total_predictions} 次预测")
+        else:
+            print("未找到历史统计量文件，将从头开始")
+
     def image_to_image_retrieval(self, query_image_path: str, top_k: int = 5) -> Tuple[str, float, List[Tuple[str, float]]]:
         """
         图像到图像检索
@@ -88,29 +123,25 @@ class FastThinking:
         Returns:
             Tuple[str, float, List[Tuple[str, float]]]: (最佳匹配类别, 最高相似度, 所有结果)
         """
-        try:
-            # 使用CLIP提取图像特征，然后与文本知识库比较
-            query_img_feat = self.kb_builder.retrieval.extract_image_feat(query_image_path)
-            
-            # 计算与文本知识库的相似度
-            similarities = []
-            for category, text_feat in self.kb_builder.text_knowledge_base.items():
-                # 使用图像特征与文本特征计算相似度
-                sim = np.dot(query_img_feat, text_feat)
-                similarities.append((category, sim))
-            
-            # 排序并返回top-k
-            similarities.sort(key=lambda x: x[1], reverse=True)
-            results = similarities[:top_k]
-            
-            if not results:
-                return "unknown", 0.0, []
-            
-            best_category, best_score = results[0]
-            return best_category, best_score, results
-        except Exception as e:
-            print(f"图像到文本检索失败: {e}")
+        # 使用CLIP提取图像特征，然后与文本知识库比较
+        query_img_feat = self.kb_builder.retrieval.extract_image_feat(query_image_path)
+        
+        # 计算与文本知识库的相似度
+        similarities = []
+        for category, text_feat in self.kb_builder.text_knowledge_base.items():
+            # 使用图像特征与文本特征计算相似度
+            sim = np.dot(query_img_feat, text_feat)
+            similarities.append((category, sim))
+        
+        # 排序并返回top-k
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        results = similarities[:top_k]
+        
+        if not results:
             return "unknown", 0.0, []
+        
+        best_category, best_score = results[0]
+        return best_category, best_score, results
     
     def normalize_scores(self, img_results: List[Tuple[str, float]], 
                         text_results: List[Tuple[str, float]]) -> Tuple[Dict[str, float], Dict[str, float]]:
@@ -255,6 +286,128 @@ class FastThinking:
         avg_confidence = (img_confidence + text_confidence) / 2
         return True, "conflict", avg_confidence
     
+    def trigger_lcb(self, img_category: str, text_category: str, 
+                         img_confidence: float, text_confidence: float,
+                         fused_top1: str, fused_top1_prob: float, fused_margin: float,
+                         topk_overlap: bool, name_soft_agree: bool) -> Tuple[bool, str, float]:
+        """
+        触发器机制：判断是否需要进入慢思考
+        
+        Args:
+            img_category: 图像检索结果
+            text_category: 文本检索结果
+            img_confidence: 图像检索置信度
+            text_confidence: 文本检索置信度
+            
+        Returns:
+            Tuple[bool, str, float]: (是否需要慢思考, 预测类别, 置信度)
+        """
+        # 名称软一致性（语义近似）或Top-K 重叠，弱冲突判定
+        categories_match_soft = is_similar(img_category, text_category, threshold=self.similarity_threshold) or name_soft_agree
+
+        # 若融合Top-1置信度足够高且与次高差距足够大，则直接信任融合结果
+        if fused_top1_prob >= self.fused_conf_threshold and fused_margin >= self.fused_margin_threshold:
+            return False, fused_top1, fused_top1_prob
+
+        # 若两个模态较为一致（软）且各自置信度均不低，则无需慢思考
+        if categories_match_soft and img_confidence >= self.per_modality_conf_threshold and text_confidence >= self.per_modality_conf_threshold:
+            return False, fused_top1, float(max(img_confidence, text_confidence))
+
+        # 若Top-K结果存在重叠且融合Top-1落在重叠集合中（通过上层传入的布尔），提高信任
+        if self.consider_topk_overlap and topk_overlap and fused_top1_prob >= (self.fused_conf_threshold * 0.9):
+            return False, fused_top1, fused_top1_prob
+
+        # —— 基于 LCB 的阈值判断（在现有规则基础上追加，不覆盖前面快速返回）——
+        # 1) 准备当前类别与置信度分布；这里使用两个模态的置信度以及融合Top-1概率
+        confidence_scores = [
+            max(0.0, min(1.0, float(img_confidence))),
+            max(0.0, min(1.0, float(text_confidence))),
+            max(0.0, min(1.0, float(fused_top1_prob)))
+        ]
+        category_for_lcb = fused_top1
+        # 2) 冷启动保护：若类别未出现过，则初始化其统计量
+        if category_for_lcb not in self.category_stats:
+            self.category_stats[category_for_lcb] = {"n": 0, "m": 0}
+        # 3) 更新全局计数，确保 calculate_lcb 中的对数项数值稳定
+        self.total_predictions = max(1, int(self.total_predictions) + 1)
+        # 4) 计算 LCB 并进行阈值判断
+        lcb_value = self.calculate_lcb(category_for_lcb, confidence_scores)
+        if lcb_value >= self.lcb_threshold:
+            # LCB 足够高：无需慢思考，直接信任融合Top-1
+            return False, fused_top1, fused_top1_prob
+
+        # 其余情况进入慢思考
+        avg_confidence = (img_confidence + text_confidence) / 2
+        return True, "conflict", avg_confidence
+    
+    def calculate_lcb(self, category: str, confidence_scores: List[float]) -> float:
+        """
+        计算类别的LCB (Lower Confidence Bound)，用于判断是否需要触发慢思考。
+        基于Beta先验 + 置信度分布熵调节。
+
+        Args:
+            category: 类别名称
+            confidence_scores: 当前检索结果的置信度分数列表
+
+        Returns:
+            float: LCB值
+        """
+        import math
+        stats = self.category_stats[category]
+        n_raw = stats["n"]  # 历史命中次数
+        m_raw = stats["m"]  # 历史正确次数
+
+        # ---- Beta先验平滑（缓解冷启动）----
+        n = n_raw + self.prior_strength
+        m = m_raw + self.prior_p * self.prior_strength
+        p_hat = m / (n + self.lcb_epsilon)
+
+        # ---- 计算置信度分布熵（反映模型犹豫程度）----
+        if len(confidence_scores) > 1:
+            probs = np.array(confidence_scores)
+            probs = probs / (probs.sum() + 1e-12)
+            entropy = -np.sum(probs * np.log(probs + 1e-12)) / np.log(len(probs) + 1e-12)  # 归一化熵 ∈ [0,1]
+        else:
+            entropy = 0.0
+
+        # ---- 置信区间项 ----
+        if n_raw > 0:
+            confidence_term = self.lcb_eta * math.sqrt(math.log(max(1, self.total_predictions)) / (2 * n + 1))
+        else:
+            confidence_term = self.lcb_eta * math.sqrt(math.log(max(1, self.total_predictions)))
+
+        # ---- 最终LCB公式 ----
+        # 熵越高（模型越犹豫），LCB越低，更可能触发慢思考
+        lcb = p_hat - confidence_term - self.lcb_alpha * entropy
+
+        return max(0.0, min(1.0, lcb))
+    
+    def update_stats(self, category: str, is_correct: bool):
+        """
+        更新统计量
+        
+        Args:
+            predicted_category: 预测的类别
+            is_correct: 预测是否正确
+            n 为命中次数， m为正确次数
+        """
+        self.category_stats[category]["n"] += 1
+        if is_correct:
+            self.category_stats[category]["m"] += 1
+        
+        self.total_predictions += 1
+        
+        self.save_stats()
+    
+    def save_stats(self):
+        """保存统计量到文件"""
+        data = {
+            "category_stats": dict(self.category_stats),
+            "total_predictions": self.total_predictions
+        }
+        with open(self.stats_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    
     def fast_thinking_pipeline(self, query_image_path: str, top_k: int = 5) -> Dict:
         """
         快思考完整流程
@@ -309,10 +462,20 @@ class FastThinking:
         text_confidence = float(max(text_probs.values())) if text_probs else 0.0
         
         # 4. 触发器机制
-        need_slow_thinking, predicted_category, confidence = self.trigger_mechanism(
+        # need_slow_thinking, predicted_category, confidence = self.trigger_mechanism(
+        #     img_category, text_category, img_confidence, text_confidence,
+        #     fused_top1, fused_top1_prob, fused_margin, topk_overlap, name_soft_agree
+        # )
+        need_slow_thinking, predicted_category, confidence = self.trigger_lcb(
             img_category, text_category, img_confidence, text_confidence,
             fused_top1, fused_top1_prob, fused_margin, topk_overlap, name_soft_agree
         )
+        
+        # 5. 计算LCB值用于后续质量评估
+        lcb_map = {}
+        confidence_scores = [img_confidence, text_confidence, fused_top1_prob]
+        lcb_value = self.calculate_lcb(fused_top1, confidence_scores)
+        lcb_map[fused_top1] = lcb_value
 
         # 对于fast-only流程，返回融合Top-1作为首选预测
         predicted_fast = fused_top1
@@ -333,7 +496,8 @@ class FastThinking:
             "topk_overlap": topk_overlap,
             "name_soft_agree": name_soft_agree,
             "img_results": img_results,
-            "text_results": text_results
+            "text_results": text_results,
+            "lcb_map": lcb_map  # 添加LCB值用于质量评估
         }
         
         print(f"快思考结果: {predicted_category} (置信度: {confidence:.4f})")
