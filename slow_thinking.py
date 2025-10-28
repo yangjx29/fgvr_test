@@ -538,7 +538,7 @@ class SlowThinking:
         
         return result
     
-    def slow_thinking_pipeline_update(self, query_image_path: str, fast_result: Dict, top_k: int = 5, save_dir = '/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base') -> Dict:
+    def slow_thinking_pipeline_update(self, query_image_path: str, fast_result: Dict, top_k: int = 5, save_dir = './experiments/dog120/knowledge_base') -> Dict:
         """
         慢思考完整流程
         

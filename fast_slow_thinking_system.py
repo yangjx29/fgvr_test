@@ -36,7 +36,8 @@ class FastSlowThinkingSystem:
                  image_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
                  text_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
                  device: str = "cuda" if torch.cuda.is_available() else "cpu",
-                 cfg: Optional[Dict] = None):
+                 cfg: Optional[Dict] = None,
+                 enable_mllm_intermediate_judge: bool = False):
         """
         初始化快慢思考系统
         
@@ -47,9 +48,11 @@ class FastSlowThinkingSystem:
             text_encoder_name: 文本编码器名称
             device: 设备
             cfg: 配置参数
+            enable_mllm_intermediate_judge: 是否启用MLLM中间判断（消融实验开关）
         """
         self.device = device
         self.cfg = cfg or {}
+        self.enable_mllm_intermediate_judge = enable_mllm_intermediate_judge
         
         # 初始化MLLM
         print("初始化MLLM模型...")
@@ -73,7 +76,8 @@ class FastSlowThinkingSystem:
         self.fast_thinking = FastThinking(
             knowledge_base_builder=self.kb_builder,
             confidence_threshold=self.cfg.get('confidence_threshold', 0.8),
-            similarity_threshold=self.cfg.get('similarity_threshold', 0.7)
+            similarity_threshold=self.cfg.get('similarity_threshold', 0.7),
+            stats_file="./experiments/dog120/knowledge_base/stats.json"  # 使用相对路径
         )
         
         # 初始化慢思考模块
@@ -103,13 +107,28 @@ class FastSlowThinkingSystem:
         print("构建知识库...")
         print(f"训练样本包含 {len(train_samples)} 个类别")
         
-        # 构建知识库
-        # image_kb, text_kb = self.kb_builder.build_knowledge_base(
-        #     self.mllm_bot, train_samples, augmentation
-        # )
+        # 初始化返回值
+        image_kb = None
+        text_kb = None
         
-        # 保存知识库
-        # self.kb_builder.save_knowledge_base(save_dir)
+        try:
+            # 构建知识库
+            image_kb, text_kb = self.kb_builder.build_knowledge_base(
+                self.mllm_bot, train_samples, augmentation
+            )
+            
+            # 保存知识库
+            self.kb_builder.save_knowledge_base(save_dir)
+            
+        except Exception as e:
+            print(f"构建知识库时出错: {e}")
+            # 如果构建失败，尝试从已有的知识库获取
+            if hasattr(self.kb_builder, 'image_knowledge_base') and hasattr(self.kb_builder, 'text_knowledge_base'):
+                image_kb = self.kb_builder.image_knowledge_base
+                text_kb = self.kb_builder.text_knowledge_base
+                print("使用已加载的知识库")
+            else:
+                raise e
         
         # 使用训练集初始化LCB统计参数
         print("\n开始初始化LCB统计参数...")
@@ -131,6 +150,119 @@ class FastSlowThinkingSystem:
         print(f"从 {load_dir} 加载知识库...")
         self.kb_builder.load_knowledge_base(load_dir)
         print("知识库加载完成!")   
+    
+    def mllm_intermediate_judge(self, query_image_path: str, fast_result: Dict, top_k: int = 5) -> Tuple[bool, str, float]:
+        """
+        MLLM中间判断：分析快思考的top-k结果，判断是否需要进入慢思考
+        
+        Args:
+            query_image_path: 查询图像路径
+            fast_result: 快思考结果
+            top_k: 要分析的top-k结果数量
+            
+        Returns:
+            Tuple[bool, str, float]: (是否需要慢思考, 预测类别, 置信度)
+        """
+        print("执行MLLM中间判断...")
+        
+        try:
+            # 获取快思考的融合结果
+            fused_results = fast_result.get("fused_results", [])
+            if not fused_results:
+                # 如果没有融合结果，使用图像检索结果
+                fused_results = fast_result.get("img_results", [])
+            
+            if len(fused_results) == 0:
+                print("警告：没有可用的检索结果，跳过MLLM判断")
+                return True, "unknown", 0.0
+                
+            # 构造候选类别列表
+            candidates = []
+            for i, (category, score) in enumerate(fused_results[:top_k]):
+                candidates.append(f"{i+1}. {category} (置信度: {score:.4f})")
+            
+            candidates_text = "\n".join(candidates)
+            
+            # 构造MLLM判断提示
+            prompt = f"""你是一个专业的图像分类专家。请分析这张图像和以下候选分类结果，判断你是否有足够的信心做出最终分类决定。
+
+候选类别（按相似度排序）：
+{candidates_text}
+
+请仔细观察图像特征，分析以上候选结果，然后回答：
+
+1. 你是否有足够信心确定这张图像的类别？
+2. 如果有信心，你认为最可能的类别是什么？
+3. 你的信心水平如何？（0-1之间的数值）
+
+请按以下格式回答：
+决策：[有信心/没信心]
+预测类别：[类别名称]
+置信度：[0-1的数值]
+推理：[简要说明你的判断理由]
+"""
+            
+            # 调用MLLM进行判断
+            response = self.mllm_bot.text_image_response_multimodal(query_image_path, prompt)
+            
+            print(f"MLLM中间判断响应: {response}")
+            
+            # 解析MLLM回复
+            need_slow_thinking, predicted_category, confidence = self._parse_mllm_judge_response(response, fused_results)
+            
+            return need_slow_thinking, predicted_category, confidence
+            
+        except Exception as e:
+            print(f"MLLM中间判断出错: {e}")
+            # 出错时默认进入慢思考
+            return True, "error", 0.0
+    
+    def _parse_mllm_judge_response(self, response: str, fused_results: List[Tuple[str, float]]) -> Tuple[bool, str, float]:
+        """
+        解析MLLM判断响应
+        
+        Args:
+            response: MLLM的回复文本
+            fused_results: 融合检索结果，用于fallback
+            
+        Returns:
+            Tuple[bool, str, float]: (是否需要慢思考, 预测类别, 置信度)
+        """
+        try:
+            # 提取决策
+            decision_confident = False
+            predicted_category = fused_results[0][0] if fused_results else "unknown"  # 默认值
+            confidence = 0.5  # 默认置信度
+            
+            lines = response.strip().split('\n')
+            for line in lines:
+                line = line.strip()
+                if line.startswith('决策：') or line.startswith('决策:'):
+                    decision = line.split('：')[1] if '：' in line else line.split(':')[1]
+                    decision_confident = '有信心' in decision
+                    
+                elif line.startswith('预测类别：') or line.startswith('预测类别:'):
+                    predicted_category = line.split('：')[1] if '：' in line else line.split(':')[1]
+                    predicted_category = predicted_category.strip()
+                    
+                elif line.startswith('置信度：') or line.startswith('置信度:'):
+                    conf_str = line.split('：')[1] if '：' in line else line.split(':')[1]
+                    try:
+                        confidence = float(conf_str.strip())
+                    except:
+                        confidence = 0.5
+            
+            # 如果MLLM有信心且置信度较高，则不需要慢思考
+            need_slow_thinking = not (decision_confident and confidence >= 0.6)
+            
+            print(f"MLLM判断解析结果 - 需要慢思考: {need_slow_thinking}, 类别: {predicted_category}, 置信度: {confidence}")
+            
+            return need_slow_thinking, predicted_category, confidence
+            
+        except Exception as e:
+            print(f"解析MLLM响应时出错: {e}")
+            # 出错时默认进入慢思考
+            return True, fused_results[0][0] if fused_results else "unknown", 0.0
         
     def classify_single_image(self, query_image_path: str, 
                             use_slow_thinking: bool = None,
@@ -162,7 +294,24 @@ class FastSlowThinkingSystem:
         }
         
         # 2. 判断是否需要慢思考
-        need_slow_thinking = use_slow_thinking if use_slow_thinking is not None else fast_result["need_slow_thinking"]
+        if use_slow_thinking is not None:
+            # 强制指定是否使用慢思考
+            need_slow_thinking = use_slow_thinking
+            mllm_judge_result = None
+        elif self.enable_mllm_intermediate_judge:
+            # 启用MLLM中间判断
+            print("启用MLLM中间判断模式...")
+            mllm_need_slow, mllm_predicted, mllm_confidence = self.mllm_intermediate_judge(query_image_path, fast_result, top_k)
+            need_slow_thinking = mllm_need_slow
+            mllm_judge_result = {
+                "predicted_category": mllm_predicted,
+                "confidence": mllm_confidence,
+                "need_slow_thinking": mllm_need_slow
+            }
+        else:
+            # 使用传统的快思考触发机制
+            need_slow_thinking = fast_result["need_slow_thinking"]
+            mllm_judge_result = None
         
         if need_slow_thinking:
             print("快思考结果不确定，执行慢思考...")
@@ -200,18 +349,27 @@ class FastSlowThinkingSystem:
                 "final_confidence": final_confidence,
                 "final_reasoning": final_reasoning,
                 "used_slow_thinking": True,
-                "fast_slow_consistent": is_similar(fast_pred, slow_pred, threshold=0.5)
+                "fast_slow_consistent": is_similar(fast_pred, slow_pred, threshold=0.5),
+                "mllm_judge_result": mllm_judge_result
             })
         else:
-            print("快思考结果确定，直接返回...")
-            final_prediction = fast_result["predicted_category"]
-            final_confidence = fast_result["confidence"]
+            if mllm_judge_result is not None and not mllm_judge_result["need_slow_thinking"]:
+                print("MLLM中间判断有信心，直接返回...")
+                final_prediction = mllm_judge_result["predicted_category"]
+                final_confidence = mllm_judge_result["confidence"]
+                final_reasoning = "MLLM intermediate judge result"
+            else:
+                print("快思考结果确定，直接返回...")
+                final_prediction = fast_result["predicted_category"]
+                final_confidence = fast_result["confidence"]
+                final_reasoning = "Fast thinking result"
             
             result.update({
                 "final_prediction": final_prediction,
                 "final_confidence": final_confidence,
-                "final_reasoning": "Fast thinking result",
-                "used_slow_thinking": False
+                "final_reasoning": final_reasoning,
+                "used_slow_thinking": False,
+                "mllm_judge_result": mllm_judge_result
             })
         
         total_time = time.time() - start_time

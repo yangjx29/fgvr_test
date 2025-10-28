@@ -4,14 +4,14 @@ from data.dog120 import build_dog_prompter, build_dog120_discovery, build_dog120
 from data.flower102 import build_flower_prompter, build_flower102_discovery, build_flower102_test, flower_how_to1, flower_how_to2, build_flower102_swav_train
 from data.pet37 import build_pet_prompter, build_pet37_discovery, build_pet37_test, pet_how_to1, pet_how_to2, build_pet37_swav_train
 from data.car196 import build_car_prompter, build_car196_discovery, build_car196_test, car_how_to1, car_how_to2, build_car196_swav_train
-from data.pokemon import build_pokemon_prompter, build_pokemon_discovery, build_pokemon_test, pokemon_how_to1, pokemon_how_to2
+# from data.pokemon import build_pokemon_prompter, build_pokemon_discovery, build_pokemon_test, pokemon_how_to1, pokemon_how_to2
 
 from data.bird200 import _transform as bird_transform
 from data.car196 import _transform as car_transform
 from data.dog120 import _transform as dog_transform
 from data.flower102 import _transform as flower_transform
 from data.pet37 import _transform as pet_transform
-from data.pokemon import _transform as pokemon_transform
+# from data.pokemon import _transform as pokemon_transform
 
 from .utils import random_augmentation
 
@@ -23,7 +23,7 @@ __all__ = [
     "build_flower_prompter", "build_flower102_discovery", "build_flower102_test",
     "build_pet_prompter", "build_pet37_discovery", "build_pet37_test",
     "build_car_prompter", "build_car196_discovery", "build_car196_test",
-    "build_pokemon_prompter", "build_pokemon_discovery", "build_pokemon_test"
+    # "build_pokemon_prompter", "build_pokemon_discovery", "build_pokemon_test"
 ]
 
 
@@ -33,7 +33,7 @@ HOW_TOS1 = {
     "flower": flower_how_to1,
     "pet": pet_how_to1,
     "car": car_how_to1,
-    "pokemon": pokemon_how_to1,
+    # "pokemon": pokemon_how_to1,
 }
 
 HOW_TOS2 = {
@@ -42,7 +42,7 @@ HOW_TOS2 = {
     "flower": flower_how_to2,
     "pet": pet_how_to2,
     "car": car_how_to2,
-    "pokemon": pokemon_how_to2,
+    # "pokemon": pokemon_how_to2,
 }
 
 DATA_STATS = {
@@ -51,7 +51,7 @@ DATA_STATS = {
     "flower": FLOWER_STATS,
     "pet": PET_STATS,
     "car": CAR_STATS,
-    "pokemon": POKEMON_STATS,
+    # "pokemon": POKEMON_STATS,
 }
 
 
@@ -61,7 +61,7 @@ PROMPTERS = {
     "flower": build_flower_prompter,
     "pet": build_pet_prompter,
     "car": build_car_prompter,
-    "pokemon": build_pokemon_prompter,
+    # "pokemon": build_pokemon_prompter,
 }
 
 
@@ -71,7 +71,7 @@ DATA_DISCOVERY = {
     "flower": build_flower102_discovery,
     "pet": build_pet37_discovery,
     "car": build_car196_discovery,
-    "pokemon": build_pokemon_discovery,
+    # "pokemon": build_pokemon_discovery,
 }
 
 
@@ -81,7 +81,7 @@ DATA_GROUPING = {
     "flower": build_flower102_test,
     "pet": build_pet37_test,
     "car": build_car196_test,
-    "pokemon": build_pokemon_test,
+    # "pokemon": build_pokemon_test,
 }
 
 
@@ -91,7 +91,7 @@ DATA_TRANSFORM = {
     "flower": flower_transform,
     "pet": pet_transform,
     "car": car_transform,
-    "pokemon": pokemon_transform,
+    # "pokemon": pokemon_transform,
 }
 
 

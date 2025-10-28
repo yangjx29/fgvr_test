@@ -371,6 +371,7 @@ if __name__ == "__main__":
     parser.add_argument('--use_slow_thinking', type=bool, default=None, help='force use slow thinking (None for auto)')
     parser.add_argument('--confidence_threshold', type=float, default=0.8, help='confidence threshold for fast thinking')
     parser.add_argument('--similarity_threshold', type=float, default=0.7, help='similarity threshold for trigger mechanism')
+    parser.add_argument('--enable_mllm_intermediate_judge', action='store_true', default=False, help='enable MLLM intermediate judge between fast and slow thinking (for ablation studies)')
 
     args = parser.parse_args()  
     print(colored(args, 'blue'))  
@@ -393,7 +394,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         
         # 加载训练样本
@@ -429,8 +431,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            device_id=cfg.get('device_id', 0),
-            cfg=cfg
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         
         # 加载知识库
@@ -462,8 +464,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            device_id=cfg.get('device_id', 0),
-            cfg=cfg
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         
         # 加载知识库
@@ -505,7 +507,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
@@ -582,7 +585,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
@@ -650,7 +654,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
@@ -721,6 +726,74 @@ if __name__ == "__main__":
         print(f"[fast and slow] 快思考准确率: {fast_only_acc:.4f}")
         print(f"[fast and slow] 慢思考触发比例: {slow_trigger_ratio:.4f}")
         print(f"[fast and slow] 慢思考准确率: {slow_trigger_acc:.4f}")
+    
+    elif args.mode == 'build_gallery':
+        """
+        构建多模态类别模板库
+        """
+        print("进入build_gallery模式")
+        try:
+            from agents.mllm_bot import MLLMBot
+            from cvd.cdv_captioner import CDVCaptioner
+            from retrieval.multimodal_retrieval import MultimodalRetrieval
+            print("成功导入所需模块")
+        except Exception as e:
+            print(f"导入模块失败: {e}")
+            raise
+        
+        # 初始化组件
+        print("开始初始化MLLM Bot...")
+        mllm_bot = MLLMBot(
+            model_tag=cfg['model_size_mllm'],
+            model_name=cfg['model_size_mllm'],
+            pai_enable_attn=False,
+            device='cuda' if cfg['host'] in ["xiao"] else 'cpu'
+        )
+        print("MLLM Bot初始化完成")
+        
+        print("初始化CDV Captioner...")
+        captioner = CDVCaptioner()
+        print("CDV Captioner初始化完成")
+        
+        print("初始化多模态检索模块...")
+        retrieval = MultimodalRetrieval(
+            fusion_method=args.fusion_method,
+            device='cuda' if cfg['host'] in ["xiao"] else 'cpu'
+        )
+        print("多模态检索模块初始化完成")
+        
+        # 加载发现数据集
+        print("加载发现数据集...")
+        data_discovery = DATA_DISCOVERY[cfg['dataset_name']](cfg, folder_suffix=expt_id_suffix)
+        print(f"发现数据集加载完成，包含 {len(data_discovery.samples)} 个样本")
+        
+        # 构建gallery
+        print("开始构建gallery...")
+        gallery = build_gallery(
+            cfg, mllm_bot, captioner, retrieval,
+            kshot=args.kshot,
+            region_num=args.region_num,
+            superclass=args.superclass,
+            data_discovery=data_discovery
+        )
+        print("Gallery构建完成")
+        
+        # 保存gallery
+        if args.gallery_out:
+            import json
+            import os
+            os.makedirs(os.path.dirname(args.gallery_out), exist_ok=True)
+            # 将numpy数组转换为列表以便JSON序列化
+            gallery_serializable = {}
+            for cat, feat in gallery.items():
+                gallery_serializable[cat] = feat.tolist()
+            
+            with open(args.gallery_out, 'w') as f:
+                json.dump(gallery_serializable, f, indent=2)
+            print(f"Gallery saved to: {args.gallery_out}")
+        
+        print(f"Gallery built with {len(gallery)} categories")
+    
     else:
         raise NotImplementedError 
 

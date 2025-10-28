@@ -35,7 +35,7 @@ class FastThinking:
                  consider_topk_overlap: bool = True,
                  topk_for_overlap: int = 3,
                  # —— LCB 相关默认参数 ——
-                 stats_file: str = "/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base/stats.json",
+                 stats_file: str = "./experiments/dog120/knowledge_base/stats.json",
                  lcb_threshold: float = 0.7,
                  prior_strength: float = 2.0,
                  prior_p: float = 0.6,

@@ -456,13 +456,25 @@ class KnowledgeBaseBuilder:
         image_kb_path = os.path.join(load_dir, "image_knowledge_base.json")
         if os.path.exists(image_kb_path):
             image_kb_data = load_json(image_kb_path)
-            self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data[0].items()}
+            # 处理不同的数据格式
+            if isinstance(image_kb_data, list) and len(image_kb_data) > 0:
+                self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data[0].items()}
+            elif isinstance(image_kb_data, dict):
+                self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data.items()}
+            else:
+                print(f"警告: 无法解析图像知识库数据格式: {type(image_kb_data)}")
         
         # 加载文本知识库
         text_kb_path = os.path.join(load_dir, "text_knowledge_base.json")
         if os.path.exists(text_kb_path):
             text_kb_data = load_json(text_kb_path)
-            self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data[0].items()}
+            # 处理不同的数据格式
+            if isinstance(text_kb_data, list) and len(text_kb_data) > 0:
+                self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data[0].items()}
+            elif isinstance(text_kb_data, dict):
+                self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data.items()}
+            else:
+                print(f"警告: 无法解析文本知识库数据格式: {type(text_kb_data)}")
         
         # 加载类别描述
         desc_path = os.path.join(load_dir, "category_descriptions.json")

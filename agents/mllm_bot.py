@@ -8,7 +8,7 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 # 直接导入UniFGVR目录下的utils模块
-sys.path.insert(0, '/data/yjx/MLLM/UniFGVR')
+# sys.path.insert(0, '/data/yjx/MLLM/UniFGVR')  # 注释掉硬编码路径
 from utils.util import encode_base64, prepare_qwen2_5_input, get_important_image_tokens, create_attention_mask
 
 import torch
@@ -67,8 +67,8 @@ class MLLMBot:
         self.model_tag = model_tag
         self.model_name = model_name
         self.max_answer_tokens = max_answer_tokens
-        local_model_path_abs = "/data/yjx/MLLM/models"
-        local_model_path = path.join(local_model_path_abs, QWEN[self.model_tag].split('/')[-1])
+        local_model_path_abs = "/home/Dataset/Models/Qwen"
+        local_model_path = path.join(local_model_path_abs, "Qwen2.5-VL-7B-Instruct")
         self.qwen2_5_processor = AutoProcessor.from_pretrained(local_model_path)
         # self.qwen2_5_processor = AutoProcessor.from_pretrained(
         #     local_model_path,
@@ -250,7 +250,7 @@ class MLLMBot:
             general_prompt = f"<image>\nUSER: {general_question} Answer the question with a concise phrase.\nASSISTANT:"
             att_map = rel_attention_qwen2_5(raw_image[0], formatted_prompt, general_prompt, self.qwen2_5, self.qwen2_5_processor)
             import matplotlib.pyplot as plt
-            path='/data/yjx/MLLM/UniFGVR/maps/'
+            path='./maps/'
             os.makedirs(path, exist_ok=True)
             plt.imshow(att_map, interpolation='none')
             plt.axis('off')
@@ -322,7 +322,7 @@ class MLLMBot:
         trimmed_reply = trim_answer(reply)
         return reply, trimmed_reply
     
-    def compare_attention_enhancement(self, raw_image, attr_prompt, save_dir="/data/yjx/MLLM/UniFGVR/experiments/attention_comparison"):
+    def compare_attention_enhancement(self, raw_image, attr_prompt, save_dir="./experiments/attention_comparison"):
         """
         对比注意力增强前后的效果
         """

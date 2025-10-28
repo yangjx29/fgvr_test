@@ -5,15 +5,15 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-# 直接导入UniFGVR目录下的utils模块
-sys.path.insert(0, '/data/yjx/MLLM/UniFGVR')
+# 直接导入项目目录下的utils模块
+# sys.path.insert(0, '/data/yjx/MLLM/UniFGVR')
 import numpy as np
 from PIL import Image
 import torch
 import torch.nn as nn
 from transformers import CLIPProcessor, CLIPModel
 from transformers import Blip2Processor, Blip2Model
-from transformers import AutoProcessor, BlipForImageTextRetrieval
+from transformers import AutoProcessor, BlipForImageTextRetrieval, Blip2ForConditionalGeneration
 from sklearn.metrics.pairwise import cosine_similarity
 
 # 添加项目根目录到Python路径
@@ -40,26 +40,58 @@ class MultimodalRetrieval:
         self.fusion_method = fusion_method
         
         # Load CLIP for image and text feature extraction (CLIP can handle both)
-        self.clip_model = CLIPModel.from_pretrained(image_encoder_name).to(self.device)
-        self.clip_processor = CLIPProcessor.from_pretrained(image_encoder_name)
-        blip_load_path='/home/Dataset/Models/blip/blip2-opt-6.7b-coco'
-        self.blip_processor = AutoProcessor.from_pretrained("Salesforce/blip-itm-base-coco")
-        self.blip_model = BlipForImageTextRetrieval.from_pretrained("Salesforce/blip-itm-base-coco")
-        # 确保模型与输入在同一设备，避免 FloatTensor/CudaFloatTensor 不一致
-        self.blip_model = self.blip_model.to(self.device)
-        self.blip_model.eval()
+        self.clip_model = CLIPModel.from_pretrained(image_encoder_name, local_files_only=True).to(self.device)
+        self.clip_processor = CLIPProcessor.from_pretrained(image_encoder_name, local_files_only=True)
+        
+        # 延迟加载BLIP模型：只在使用cross_atten融合方法时才加载
+        self.blip_load_path = '/home/Dataset/Models/blip/blip2-flan-t5-xxl'
+        self.blip_processor = None
+        self.blip_model = None
+        
+        # 如果融合方法不是cross_atten，则跳过BLIP加载以节省显存
+        if self.fusion_method != "cross_atten":
+            print(f"🚀 融合方法为 '{self.fusion_method}'，跳过BLIP模型加载以节省显存")
+        else:
+            print("⚠️ 使用cross_atten融合方法，需要加载BLIP模型")
+            self._load_blip_model()
+    
+    def _load_blip_model(self):
+        """延迟加载BLIP模型，只在需要时加载以节省显存"""
+        if self.blip_model is not None:
+            return  # 已经加载过了
+            
+        if os.path.exists(self.blip_load_path):
+            print(f"🔄 正在加载BLIP模型: {self.blip_load_path}")
+            self.blip_processor = AutoProcessor.from_pretrained(self.blip_load_path, local_files_only=True)
+            self.blip_model = Blip2ForConditionalGeneration.from_pretrained(self.blip_load_path, local_files_only=True)
+            self.blip_model = self.blip_model.to(self.device)
+            self.blip_model.eval()
+            print("✅ BLIP模型加载完成")
+        else:
+            print(f"❌ 错误: BLIP模型路径不存在 {self.blip_load_path}")
+            raise FileNotFoundError(f"BLIP模型路径不存在: {self.blip_load_path}")
 
     def init_blip(self):
         # self._blip_processor = Blip2Processor.from_pretrained("/home/Dataset/Models/blip/blip2-opt-6.7b-coco")
         # self._blip_model = Blip2Model.from_pretrained("/home/Dataset/Models/blip/blip2-opt-6.7b-coco").to(self.device)
-        self.blip_processor = AutoProcessor.from_pretrained("Salesforce/blip-itm-base-coco")
-        self.blip_model = BlipForImageTextRetrieval.from_pretrained("Salesforce/blip-itm-base-coco")
-        # 确保模型与输入在同一设备，避免 FloatTensor/CudaFloatTensor 不一致
-        self.blip_model = self.blip_model.to(self.device)
-        self.blip_model.eval()
+        blip_load_path = '/home/Dataset/Models/blip/blip2-flan-t5-xxl'
+        if os.path.exists(blip_load_path):
+            self.blip_processor = AutoProcessor.from_pretrained(blip_load_path, local_files_only=True)
+            self.blip_model = Blip2ForConditionalGeneration.from_pretrained(blip_load_path, local_files_only=True)
+            # 确保模型与输入在同一设备，避免 FloatTensor/CudaFloatTensor 不一致
+            self.blip_model = self.blip_model.to(self.device)
+            self.blip_model.eval()
+        else:
+            print(f"警告: BLIP模型路径不存在 {blip_load_path}，跳过BLIP模型初始化")
+            self.blip_processor = None
+            self.blip_model = None
 
     def extract_multimodal_feat_blip(self, image_path: str, text: str):
         # self.init_blip()
+        if self.blip_model is None or self.blip_processor is None:
+            print("警告: BLIP模型未初始化，跳过BLIP特征提取")
+            return None
+        
         img = Image.open(image_path).convert("RGB")
         inputs = self.blip_processor(images=img, text=text, return_tensors="pt").to(self.device)
         with torch.no_grad():
@@ -134,8 +166,14 @@ class MultimodalRetrieval:
             alpha = 0.7
             return alpha * text_feat + (1 - alpha) * img_feat
         elif self.fusion_method == "cross_atten":
-            # 已处理
-            raise RuntimeError("blip_cross requires raw image path and text; call extract_multimodal_feat_blip().")
+            # 动态加载BLIP模型（如果还没加载）
+            if self.blip_model is None:
+                print("🔄 cross_atten融合需要BLIP模型，正在动态加载...")
+                self._load_blip_model()
+            
+            # 注意：cross_atten需要原始图像和文本，这里只是占位
+            # 实际使用应该调用 extract_multimodal_feat_blip() 方法
+            raise RuntimeError("cross_atten融合需要原始图像路径和文本，请使用extract_multimodal_feat_blip()方法")
         else:
             raise ValueError("Invalid fusion method. Use 'concat' or 'average'.")
 
@@ -481,7 +519,7 @@ if __name__ == "__main__":
     test_samples = {}
     # 构建test samples
     # img_root = "/data/yjx/MLLM/UniFGVR/datasets/dogs_120/Images"
-    img_root = "/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10"
+    img_root = "./datasets/dogs_120/images_discovery_all_10"
     class_folders = os.listdir(img_root)
     for i in range(len(class_folders)):
         cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
@@ -579,7 +617,7 @@ if __name__ == "__main__":
                 print(f'匹配失败,correct:{correct},total:{total},score:{score}')
                 print(f'predicted_cat:{predicted_cat}, true_cat:{true_cat}')
                 # 错误预测的图像保存下来，照片是正确的
-                save_path = f'/data/yjx/MLLM/UniFGVR/experiments/dog120/fail_images/{predicted_cat}'
+                save_path = f'./experiments/dog120/fail_images/{predicted_cat}'
                 os.makedirs(save_path, exist_ok=True)
                 import shutil
                 shutil.copy(path, save_path)
