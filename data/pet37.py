@@ -267,12 +267,14 @@ class PetDiscovery37:
     def __init__(self, root, folder_suffix=''):
         img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
 
-        self.class_folders = os.listdir(img_root)  # 100 x 1
+        self.class_folders = os.listdir(img_root)  # 37 pet classes
         for i in range(len(self.class_folders)):
             self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
 
         self.samples = []
         self.targets = []
+        self.subcategories = []  # 添加子类别列表
+        
         for folder in self.class_folders:
             label = int(folder.split('/')[-1][:3])
             # label = label - 1
@@ -281,8 +283,34 @@ class PetDiscovery37:
             for name in file_names:
                 self.targets.append(label)
                 self.samples.append(os.path.join(folder, name))
+                
+                # 提取子类别名称（与dog120保持一致的逻辑）
+                subcat = name.split('.')[1] if '.' in name else f'pet_{label:03d}'
+                # 清理子类别名称
+                subcat = subcat.replace('_', ' ').strip()
+                
+                # 尝试匹配到已知的宠物类别名称
+                matched_class = None
+                for class_name in PET_STATS['class_names']:
+                    if class_name.lower().replace('-', ' ') in subcat.lower():
+                        matched_class = class_name
+                        break
+                
+                # 如果找到匹配的类别名称，使用它；否则使用清理后的子类别名称
+                if matched_class:
+                    self.subcategories.append(matched_class)
+                else:
+                    self.subcategories.append(subcat)
 
         self.classes = PET_STATS['class_names']
+        
+        # 构建subcat_to_sample映射（与dog120保持一致）
+        from collections import defaultdict
+        self.subcat_to_sample = defaultdict(list)
+        for subcat, sample in zip(self.subcategories, self.samples):
+            self.subcat_to_sample[subcat].append(sample)
+        
+        print(f'Pet37 subcat_to_sample: {dict(self.subcat_to_sample)}')
         self.index = 0
 
     def __len__(self):

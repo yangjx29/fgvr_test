@@ -191,12 +191,14 @@ class CarDiscovery196:
     def __init__(self, root, folder_suffix=''):
         img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
 
-        self.class_folders = os.listdir(img_root)  # 100 x 1
+        self.class_folders = os.listdir(img_root)  # 196 car classes
         for i in range(len(self.class_folders)):
             self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
 
         self.samples = []
         self.targets = []
+        self.subcategories = []  # 添加子类别列表
+        
         for folder in self.class_folders:
             label = int(folder.split('/')[-1][:3])
             # label = label - 1
@@ -205,8 +207,32 @@ class CarDiscovery196:
             for name in file_names:
                 self.targets.append(label)
                 self.samples.append(os.path.join(folder, name))
+                
+                # 提取子类别名称
+                subcat = name.split('.')[1] if '.' in name else f'car_{label:03d}'
+                subcat = subcat.replace('_', ' ').strip()
+                
+                # 尝试匹配到已知的汽车类别名称
+                matched_class = None
+                for class_name in CAR_STATS['class_names']:
+                    if class_name.lower().replace('-', ' ') in subcat.lower():
+                        matched_class = class_name
+                        break
+                
+                if matched_class:
+                    self.subcategories.append(matched_class)
+                else:
+                    self.subcategories.append(subcat)
 
         self.classes = CAR_STATS['class_names']
+        
+        # 构建subcat_to_sample映射
+        from collections import defaultdict
+        self.subcat_to_sample = defaultdict(list)
+        for subcat, sample in zip(self.subcategories, self.samples):
+            self.subcat_to_sample[subcat].append(sample)
+        
+        print(f'Car196 subcat_to_sample: {dict(self.subcat_to_sample)}')
         self.index = 0
 
     def __len__(self):

@@ -54,21 +54,21 @@ class FastSlowThinkingSystem:
         self.cfg = cfg or {}
         self.enable_mllm_intermediate_judge = enable_mllm_intermediate_judge
         
-        # 初始化MLLM
-        print("初始化MLLM模型...")
-        self.mllm_bot = MLLMBot(
-            model_tag=model_tag,
-            model_name=model_name,
-            device=device
-        )
-        
-        # 初始化知识库构建器
+        # 先初始化知识库构建器（仅CLIP，显存占用小）
         print("初始化知识库构建器...")
         self.kb_builder = KnowledgeBaseBuilder(
             image_encoder_name=image_encoder_name,
             text_encoder_name=text_encoder_name,
             device=device,
             cfg=cfg
+        )
+        
+        # 使用MLLM单例，避免重复加载（显存优化）
+        print("获取MLLM模型实例（单例模式）...")
+        from utils.mllm_singleton import get_mllm_bot
+        self.mllm_bot = get_mllm_bot(
+            model_tag=model_tag,
+            device=device
         )
         
         # 初始化快思考模块

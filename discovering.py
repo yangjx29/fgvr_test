@@ -741,15 +741,14 @@ if __name__ == "__main__":
             print(f"导入模块失败: {e}")
             raise
         
-        # 初始化组件
-        print("开始初始化MLLM Bot...")
-        mllm_bot = MLLMBot(
+        # 使用MLLM单例，避免重复加载（显存优化）
+        print("获取MLLM Bot实例（单例模式）...")
+        from utils.mllm_singleton import get_mllm_bot
+        mllm_bot = get_mllm_bot(
             model_tag=cfg['model_size_mllm'],
-            model_name=cfg['model_size_mllm'],
-            pai_enable_attn=False,
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu'
         )
-        print("MLLM Bot初始化完成")
+        print("MLLM Bot获取完成")
         
         print("初始化CDV Captioner...")
         captioner = CDVCaptioner()
