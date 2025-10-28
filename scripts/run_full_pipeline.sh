@@ -119,9 +119,8 @@ generate_log_filename() {
     echo "${log_dir}/${base_name}(${counter}).log"
 }
 
+# 统一使用单一日志文件
 PIPELINE_LOG=$(generate_log_filename "full_pipeline_${DATASET}" "${LOG_DIR}")
-KNOWLEDGE_BASE_LOG=$(generate_log_filename "knowledge_base_${DATASET}" "${LOG_DIR}")
-EVALUATION_LOG=$(generate_log_filename "evaluation_${DATASET}_${EVAL_MODE}" "${LOG_DIR}")
 
 # 等待时间配置（秒）
 KNOWLEDGE_BASE_TIMEOUT=3600     # 知识库构建超时时间（1小时）
@@ -155,6 +154,23 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1" | tee -a "${PIPELINE_LOG}"
 }
 
+# 后台运行模式：仅写入日志，不输出到控制台
+log_info() {
+    echo -e "[INFO] $1" >> "${PIPELINE_LOG}"
+}
+
+log_success() {
+    echo -e "[SUCCESS] $1" >> "${PIPELINE_LOG}"
+}
+
+log_warning() {
+    echo -e "[WARNING] $1" >> "${PIPELINE_LOG}"
+}
+
+log_error() {
+    echo -e "[ERROR] $1" >> "${PIPELINE_LOG}"
+}
+
 # 检查进程是否运行
 check_process() {
     local pid=$1
@@ -165,27 +181,27 @@ check_process() {
     fi
 }
 
-# 等待进程完成
+# 等待进程完成（后台运行模式）
 wait_for_process() {
     local pid=$1
     local timeout=$2
     local description=$3
     local elapsed=0
     
-    print_info "等待${description}完成 (PID: ${pid}, 超时: ${timeout}秒)..."
+    log_info "等待${description}完成 (PID: ${pid}, 超时: ${timeout}秒)..."
     
     while [ ${elapsed} -lt ${timeout} ]; do
         if ! check_process ${pid}; then
-            print_success "${description}已完成"
+            log_success "${description}已完成"
             return 0
         fi
         
         sleep ${CHECK_INTERVAL}
         elapsed=$((elapsed + CHECK_INTERVAL))
-        print_info "${description}运行中... (已运行${elapsed}秒)"
+        log_info "${description}运行中... (已运行${elapsed}秒)"
     done
     
-    print_error "${description}超时，强制终止进程"
+    log_error "${description}超时，强制终止进程"
     kill ${pid} 2>/dev/null
     return 1
 }
@@ -263,26 +279,26 @@ ${KNOWLEDGE_BASE_CMD}
 EOF
     chmod +x "${KNOWLEDGE_BASE_SCRIPT}"
     
-    print_info "启动知识库构建阶段..."
-    print_info "知识库日志: ${KNOWLEDGE_BASE_LOG}"
-    nohup bash "${KNOWLEDGE_BASE_SCRIPT}" > "${KNOWLEDGE_BASE_LOG}" 2>&1 &
+    print_info "启动知识库构建阶段..." | tee -a "${PIPELINE_LOG}"
+    print_info "统一日志: ${PIPELINE_LOG}" | tee -a "${PIPELINE_LOG}"
+    nohup bash "${KNOWLEDGE_BASE_SCRIPT}" >> "${PIPELINE_LOG}" 2>&1 &
     KNOWLEDGE_BASE_PID=$!
     
-    print_info "知识库构建进程ID: ${KNOWLEDGE_BASE_PID}"
+    log_info "知识库构建进程ID: ${KNOWLEDGE_BASE_PID}"
     
     # 等待知识库构建完成
     if wait_for_process ${KNOWLEDGE_BASE_PID} ${KNOWLEDGE_BASE_TIMEOUT} "知识库构建阶段"; then
-        print_success "知识库构建阶段完成"
+        log_success "知识库构建阶段完成"
         
         # 检查知识库文件是否生成
         if [ -f "${KNOWLEDGE_BASE_DIR}/image_knowledge_base.json" ]; then
-            print_success "知识库文件生成成功: ${KNOWLEDGE_BASE_DIR}"
+            log_success "知识库文件生成成功: ${KNOWLEDGE_BASE_DIR}"
         else
-            print_error "知识库文件未生成，检查日志: ${KNOWLEDGE_BASE_LOG}"
+            log_error "知识库文件未生成，检查日志: ${PIPELINE_LOG}"
             exit 1
         fi
     else
-        print_error "知识库构建阶段失败，检查日志: ${KNOWLEDGE_BASE_LOG}"
+        log_error "知识库构建阶段失败，检查日志: ${PIPELINE_LOG}"
         exit 1
     fi
     
@@ -322,25 +338,25 @@ ${EVALUATION_CMD}
 EOF
 chmod +x "${EVALUATION_SCRIPT}"
 
-print_info "启动评估阶段..."
-print_info "评估日志: ${EVALUATION_LOG}"
-nohup bash "${EVALUATION_SCRIPT}" > "${EVALUATION_LOG}" 2>&1 &
+print_info "启动评估阶段..." | tee -a "${PIPELINE_LOG}"
+echo "=== 阶段2: 快慢思考评估开始 ===" >> "${PIPELINE_LOG}"
+nohup bash "${EVALUATION_SCRIPT}" >> "${PIPELINE_LOG}" 2>&1 &
 EVALUATION_PID=$!
 
-print_info "评估进程ID: ${EVALUATION_PID}"
+log_info "评估进程ID: ${EVALUATION_PID}"
 
 # 等待评估完成
 if wait_for_process ${EVALUATION_PID} ${EVALUATION_TIMEOUT} "评估阶段"; then
-    print_success "评估阶段完成"
+    log_success "评估阶段完成"
     
     # 检查结果文件是否生成
     if [ -f "${RESULTS_OUT}" ]; then
-        print_success "结果文件生成成功: ${RESULTS_OUT}"
+        log_success "结果文件生成成功: ${RESULTS_OUT}"
     else
-        print_warning "结果文件未生成，但评估已完成"
+        log_warning "结果文件未生成，但评估已完成"
     fi
 else
-    print_error "评估阶段失败，检查日志: ${EVALUATION_LOG}"
+    log_error "评估阶段失败，检查日志: ${PIPELINE_LOG}"
     exit 1
 fi
 
@@ -350,15 +366,16 @@ rm -f "${EVALUATION_SCRIPT}"
 # =============================================================================
 # 完成总结
 # =============================================================================
-print_success "=== 全流程运行完成 ==="
-print_info "总结信息:"
-echo "- 知识库构建日志: ${KNOWLEDGE_BASE_LOG}" | tee -a "${PIPELINE_LOG}"
-echo "- 评估日志: ${EVALUATION_LOG}" | tee -a "${PIPELINE_LOG}"
-echo "- 全流程日志: ${PIPELINE_LOG}" | tee -a "${PIPELINE_LOG}"
-echo "- 知识库目录: ${KNOWLEDGE_BASE_DIR}" | tee -a "${PIPELINE_LOG}"
-echo "- 结果文件: ${RESULTS_OUT}" | tee -a "${PIPELINE_LOG}"
+# 记录完成信息到日志
+echo "=== 全流程运行完成 ===" >> "${PIPELINE_LOG}"
+echo "总结信息:" >> "${PIPELINE_LOG}"
+echo "- 统一日志文件: ${PIPELINE_LOG}" >> "${PIPELINE_LOG}"
+echo "- 知识库目录: ${KNOWLEDGE_BASE_DIR}" >> "${PIPELINE_LOG}"
+echo "- 结果文件: ${RESULTS_OUT}" >> "${PIPELINE_LOG}"
+echo "- 执行时间: $(date)" >> "${PIPELINE_LOG}"
 
-print_info "查看最终结果:"
-print_info "tail -20 ${EVALUATION_LOG}"
+print_success "=== 全流程运行完成 ==="
+print_info "统一日志文件: ${PIPELINE_LOG}"
+print_info "查看最终结果: tail -20 ${PIPELINE_LOG}"
 
 print_success "全流程脚本执行完成！"

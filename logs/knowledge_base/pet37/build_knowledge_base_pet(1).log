@@ -1,0 +1,1006 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='build_knowledge_base', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='1', kshot=None, region_num=None, superclass=None, gallery_out=None, fusion_method='concat', knowledge_base_dir='./experiments/pet37/knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 47.40GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [10:01<40:04, 601.13s/it]Loading checkpoint shards:  40%|████      | 2/5 [15:16<21:39, 433.30s/it]Loading checkpoint shards:  60%|██████    | 3/5 [19:26<11:38, 349.23s/it]Loading checkpoint shards:  80%|████████  | 4/5 [23:26<05:06, 306.32s/it]Loading checkpoint shards: 100%|██████████| 5/5 [24:19<00:00, 214.83s/it]Loading checkpoint shards: 100%|██████████| 5/5 [24:19<00:00, 291.86s/it]
+local_model_path: /home/Dataset/Models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 47.40GB
+初始化快思考模块...
+已加载历史统计量: 773 次预测
+初始化慢思考模块...
+快慢思考系统初始化完成!
+Pet37 subcat_to_sample: {'Chihuahua': ['./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg'], 'Beagle': ['./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg'], 'Keeshond': ['./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg'], 'Pug': ['./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg'], 'Great Pyrenees': ['./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg'], 'Bengal': ['./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg'], 'American Pit Bull Terrier': ['./datasets/pet_37/images_discovery_all_1/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_14.jpg'], 'Siamese': ['./datasets/pet_37/images_discovery_all_1/032.Siamese/032.Siamese_153.jpg'], 'Shiba Inu': ['./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg'], 'Miniature Pinscher': ['./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg'], 'Basset Hound': ['./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg'], 'Sphynx': ['./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg'], 'Persian': ['./datasets/pet_37/images_discovery_all_1/023.Persian/023.Persian_190.jpg'], 'Newfoundland': ['./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg'], 'Russian Blue': ['./datasets/pet_37/images_discovery_all_1/027.Russian_Blue/027.Russian_Blue_170.jpg'], 'British Shorthair': ['./datasets/pet_37/images_discovery_all_1/009.British_Shorthair/009.British_Shorthair_108.jpg'], 'Staffordshire Bull Terrier': ['./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg'], 'Egyptian Mau': ['./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg'], 'Pomeranian': ['./datasets/pet_37/images_discovery_all_1/024.Pomeranian/024.Pomeranian_105.jpg'], 'American Bulldog': ['./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg'], 'Yorkshire Terrier': ['./datasets/pet_37/images_discovery_all_1/036.Yorkshire_Terrier/036.Yorkshire_Terrier_16.jpg'], 'Havanese': ['./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg'], 'English Setter': ['./datasets/pet_37/images_discovery_all_1/013.English_Setter/013.English_Setter_137.jpg'], 'English Cocker Spaniel': ['./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg'], 'Leonberger': ['./datasets/pet_37/images_discovery_all_1/019.Leonberger/019.Leonberger_148.jpg'], 'Boxer': ['./datasets/pet_37/images_discovery_all_1/008.Boxer/008.Boxer_109.jpg'], 'Abyssinian': ['./datasets/pet_37/images_discovery_all_1/000.Abyssinian/000.Abyssinian_126.jpg'], 'Samoyed': ['./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg'], 'Japanese Chin': ['./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg'], 'Wheaten Terrier': ['./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg'], 'Scottish Terrier': ['./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg'], 'Bombay': ['./datasets/pet_37/images_discovery_all_1/007.Bombay/007.Bombay_135.jpg'], 'Birman': ['./datasets/pet_37/images_discovery_all_1/006.Birman/006.Birman_11.jpg'], 'German Shorthaired': ['./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg'], 'Ragdoll': ['./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg'], 'Saint Bernard': ['./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg'], 'Maine Coon': ['./datasets/pet_37/images_discovery_all_1/020.Maine_Coon/020.Maine_Coon_163.jpg']}
+构建知识库，包含 37 个类别, dog datasets:37
+从 ./experiments/pet37/knowledge_base 加载知识库...
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 37 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/37 [00:00<?, ?it/s]  3%|▎         | 1/37 [00:00<00:08,  4.01it/s] 27%|██▋       | 10/37 [00:00<00:00, 35.31it/s] 54%|█████▍    | 20/37 [00:00<00:00, 56.40it/s] 81%|████████  | 30/37 [00:00<00:00, 69.35it/s]100%|██████████| 37/37 [00:00<00:00, 57.73it/s]
+处理类别: Chihuahua
+类别 Chihuahua 图像特征维度: (512,)
+处理类别: Beagle
+类别 Beagle 图像特征维度: (512,)
+处理类别: Keeshond
+类别 Keeshond 图像特征维度: (512,)
+处理类别: Pug
+类别 Pug 图像特征维度: (512,)
+处理类别: Great Pyrenees
+类别 Great Pyrenees 图像特征维度: (512,)
+处理类别: Bengal
+类别 Bengal 图像特征维度: (512,)
+处理类别: American Pit Bull Terrier
+类别 American Pit Bull Terrier 图像特征维度: (512,)
+处理类别: Siamese
+类别 Siamese 图像特征维度: (512,)
+处理类别: Shiba Inu
+类别 Shiba Inu 图像特征维度: (512,)
+处理类别: Miniature Pinscher
+类别 Miniature Pinscher 图像特征维度: (512,)
+处理类别: Basset Hound
+类别 Basset Hound 图像特征维度: (512,)
+处理类别: Sphynx
+类别 Sphynx 图像特征维度: (512,)
+处理类别: Persian
+类别 Persian 图像特征维度: (512,)
+处理类别: Newfoundland
+类别 Newfoundland 图像特征维度: (512,)
+处理类别: Russian Blue
+类别 Russian Blue 图像特征维度: (512,)
+处理类别: British Shorthair
+类别 British Shorthair 图像特征维度: (512,)
+处理类别: Staffordshire Bull Terrier
+类别 Staffordshire Bull Terrier 图像特征维度: (512,)
+处理类别: Egyptian Mau
+类别 Egyptian Mau 图像特征维度: (512,)
+处理类别: Pomeranian
+类别 Pomeranian 图像特征维度: (512,)
+处理类别: American Bulldog
+类别 American Bulldog 图像特征维度: (512,)
+处理类别: Yorkshire Terrier
+类别 Yorkshire Terrier 图像特征维度: (512,)
+处理类别: Havanese
+类别 Havanese 图像特征维度: (512,)
+处理类别: English Setter
+类别 English Setter 图像特征维度: (512,)
+处理类别: English Cocker Spaniel
+类别 English Cocker Spaniel 图像特征维度: (512,)
+处理类别: Leonberger
+类别 Leonberger 图像特征维度: (512,)
+处理类别: Boxer
+类别 Boxer 图像特征维度: (512,)
+处理类别: Abyssinian
+类别 Abyssinian 图像特征维度: (512,)
+处理类别: Samoyed
+类别 Samoyed 图像特征维度: (512,)
+处理类别: Japanese Chin
+类别 Japanese Chin 图像特征维度: (512,)
+处理类别: Wheaten Terrier
+类别 Wheaten Terrier 图像特征维度: (512,)
+处理类别: Scottish Terrier
+类别 Scottish Terrier 图像特征维度: (512,)
+处理类别: Bombay
+类别 Bombay 图像特征维度: (512,)
+处理类别: Birman
+类别 Birman 图像特征维度: (512,)
+处理类别: German Shorthaired
+类别 German Shorthaired 图像特征维度: (512,)
+处理类别: Ragdoll
+类别 Ragdoll 图像特征维度: (512,)
+处理类别: Saint Bernard
+类别 Saint Bernard 图像特征维度: (512,)
+处理类别: Maine Coon
+类别 Maine Coon 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/37 [00:00<?, ?it/s]  3%|▎         | 1/37 [00:22<13:33, 22.60s/it]  5%|▌         | 2/37 [00:45<13:09, 22.56s/it]  8%|▊         | 3/37 [01:07<12:47, 22.58s/it] 11%|█         | 4/37 [01:30<12:24, 22.55s/it] 14%|█▎        | 5/37 [01:52<12:02, 22.57s/it]处理类别: Chihuahua
+wiki desc: Description for Chihuahua category.
+MLLM description: The image depicts a Chihuahua, a breed known for its distinctive features:
+
+1. **Distinctive Physical Features**: The Chihuahua in the image has large, pointed ears that stand erect, a short muzzle, and a compact body. Its eyes are prominent and expressive, often giving it an alert or curious appearance.
+
+2. **Color Patterns and Markings**: The dog appears to have a light brown coat with some darker markings around the face and possibly on the legs. The exact pattern is not fully visible due to the angle and lighting, but it suggests a common color variation seen in Chihuahuas.
+
+3. **Size and Proportions**: The Chihuahua is small in size, as expected for the breed, with a sturdy yet petite build. Its head is proportionally large compared to its body, which is characteristic of the breed.
+
+4. **Behavioral Characteristics**: While the image does not capture any specific behavior, Chihuahuas are generally known for their high energy levels, loyalty, and sometimes protective nature towards their owners. They can also be quite vocal and may bark frequently.
+
+5. **Unique Identifying Traits**: Chihuahuas are easily identifiable by their small size, large ears, and expressive faces. Their compact
+类别 Chihuahua 文本特征维度: (512,)
+描述: The image depicts a Chihuahua, a breed known for its distinctive features:
+
+1. **Distinctive Physica...
+处理类别: Beagle
+wiki desc: Description for Beagle category.
+MLLM description: This image depicts a Beagle, a breed known for its distinctive appearance:
+
+1. **Distinctive Physical Features**: Beagles are medium-sized dogs with a compact, sturdy build. They have a short, smooth coat that can come in various colors, often including combinations of white, brown, black, and tan.
+
+2. **Color Patterns and Markings**: This particular Beagle has a predominantly white coat with brown and tan markings. The face is marked with a white blaze down the center, and there are brown patches around the eyes and ears. The chest and legs also feature white fur with some brown patches.
+
+3. **Size and Proportions**: Beagles typically stand about 15-17 inches tall at the shoulder and weigh between 15-30 pounds. This dog appears to fit within these size parameters, with a balanced body structure that is neither too stocky nor too slender.
+
+4. **Behavioral Characteristics**: While not directly observable in this still image, Beagles are known for their friendly, energetic, and curious nature. They are often described as playful and affectionate, making them excellent companions.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of a Beagle is its tricolor coat pattern, which
+类别 Beagle 文本特征维度: (512,)
+描述: This image depicts a Beagle, a breed known for its distinctive appearance:
+
+1. **Distinctive Physica...
+处理类别: Keeshond
+wiki desc: Description for Keeshond category.
+MLLM description: The image depicts a Keeshond, a breed known for its distinctive appearance:
+
+1. **Distinctive Physical Features**: The Keeshond has a thick, double coat with a dense undercoat and a longer, coarser outer coat. This gives it a shaggy, fox-like appearance.
+
+2. **Color Patterns and Markings**: The dog in the image displays a typical Keeshond color pattern, which is predominantly gray with black markings on the face, ears, and legs. The chest and underside may have lighter fur, often white or cream-colored.
+
+3. **Size and Proportions**: Keeshonds are medium-sized dogs, typically standing around 18-20 inches at the shoulder and weighing between 35-50 pounds. They have a sturdy build with a broad head and a strong, muscular body.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Keeshonds are generally known to be intelligent, loyal, and affectionate. They are also energetic and playful, often engaging in activities like fetching sticks, as seen here.
+
+5. **Unique Identifying Traits**: The Keeshond's unique features include its fox-like facial expression, erect triangular ears, and a bushy tail that curls over the
+类别 Keeshond 文本特征维度: (512,)
+描述: The image depicts a Keeshond, a breed known for its distinctive appearance:
+
+1. **Distinctive Physic...
+处理类别: Pug
+wiki desc: Description for Pug category.
+MLLM description: This image depicts a Pug, a breed known for its distinctive physical features:
+
+1. **Distinctive Physical Features**: 
+   - The Pug has a compact body with a short, wrinkled face and large, expressive eyes that give it an endearing, almost human-like appearance.
+   - Its ears are small and often folded over, adding to its unique look.
+
+2. **Color Patterns and Markings**:
+   - The Pug in the image appears to have a fawn-colored coat with a lighter underbelly and darker markings around the muzzle and eyes, which is typical for some Pug color variations.
+
+3. **Size and Proportions**:
+   - Pugs are small dogs, typically weighing between 11-20 pounds. This particular Pug seems to fit within this size range, with a stocky build and a relatively short stature.
+
+4. **Behavioral Characteristics**:
+   - While not directly observable in the image, Pugs are generally known for their playful and affectionate nature. They are often described as loyal companions who enjoy being close to their owners.
+
+5. **Unique Identifying Traits**:
+   - The Pug's flat face, pushed-in nose, and curled tail are hallmark traits that set them apart
+类别 Pug 文本特征维度: (512,)
+描述: This image depicts a Pug, a breed known for its distinctive physical features:
+
+1. **Distinctive Phy...
+处理类别: Great Pyrenees
+wiki desc: Description for Great Pyrenees category.
+MLLM description: The image depicts a Great Pyrenees dog, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The Great Pyrenees is known for its large size, with a muscular build and a thick, fluffy coat. In the image, the dog's body is robust, and its fur appears dense and white, which is typical for the breed.
+
+2. **Color Patterns and Markings**: The dog in the image has a predominantly white coat, which is common for Great Pyrenees. There are no visible distinct markings or color variations, as the coat is uniformly white.
+
+3. **Size and Proportions**: The dog is significantly large, with a broad chest, strong legs, and a sturdy frame. Its proportions suggest a well-built animal designed for strength and endurance.
+
+4. **Behavioral Characteristics**: While not directly observable in the still image, Great Pyrenees are generally calm, gentle, and protective of their families. They are often used as livestock guardian dogs due to their protective nature.
+
+5. **Unique Identifying Traits**: The dog's large size, thick white coat, and muscular build are unique identifiers of the Great Pyrenees breed. Additionally, the dog's relaxed posture and the setting (possibly a fenced area) suggest it
+类别 Great Pyrenees 文本特征维度: (512,)
+描述: The image depicts a Great Pyrenees dog, characterized by several distinctive features:
+
+1. **Distinc...
+处理类别: Bengal
+wiki desc: Description for Bengal category.
+ 16%|█▌        | 6/37 [02:15<11:38, 22.54s/it] 19%|█▉        | 7/37 [02:38<11:19, 22.66s/it] 22%|██▏       | 8/37 [03:00<10:55, 22.61s/it] 24%|██▍       | 9/37 [03:23<10:32, 22.59s/it] 27%|██▋       | 10/37 [03:45<10:09, 22.59s/it]MLLM description: The image depicts a Bengal cat, characterized by its distinctive physical features and unique color patterns:
+
+1. **Distinctive Physical Features**: Bengal cats are known for their large, expressive eyes, which often have a green or gold hue. Their ears are large and pointed, giving them an alert appearance. The fur texture is typically rough to the touch, with a mix of short and long hair.
+
+2. **Color Patterns and Markings**: Bengals are recognized for their wild, spotted coat pattern, reminiscent of leopards or jaguars. The base color can range from golden brown to silver, with dark rosettes or spots covering the body. The tail often has a ringed pattern, adding to the wild aesthetic.
+
+3. **Size and Proportions**: Bengal cats are medium-sized, with a muscular build that reflects their wild heritage. They have a compact body, broad chest, and strong legs, contributing to their athletic appearance.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Bengal cats are known for their high energy, intelligence, and playful nature. They are social animals and enjoy interactive play, making them excellent companions.
+
+5. **Unique Identifying Traits**: The combination of their spotted coat, large eyes, and wild appearance sets Bengal cats
+类别 Bengal 文本特征维度: (512,)
+描述: The image depicts a Bengal cat, characterized by its distinctive physical features and unique color ...
+处理类别: American Pit Bull Terrier
+wiki desc: Description for American Pit Bull Terrier category.
+MLLM description: The image depicts an American Pit Bull Terrier, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The dog has a muscular build with a broad chest and strong legs, typical of the breed's athletic physique. Its face is broad with a short muzzle, and its ears are typically cropped or left natural, standing upright.
+
+2. **Color Patterns and Markings**: The dog in the image appears to have a fawn-colored coat with a smooth texture. There are no visible distinct markings or patterns beyond the natural coloration, which is common for this breed.
+
+3. **Size and Proportions**: The dog is medium-sized, with a compact body and a balanced head-to-body ratio. The overall proportions suggest strength and agility, essential traits for the breed.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, American Pit Bull Terriers are generally known for their loyalty, intelligence, and high energy levels. They can be affectionate towards their families but may require consistent training and socialization to manage their strong prey drive and protective instincts.
+
+5. **Unique Identifying Traits**: The breed is often recognized by its broad head, short muzzle, and muscular build. Additionally, the cropped ears (if present) and the sturdy, well
+类别 American Pit Bull Terrier 文本特征维度: (512,)
+描述: The image depicts an American Pit Bull Terrier, characterized by several distinctive features:
+
+1. *...
+处理类别: Siamese
+wiki desc: Description for Siamese category.
+MLLM description: This image showcases a Siamese cat, which is easily identifiable by its distinctive physical features and color patterns:
+
+1. **Distinctive Physical Features**: Siamese cats are known for their slender, elegant bodies with long legs and a compact frame. They have large, expressive eyes that are often a striking blue, though some may have green or copper-colored eyes. Their ears are large and pointed, adding to their alert appearance.
+
+2. **Color Patterns and Markings**: The cat in the image displays the classic Siamese color pattern, characterized by a light cream or fawn base coat with darker points on the ears, face, paws, and tail. This darker coloration is due to the presence of a gene that inhibits pigment production in areas where the fur is warmer, such as the face and extremities.
+
+3. **Size and Proportions**: Siamese cats are medium-sized but appear larger due to their lean build and upright posture. They are agile and graceful, with a long, slender neck and a small, rounded head.
+
+4. **Behavioral Characteristics**: While not directly observable in this still image, Siamese cats are known for their high energy, intelligence, and affectionate nature. They are social animals and enjoy being close
+类别 Siamese 文本特征维度: (512,)
+描述: This image showcases a Siamese cat, which is easily identifiable by its distinctive physical feature...
+处理类别: Shiba Inu
+wiki desc: Description for Shiba Inu category.
+MLLM description: The image depicts a dog that appears to be a Shiba Inu, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The Shiba Inu in the image has a compact and sturdy build with a fox-like face, pointed ears, and a curled tail. Its facial expression is alert and attentive.
+
+2. **Color Patterns and Markings**: The dog's coat is primarily a reddish-brown color, which is typical for Shiba Inus. It has a white chest and some white markings around its muzzle, adding contrast to its reddish fur.
+
+3. **Size and Proportions**: The Shiba Inu in the image is small to medium-sized, with a well-proportioned body. Its head is relatively large compared to its body, and it has a strong jawline.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Shiba Inus are known for their independent and sometimes aloof nature. They can be quite vocal and may exhibit a confident demeanor.
+
+5. **Unique Identifying Traits**: The Shiba Inu's unique features include its fox-like face, curled tail, and the characteristic reddish-brown coat with white markings. These traits help distinguish it from other breeds like German She
+类别 Shiba Inu 文本特征维度: (512,)
+描述: The image depicts a dog that appears to be a Shiba Inu, characterized by several distinctive feature...
+处理类别: Miniature Pinscher
+wiki desc: Description for Miniature Pinscher category.
+MLLM description: The image depicts a Miniature Pinscher, a breed known for its distinctive appearance:
+
+1. **Distinctive Physical Features**: The Miniature Pinscher is characterized by its alert, upright ears, which are often described as "bat-like" due to their pointed shape. Its face is narrow with a short muzzle, and it has a keen, intelligent expression.
+
+2. **Color Patterns and Markings**: This particular Miniature Pinscher appears to have a brindle coat, which is a pattern of dark and light stripes or streaks. The brindle coloration can vary in intensity and pattern, but it is typically a mix of black and brown tones.
+
+3. **Size and Proportions**: Miniature Pinschers are small dogs, generally standing between 9 to 12 inches at the shoulder. They have a compact body with a strong, muscular build, and their legs are relatively short compared to their height.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Miniature Pinschers are known for their high energy, intelligence, and loyalty. They are often described as confident and assertive, making them excellent companions for active individuals.
+
+5. **Unique Identifying Traits**: The combination of the bat-like ears, the brindle coat,
+类别 Miniature Pinscher 文本特征维度: (512,)
+描述: The image depicts a Miniature Pinscher, a breed known for its distinctive appearance:
+
+1. **Distinct...
+处理类别: Basset Hound
+wiki desc: Description for Basset Hound category.
+ 30%|██▉       | 11/37 [04:08<09:46, 22.57s/it] 32%|███▏      | 12/37 [04:30<09:24, 22.56s/it] 35%|███▌      | 13/37 [04:52<08:55, 22.31s/it] 38%|███▊      | 14/37 [05:15<08:34, 22.39s/it] 41%|████      | 15/37 [05:37<08:13, 22.42s/it]MLLM description: The image depicts a Basset Hound, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Basset Hounds are known for their long, droopy ears, short legs, and a compact body. Their face is broad with a short muzzle, and they have a gentle, expressive gaze.
+
+2. **Color Patterns and Markings**: This particular Basset Hound has a tri-color coat, which includes brown, white, and black. The brown coloration is prominent on its back, head, and ears, while the white is seen on its chest, paws, and part of its face. The black is present around the eyes and mouth area.
+
+3. **Size and Proportions**: Basset Hounds are medium-sized dogs with a stocky build. They are shorter in height compared to their length, giving them a distinctive "sloppy" appearance. Their legs are short and sturdy, supporting their weight effectively.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Basset Hounds are generally known for their calm and patient nature. They are often described as gentle and affectionate, making them excellent family pets. They are also known for their keen sense of smell and are often used in hunting due to
+类别 Basset Hound 文本特征维度: (512,)
+描述: The image depicts a Basset Hound, characterized by several distinctive features:
+
+1. **Distinctive P...
+处理类别: Sphynx
+wiki desc: Description for Sphynx category.
+MLLM description: The image depicts a Sphynx cat, characterized by its distinctive physical features:
+
+1. **Distinctive Physical Features**: The Sphynx cat is notable for its lack of fur, which gives it a hairless appearance. Its skin is smooth and wrinkled, especially noticeable around the chest and belly. The ears are large and pointed, standing upright, and the eyes are large and expressive.
+
+2. **Color Patterns and Markings**: The Sphynx in the image has a unique color pattern with a mix of dark and light patches. The furless skin shows a mottled pattern of brown and black, creating a striking contrast. The eyes are a vivid yellow, adding to the cat's distinctive look.
+
+3. **Size and Proportions**: Sphynx cats are medium-sized, neither tiny nor large. They have a compact body with a slightly rounded shape. The legs are short, and the tail is relatively short as well, contributing to their overall small stature.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Sphynx cats are known for their affectionate and playful nature. They enjoy human interaction and often seek out attention. Their intelligence and adaptability make them good companions.
+
+5. **Unique
+类别 Sphynx 文本特征维度: (512,)
+描述: The image depicts a Sphynx cat, characterized by its distinctive physical features:
+
+1. **Distinctiv...
+处理类别: Persian
+wiki desc: Description for Persian category.
+MLLM description: This image depicts a Persian cat, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The Persian cat in the image has a round face with a short muzzle, large expressive eyes, and prominent whiskers. Its fur is long and dense, giving it a fluffy appearance.
+
+2. **Color Patterns and Markings**: The cat's coat appears to be a light beige or cream color, with no visible distinct markings. The fur is uniformly colored without any patches or spots.
+
+3. **Size and Proportions**: While the exact size cannot be determined from this close-up shot, Persians are typically medium to large-sized cats with a stocky build. The visible portion of the body suggests a robust frame.
+
+4. **Behavioral Characteristics**: Although not directly observable in this still image, Persians are known for their calm and affectionate nature. They often have a gentle demeanor and enjoy being held.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of a Persian cat is its flat face and short nose, which are clearly visible in this image. Additionally, the long, luxurious fur is another hallmark trait that sets them apart from other cat breeds.
+类别 Persian 文本特征维度: (512,)
+描述: This image depicts a Persian cat, characterized by several distinctive features:
+
+1. **Distinctive P...
+处理类别: Newfoundland
+wiki desc: Description for Newfoundland category.
+MLLM description: The image depicts a Newfoundland dog, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Newfoundlands are known for their large size, with males typically weighing between 100 to 180 pounds and females between 70 to 120 pounds. They have a broad head, a short muzzle, and a thick, dense double coat that is water-repellent, which helps them thrive in aquatic environments.
+
+2. **Color Patterns and Markings**: Newfoundlands are predominantly black, though they can also come in liver (brown) or even white, often with some black or liver patches. The coat is thick and water-resistant, providing excellent insulation against cold weather.
+
+3. **Size and Proportions**: The dog in the image appears to be a mature adult, showcasing the breed's characteristic robust build. The body is muscular and well-proportioned, with a deep chest and a broad back.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Newfoundlands are generally known for their gentle and patient nature. They are highly intelligent, loyal, and protective of their families. They are also excellent swimmers and retrievers, making them popular as both working dogs and family pets.
+
+5.
+类别 Newfoundland 文本特征维度: (512,)
+描述: The image depicts a Newfoundland dog, characterized by several distinctive features:
+
+1. **Distincti...
+处理类别: Russian Blue
+wiki desc: Description for Russian Blue category.
+MLLM description: The image depicts a Russian Blue cat, characterized by its distinctive features:
+
+1. **Distinctive Physical Features**: The Russian Blue is known for its sleek, muscular build with a short, dense coat that is typically a silvery-blue color. Its face is round with large, expressive eyes that can vary in color from green to yellow.
+
+2. **Color Patterns and Markings**: The cat's fur is uniformly blue-gray, without any distinct patterns or markings. This solid coloration is a hallmark of the breed and sets it apart from other blue cats like the Chartreux, which may have some darker points.
+
+3. **Size and Proportions**: Russian Blues are medium-sized cats with a sturdy yet elegant frame. They have a broad head, a strong jawline, and a compact body. Their legs are medium-length, and their paws are rounded.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Russian Blues are generally known for their calm and gentle nature. They are affectionate and enjoy spending time with their families, often seeking out human companionship.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of the Russian Blue is its uniform blue-gray coat. Additionally, their large, round eyes and slightly rounded ears contribute to
+类别 Russian Blue 文本特征维度: (512,)
+描述: The image depicts a Russian Blue cat, characterized by its distinctive features:
+
+1. **Distinctive P...
+处理类别: British Shorthair
+wiki desc: Description for British Shorthair category.
+ 43%|████▎     | 16/37 [06:00<07:51, 22.44s/it] 46%|████▌     | 17/37 [06:22<07:29, 22.47s/it] 49%|████▊     | 18/37 [06:45<07:07, 22.50s/it] 51%|█████▏    | 19/37 [07:07<06:45, 22.52s/it] 54%|█████▍    | 20/37 [07:29<06:19, 22.35s/it]MLLM description: The image depicts a British Shorthair cat, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: 
+   - The cat has a robust and muscular build with a broad chest and short, dense fur.
+   - Its face is round with a short muzzle, giving it a gentle and friendly expression.
+   - The ears are small and rounded, set high on the head.
+
+2. **Color Patterns and Markings**:
+   - The cat's coat is uniformly gray, which is typical for many British Shorthairs. This color can range from silver to blue-gray, often referred to as "blue" in the breed standard.
+   - There are no visible markings or spots; the coat is solid-colored.
+
+3. **Size and Proportions**:
+   - The cat appears medium-sized, with a well-proportioned body that is neither too lean nor too bulky.
+   - The legs are short and sturdy, complementing the overall compactness of the body.
+
+4. **Behavioral Characteristics**:
+   - While not directly observable in the image, British Shorthairs are known for their calm and affectionate nature.
+   - They are generally good with children and other pets, making them family-friendly.
+
+5. **Unique Identifying Traits
+类别 British Shorthair 文本特征维度: (512,)
+描述: The image depicts a British Shorthair cat, characterized by several distinctive features:
+
+1. **Dist...
+处理类别: Staffordshire Bull Terrier
+wiki desc: Description for Staffordshire Bull Terrier category.
+MLLM description: The image depicts a Staffordshire Bull Terrier, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The Staffordshire Bull Terrier has a muscular build with a broad head, short muzzle, and a strong jawline. Its ears are typically cropped or left natural, standing upright.
+
+2. **Color Patterns and Markings**: This particular dog appears to have a predominantly black coat with a white patch on its chest, which is a common color pattern for the breed. Some Staffordshire Bull Terriers can also have white markings on their faces, paws, or legs.
+
+3. **Size and Proportions**: The dog in the image seems to be of average size for the breed, neither too large nor too small. It has a compact body with a deep chest and a short back.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Staffordshire Bull Terriers are known for being energetic, loyal, and protective of their families. They are often described as confident and alert.
+
+5. **Unique Identifying Traits**: The combination of the black coat with a white chest patch, along with the broad head and muscular build, are key identifiers for this breed. Additionally, the cropped ears (if present) are a hallmark feature of
+类别 Staffordshire Bull Terrier 文本特征维度: (512,)
+描述: The image depicts a Staffordshire Bull Terrier, characterized by several distinctive features:
+
+1. *...
+处理类别: Egyptian Mau
+wiki desc: Description for Egyptian Mau category.
+MLLM description: The image depicts an Egyptian Mau cat, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The Egyptian Mau is known for its muscular build, which gives it a sleek and athletic appearance. Its body is medium-sized with a strong, compact frame.
+
+2. **Color Patterns and Markings**: The Egyptian Mau typically has a silver or fawn base coat with dark brown or black stripes. These markings are often referred to as "ticked" or "marbled," giving the fur a textured look. The face may have a mask-like pattern with darker fur around the eyes, ears, and muzzle.
+
+3. **Size and Proportions**: The breed is medium-sized, with males being slightly larger than females. They have a balanced body structure, with a deep chest and a long, muscular tail that tapers to a point.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Egyptian Maus are known for their playful and energetic nature. They are intelligent, affectionate, and can be quite vocal. They enjoy attention and often form strong bonds with their owners.
+
+5. **Unique Identifying Traits**: The Egyptian Mau's most distinguishing feature is its short, dense coat, which is smooth and glossy. Additionally
+类别 Egyptian Mau 文本特征维度: (512,)
+描述: The image depicts an Egyptian Mau cat, characterized by several distinctive features:
+
+1. **Distinct...
+处理类别: Pomeranian
+wiki desc: Description for Pomeranian category.
+MLLM description: This image depicts a Pomeranian dog with several distinctive features:
+
+1. **Distinctive Physical Features**: The Pomeranian in the image has a compact body with a short, sturdy build. Its most notable feature is its large, upright ears that stand erect, giving it an alert and attentive appearance. The fur is thick and fluffy, especially around the neck and chest area, which is characteristic of the breed.
+
+2. **Color Patterns and Markings**: The Pomeranian shown has a predominantly black coat with tan markings on the chest and legs. The face also displays some lighter coloring, particularly around the muzzle and eyes, creating a contrast against the darker fur. This color pattern is typical for many Pomeranians but can vary widely among individuals.
+
+3. **Size and Proportions**: Pomeranians are small dogs, typically weighing between 3 to 7 pounds as adults. In this image, the dog appears to be of a standard size, with a well-proportioned head relative to its body, and a short, muscular neck supporting the thick fur.
+
+4. **Behavioral Characteristics**: While not directly observable in the still image, Pomeranians are known for their lively, energetic, and affectionate nature. They are often described as
+类别 Pomeranian 文本特征维度: (512,)
+描述: This image depicts a Pomeranian dog with several distinctive features:
+
+1. **Distinctive Physical Fe...
+处理类别: American Bulldog
+wiki desc: Description for American Bulldog category.
+MLLM description: The image depicts an American Bulldog with several distinctive features:
+
+1. **Distinctive Physical Features**: The dog has a broad head with a short muzzle, which is characteristic of the breed. Its ears are typically folded over or hanging down, and in this image, they appear to be folded.
+
+2. **Color Patterns and Markings**: The dog's coat is predominantly white with some brown patches, particularly around its face and ears. This coloration is common in American Bulldogs and can vary widely among individuals.
+
+3. **Size and Proportions**: American Bulldogs are generally medium-sized dogs with a muscular build. They have a strong, square-shaped body and a broad chest. The dog in the image appears to fit these proportions well.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, American Bulldogs are known for their friendly and loyal nature. They are often described as gentle giants, making them excellent family pets.
+
+5. **Unique Identifying Traits**: The combination of the broad head, short muzzle, folded ears, and the specific color pattern of white with brown patches are unique identifiers for this breed. These traits help distinguish it from other similar breeds like Boxers or English Bulldogs.
+类别 American Bulldog 文本特征维度: (512,)
+描述: The image depicts an American Bulldog with several distinctive features:
+
+1. **Distinctive Physical ...
+处理类别: Yorkshire Terrier
+wiki desc: Description for Yorkshire Terrier category.
+ 57%|█████▋    | 21/37 [07:52<05:58, 22.40s/it] 59%|█████▉    | 22/37 [08:15<05:37, 22.53s/it] 62%|██████▏   | 23/37 [08:37<05:15, 22.54s/it] 65%|██████▍   | 24/37 [09:00<04:53, 22.58s/it] 68%|██████▊   | 25/37 [09:22<04:30, 22.57s/it]MLLM description: The image depicts a Yorkshire Terrier, a breed known for its distinctive appearance:
+
+1. **Distinctive Physical Features**: The Yorkshire Terrier in the image has a small, compact body with a long, silky coat that is predominantly light brown with darker brown markings on the face, ears, and legs. Its head is elongated with a pointed muzzle, and it has expressive, dark eyes and a small, triangular black nose.
+
+2. **Color Patterns and Markings**: The dog's coat is a blend of light and dark brown, with the lighter coloration covering most of its body and the darker shades accentuating its facial features, ears, and legs. This color pattern is characteristic of the breed and helps in distinguishing it from others.
+
+3. **Size and Proportions**: The Yorkshire Terrier in the image appears to be of standard size, with a height typically around 9-11 inches at the shoulder. It has a well-proportioned body with a short back and a slightly arched neck, which is typical for the breed.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Yorkshire Terriers are generally known for their lively, affectionate, and sometimes feisty personalities. They are intelligent and often enjoy being close to
+类别 Yorkshire Terrier 文本特征维度: (512,)
+描述: The image depicts a Yorkshire Terrier, a breed known for its distinctive appearance:
+
+1. **Distincti...
+处理类别: Havanese
+wiki desc: Description for Havanese category.
+MLLM description: The image depicts a Havanese dog, characterized by its distinctive physical features:
+
+1. **Distinctive Physical Features**: The Havanese in the image has a fluffy, long coat with a mix of light beige and gray fur, giving it a soft and luxurious appearance. Its face is rounded with a short muzzle, and its eyes are large and expressive, often dark in color, which adds to its endearing look.
+
+2. **Color Patterns and Markings**: The Havanese shown here displays a predominantly white coat with patches of gray, particularly noticeable around the ears and back. This coloration is typical for many Havanese, though they can also come in solid white or cream colors.
+
+3. **Size and Proportions**: Havanese dogs are small in size, typically weighing between 7 to 14 pounds as adults. They have a compact body with a slightly elongated head and a sturdy build. The dog in the image appears to fit within these proportions, with a well-proportioned frame and a balanced head-to-body ratio.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Havanese are known for their friendly, affectionate, and energetic nature. They are intelligent and responsive, making them excellent companions
+类别 Havanese 文本特征维度: (512,)
+描述: The image depicts a Havanese dog, characterized by its distinctive physical features:
+
+1. **Distinct...
+处理类别: English Setter
+wiki desc: Description for English Setter category.
+MLLM description: The image depicts an English Setter, a breed known for its distinctive appearance:
+
+1. **Distinctive Physical Features**: The English Setter is characterized by its long, wavy coat that can range in color from golden to liver, often with white markings. This particular dog has a predominantly white coat with dark markings around the eyes, ears, and back, which is typical of the breed's "tricolor" pattern.
+
+2. **Color Patterns and Markings**: The dog exhibits a classic tricolor pattern, with a white base coat and dark markings on the face, ears, and back. The chest and legs may also have some white or light-colored fur, while the body and tail are covered in darker fur.
+
+3. **Size and Proportions**: English Setters are medium to large-sized dogs, typically standing between 22 to 27 inches at the shoulder. They have a strong, muscular build with a deep chest and a slightly arched back. The dog in the image appears to fit within these size parameters.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, English Setters are known for their friendly, gentle, and affectionate nature. They are energetic and love to hunt, which is reflected in their alert posture and attentive
+类别 English Setter 文本特征维度: (512,)
+描述: The image depicts an English Setter, a breed known for its distinctive appearance:
+
+1. **Distinctive...
+处理类别: English Cocker Spaniel
+wiki desc: Description for English Cocker Spaniel category.
+MLLM description: The image depicts an English Cocker Spaniel in a natural setting, surrounded by yellow flowers and greenery. Here's a detailed description focusing on its distinctive features:
+
+1. **Distinctive Physical Features**: 
+   - The dog has a medium-length, silky coat that is predominantly white with light brown patches, particularly noticeable around the ears and face.
+   - Its ears are long, floppy, and hang down to the sides of its head, adding to its gentle and expressive appearance.
+   - The eyes are large, round, and dark, giving it a friendly and alert expression.
+
+2. **Color Patterns and Markings**:
+   - The primary color is white, which covers most of the body.
+   - Light brown markings are present on the ears, face, and possibly the legs, creating a soft contrast against the white fur.
+   - The coat appears well-groomed, with a smooth texture that reflects light, enhancing its elegant look.
+
+3. **Size and Proportions**:
+   - The dog appears to be of average size for an English Cocker Spaniel, neither too small nor too large.
+   - Its body is compact and well-proportioned, with a sturdy build that suggests strength and agility.
+
+4. **Behavioral Characteristics**
+类别 English Cocker Spaniel 文本特征维度: (512,)
+描述: The image depicts an English Cocker Spaniel in a natural setting, surrounded by yellow flowers and g...
+处理类别: Leonberger
+wiki desc: Description for Leonberger category.
+MLLM description: The image depicts a Leonberger dog, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Leonbergers are large dogs with a broad head, strong jaw, and a thick, dense coat. They have a muscular build with a deep chest and powerful hindquarters.
+
+2. **Color Patterns and Markings**: This particular Leonberger has a rich golden-brown coat with darker markings around the face, ears, and legs. The fur appears thick and well-groomed, giving it a luxurious appearance.
+
+3. **Size and Proportions**: Leonbergers are large dogs, typically standing between 26 to 29 inches at the shoulder and weighing around 100 to 130 pounds. The dog in the image is clearly of this size, showcasing a robust and sturdy frame.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Leonbergers are generally known for their calm and gentle nature. They are often described as patient and protective, making them excellent family pets and guard dogs.
+
+5. **Unique Identifying Traits**: The Leonberger's unique features include its large size, thick coat, and distinctive facial markings. Additionally, they have a characteristic "lion-like" mane around the neck, which
+类别 Leonberger 文本特征维度: (512,)
+描述: The image depicts a Leonberger dog, characterized by several distinctive features:
+
+1. **Distinctive...
+处理类别: Boxer
+wiki desc: Description for Boxer category.
+ 70%|███████   | 26/37 [09:45<04:08, 22.56s/it] 73%|███████▎  | 27/37 [10:08<03:46, 22.63s/it] 76%|███████▌  | 28/37 [10:30<03:23, 22.59s/it] 78%|███████▊  | 29/37 [10:53<03:00, 22.59s/it] 81%|████████  | 30/37 [11:15<02:37, 22.56s/it]MLLM description: This image depicts a Boxer dog, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: The Boxer has a broad head with a short muzzle, giving it a square-shaped face. Its eyes are large, round, and expressive, often appearing bright and alert.
+
+2. **Color Patterns and Markings**: The dog in the image displays a classic Brindle coloration, which is a mix of dark brown and black stripes. It also has white markings on its chest, paws, and around its mouth, creating a striking contrast against the brindle pattern.
+
+3. **Size and Proportions**: Boxers are medium to large-sized dogs, typically standing between 20-26 inches tall at the shoulder. This particular Boxer appears to be of average size, with a muscular build and a compact frame.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Boxers are known for their friendly and energetic nature. They are loyal, protective, and often have a confident demeanor.
+
+5. **Unique Identifying Traits**: The Boxer's unique combination of a brindle coat, white markings, and a square face shape makes it easily identifiable among other breeds. Additionally, the dog's alert expression and perked ears
+类别 Boxer 文本特征维度: (512,)
+描述: This image depicts a Boxer dog, characterized by several distinctive features:
+
+1. **Distinctive Phy...
+处理类别: Abyssinian
+wiki desc: Description for Abyssinian category.
+MLLM description: The image depicts an Abyssinian cat, characterized by its distinctive physical features and unique coloration:
+
+1. **Distinctive Physical Features**: Abyssinians have a sleek, muscular build with a short, dense coat. Their ears are large, triangular, and set wide apart, giving them a striking appearance.
+
+2. **Color Patterns and Markings**: The most notable feature is their "wild" or "spotted" coat pattern, which is a mix of dark and light fur, creating a marbled effect. This pattern is most prominent on the back, sides, and tail, while the face, chest, and paws often remain lighter in color. The Abyssinian's eyes are typically large and almond-shaped, with a golden or copper hue.
+
+3. **Size and Proportions**: Abyssinians are medium-sized cats, neither tiny nor large. They have a balanced body structure with a strong, athletic build. Their legs are long and slender, contributing to their elegant posture.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Abyssinians are known for their intelligence, playfulness, and affectionate nature. They are highly active and enjoy interacting with their environment and humans.
+
+5. **Unique Identifying Traits**: The combination
+类别 Abyssinian 文本特征维度: (512,)
+描述: The image depicts an Abyssinian cat, characterized by its distinctive physical features and unique c...
+处理类别: Samoyed
+wiki desc: Description for Samoyed category.
+MLLM description: The image depicts a Samoyed dog, characterized by its distinctive physical features:
+
+1. **Distinctive Physical Features**: The Samoyed is known for its fluffy, white coat, which is thick and dense, giving it a soft and cuddly appearance. Its face is rounded with a friendly expression, often described as having a "smiling" look due to the shape of its mouth and the way its tongue slightly protrudes.
+
+2. **Color Patterns and Markings**: The primary color of a Samoyed is white, covering most of its body. There may be some faint markings or slight variations in shade, but these are minimal and do not include any darker colors like black or brown.
+
+3. **Size and Proportions**: Samoyeds are medium-sized dogs, typically standing between 20-25 inches tall at the shoulder. They have a sturdy build with a broad chest and a muscular yet elegant frame. Their legs are strong and straight, supporting their weight well.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Samoyeds are generally known for their friendly and affectionate nature. They are intelligent, loyal, and enjoy being around people. They are also known for their playful and energetic behavior, especially when young
+类别 Samoyed 文本特征维度: (512,)
+描述: The image depicts a Samoyed dog, characterized by its distinctive physical features:
+
+1. **Distincti...
+处理类别: Japanese Chin
+wiki desc: Description for Japanese Chin category.
+MLLM description: The image depicts a Japanese Chin, a breed known for its distinctive appearance:
+
+1. **Distinctive Physical Features**: The Japanese Chin is characterized by its small, compact body with a short, smooth coat. Its most notable feature is its large, expressive eyes, which are often almond-shaped and set wide apart. The ears are long, soft, and hang down close to the cheeks.
+
+2. **Color Patterns and Markings**: This particular Japanese Chin has a black and white color pattern. The face is predominantly black with a white blaze running down the center, and the chest and legs are also white. The back and sides of the body are black, creating a striking contrast.
+
+3. **Size and Proportions**: Japanese Chins are small dogs, typically weighing between 7 to 10 pounds. They have a sturdy yet elegant build, with a slightly elongated body and a short, square muzzle. Their legs are short and strong, supporting their compact frame.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Japanese Chins are generally known for their friendly and affectionate nature. They are intelligent and can be quite vocal, often barking or yapping. They are also known for being loyal companions and can be quite attached to their
+类别 Japanese Chin 文本特征维度: (512,)
+描述: The image depicts a Japanese Chin, a breed known for its distinctive appearance:
+
+1. **Distinctive P...
+处理类别: Wheaten Terrier
+wiki desc: Description for Wheaten Terrier category.
+MLLM description: The image depicts a Wheaten Terrier, characterized by its distinctive physical features:
+
+1. **Distinctive Physical Features**: The Wheaten Terrier in the image has a fluffy, medium-length coat that is predominantly light golden or wheaten in color. Its face is expressive with a slightly wrinkled forehead, and it has a sturdy build with a compact body and a broad head.
+
+2. **Color Patterns and Markings**: The coat is a uniform golden hue, which can range from pale to deeper shades of gold. There are no distinct markings or patches; the color is consistent across the body.
+
+3. **Size and Proportions**: The dog appears to be of medium size, neither too large nor too small. It has a balanced body structure with a strong, muscular build, particularly noticeable in the neck and shoulders.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Wheaten Terriers are known for their friendly, affectionate, and energetic nature. They are intelligent and responsive, often excelling in activities like agility and obedience training.
+
+5. **Unique Identifying Traits**: The Wheaten Terrier's unique identifying traits include its soft, silky coat, expressive eyes, and a gentle demeanor. The dog in the image also wears a collar
+类别 Wheaten Terrier 文本特征维度: (512,)
+描述: The image depicts a Wheaten Terrier, characterized by its distinctive physical features:
+
+1. **Disti...
+处理类别: Scottish Terrier
+wiki desc: Description for Scottish Terrier category.
+ 84%|████████▍ | 31/37 [11:38<02:15, 22.54s/it] 86%|████████▋ | 32/37 [12:01<01:53, 22.63s/it] 89%|████████▉ | 33/37 [12:23<01:30, 22.60s/it] 92%|█████████▏| 34/37 [12:46<01:07, 22.58s/it] 95%|█████████▍| 35/37 [13:08<00:45, 22.61s/it]MLLM description: The image depicts a Scottish Terrier, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Scottish Terriers are known for their compact, muscular build with a square-shaped body. They have a short, smooth coat that is typically black in color, although they can also come in brindle or wheaten shades. Their most recognizable feature is their large, erect ears, which stand tall and alert.
+
+2. **Color Patterns and Markings**: The primary color of this Scottish Terrier is black, with a glossy, short coat. There may be some subtle markings around the face, but the overall pattern is predominantly black. The breed does not typically exhibit significant variation in color beyond black, brindle, and wheaten.
+
+3. **Size and Proportions**: Scottish Terriers are small to medium-sized dogs, generally standing between 9 to 11 inches at the shoulder and weighing between 18 to 28 pounds. They have a sturdy yet compact frame, with a slightly longer back than the croup and a level topline.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Scottish Terriers are known for their lively, spirited, and sometimes stubborn nature. They are intelligent and can be quite independent, often
+类别 Scottish Terrier 文本特征维度: (512,)
+描述: The image depicts a Scottish Terrier, characterized by several distinctive features:
+
+1. **Distincti...
+处理类别: Bombay
+wiki desc: Description for Bombay category.
+MLLM description: The image depicts a Bombay cat, characterized by its sleek, muscular build and distinctive black coat. Here's a detailed description:
+
+1. **Distinctive Physical Features**: 
+   - The Bombay cat has a compact, athletic body with a short, dense coat that is smooth to the touch.
+   - Its head is large in proportion to its body, with a broad forehead and a short muzzle.
+
+2. **Color Patterns and Markings**:
+   - The coat is uniformly black, without any visible patches or markings, which is typical for the Bombay breed.
+   - The eyes are large and round, often appearing golden or copper in color, adding to the cat's striking appearance.
+
+3. **Size and Proportions**:
+   - The Bombay cat is medium-sized, neither tiny nor overly large.
+   - It has a balanced body structure with a strong, muscular frame.
+
+4. **Behavioral Characteristics**:
+   - While not directly observable in the image, Bombays are known for their playful and energetic nature.
+   - They are intelligent and affectionate, often forming close bonds with their owners.
+
+5. **Unique Identifying Traits**:
+   - The Bombay cat's short, glossy coat is one of its most defining features.
+   - Its large, expressive
+类别 Bombay 文本特征维度: (512,)
+描述: The image depicts a Bombay cat, characterized by its sleek, muscular build and distinctive black coa...
+处理类别: Birman
+wiki desc: Description for Birman category.
+MLLM description: The image depicts a Birman cat, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Birman cats are known for their large, round eyes, which are often almond-shaped and can come in various colors including blue, green, or even odd-eyed (one blue and one green). Their ears are large and rounded, and they have a short, dense coat.
+
+2. **Color Patterns and Markings**: Birman cats typically have a white coat with points on their ears, face, paws, and tail. This is known as the "pointed" pattern. The points are usually a darker color, such as seal, chocolate, or lilac, contrasting sharply with the white fur.
+
+3. **Size and Proportions**: Birman cats are medium-sized, with a sturdy yet elegant build. They have a muscular yet graceful body, with a broad chest and a well-defined waist. Their legs are long and slender, contributing to their overall refined appearance.
+
+4. **Behavioral Characteristics**: Birman cats are known for their gentle and affectionate nature. They are often described as loving and loyal companions, enjoying human interaction and forming strong bonds with their owners. They are also intelligent and can be trained to perform tricks.
+
+5. **Unique
+类别 Birman 文本特征维度: (512,)
+描述: The image depicts a Birman cat, characterized by several distinctive features:
+
+1. **Distinctive Phy...
+处理类别: German Shorthaired
+wiki desc: Description for German Shorthaired category.
+MLLM description: The image depicts a dog that appears to be a German Shorthaired Pointer, identifiable by several distinctive features:
+
+1. **Distinctive Physical Features**: The dog has a medium-sized, muscular build with a broad chest and strong legs, typical of the breed's working dog heritage.
+
+2. **Color Patterns and Markings**: The coat is predominantly white with black and brown speckles or patches, which is characteristic of the German Shorthaired Pointer. The face often has a mask-like pattern with dark markings around the eyes, ears, and muzzle, contrasting sharply with the lighter areas.
+
+3. **Size and Proportions**: The dog in the image seems to be an adult, showcasing a balanced body structure with a deep chest and a slightly arched back, indicative of the breed's athletic build.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, German Shorthaired Pointers are known for their intelligence, energy, and versatility as hunting dogs. They are typically active, loyal, and responsive to training.
+
+5. **Unique Identifying Traits**: The combination of the speckled coat, the pointed ears, and the alert expression are key identifiers. Additionally, the dog's posture and the setting suggest it might be outdoors, possibly engaged in
+类别 German Shorthaired 文本特征维度: (512,)
+描述: The image depicts a dog that appears to be a German Shorthaired Pointer, identifiable by several dis...
+处理类别: Ragdoll
+wiki desc: Description for Ragdoll category.
+MLLM description: The image depicts a Ragdoll cat, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Ragdolls are known for their large, round heads, wide-set eyes, and short, plush fur. They have a gentle, almost serene expression due to their large, expressive eyes.
+
+2. **Color Patterns and Markings**: Ragdolls typically come in solid colors such as blue, lilac, chocolate, and seal, with white being a common base color. This particular cat appears to have a classic bicolor pattern, with a white face and chest contrasting against darker fur on its back and ears. Their fur is soft and dense, often described as "velvety."
+
+3. **Size and Proportions**: Ragdolls are medium to large-sized cats, with males generally larger than females. They have a sturdy build with a broad chest and a long body, giving them a plush appearance.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Ragdolls are known for their calm and affectionate nature. They are often described as gentle giants, making them excellent family pets. They are typically good with children and other animals.
+
+5. **Unique Identifying Traits**: One of the most recognizable traits of Ragdolls
+类别 Ragdoll 文本特征维度: (512,)
+描述: The image depicts a Ragdoll cat, characterized by several distinctive features:
+
+1. **Distinctive Ph...
+处理类别: Saint Bernard
+wiki desc: Description for Saint Bernard category.
+ 97%|█████████▋| 36/37 [13:31<00:22, 22.59s/it]100%|██████████| 37/37 [13:54<00:00, 22.62s/it]100%|██████████| 37/37 [13:54<00:00, 22.55s/it]
+MLLM description: The image depicts a Saint Bernard dog, characterized by several distinctive features:
+
+1. **Distinctive Physical Features**: Saint Bernards are known for their large size and sturdy build. They have a broad head with a short muzzle, large expressive eyes, and a thick, shaggy coat.
+
+2. **Color Patterns and Markings**: This particular Saint Bernard has a predominantly white coat with large brown patches, particularly around its face, ears, and back. The contrast between the white and brown fur is quite striking.
+
+3. **Size and Proportions**: The dog in the image appears to be a mature adult, showcasing the breed's characteristic large size. Its body is robust, with a deep chest and a strong, muscular build.
+
+4. **Behavioral Characteristics**: While not directly observable in the image, Saint Bernards are generally known for their calm and gentle nature. They are often described as patient and protective, making them excellent companions and sometimes used as rescue dogs due to their size and strength.
+
+5. **Unique Identifying Traits**: The combination of the thick, shaggy coat, the distinctive color pattern, and the overall robust build are unique identifiers of the Saint Bernard breed. Additionally, the dog's relaxed posture lying amidst flower petals adds a serene and end
+类别 Saint Bernard 文本特征维度: (512,)
+描述: The image depicts a Saint Bernard dog, characterized by several distinctive features:
+
+1. **Distinct...
+处理类别: Maine Coon
+wiki desc: Description for Maine Coon category.
+MLLM description: This image showcases a Maine Coon cat, distinguished by several key features:
+
+1. **Distinctive Physical Features**: Maine Coons are known for their large size and muscular build. This cat exhibits a robust frame with thick fur, prominent ears, and a sturdy body structure.
+
+2. **Color Patterns and Markings**: The cat in the image has a rich, warm orange coat with darker brown stripes, typical of the classic tabby pattern. The fur appears fluffy and well-groomed, with a luxurious texture that is characteristic of Maine Coons.
+
+3. **Size and Proportions**: Maine Coons are large cats, often larger than other domestic breeds. This cat's size is evident from its substantial build and long legs, which contribute to its majestic appearance.
+
+4. **Behavioral Characteristics**: While not directly observable in this still image, Maine Coons are generally known for their calm and gentle nature. They are often described as affectionate and patient, making them excellent family pets.
+
+5. **Unique Identifying Traits**: Maine Coons have a distinctive tufted tail, which is not visible in this image but is a notable trait. Their large, expressive eyes and tufted ears also set them apart visually. Additionally, their thick, dense fur provides
+类别 Maine Coon 文本特征维度: (512,)
+描述: This image showcases a Maine Coon cat, distinguished by several key features:
+
+1. **Distinctive Phys...
+知识库构建完成!
+图像知识库包含 37 个类别
+文本知识库包含 37 个类别
+知识库已保存到: ./experiments/pet37/knowledge_base
+
+开始初始化LCB统计参数...
+test train_samples:defaultdict(<class 'list'>, {'Chihuahua': ['./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg'], 'Beagle': ['./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg'], 'Keeshond': ['./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg'], 'Pug': ['./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg'], 'Great Pyrenees': ['./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg'], 'Bengal': ['./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg'], 'American Pit Bull Terrier': ['./datasets/pet_37/images_discovery_all_1/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_14.jpg'], 'Siamese': ['./datasets/pet_37/images_discovery_all_1/032.Siamese/032.Siamese_153.jpg'], 'Shiba Inu': ['./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg'], 'Miniature Pinscher': ['./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg'], 'Basset Hound': ['./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg'], 'Sphynx': ['./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg'], 'Persian': ['./datasets/pet_37/images_discovery_all_1/023.Persian/023.Persian_190.jpg'], 'Newfoundland': ['./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg'], 'Russian Blue': ['./datasets/pet_37/images_discovery_all_1/027.Russian_Blue/027.Russian_Blue_170.jpg'], 'British Shorthair': ['./datasets/pet_37/images_discovery_all_1/009.British_Shorthair/009.British_Shorthair_108.jpg'], 'Staffordshire Bull Terrier': ['./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg'], 'Egyptian Mau': ['./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg'], 'Pomeranian': ['./datasets/pet_37/images_discovery_all_1/024.Pomeranian/024.Pomeranian_105.jpg'], 'American Bulldog': ['./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg'], 'Yorkshire Terrier': ['./datasets/pet_37/images_discovery_all_1/036.Yorkshire_Terrier/036.Yorkshire_Terrier_16.jpg'], 'Havanese': ['./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg'], 'English Setter': ['./datasets/pet_37/images_discovery_all_1/013.English_Setter/013.English_Setter_137.jpg'], 'English Cocker Spaniel': ['./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg'], 'Leonberger': ['./datasets/pet_37/images_discovery_all_1/019.Leonberger/019.Leonberger_148.jpg'], 'Boxer': ['./datasets/pet_37/images_discovery_all_1/008.Boxer/008.Boxer_109.jpg'], 'Abyssinian': ['./datasets/pet_37/images_discovery_all_1/000.Abyssinian/000.Abyssinian_126.jpg'], 'Samoyed': ['./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg'], 'Japanese Chin': ['./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg'], 'Wheaten Terrier': ['./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg'], 'Scottish Terrier': ['./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg'], 'Bombay': ['./datasets/pet_37/images_discovery_all_1/007.Bombay/007.Bombay_135.jpg'], 'Birman': ['./datasets/pet_37/images_discovery_all_1/006.Birman/006.Birman_11.jpg'], 'German Shorthaired': ['./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg'], 'Ragdoll': ['./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg'], 'Saint Bernard': ['./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg'], 'Maine Coon': ['./datasets/pet_37/images_discovery_all_1/020.Maine_Coon/020.Maine_Coon_163.jpg']})
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg
+图像检索结果: Chihuahua (置信度: 1.0000)
+文本检索结果: Chihuahua (置信度: 0.3038)
+融合结果: [('Chihuahua', 0.35146583560548844), ('Miniature Pinscher', 0.27159241144695584), ('Sphynx', 0.13658150071426042)]
+快思考结果: Chihuahua (置信度: 0.6835)
+需要慢思考: False
+类别 Chihuahua: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg
+图像检索结果: Beagle (置信度: 1.0000)
+文本检索结果: Beagle (置信度: 0.2946)
+融合结果: [('Beagle', 0.3164260813935858), ('Miniature Pinscher', 0.17685162741690874), ('Chihuahua', 0.17638786141910862)]
+快思考结果: Beagle (置信度: 0.6478)
+需要慢思考: False
+类别 Beagle: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg
+图像检索结果: Keeshond (置信度: 1.0000)
+文本检索结果: Keeshond (置信度: 0.3566)
+融合结果: [('Keeshond', 0.4026447618349654), ('Great Pyrenees', 0.1758289354417475), ('Leonberger', 0.14852211708350785)]
+快思考结果: Keeshond (置信度: 0.8926)
+需要慢思考: False
+类别 Keeshond: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg
+图像检索结果: Pug (置信度: 1.0000)
+文本检索结果: Pug (置信度: 0.3405)
+融合结果: [('Pug', 0.4633893260701758), ('Boxer', 0.15982650895753214), ('American Bulldog', 0.13595172399802813)]
+快思考结果: Pug (置信度: 0.9597)
+需要慢思考: False
+类别 Pug: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg
+图像检索结果: Great Pyrenees (置信度: 1.0000)
+文本检索结果: Great Pyrenees (置信度: 0.3399)
+融合结果: [('Great Pyrenees', 0.41924324426494664), ('Samoyed', 0.20458472375908204), ('Newfoundland', 0.14621946327392835)]
+快思考结果: Great Pyrenees (置信度: 0.9074)
+需要慢思考: False
+类别 Great Pyrenees: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg
+图像检索结果: Bengal (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3572)
+融合结果: [('Abyssinian', 0.33098051743429213), ('Bengal', 0.3143352975602947), ('Siamese', 0.1367086933009208)]
+快思考结果: conflict (置信度: 0.5531)
+需要慢思考: True
+类别 Bengal: 0/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_14.jpg
+图像检索结果: American Pit Bull Terrier (置信度: 1.0000)
+文本检索结果: American Pit Bull Terrier (置信度: 0.3143)
+融合结果: [('American Pit Bull Terrier', 0.3152453416927916), ('Staffordshire Bull Terrier', 0.23573924075178818), ('American Bulldog', 0.18434059703870423)]
+快思考结果: American Pit Bull Terrier (置信度: 0.5965)
+需要慢思考: False
+类别 American Pit Bull Terrier: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/032.Siamese/032.Siamese_153.jpg
+图像检索结果: Siamese (置信度: 1.0000)
+文本检索结果: Siamese (置信度: 0.2953)
+融合结果: [('Siamese', 0.3176517555459601), ('Ragdoll', 0.22479255409130164), ('Birman', 0.1859113582424701)]
+快思考结果: Siamese (置信度: 0.6238)
+需要慢思考: False
+类别 Siamese: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg
+图像检索结果: Shiba Inu (置信度: 1.0000)
+文本检索结果: Shiba Inu (置信度: 0.3225)
+融合结果: [('Shiba Inu', 0.45212072971902906), ('Pomeranian', 0.15863435273208926), ('Chihuahua', 0.12980429465098986)]
+快思考结果: Shiba Inu (置信度: 0.9510)
+需要慢思考: False
+类别 Shiba Inu: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg
+图像检索结果: Miniature Pinscher (置信度: 1.0000)
+文本检索结果: Miniature Pinscher (置信度: 0.3478)
+融合结果: [('Miniature Pinscher', 0.483916063044892), ('Chihuahua', 0.17877752794891077), ('Abyssinian', 0.12201788583918222)]
+快思考结果: Miniature Pinscher (置信度: 0.9698)
+需要慢思考: False
+类别 Miniature Pinscher: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg
+图像检索结果: Basset Hound (置信度: 1.0000)
+文本检索结果: Basset Hound (置信度: 0.3320)
+融合结果: [('Basset Hound', 0.4480613777383429), ('Beagle', 0.19488620762863465), ('German Shorthaired', 0.13718212507960814)]
+快思考结果: Basset Hound (置信度: 0.9431)
+需要慢思考: False
+类别 Basset Hound: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg
+图像检索结果: Sphynx (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3318)
+融合结果: [('Sphynx', 0.27198147824962954), ('Abyssinian', 0.2512427145614735), ('Egyptian Mau', 0.20171450982018121)]
+快思考结果: conflict (置信度: 0.5447)
+需要慢思考: True
+类别 Sphynx: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/023.Persian/023.Persian_190.jpg
+图像检索结果: Persian (置信度: 1.0000)
+文本检索结果: Persian (置信度: 0.3292)
+融合结果: [('Persian', 0.35601674560152113), ('Maine Coon', 0.2225774073072018), ('Birman', 0.16630618684141643)]
+快思考结果: Persian (置信度: 0.7654)
+需要慢思考: False
+类别 Persian: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg
+图像检索结果: Newfoundland (置信度: 1.0000)
+文本检索结果: Newfoundland (置信度: 0.3589)
+融合结果: [('Newfoundland', 0.41796718779645986), ('Havanese', 0.17767089982667278), ('Scottish Terrier', 0.1686604053728164)]
+快思考结果: Newfoundland (置信度: 0.9131)
+需要慢思考: False
+类别 Newfoundland: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/027.Russian_Blue/027.Russian_Blue_170.jpg
+图像检索结果: Russian Blue (置信度: 1.0000)
+文本检索结果: Russian Blue (置信度: 0.3218)
+融合结果: [('Russian Blue', 0.3224329138144118), ('British Shorthair', 0.23890337748753449), ('Egyptian Mau', 0.16929148994681853)]
+快思考结果: Russian Blue (置信度: 0.6286)
+需要慢思考: False
+类别 Russian Blue: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/009.British_Shorthair/009.British_Shorthair_108.jpg
+图像检索结果: British Shorthair (置信度: 1.0000)
+文本检索结果: British Shorthair (置信度: 0.3890)
+融合结果: [('British Shorthair', 0.3892498293861014), ('Russian Blue', 0.3008966906476886), ('Egyptian Mau', 0.12966242782138307)]
+快思考结果: British Shorthair (置信度: 0.7435)
+需要慢思考: False
+类别 British Shorthair: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 1.0000)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.3107)
+融合结果: [('Staffordshire Bull Terrier', 0.3630112031444174), ('American Pit Bull Terrier', 0.22168281460481304), ('Miniature Pinscher', 0.14658056507034906)]
+快思考结果: Staffordshire Bull Terrier (置信度: 0.7889)
+需要慢思考: False
+类别 Staffordshire Bull Terrier: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg
+图像检索结果: Egyptian Mau (置信度: 1.0000)
+文本检索结果: British Shorthair (置信度: 0.3093)
+融合结果: [('Egyptian Mau', 0.26655314913948397), ('British Shorthair', 0.22992381690998892), ('Russian Blue', 0.2181961323149384)]
+快思考结果: conflict (置信度: 0.5246)
+需要慢思考: True
+类别 Egyptian Mau: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/024.Pomeranian/024.Pomeranian_105.jpg
+图像检索结果: Pomeranian (置信度: 1.0000)
+文本检索结果: Pomeranian (置信度: 0.3218)
+融合结果: [('Pomeranian', 0.29814473185382906), ('Keeshond', 0.20555026908555338), ('Japanese Chin', 0.19461992001308806)]
+快思考结果: Pomeranian (置信度: 0.5602)
+需要慢思考: False
+类别 Pomeranian: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg
+图像检索结果: American Bulldog (置信度: 1.0000)
+文本检索结果: Boxer (置信度: 0.2799)
+融合结果: [('Boxer', 0.24609424746592862), ('American Bulldog', 0.2407344331964366), ('Staffordshire Bull Terrier', 0.2155536265607925)]
+快思考结果: conflict (置信度: 0.4543)
+需要慢思考: True
+类别 American Bulldog: 0/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/036.Yorkshire_Terrier/036.Yorkshire_Terrier_16.jpg
+图像检索结果: Yorkshire Terrier (置信度: 1.0000)
+文本检索结果: Yorkshire Terrier (置信度: 0.3307)
+融合结果: [('Yorkshire Terrier', 0.4166143471344572), ('Scottish Terrier', 0.20767168854513476), ('Havanese', 0.14028474954107115)]
+快思考结果: Yorkshire Terrier (置信度: 0.9043)
+需要慢思考: False
+类别 Yorkshire Terrier: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg
+图像检索结果: Havanese (置信度: 1.0000)
+文本检索结果: Havanese (置信度: 0.3329)
+融合结果: [('Havanese', 0.314505722556935), ('Yorkshire Terrier', 0.22927888199053723), ('Japanese Chin', 0.17168679097815162)]
+快思考结果: Havanese (置信度: 0.6150)
+需要慢思考: False
+类别 Havanese: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/013.English_Setter/013.English_Setter_137.jpg
+图像检索结果: English Setter (置信度: 1.0000)
+文本检索结果: English Setter (置信度: 0.3360)
+融合结果: [('English Setter', 0.36991265061937395), ('Havanese', 0.186214307838306), ('German Shorthaired', 0.17726588631196627)]
+快思考结果: English Setter (置信度: 0.8209)
+需要慢思考: False
+类别 English Setter: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg
+图像检索结果: English Cocker Spaniel (置信度: 1.0000)
+文本检索结果: English Cocker Spaniel (置信度: 0.3754)
+融合结果: [('English Cocker Spaniel', 0.46887275371395176), ('English Setter', 0.1970161065939934), ('Basset Hound', 0.12957779271675954)]
+快思考结果: English Cocker Spaniel (置信度: 0.9604)
+需要慢思考: False
+类别 English Cocker Spaniel: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/019.Leonberger/019.Leonberger_148.jpg
+图像检索结果: Leonberger (置信度: 1.0000)
+文本检索结果: Leonberger (置信度: 0.3713)
+融合结果: [('Leonberger', 0.3832383880361182), ('Wheaten Terrier', 0.17995692482518572), ('Newfoundland', 0.15188287245257504)]
+快思考结果: Leonberger (置信度: 0.8552)
+需要慢思考: False
+类别 Leonberger: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/008.Boxer/008.Boxer_109.jpg
+图像检索结果: Boxer (置信度: 1.0000)
+文本检索结果: Boxer (置信度: 0.3038)
+融合结果: [('Boxer', 0.30920505467496934), ('American Bulldog', 0.2148842179246487), ('Staffordshire Bull Terrier', 0.17346122125311503)]
+快思考结果: Boxer (置信度: 0.6021)
+需要慢思考: False
+类别 Boxer: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/000.Abyssinian/000.Abyssinian_126.jpg
+图像检索结果: Abyssinian (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3200)
+融合结果: [('Abyssinian', 0.33088135365091387), ('Siamese', 0.21071135015377113), ('British Shorthair', 0.15739527577682147)]
+快思考结果: Abyssinian (置信度: 0.6906)
+需要慢思考: False
+类别 Abyssinian: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg
+图像检索结果: Samoyed (置信度: 1.0000)
+文本检索结果: Samoyed (置信度: 0.3197)
+融合结果: [('Samoyed', 0.367944123779164), ('Pomeranian', 0.17077403222360918), ('Shiba Inu', 0.16454577637055226)]
+快思考结果: Samoyed (置信度: 0.8177)
+需要慢思考: False
+类别 Samoyed: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg
+图像检索结果: Japanese Chin (置信度: 1.0000)
+文本检索结果: Japanese Chin (置信度: 0.3080)
+融合结果: [('Japanese Chin', 0.3335588196261985), ('Havanese', 0.17322911005762834), ('Pomeranian', 0.17303018947282145)]
+快思考结果: Japanese Chin (置信度: 0.7145)
+需要慢思考: False
+类别 Japanese Chin: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg
+图像检索结果: Wheaten Terrier (置信度: 1.0000)
+文本检索结果: Wheaten Terrier (置信度: 0.3255)
+融合结果: [('Wheaten Terrier', 0.30791978928886476), ('Havanese', 0.26860551992731707), ('Great Pyrenees', 0.1642726079575599)]
+快思考结果: conflict (置信度: 0.4865)
+需要慢思考: True
+类别 Wheaten Terrier: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg
+图像检索结果: Scottish Terrier (置信度: 1.0000)
+文本检索结果: Scottish Terrier (置信度: 0.3369)
+融合结果: [('Scottish Terrier', 0.5584951648458105), ('Wheaten Terrier', 0.13445490477907082), ('German Shorthaired', 0.11102053309007295)]
+快思考结果: Scottish Terrier (置信度: 0.9921)
+需要慢思考: False
+类别 Scottish Terrier: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/007.Bombay/007.Bombay_135.jpg
+图像检索结果: Bombay (置信度: 1.0000)
+文本检索结果: Bombay (置信度: 0.2953)
+融合结果: [('Bombay', 0.2928559297665221), ('Siamese', 0.18967152391710587), ('Russian Blue', 0.18574094707294114)]
+快思考结果: Bombay (置信度: 0.5418)
+需要慢思考: False
+类别 Bombay: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/006.Birman/006.Birman_11.jpg
+图像检索结果: Birman (置信度: 1.0000)
+文本检索结果: Birman (置信度: 0.3245)
+融合结果: [('Birman', 0.3106906617029768), ('Ragdoll', 0.26414117939136944), ('Persian', 0.1643947407603719)]
+快思考结果: Birman (置信度: 0.5478)
+需要慢思考: False
+类别 Birman: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg
+图像检索结果: German Shorthaired (置信度: 1.0000)
+文本检索结果: German Shorthaired (置信度: 0.3422)
+融合结果: [('German Shorthaired', 0.34067819360338275), ('English Setter', 0.24384169285335847), ('American Bulldog', 0.1432832689039291)]
+快思考结果: German Shorthaired (置信度: 0.6946)
+需要慢思考: False
+类别 German Shorthaired: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg
+图像检索结果: Ragdoll (置信度: 1.0000)
+文本检索结果: Ragdoll (置信度: 0.3275)
+融合结果: [('Ragdoll', 0.3323159137710196), ('Birman', 0.22125219931044887), ('Persian', 0.17366859400792725)]
+快思考结果: Ragdoll (置信度: 0.6895)
+需要慢思考: False
+类别 Ragdoll: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg
+图像检索结果: Saint Bernard (置信度: 1.0000)
+文本检索结果: Saint Bernard (置信度: 0.3430)
+融合结果: [('Saint Bernard', 0.3827265674217803), ('Japanese Chin', 0.17452180390396427), ('Leonberger', 0.1633227334372581)]
+快思考结果: Saint Bernard (置信度: 0.8511)
+需要慢思考: False
+类别 Saint Bernard: 1/1 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/020.Maine_Coon/020.Maine_Coon_163.jpg
+图像检索结果: Maine Coon (置信度: 1.0000)
+文本检索结果: Maine Coon (置信度: 0.3316)
+融合结果: [('Maine Coon', 0.3176733830913168), ('Bengal', 0.20499401916899987), ('Persian', 0.1723815680976959)]
+快思考结果: Maine Coon (置信度: 0.6462)
+需要慢思考: False
+类别 Maine Coon: 1/1 正确
+LCB统计参数初始化完成!
+总样本数: 37
+正确预测: 35
+初始化准确率: 0.9459
+总预测次数: 42
+初始化准确率: 0.9459
+知识库构建完成!
+知识库构建完成，保存到: ./experiments/pet37/knowledge_base
