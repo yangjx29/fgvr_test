@@ -3,8 +3,64 @@
 # =============================================================================
 # 全流程运行脚本 - Full Pipeline Runner (Knowledge Base + Fast-Slow Evaluation)
 # =============================================================================
-# 用法：直接运行 bash run_full_pipeline.sh
+# 用法：
+#   前台运行（显示启动信息）: bash run_full_pipeline.sh
+#   完全后台运行: bash run_full_pipeline.sh --background
 # 先构建知识库，然后进行快慢思考系统评估，所有参数从 config.yaml 文件读取
+
+# 检查是否为后台运行模式
+BACKGROUND_MODE=false
+if [[ "$1" == "--background" ]]; then
+    BACKGROUND_MODE=true
+fi
+
+# 如果是后台运行模式，将整个脚本重新启动为后台进程
+if [[ "${BACKGROUND_MODE}" == "true" ]] && [[ "${PIPELINE_BACKGROUND_STARTED}" != "true" ]]; then
+    export PIPELINE_BACKGROUND_STARTED=true
+    
+    # 获取脚本目录和配置
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    CONFIG_FILE="${SCRIPT_DIR}/config.yaml"
+    
+    # 读取数据集名称用于日志文件名
+    DATASET_NAME=$(grep "^[[:space:]]*name:" "$CONFIG_FILE" | sed 's/^[[:space:]]*[^:]*:[[:space:]]*//' | sed 's/[[:space:]]*#.*//' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/")
+    LOG_BASE_DIR=$(grep "^[[:space:]]*base_dir:" "$CONFIG_FILE" | sed 's/^[[:space:]]*[^:]*:[[:space:]]*//' | sed 's/[[:space:]]*#.*//' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/")
+    
+    # 确定数据集编号
+    case "${DATASET_NAME}" in
+        "dog") DATASET_NUM="120" ;;
+        "bird") DATASET_NUM="200" ;;
+        "flower") DATASET_NUM="102" ;;
+        "pet") DATASET_NUM="37" ;;
+        "car") DATASET_NUM="196" ;;
+        *) DATASET_NUM="" ;;
+    esac
+    
+    LOG_DIR="${LOG_BASE_DIR}/full_pipeline/${DATASET_NAME}${DATASET_NUM}"
+    mkdir -p "${LOG_DIR}"
+    
+    # 生成后台日志文件名
+    BACKGROUND_LOG="${LOG_DIR}/full_pipeline_${DATASET_NAME}_background.log"
+    
+    echo "🚀 启动后台全流程任务..."
+    echo "📋 数据集: ${DATASET_NAME}${DATASET_NUM}"
+    echo "📁 日志目录: ${LOG_DIR}"
+    echo "📄 后台日志: ${BACKGROUND_LOG}"
+    echo ""
+    
+    # 启动后台进程
+    nohup bash "$0" >> "${BACKGROUND_LOG}" 2>&1 &
+    BACKGROUND_PID=$!
+    
+    echo "✅ 后台任务已启动！"
+    echo "🔢 进程ID: ${BACKGROUND_PID}"
+    echo "📝 查看实时日志: tail -f ${BACKGROUND_LOG}"
+    echo "🛑 停止任务: kill ${BACKGROUND_PID}"
+    echo ""
+    echo "💡 提示: 脚本将在后台完整执行知识库构建和评估流程"
+    
+    exit 0
+fi
 
 # =============================================================================
 # YAML配置读取函数
