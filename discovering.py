@@ -1241,19 +1241,22 @@ if __name__ == "__main__":
                         final_confidence = slow_result["confidence"]
                         fast_slow_consistent = True
                         decision_path = "slow_consistent"
+                        # 评估预测结果
+                        is_correct = is_similar(final_prediction, true_cat, threshold=0.5)
                     else:
                         # 快慢思考不一致，标记为需要终端决策
-                        final_prediction = slow_pred  # 临时使用慢思考结果
+                        final_prediction = "conflict"  # 标记为冲突，等待终端决策
                         final_confidence = slow_result["confidence"]
                         fast_slow_consistent = False
                         decision_path = "need_terminal_decision"
+                        # 不在此阶段评估准确率，等待终端决策
+                        is_correct = False  # 临时标记为False，将在terminal_decision中重新评估
                     
-                    # 评估预测结果
-                    is_correct = is_similar(final_prediction, true_cat, threshold=0.5)
-                    
-                    if is_correct:
+                    # 只有一致的样本才计入准确率统计，不一致的等待终端决策
+                    if decision_path == "slow_consistent" and is_correct:
                         slow_correct += 1
                     
+                    # 所有慢思考样本都计入总数
                     slow_total += 1
                     
                     # 保存分类结果
@@ -1331,6 +1334,12 @@ if __name__ == "__main__":
         fast_data = load_json(fast_results_file)
         slow_data = load_json(slow_results_file)
         
+        # 处理数据格式：如果是数组形式，取第一个元素
+        if isinstance(fast_data, list) and len(fast_data) > 0:
+            fast_data = fast_data[0]
+        if isinstance(slow_data, list) and len(slow_data) > 0:
+            slow_data = slow_data[0]
+            
         fast_results = fast_data["detailed_results"]
         slow_results = slow_data["detailed_results"]
         
@@ -1370,7 +1379,7 @@ if __name__ == "__main__":
             infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
             
             # 处理需要终端决策的样本
-            for result in need_terminal_samples:
+            for i, result in enumerate(need_terminal_samples):
                 query_image = result["query_image"]
                 
                 # 找到对应的推理结果
@@ -1403,13 +1412,22 @@ if __name__ == "__main__":
                                     query_image, fast_result, slow_result, 5
                                 )
                                 
-                                # 更新结果
+                                # 更新need_terminal_samples中的结果
                                 result["final_prediction"] = final_prediction
                                 result["final_confidence"] = final_confidence
                                 result["decision_path"] = "final_arbitration"
                                 result["is_correct"] = is_similar(final_prediction, true_cat, threshold=0.5)
                                 
-                                print(f"终端决策: {query_image} -> {final_prediction} (置信度: {final_confidence:.4f})")
+                                # 重要：同步更新slow_results中对应的结果
+                                for j, slow_result_item in enumerate(slow_results):
+                                    if slow_result_item["query_image"] == query_image:
+                                        slow_results[j]["final_prediction"] = final_prediction
+                                        slow_results[j]["final_confidence"] = final_confidence
+                                        slow_results[j]["decision_path"] = "final_arbitration"
+                                        slow_results[j]["is_correct"] = is_similar(final_prediction, true_cat, threshold=0.5)
+                                        break
+                                
+                                print(f"终端决策: {query_image} -> {final_prediction} (置信度: {final_confidence:.4f}) 正确: {result['is_correct']}")
                             
                     except Exception as e:
                         print(f"终端决策失败 {query_image}: {e}")
@@ -1419,12 +1437,24 @@ if __name__ == "__main__":
         # 整合所有结果
         all_results = fast_results + slow_results
         
-        # 重新计算统计指标
+        # 重新计算统计指标 - 需要特别处理经过终端决策的样本
         total_samples = len(all_results)
+        
+        # 重新计算correct_predictions，所有样本的is_correct都已经是最新的
         correct_predictions = sum(1 for r in all_results if r.get("is_correct", False))
+        
         fast_only_correct = sum(1 for r in fast_results if r.get("is_correct", False))
         slow_triggered = len(slow_results)
-        slow_triggered_correct = sum(1 for r in slow_results if r.get("is_correct", False))
+        
+        # 重新计算slow_triggered_correct，包含终端决策的结果
+        slow_triggered_correct = 0
+        for r in slow_results:
+            if r.get("decision_path") == "slow_consistent":
+                # 一致的慢思考样本
+                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
+            elif r.get("decision_path") == "final_arbitration":
+                # 经过终端决策的样本
+                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
         
         accuracy = correct_predictions / total_samples if total_samples > 0 else 0.0
         fast_only_acc = fast_only_correct / len(fast_results) if len(fast_results) > 0 else 0.0
@@ -1505,8 +1535,8 @@ if __name__ == "__main__":
         
         # 加载知识库以获取检索候选
         knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
-        image_kb_path = os.path.join(knowledge_base_dir, "image_kb.json")
-        text_kb_path = os.path.join(knowledge_base_dir, "text_kb.json")
+        image_kb_path = os.path.join(knowledge_base_dir, "image_knowledge_base.json")
+        text_kb_path = os.path.join(knowledge_base_dir, "text_knowledge_base.json")
         
         image_kb = {}
         text_kb = {}
@@ -1514,6 +1544,12 @@ if __name__ == "__main__":
             image_kb = load_json(image_kb_path)
         if os.path.exists(text_kb_path):
             text_kb = load_json(text_kb_path)
+        
+        # 处理数据格式：如果是数组形式，取第一个元素
+        if isinstance(image_kb, list) and len(image_kb) > 0:
+            image_kb = image_kb[0]
+        if isinstance(text_kb, list) and len(text_kb) > 0:
+            text_kb = text_kb[0]
         
         # 批量处理：先收集所有需要处理的样本
         fast_samples = []
@@ -1591,12 +1627,69 @@ if __name__ == "__main__":
         # 批量准备检索图像和描述
         print("准备检索图像...")
         retrieved_idx = 0
+        
+        # 创建一个统一的类别目录（ImageFolder需要子目录结构）
+        retrieved_class_dir = os.path.join(retrieved_data_dir, "retrieved_images")
+        os.makedirs(retrieved_class_dir, exist_ok=True)
+        
         for category in tqdm(retrieved_categories, desc="Preparing retrieved images"):
-            if category in image_kb and len(image_kb[category]) > 0:
-                src_img = image_kb[category][0]  # 取第一张代表图
-                if os.path.exists(src_img):
+            if category in image_kb:
+                # 知识库格式是 {category: feature_vector}，需要找到对应的图像文件
+                category_safe = category.replace(' ', '_').replace('/', '_')
+                
+                # 构建可能的图像路径 - 支持多个数据集
+                dataset_name = cfg.get('dataset_name', 'pet')
+                
+                # 数据集名称映射
+                dataset_name_map = {
+                    'pet': 'pet_37',
+                    'dog': 'dogs_120', 
+                    'flower': 'flowers_102',
+                    'car': 'car_196',
+                    'bird': 'CUB_200_2011'
+                }
+                
+                actual_dataset_dir = dataset_name_map.get(dataset_name, f"{dataset_name}_37")
+                
+                # 相对路径构建多种可能的图像目录
+                possible_img_dirs = [
+                    f'./datasets/{actual_dataset_dir}/images_discovery_all_3',
+                    f'./datasets/{actual_dataset_dir}/images_discovery_all_1', 
+                    f'./datasets/{actual_dataset_dir}/images_discovery_all',
+                    f'./datasets/{actual_dataset_dir}/images',
+                    f'./datasets/{actual_dataset_dir}/Images',  # 某些数据集使用大写
+                ]
+                
+                # 特殊处理CUB数据集的嵌套结构
+                if actual_dataset_dir == 'CUB_200_2011':
+                    cub_nested_dirs = [
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_3',
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_1', 
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all',
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images',
+                    ]
+                    possible_img_dirs.extend(cub_nested_dirs)
+                
+                src_img = None
+                for img_dir in possible_img_dirs:
+                    if os.path.exists(img_dir):
+                        # 搜索包含类别名的目录（格式如：000.Abyssinian）
+                        matching_dirs = [d for d in os.listdir(img_dir) if category in d and os.path.isdir(os.path.join(img_dir, d))]
+                        
+                        if matching_dirs:
+                            # 找到匹配的目录，从中选择第一张图像
+                            first_match_dir = os.path.join(img_dir, matching_dirs[0])
+                            img_files = [f for f in os.listdir(first_match_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
+                            if img_files:
+                                src_img = os.path.join(first_match_dir, img_files[0])
+                                break
+                        
+                        if src_img:
+                            break
+                
+                if src_img and os.path.exists(src_img):
                     retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}.jpg"
-                    retrieved_img_path = os.path.join(retrieved_data_dir, retrieved_img_name)
+                    retrieved_img_path = os.path.join(retrieved_class_dir, retrieved_img_name)
                     shutil.copy2(src_img, retrieved_img_path)
                     
                     # 构造检索描述
@@ -1775,8 +1868,8 @@ if __name__ == "__main__":
         
         # 加载知识库
         knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
-        image_kb_path = os.path.join(knowledge_base_dir, "image_kb.json")
-        text_kb_path = os.path.join(knowledge_base_dir, "text_kb.json")
+        image_kb_path = os.path.join(knowledge_base_dir, "image_knowledge_base.json")
+        text_kb_path = os.path.join(knowledge_base_dir, "text_knowledge_base.json")
         
         image_kb = {}
         text_kb = {}
@@ -1784,6 +1877,12 @@ if __name__ == "__main__":
             image_kb = load_json(image_kb_path)
         if os.path.exists(text_kb_path):
             text_kb = load_json(text_kb_path)
+        
+        # 处理数据格式：如果是数组形式，取第一个元素
+        if isinstance(image_kb, list) and len(image_kb) > 0:
+            image_kb = image_kb[0]
+        if isinstance(text_kb, list) and len(text_kb) > 0:
+            text_kb = text_kb[0]
         
         # 批量收集慢思考样本
         slow_samples = []
@@ -1882,12 +1981,69 @@ if __name__ == "__main__":
         # 批量准备检索图像和描述
         print("准备检索图像...")
         retrieved_idx = 0
+        
+        # 创建一个统一的类别目录（ImageFolder需要子目录结构）
+        retrieved_class_dir = os.path.join(retrieved_data_dir, "retrieved_images")
+        os.makedirs(retrieved_class_dir, exist_ok=True)
+        
         for category in tqdm(retrieved_categories, desc="Preparing retrieved images"):
-            if category in image_kb and len(image_kb[category]) > 0:
-                src_img = image_kb[category][0]  # 取第一张代表图
-                if os.path.exists(src_img):
+            if category in image_kb:
+                # 知识库格式是 {category: feature_vector}，需要找到对应的图像文件
+                category_safe = category.replace(' ', '_').replace('/', '_')
+                
+                # 构建可能的图像路径 - 支持多个数据集
+                dataset_name = cfg.get('dataset_name', 'pet')
+                
+                # 数据集名称映射
+                dataset_name_map = {
+                    'pet': 'pet_37',
+                    'dog': 'dogs_120', 
+                    'flower': 'flowers_102',
+                    'car': 'car_196',
+                    'bird': 'CUB_200_2011'
+                }
+                
+                actual_dataset_dir = dataset_name_map.get(dataset_name, f"{dataset_name}_37")
+                
+                # 相对路径构建多种可能的图像目录
+                possible_img_dirs = [
+                    f'./datasets/{actual_dataset_dir}/images_discovery_all_3',
+                    f'./datasets/{actual_dataset_dir}/images_discovery_all_1', 
+                    f'./datasets/{actual_dataset_dir}/images_discovery_all',
+                    f'./datasets/{actual_dataset_dir}/images',
+                    f'./datasets/{actual_dataset_dir}/Images',  # 某些数据集使用大写
+                ]
+                
+                # 特殊处理CUB数据集的嵌套结构
+                if actual_dataset_dir == 'CUB_200_2011':
+                    cub_nested_dirs = [
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_3',
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_1', 
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all',
+                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images',
+                    ]
+                    possible_img_dirs.extend(cub_nested_dirs)
+                
+                src_img = None
+                for img_dir in possible_img_dirs:
+                    if os.path.exists(img_dir):
+                        # 搜索包含类别名的目录（格式如：000.Abyssinian）
+                        matching_dirs = [d for d in os.listdir(img_dir) if category in d and os.path.isdir(os.path.join(img_dir, d))]
+                        
+                        if matching_dirs:
+                            # 找到匹配的目录，从中选择第一张图像
+                            first_match_dir = os.path.join(img_dir, matching_dirs[0])
+                            img_files = [f for f in os.listdir(first_match_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
+                            if img_files:
+                                src_img = os.path.join(first_match_dir, img_files[0])
+                                break
+                        
+                        if src_img:
+                            break
+                
+                if src_img and os.path.exists(src_img):
                     retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}.jpg"
-                    retrieved_img_path = os.path.join(retrieved_data_dir, retrieved_img_name)
+                    retrieved_img_path = os.path.join(retrieved_class_dir, retrieved_img_name)
                     shutil.copy2(src_img, retrieved_img_path)
                     
                     # 构造检索描述
@@ -2076,6 +2232,12 @@ if __name__ == "__main__":
             fast_enhanced_data = load_json(fast_enhanced_file)
             slow_enhanced_data = load_json(slow_enhanced_file)
             
+            # 处理数据格式：如果是数组形式，取第一个元素
+            if isinstance(fast_enhanced_data, list) and len(fast_enhanced_data) > 0:
+                fast_enhanced_data = fast_enhanced_data[0]
+            if isinstance(slow_enhanced_data, list) and len(slow_enhanced_data) > 0:
+                slow_enhanced_data = slow_enhanced_data[0]
+                
             fast_results = fast_enhanced_data["detailed_results"]
             slow_results = slow_enhanced_data["detailed_results"]
             
@@ -2093,6 +2255,32 @@ if __name__ == "__main__":
         if len(need_terminal_samples) > 0:
             print("🚀 开始处理需要终端决策的样本...")
             
+            # 初始化系统用于最终决策（与terminal_decision模式保持一致）
+            system = FastSlowThinkingSystem(
+                model_tag=cfg['model_size_mllm'],
+                model_name=cfg['model_size_mllm'],
+                device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
+                cfg=cfg,
+                enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
+            )
+            
+            # 加载知识库（与terminal_decision模式保持一致）
+            if args.knowledge_base_dir == './knowledge_base':
+                dataset_name = cfg['dataset_name']
+                dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+                knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
+            else:
+                knowledge_base_dir = args.knowledge_base_dir
+            
+            if os.path.exists(knowledge_base_dir):
+                system.load_knowledge_base(knowledge_base_dir)
+                print(f"已加载知识库: {knowledge_base_dir}")
+            else:
+                print(f"警告: 知识库目录不存在 {knowledge_base_dir}")
+            
+            # 加载推理结果用于终端决策
+            infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+            
             # 为快速查找，建立快思考结果的索引
             fast_results_index = {}
             for fast_result in fast_results:
@@ -2108,89 +2296,143 @@ if __name__ == "__main__":
                     query_image = result["query_image"]
                     true_category = result["true_category"]
                     
+                    # 找到对应的推理结果（与terminal_decision模式保持一致）
+                    base_name = os.path.splitext(os.path.basename(query_image))[0]
+                    true_cat = result["true_category"]
+                    safe_cat_name = true_cat.replace(' ', '_').replace('/', '_')
+                    infer_file_pattern = f"{safe_cat_name}_{base_name}.json"
+                    
+                    infer_file_path = None
+                    for infer_file in infer_files:
+                        if infer_file == infer_file_pattern:
+                            infer_file_path = os.path.join(args.infer_dir, infer_file)
+                            break
+                    
                     # 获取对应的快思考增强结果
                     fast_match = fast_results_index.get(query_image)
                     
-                    if fast_match:
-                        # 增强融合决策逻辑
-                        fast_enhanced_conf = fast_match.get("enhanced_confidence", 0.0)
-                        slow_enhanced_conf = result.get("enhanced_confidence", 0.0)
-                        fast_enhanced_pred = fast_match.get("enhanced_prediction", "unknown")
-                        slow_enhanced_pred = result.get("enhanced_prediction", "unknown")
-                        
-                        # 策略1：置信度加权融合
-                        if slow_enhanced_conf > fast_enhanced_conf:
-                            final_prediction = slow_enhanced_pred
-                            final_confidence = slow_enhanced_conf
-                            decision_source = "enhanced_slow_winner"
-                        elif fast_enhanced_conf > slow_enhanced_conf:
-                            final_prediction = fast_enhanced_pred
-                            final_confidence = fast_enhanced_conf
-                            decision_source = "enhanced_fast_winner"
+                    if infer_file_path and os.path.exists(infer_file_path):
+                        # 加载推理数据
+                        loaded_data = load_json(infer_file_path)
+                        if isinstance(loaded_data, list):
+                            inference_data = loaded_data[0] if len(loaded_data) > 0 else None
                         else:
-                            # 置信度相等，使用慢思考结果（更谨慎）
-                            final_prediction = slow_enhanced_pred
-                            final_confidence = slow_enhanced_conf
-                            decision_source = "enhanced_slow_tie"
+                            inference_data = loaded_data
                         
-                        # 策略2：如果MEC都成功，可以进一步考虑其他因素
-                        if fast_match.get("enhanced", False) and result.get("enhanced", False):
-                            # 两个都通过MEC增强，可以实现更复杂的融合逻辑
-                            # 这里保持简单的置信度比较
-                            decision_quality = "both_enhanced"
-                        elif fast_match.get("enhanced", False):
-                            decision_quality = "fast_enhanced_only"
-                        elif result.get("enhanced", False):
-                            decision_quality = "slow_enhanced_only"
-                        else:
-                            decision_quality = "neither_enhanced"
-                        
-                        # 更新结果
-                        result["final_prediction"] = final_prediction
-                        result["final_confidence"] = final_confidence
-                        result["decision_path"] = "enhanced_arbitration"
-                        result["decision_source"] = decision_source
-                        result["decision_quality"] = decision_quality
-                        result["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
-                        result["fast_enhanced_pred"] = fast_enhanced_pred
-                        result["fast_enhanced_conf"] = fast_enhanced_conf
-                        
-                        terminal_decisions += 1
-                        if result["is_correct"]:
-                            successful_decisions += 1
-                        
-                        print(f"🎯 终端决策: {os.path.basename(query_image)} -> {final_prediction} (置信度: {final_confidence:.4f}, 来源: {decision_source})")
+                        if inference_data:
+                            fast_result = inference_data["fast_result"]
+                            slow_result = inference_data["slow_result"]
+                            
+                            # 调用系统的最终决策函数（与terminal_decision模式保持一致）
+                            if system and hasattr(system, '_final_decision'):
+                                final_prediction, final_confidence, _ = system._final_decision(
+                                    query_image, fast_result, slow_result, 5
+                                )
+                                
+                                # 获取增强结果用于决策质量评估
+                                fast_enhanced_conf = fast_match.get("enhanced_confidence", 0.0) if fast_match else 0.0
+                                slow_enhanced_conf = result.get("enhanced_confidence", 0.0)
+                                fast_enhanced_pred = fast_match.get("enhanced_prediction", "unknown") if fast_match else "unknown"
+                                slow_enhanced_pred = result.get("enhanced_prediction", "unknown")
+                                
+                                # 确定决策来源和质量
+                                if fast_match and fast_match.get("enhanced", False) and result.get("enhanced", False):
+                                    decision_quality = "both_enhanced"
+                                elif fast_match and fast_match.get("enhanced", False):
+                                    decision_quality = "fast_enhanced_only"
+                                elif result.get("enhanced", False):
+                                    decision_quality = "slow_enhanced_only"
+                                else:
+                                    decision_quality = "neither_enhanced"
+                                
+                                # 更新need_terminal_samples中的结果
+                                result["final_prediction"] = final_prediction
+                                result["final_confidence"] = final_confidence
+                                result["decision_path"] = "enhanced_arbitration"
+                                result["decision_source"] = "mllm_final_decision"
+                                result["decision_quality"] = decision_quality
+                                result["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
+                                result["fast_enhanced_pred"] = fast_enhanced_pred
+                                result["fast_enhanced_conf"] = fast_enhanced_conf
+                                
+                                # 重要：同步更新slow_results中对应的结果
+                                for j, slow_result_item in enumerate(slow_results):
+                                    if slow_result_item["query_image"] == query_image:
+                                        slow_results[j]["final_prediction"] = final_prediction
+                                        slow_results[j]["final_confidence"] = final_confidence
+                                        slow_results[j]["decision_path"] = "enhanced_arbitration"
+                                        slow_results[j]["decision_source"] = "mllm_final_decision"
+                                        slow_results[j]["decision_quality"] = decision_quality
+                                        slow_results[j]["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
+                                        slow_results[j]["fast_enhanced_pred"] = fast_enhanced_pred
+                                        slow_results[j]["fast_enhanced_conf"] = fast_enhanced_conf
+                                        break
+                                
+                                terminal_decisions += 1
+                                if result["is_correct"]:
+                                    successful_decisions += 1
+                                
+                                print(f"🎯 终端决策: {os.path.basename(query_image)} -> {final_prediction} (置信度: {final_confidence:.4f}, 正确: {result['is_correct']})")
+                            else:
+                                print(f"⚠️  系统未初始化或缺少_final_decision方法")
                     else:
-                        print(f"⚠️  未找到对应的快思考增强结果: {query_image}")
+                        print(f"⚠️  未找到推理结果文件: {query_image}")
                         # 使用慢思考增强结果作为最终结果
-                        result["final_prediction"] = result["enhanced_prediction"]
-                        result["final_confidence"] = result["enhanced_confidence"] 
+                        result["final_prediction"] = result.get("enhanced_prediction", result.get("final_prediction", "unknown"))
+                        result["final_confidence"] = result.get("enhanced_confidence", result.get("final_confidence", 0.0))
                         result["decision_path"] = "slow_enhanced_only"
-                        result["decision_source"] = "no_fast_match"
-                        result["is_correct"] = is_similar(result["enhanced_prediction"], true_category, threshold=0.5)
+                        result["decision_source"] = "no_fast_match_or_infer"
+                        result["is_correct"] = is_similar(result["final_prediction"], true_category, threshold=0.5)
+                        
+                        # 重要：同步更新slow_results中对应的结果
+                        for j, slow_result_item in enumerate(slow_results):
+                            if slow_result_item["query_image"] == query_image:
+                                slow_results[j]["final_prediction"] = result["final_prediction"]
+                                slow_results[j]["final_confidence"] = result["final_confidence"]
+                                slow_results[j]["decision_path"] = "slow_enhanced_only"
+                                slow_results[j]["decision_source"] = "no_fast_match_or_infer"
+                                slow_results[j]["is_correct"] = is_similar(result["final_prediction"], true_category, threshold=0.5)
+                                break
                 
                 except Exception as e:
                     print(f"❌ 终端决策增强失败 {result.get('query_image', 'unknown')}: {e}")
-                    # 保持原有结果不变
+                    # 保持原有结果不变，但标记失败状态
                     result["decision_path"] = "enhanced_arbitration_failed"
                     result["decision_source"] = "error_fallback"
+                    
+                    # 同步更新slow_results中对应的结果
+                    for j, slow_result_item in enumerate(slow_results):
+                        if slow_result_item.get("query_image") == result.get("query_image"):
+                            slow_results[j]["decision_path"] = "enhanced_arbitration_failed"
+                            slow_results[j]["decision_source"] = "error_fallback"
+                            break
         else:
             print("✅ 没有需要终端决策的样本，所有快慢思考结果都一致")
+            terminal_decisions = 0
+            successful_decisions = 0
         
         # 整合所有增强结果
         all_enhanced_results = fast_results + slow_results
         
-        # 重新计算统计指标
+        # 重新计算统计指标（与terminal_decision模式保持一致）
         total_samples = len(all_enhanced_results)
+        
+        # 重新计算enhanced_correct，所有样本的is_correct都已经是最新的
         enhanced_correct = sum(1 for r in all_enhanced_results if r.get("is_correct", False))
-        original_correct = sum(1 for r in all_enhanced_results if r.get("original_correct", False))
         fast_only_correct = sum(1 for r in fast_results if r.get("is_correct", False))
         slow_triggered = len(slow_results)
-        slow_triggered_correct = sum(1 for r in slow_results if r.get("is_correct", False))
+        
+        # 重新计算slow_triggered_correct，包含终端决策的结果（与terminal_decision模式保持一致）
+        slow_triggered_correct = 0
+        for r in slow_results:
+            if r.get("decision_path") == "slow_consistent":
+                # 一致的慢思考样本
+                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
+            elif r.get("decision_path") == "enhanced_arbitration":
+                # 经过终端决策的样本
+                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
         
         enhanced_accuracy = enhanced_correct / total_samples if total_samples > 0 else 0.0
-        original_accuracy = original_correct / total_samples if total_samples > 0 else 0.0
-        enhancement_rate = (enhanced_correct - original_correct) / total_samples if total_samples > 0 else 0.0
         fast_only_acc = fast_only_correct / len(fast_results) if len(fast_results) > 0 else 0.0
         slow_trigger_ratio = slow_triggered / total_samples if total_samples > 0 else 0.0
         slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0
@@ -2198,12 +2440,21 @@ if __name__ == "__main__":
         # 终端决策统计
         terminal_success_rate = successful_decisions / terminal_decisions if terminal_decisions > 0 else 0.0
         
+        # 添加与terminal_decision模式一致的输出
+        print(f"✅ 总正确预测数: {enhanced_correct}")
+        print(f"  - 其中仅快思考正确: {fast_only_correct}")
+        print(f"  - 其中慢思考触发且正确: {slow_triggered_correct}")
+        print(f"❌ 总错误预测数: {total_samples - enhanced_correct}")
+        print(f"📊 慢思考触发数量: {slow_triggered}")
+        print(f"[terminal_decision_enhanced] 总体准确率: {enhanced_accuracy:.4f} ({enhanced_correct}/{total_samples})")
+        print(f"[terminal_decision_enhanced] 快思考准确率: {fast_only_acc:.4f}")
+        print(f"[terminal_decision_enhanced] 慢思考触发比例: {slow_trigger_ratio:.4f}")
+        print(f"[terminal_decision_enhanced] 慢思考准确率: {slow_trigger_acc:.4f}")
+        
         print(f"\n" + "="*60)
         print(f"✅ 终端决策增强完成")
         print(f"📊 总样本数: {total_samples}")
-        print(f"🎯 原始总体准确率: {original_accuracy:.4f} ({original_correct}/{total_samples})")
-        print(f"🚀 增强总体准确率: {enhanced_accuracy:.4f} ({enhanced_correct}/{total_samples})")
-        print(f"📈 总体增强率: {enhancement_rate:.4f}")
+        print(f"🚀 总体准确率: {enhanced_accuracy:.4f} ({enhanced_correct}/{total_samples})")
         print(f"⚡ 快思考准确率: {fast_only_acc:.4f}")
         print(f"🐌 慢思考触发比例: {slow_trigger_ratio:.4f}")
         print(f"🎯 慢思考准确率: {slow_trigger_acc:.4f}")
@@ -2215,18 +2466,17 @@ if __name__ == "__main__":
         final_enhanced_results_file = os.path.join(args.classify_dir, "terminal_decision_results_enhanced.json")
         dump_json(final_enhanced_results_file, {
             "summary": {
+                # 基础统计（与terminal_decision保持一致）
                 "total_samples": total_samples,
-                "original_correct": original_correct,
-                "enhanced_correct": enhanced_correct,
-                "original_accuracy": original_accuracy,
-                "enhanced_accuracy": enhanced_accuracy,
-                "enhancement_rate": enhancement_rate,
+                "correct_predictions": enhanced_correct,  # 与terminal_decision保持一致的命名
+                "accuracy": enhanced_accuracy,           # 与terminal_decision保持一致的命名
                 "fast_only_correct": fast_only_correct,
                 "fast_only_accuracy": fast_only_acc,
                 "slow_triggered": slow_triggered,
                 "slow_trigger_ratio": slow_trigger_ratio,
                 "slow_triggered_correct": slow_triggered_correct,
                 "slow_trigger_accuracy": slow_trigger_acc,
+                # 增强版特有的统计
                 "terminal_decisions": terminal_decisions,
                 "terminal_success_rate": terminal_success_rate,
                 "fast_enhanced_success": fast_enhanced_data.get("summary", {}).get("mec_success", False),

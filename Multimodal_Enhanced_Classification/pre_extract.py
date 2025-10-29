@@ -6,6 +6,8 @@ from PIL import Image
 from tqdm import tqdm
 # 导入操作系统接口模块
 import os
+import json
+import sys
 
 # 导入PyTorch深度学习框架
 import torch
@@ -28,8 +30,6 @@ except ImportError:
 from data.datautils import Augmenter, build_dataset
 # 导入随机种子设置工具
 from utils.tools import set_random_seed
-# 导入类别名称相关的所有内容
-from data.cls_to_names import *
 
 # 导入CLIP模型
 from clip import clip
@@ -54,119 +54,172 @@ def load_clip_to_cpu(arch):
     model = clip.build_model(state_dict or model.state_dict())
     return model
 
-# 预提取多模态特征函数（Multimodal Enhanced Classification版本）
-# 这个函数将两组图像（retrieved_images和test_images）及其对应文本描述的多模态特征提前提取并保存
-# 实现：待测试[图-文] 与 检索到的[图-文] 进行匹配
-# 参数:
-#   retrieved_loader: 检索图像数据加载器（包含检索到的图片）
-#   test_loader: 测试图像数据加载器（包含待测试的图片）
-#   clip_model: CLIP模型
-#   args: 命令行参数
+# 简化的特征提取函数，专为discovering.py集成设计
 @torch.no_grad()
 def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args):
-
+    """
+    简化的多模态特征提取函数
+    专为与discovering.py快慢思考系统集成而设计
+    """
     # 创建保存目录
     save_dir = f"./pre_extracted_feat/{args.arch.replace('/', '')}/seed{args.seed}"
     os.makedirs(save_dir, exist_ok=True)
 
-    # 加载文本描述
-    retrieved_desc_file = f"./descriptions/{args.test_set}_retrieved_descriptions.json"
-    test_desc_file = f"./descriptions/{args.test_set}_test_descriptions.json"
+    # 构建描述文件路径
+    descriptions_dir = "./descriptions"
+    retrieved_desc_file = os.path.join(descriptions_dir, f"{args.test_set}_retrieved_descriptions.json")
+    test_desc_file = os.path.join(descriptions_dir, f"{args.test_set}_test_descriptions.json")
     
+    print(f"检查描述文件:")
+    print(f"  检索描述: {retrieved_desc_file}")
+    print(f"  测试描述: {test_desc_file}")
+    
+    # 检查描述文件存在性
     if not os.path.exists(retrieved_desc_file):
-        raise FileNotFoundError(f"检索描述文件不存在: {retrieved_desc_file}")
+        print(f"❌ 检索描述文件不存在: {retrieved_desc_file}")
+        return False
     if not os.path.exists(test_desc_file):
-        raise FileNotFoundError(f"测试描述文件不存在: {test_desc_file}")
+        print(f"❌ 测试描述文件不存在: {test_desc_file}")
+        return False
     
-    retrieved_descriptions = load_json(retrieved_desc_file)
-    test_descriptions = load_json(test_desc_file)
+    # 加载描述文件
+    try:
+        with open(retrieved_desc_file, 'r', encoding='utf-8') as f:
+            retrieved_descriptions = json.load(f)
+        with open(test_desc_file, 'r', encoding='utf-8') as f:
+            test_descriptions = json.load(f)
+    except Exception as e:
+        print(f"❌ 加载描述文件失败: {e}")
+        return False
     
-    print(f"加载检索描述: {len(retrieved_descriptions)} 条")
-    print(f"加载测试描述: {len(test_descriptions)} 条")
+    print(f"✅ 成功加载描述文件:")
+    print(f"  检索描述: {len(retrieved_descriptions)} 条")
+    print(f"  测试描述: {len(test_descriptions)} 条")
 
     # 存储所有提取的多模态特征
     all_retrieved_data = []  # 检索到的[图-文]特征
     all_test_data = []       # 待测试的[图-文]特征
     
     # 处理检索图像及其描述
-    print("Processing retrieved [image-text] pairs...")
-    for i, (images, target) in enumerate(tqdm(retrieved_loader)):
-        # 确保images是列表（包含多个增强视图）
-        assert isinstance(images, list)
-        # 将所有视图移到GPU
-        for k in range(len(images)):
-            images[k] = images[k].cuda(non_blocking=True)
-        # 拼接所有视图
-        images = torch.cat(images, dim=0)
-        # 将标签移到GPU
-        target = target.cuda(non_blocking=True)
-
-        # 使用混合精度提取多模态特征
-        with torch.cuda.amp.autocast():
-            # 使用CLIP编码图像（多个增强视图）
-            image_features = clip_model.encode_image(images)
-            # L2归一化特征
-            image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+    print("🔄 处理检索图像-文本对...")
+    try:
+        for i, (images, target) in enumerate(tqdm(retrieved_loader, desc="Processing retrieved")):
+            # 安全处理图像列表
+            if isinstance(images, list):
+                # 将所有视图移到GPU
+                for k in range(len(images)):
+                    images[k] = images[k].cuda(non_blocking=True)
+                # 拼接所有视图
+                images = torch.cat(images, dim=0)
+            else:
+                # 单张图像
+                images = images.cuda(non_blocking=True)
             
-            # 编码对应的文本描述
-            text_description = retrieved_descriptions[str(i)]  # 按索引获取描述
-            text_tokens = clip.tokenize([text_description]).cuda()
-            text_features = clip_model.encode_text(text_tokens)
-            text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+            # 将标签移到GPU
+            target = target.cuda(non_blocking=True)
+
+            # 使用混合精度提取多模态特征
+            with torch.cuda.amp.autocast():
+                # 使用CLIP编码图像
+                image_features = clip_model.encode_image(images)
+                # L2归一化特征
+                image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+                
+                # 获取对应的文本描述
+                desc_key = str(i) if str(i) in retrieved_descriptions else list(retrieved_descriptions.keys())[i % len(retrieved_descriptions)]
+                text_description = retrieved_descriptions[desc_key]
+                
+                # 编码文本描述
+                text_tokens = clip.tokenize([text_description], truncate=True).cuda()
+                text_features = clip_model.encode_text(text_tokens)
+                text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+                
+                # 拼接图文特征 [Ti, Ii]
+                if len(image_features.shape) == 1:
+                    image_features = image_features.unsqueeze(0)
+                text_features_expanded = text_features.expand(image_features.size(0), -1)
+                multimodal_features = torch.cat([text_features_expanded, image_features], dim=-1)
+
+            # 保存特征和标签
+            all_retrieved_data.append((multimodal_features, target))
             
-            # 拼接图文特征 [Ti, Ii] - 检索到的[图-文]特征
-            # image_features shape: (n_views, d), text_features shape: (1, d)
-            # 将text_features扩展到与image_features相同的视图数
-            text_features_expanded = text_features.expand(image_features.size(0), -1)
-            multimodal_features = torch.cat([text_features_expanded, image_features], dim=-1)  # shape: (n_views, 2*d)
+            # 每100个样本打印一次进度
+            if (i + 1) % 100 == 0:
+                print(f"  已处理检索样本: {i + 1}")
+                
+    except Exception as e:
+        print(f"❌ 处理检索图像失败: {e}")
+        return False
 
-        # 保存检索到的[图-文]特征和标签
-        all_retrieved_data.append((multimodal_features, target))
-
-    # 处理待测试图像及其描述
-    print("Processing test [image-text] pairs...")
-    for i, (images, target) in enumerate(tqdm(test_loader)):
-        # 确保images是列表（包含多个增强视图）
-        assert isinstance(images, list)
-        # 将所有视图移到GPU
-        for k in range(len(images)):
-            images[k] = images[k].cuda(non_blocking=True)
-        # 拼接所有视图
-        images = torch.cat(images, dim=0)
-        # 将标签移到GPU
-        target = target.cuda(non_blocking=True)
-
-        # 使用混合精度提取多模态特征
-        with torch.cuda.amp.autocast():
-            # 使用CLIP编码图像（多个增强视图）
-            image_features = clip_model.encode_image(images)
-            # L2归一化特征
-            image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+    # 处理测试图像及其描述
+    print("🔄 处理测试图像-文本对...")
+    try:
+        for i, (images, target) in enumerate(tqdm(test_loader, desc="Processing test")):
+            # 安全处理图像列表
+            if isinstance(images, list):
+                # 将所有视图移到GPU
+                for k in range(len(images)):
+                    images[k] = images[k].cuda(non_blocking=True)
+                # 拼接所有视图
+                images = torch.cat(images, dim=0)
+            else:
+                # 单张图像
+                images = images.cuda(non_blocking=True)
             
-            # 编码对应的文本描述
-            text_description = test_descriptions[str(i)]  # 按索引获取描述
-            text_tokens = clip.tokenize([text_description]).cuda()
-            text_features = clip_model.encode_text(text_tokens)
-            text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-            
-            # 拼接图文特征 [T'j, I'j] - 待测试的[图-文]特征
-            # image_features shape: (n_views, d), text_features shape: (1, d)
-            # 将text_features扩展到与image_features相同的视图数
-            text_features_expanded = text_features.expand(image_features.size(0), -1)
-            multimodal_features = torch.cat([text_features_expanded, image_features], dim=-1)  # shape: (n_views, 2*d)
+            # 将标签移到GPU
+            target = target.cuda(non_blocking=True)
 
-        # 保存待测试的[图-文]特征和标签
-        all_test_data.append((multimodal_features, target))
+            # 使用混合精度提取多模态特征
+            with torch.cuda.amp.autocast():
+                # 使用CLIP编码图像
+                image_features = clip_model.encode_image(images)
+                # L2归一化特征
+                image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+                
+                # 获取对应的文本描述
+                desc_key = str(i) if str(i) in test_descriptions else list(test_descriptions.keys())[i % len(test_descriptions)]
+                text_description = test_descriptions[desc_key]
+                
+                # 编码文本描述
+                text_tokens = clip.tokenize([text_description], truncate=True).cuda()
+                text_features = clip_model.encode_text(text_tokens)
+                text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+                
+                # 拼接图文特征 [T'j, I'j]
+                if len(image_features.shape) == 1:
+                    image_features = image_features.unsqueeze(0)
+                text_features_expanded = text_features.expand(image_features.size(0), -1)
+                multimodal_features = torch.cat([text_features_expanded, image_features], dim=-1)
+
+            # 保存特征和标签
+            all_test_data.append((multimodal_features, target))
+            
+            # 每100个样本打印一次进度
+            if (i + 1) % 100 == 0:
+                print(f"  已处理测试样本: {i + 1}")
+                
+    except Exception as e:
+        print(f"❌ 处理测试图像失败: {e}")
+        return False
 
     # 保存到文件
-    retrieved_save_path = os.path.join(save_dir, f"{args.test_set}_retrieved.pth")
-    test_save_path = os.path.join(save_dir, f"{args.test_set}_test.pth")
-    
-    torch.save(all_retrieved_data, retrieved_save_path)
-    torch.save(all_test_data, test_save_path)
-    
-    print(f"Successfully save retrieved [image-text] features to [{retrieved_save_path}]")
-    print(f"Successfully save test [image-text] features to [{test_save_path}]")
+    try:
+        retrieved_save_path = os.path.join(save_dir, f"{args.test_set}_retrieved.pth")
+        test_save_path = os.path.join(save_dir, f"{args.test_set}_test.pth")
+        
+        torch.save(all_retrieved_data, retrieved_save_path)
+        torch.save(all_test_data, test_save_path)
+        
+        print(f"✅ 成功保存检索特征到: {retrieved_save_path}")
+        print(f"✅ 成功保存测试特征到: {test_save_path}")
+        print(f"📊 检索样本: {len(all_retrieved_data)} 个")
+        print(f"📊 测试样本: {len(all_test_data)} 个")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ 保存特征文件失败: {e}")
+        return False
 
 
 # 加载JSON文件的辅助函数
@@ -176,60 +229,106 @@ def load_json(file_path):
         return json.load(f)
 
 
-# 主工作函数（Multimodal Enhanced Classification版本）
-# 参数:
-#   args: 命令行参数
+# 简化的主工作函数，专为discovering.py集成设计
 def main_worker(args):
-    # 加载CLIP模型
-    print("=> Model created: visual backbone {}".format(args.arch))
-    clip_model = load_clip_to_cpu(args.arch)
-    # 将模型移到GPU
-    clip_model = clip_model.cuda()
-    # 使用float32精度
-    clip_model.float()
-    # 设置为评估模式
-    clip_model.eval()
-
-    # 冻结所有参数（不需要梯度）
-    for _, param in clip_model.named_parameters():
-        param.requires_grad_(False)
-
-    # CLIP的归一化统计参数（从clip.load()获取）
-    normalize = transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
-                                     std=[0.26862954, 0.26130258, 0.27577711])
-
-    # 基础图像变换：调整大小和中心裁剪
-    base_transform = transforms.Compose([
-        transforms.Resize(args.resolution, interpolation=BICUBIC),
-        transforms.CenterCrop(args.resolution)])
-    # 预处理：转换为张量并归一化
-    preprocess = transforms.Compose([transforms.ToTensor(), normalize])
-    # 创建数据增强器，生成多个增强视图
-    data_transform = Augmenter(base_transform, preprocess, n_views=args.batch_size)
-
-    # 打印正在处理的数据集
-    print("Extracting features for: {}".format(args.test_set))
-
-    # 构建两个数据集：检索图像和测试图像
-    retrieved_dataset = build_dataset(f"{args.test_set}_retrieved", data_transform, args.data, mode='test')
-    test_dataset = build_dataset(f"{args.test_set}_test", data_transform, args.data, mode='test')
+    """
+    简化的主工作函数
+    专为与discovering.py快慢思考系统集成而设计
+    """
+    print(f"🚀 开始MEC特征预提取: {args.test_set}")
+    print(f"📐 模型架构: {args.arch}")
+    print(f"🎲 随机种子: {args.seed}")
     
-    print("number of retrieved samples: {}".format(len(retrieved_dataset)))
-    print("number of test samples: {}".format(len(test_dataset)))
-    
-    # 创建数据加载器
-    retrieved_loader = torch.utils.data.DataLoader(
-                retrieved_dataset,
-                batch_size=1, shuffle=False,  # 保持顺序以匹配描述文件
-                num_workers=args.workers, pin_memory=True)
-    
-    test_loader = torch.utils.data.DataLoader(
-                test_dataset,
-                batch_size=1, shuffle=False,  # 保持顺序以匹配描述文件
-                num_workers=args.workers, pin_memory=True)
-    
-    # 开始提取多模态特征
-    pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args)
+    try:
+        # 加载CLIP模型
+        print("🔄 加载CLIP模型...")
+        clip_model = load_clip_to_cpu(args.arch)
+        clip_model = clip_model.cuda()
+        clip_model.float()
+        clip_model.eval()
+
+        # 冻结所有参数
+        for _, param in clip_model.named_parameters():
+            param.requires_grad_(False)
+        
+        print("✅ CLIP模型加载成功")
+
+        # CLIP归一化参数
+        normalize = transforms.Normalize(
+            mean=[0.48145466, 0.4578275, 0.40821073],
+            std=[0.26862954, 0.26130258, 0.27577711]
+        )
+
+        # 简化的图像变换（不使用过多增强，提高稳定性）
+        base_transform = transforms.Compose([
+            transforms.Resize(args.resolution, interpolation=BICUBIC),
+            transforms.CenterCrop(args.resolution)
+        ])
+        
+        preprocess = transforms.Compose([
+            transforms.ToTensor(), 
+            normalize
+        ])
+        
+        # 创建数据增强器
+        data_transform = Augmenter(base_transform, preprocess, n_views=args.batch_size)
+
+        print(f"🔄 构建数据集: {args.test_set}")
+        
+        # 构建数据集 - 增加错误处理
+        try:
+            retrieved_dataset = build_dataset(f"{args.test_set}_retrieved", data_transform, args.data, mode='test')
+            test_dataset = build_dataset(f"{args.test_set}_test", data_transform, args.data, mode='test')
+        except Exception as e:
+            print(f"❌ 构建数据集失败: {e}")
+            print("💡 请检查数据目录结构和描述文件是否正确")
+            return False
+        
+        print(f"📊 检索样本数量: {len(retrieved_dataset)}")
+        print(f"📊 测试样本数量: {len(test_dataset)}")
+        
+        if len(retrieved_dataset) == 0 or len(test_dataset) == 0:
+            print("❌ 数据集为空，请检查数据目录")
+            return False
+        
+        # 创建数据加载器 - 减少并发避免问题
+        print("🔄 创建数据加载器...")
+        retrieved_loader = torch.utils.data.DataLoader(
+            retrieved_dataset,
+            batch_size=1, 
+            shuffle=False,  
+            num_workers=min(args.workers, 2),  # 减少worker数量
+            pin_memory=True,
+            timeout=60  # 增加超时
+        )
+        
+        test_loader = torch.utils.data.DataLoader(
+            test_dataset,
+            batch_size=1, 
+            shuffle=False,  
+            num_workers=min(args.workers, 2),  # 减少worker数量
+            pin_memory=True,
+            timeout=60  # 增加超时
+        )
+        
+        print("✅ 数据加载器创建成功")
+        
+        # 开始提取多模态特征
+        print("🚀 开始提取多模态特征...")
+        success = pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args)
+        
+        if success:
+            print("🎉 MEC特征预提取完成!")
+            return True
+        else:
+            print("❌ MEC特征预提取失败!")
+            return False
+            
+    except Exception as e:
+        print(f"❌ MEC特征预提取发生异常: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
 
 
 # 主程序入口

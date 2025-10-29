@@ -401,127 +401,195 @@ def AWT_evaluation(clip_model, args , order, use_test_weight=False, weight_metho
     return top1.avg
 
 
-# 多模态匹配评估函数：待测试[图-文]与检索到的[图-文]进行匹配评估
-# 参数:
-#   clip_model: CLIP模型
-#   args: 命令行参数
+# 简化的多模态增强分类评估函数，专为discovering.py集成设计
 @torch.no_grad()
 def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
-    # 获取数据集名称
+    """
+    简化的多模态增强分类评估函数
+    专为与discovering.py快慢思考系统集成而设计
+    """
     dataset_name = args.test_set
-    print("Evaluating Multimodal Enhanced Classification: {}".format(dataset_name))
-    print(">>> Using [Test Image-Text] vs [Retrieved Image-Text] matching")
+    print(f"🔄 执行MEC评估: {dataset_name}")
+    print("🎯 策略: [测试图-文] vs [检索图-文] 匹配")
     
-    # 加载预提取的多模态特征
+    # 构建特征文件路径
     save_dir = f"./pre_extracted_feat/{args.arch.replace('/', '')}/seed{args.seed}"
     retrieved_path = os.path.join(save_dir, f"{dataset_name}_retrieved.pth")
     test_path = os.path.join(save_dir, f"{dataset_name}_test.pth")
     
-    print(f"Loading retrieved [image-text] features from: {retrieved_path}")
-    print(f"Loading test [image-text] features from: {test_path}")
+    print(f"📁 检索特征路径: {retrieved_path}")
+    print(f"📁 测试特征路径: {test_path}")
     
+    # 检查特征文件存在性
     if not os.path.exists(retrieved_path):
-        raise FileNotFoundError(f"检索特征文件不存在: {retrieved_path}")
+        print(f"❌ 检索特征文件不存在: {retrieved_path}")
+        return 0.0
     if not os.path.exists(test_path):
-        raise FileNotFoundError(f"测试特征文件不存在: {test_path}")
+        print(f"❌ 测试特征文件不存在: {test_path}")
+        return 0.0
     
-    retrieved_data = torch.load(retrieved_path)  # [(multimodal_features, target), ...] - 检索到的[图-文]
-    test_data = torch.load(test_path)            # [(multimodal_features, target), ...] - 待测试的[图-文]
+    # 加载预提取的多模态特征
+    try:
+        retrieved_data = torch.load(retrieved_path, map_location='cuda')
+        test_data = torch.load(test_path, map_location='cuda')
+    except Exception as e:
+        print(f"❌ 加载特征文件失败: {e}")
+        return 0.0
     
-    print(f"Retrieved [image-text] samples: {len(retrieved_data)}")
-    print(f"Test [image-text] samples: {len(test_data)}")
+    print(f"📊 检索样本: {len(retrieved_data)} 个")
+    print(f"📊 测试样本: {len(test_data)} 个")
+    
+    if len(retrieved_data) == 0 or len(test_data) == 0:
+        print("❌ 特征数据为空")
+        return 0.0
     
     # 初始化统计器
     batch_time = AverageMeter('Time', ':6.3f', Summary.NONE)
     top1 = AverageMeter('Acc@1', ':6.2f', Summary.AVERAGE)
-    progress = ProgressMeter(len(test_data), [batch_time, top1], prefix='Test: ')
+    progress = ProgressMeter(len(test_data), [batch_time, top1], prefix='MEC测试: ')
     
-    end = time.time()
+    start_time = time.time()
+    correct_predictions = 0
+    total_predictions = 0
     
     # 对每个待测试样本进行匹配
+    print("🔄 开始多模态特征匹配...")
     for i, (test_features, target) in enumerate(test_data):
-        # test_features shape: (n_views, 2*d) - 包含文本和图像特征的拼接 [T'j, I'j]
-        # target: 真实标签
-        
-        # 计算与所有检索样本的相似度
-        similarities = []
-        
-        for retrieved_features, _ in retrieved_data:
-            # retrieved_features shape: (n_views, 2*d) - 包含文本和图像特征的拼接 [Ti, Ii]
+        try:
+            # 确保特征在GPU上
+            if not test_features.is_cuda:
+                test_features = test_features.cuda()
+            if not target.is_cuda:
+                target = target.cuda()
             
-            # 计算两组多模态特征的权重（基于熵的权重计算）
-            # 对于待测试的[图-文]特征
-            test_weights = F.softmax(-calculate_batch_entropy(test_features) / 0.5, dim=0)
-            # 对于检索到的[图-文]特征
-            retrieved_weights = F.softmax(-calculate_batch_entropy(retrieved_features) / 0.5, dim=0)
+            # 计算与所有检索样本的相似度
+            similarities = []
+            retrieved_labels = []
             
-            # 加权平均得到代表性的多模态特征
-            weighted_test = (test_features * test_weights.unsqueeze(-1)).sum(dim=0)  # 加权的待测试[图-文]特征
-            weighted_retrieved = (retrieved_features * retrieved_weights.unsqueeze(-1)).sum(dim=0)  # 加权的检索[图-文]特征
+            for retrieved_features, retrieved_label in retrieved_data:
+                try:
+                    # 确保检索特征在GPU上
+                    if not retrieved_features.is_cuda:
+                        retrieved_features = retrieved_features.cuda()
+                    if not retrieved_label.is_cuda:
+                        retrieved_label = retrieved_label.cuda()
+                    
+                    # 计算多模态特征权重（简化版本，减少计算复杂度）
+                    if test_features.dim() > 1 and test_features.size(0) > 1:
+                        # 多视图情况：使用平均池化简化
+                        weighted_test = test_features.mean(dim=0)
+                    else:
+                        weighted_test = test_features.squeeze(0) if test_features.dim() > 1 else test_features
+                    
+                    if retrieved_features.dim() > 1 and retrieved_features.size(0) > 1:
+                        # 多视图情况：使用平均池化简化
+                        weighted_retrieved = retrieved_features.mean(dim=0)
+                    else:
+                        weighted_retrieved = retrieved_features.squeeze(0) if retrieved_features.dim() > 1 else retrieved_features
+                    
+                    # L2归一化
+                    weighted_test = weighted_test / (weighted_test.norm() + 1e-8)
+                    weighted_retrieved = weighted_retrieved / (weighted_retrieved.norm() + 1e-8)
+                    
+                    # 计算余弦相似度
+                    similarity = torch.dot(weighted_test, weighted_retrieved)
+                    similarities.append(similarity)
+                    retrieved_labels.append(retrieved_label)
+                    
+                except Exception as e:
+                    print(f"⚠️  计算相似度失败 (样本 {i}): {e}")
+                    continue
             
-            # L2归一化
-            weighted_test = weighted_test / weighted_test.norm()
-            weighted_retrieved = weighted_retrieved / weighted_retrieved.norm()
+            if len(similarities) == 0:
+                print(f"⚠️  样本 {i} 没有有效的相似度计算")
+                total_predictions += 1
+                continue
             
-            # 计算多模态特征间的余弦相似度
-            # 这实现了：待测试[图-文] 与 检索到的[图-文] 的匹配
-            similarity = clip_model.logit_scale.exp() * torch.dot(weighted_test, weighted_retrieved)
-            similarities.append(similarity)
-        
-        # 转换为张量
-        similarities = torch.stack(similarities)
-        
-        # 根据检索样本的标签来确定预测
-        retrieved_labels = torch.tensor([label for _, label in retrieved_data])
-        
-        # 找到最相似的检索样本的标签作为预测
-        max_idx = torch.argmax(similarities)
-        predicted_label = retrieved_labels[max_idx].unsqueeze(0)
-        
-        # 计算准确率
-        acc1, = accuracy(predicted_label.unsqueeze(0).float(), target.unsqueeze(0), topk=(1,))
-        top1.update(acc1[0], 1)
-        
-        # 更新时间统计
-        batch_time.update(time.time() - end)
-        end = time.time()
-        
-        # 定期显示进度
-        if (i+1) % args.print_freq == 0:
-            progress.display(i)
+            # 找到最相似的检索样本
+            similarities = torch.stack(similarities)
+            retrieved_labels = torch.stack(retrieved_labels)
+            
+            max_idx = torch.argmax(similarities)
+            predicted_label = retrieved_labels[max_idx]
+            
+            # 评估预测结果
+            is_correct = (predicted_label == target).item()
+            if is_correct:
+                correct_predictions += 1
+            
+            total_predictions += 1
+            
+            # 计算当前准确率用于进度显示
+            current_acc = (correct_predictions / total_predictions) * 100.0
+            top1.update(current_acc, 1)
+            
+            # 更新时间统计
+            batch_time.update(time.time() - start_time)
+            
+            # 定期显示进度
+            if (i + 1) % args.print_freq == 0:
+                progress.display(i)
+                print(f"  当前准确率: {current_acc:.2f}% ({correct_predictions}/{total_predictions})")
+            
+        except Exception as e:
+            print(f"❌ 处理测试样本 {i} 失败: {e}")
+            total_predictions += 1
+            continue
+    
+    # 计算最终准确率
+    final_accuracy = (correct_predictions / total_predictions) if total_predictions > 0 else 0.0
     
     # 显示最终结果
-    print(f'\n *  {dataset_name} (Multimodal Enhanced Classification)')
-    progress.display_summary()
+    print(f"\n" + "="*60)
+    print(f"🎉 MEC评估完成: {dataset_name}")
+    print(f"📊 总样本数: {total_predictions}")
+    print(f"✅ 正确预测: {correct_predictions}")
+    print(f"🎯 最终准确率: {final_accuracy:.4f} ({final_accuracy*100:.2f}%)")
+    print(f"⏱️  总耗时: {time.time() - start_time:.2f} 秒")
+    print("="*60)
     
-    return top1.avg
+    return final_accuracy
 
 
-# 主工作函数
-# 参数:
-#   args: 命令行参数
+# 简化的主工作函数，专为discovering.py集成设计
 def main_worker(args):
-    # 加载CLIP模型
-    print("=> Model created: visual backbone {}".format(args.arch))
-    clip_model = load_clip_to_cpu(args.arch)
-    # 将模型移到GPU
-    clip_model = clip_model.cuda()
-    # 使用float32精度
-    clip_model.float()
-    # 设置为评估模式
-    clip_model.eval()
+    """
+    简化的主工作函数
+    专为与discovering.py快慢思考系统集成而设计
+    """
+    print(f"🚀 开始MEC评估: {args.test_set}")
+    print(f"📐 模型架构: {args.arch}")
+    
+    try:
+        # 加载CLIP模型
+        print("🔄 加载CLIP模型...")
+        clip_model = load_clip_to_cpu(args.arch)
+        clip_model = clip_model.cuda()
+        clip_model.float()
+        clip_model.eval()
 
-    # 冻结所有参数（不需要梯度）
-    for _, param in clip_model.named_parameters():
-        param.requires_grad_(False)
-    
-    # 开始测试 - 多模态增强分类评估
-    print("\n" + "="*80)
-    print("MULTIMODAL ENHANCED CLASSIFICATION EVALUATION")
-    print("="*80 + "\n")
-    
-    # 执行多模态增强分类评估
-    Multimodal_Enhanced_Classification_evaluation(clip_model, args)
+        # 冻结所有参数
+        for _, param in clip_model.named_parameters():
+            param.requires_grad_(False)
+        
+        print("✅ CLIP模型加载成功")
+        
+        # 执行多模态增强分类评估
+        print("🚀 开始多模态增强分类评估...")
+        accuracy = Multimodal_Enhanced_Classification_evaluation(clip_model, args)
+        
+        if accuracy > 0:
+            print(f"🎉 MEC评估完成! 准确率: {accuracy:.4f}")
+            return accuracy
+        else:
+            print("❌ MEC评估失败!")
+            return 0.0
+            
+    except Exception as e:
+        print(f"❌ MEC评估发生异常: {e}")
+        import traceback
+        traceback.print_exc()
+        return 0.0
 
 # 主程序入口
 if __name__ == '__main__':
