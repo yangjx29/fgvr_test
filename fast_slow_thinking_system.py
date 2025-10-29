@@ -37,7 +37,7 @@ class FastSlowThinkingSystem:
                  text_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
                  device: str = "cuda" if torch.cuda.is_available() else "cpu",
                  cfg: Optional[Dict] = None,
-                 enable_mllm_intermediate_judge: bool = False):
+                 enable_mllm_intermediate_judge: bool = True):
         """
         初始化快慢思考系统
         

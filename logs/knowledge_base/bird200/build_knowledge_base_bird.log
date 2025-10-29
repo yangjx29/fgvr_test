@@ -1,0 +1,1277 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='build_knowledge_base', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/bird200_all.yml', num_per_category='1', kshot=None, region_num=None, superclass=None, gallery_out=None, fusion_method='concat', knowledge_base_dir='./experiments/bird200/knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir=None, classify_dir=None)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'bird', 'num_classes': 200, 'num_base': 100, 'num_novel': 100, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/CUB_200_2011/CUB_200_2011/', 'expt_dir': './experiments/bird200', 'expt_dir_describe': './experiments/bird200/describe', 'path_vqa_questions': './experiments/bird200/describe/bird_vqa_questions_ours', 'path_vqa_answers': './experiments/bird200/describe/bird_attributes_pairs', 'path_llm_prompts': './experiments/bird200/describe/bird_llm_prompts', 'path_identify_answers': './experiments/bird200/identify', 'expt_dir_guess': './experiments/bird200/guess', 'path_llm_replies_raw': './experiments/bird200/guess/bird_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/bird200/guess/bird_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/bird200/guess/bird_llm_gussed_names', 'expt_dir_gallery': './experiments/bird200/gallery', 'path_references': './experiments/bird200/gallery/bird_image_references', 'path_regions': './experiments/bird200/gallery/bird_image_regions', 'path_descriptions': './experiments/bird200/gallery/bird_image_descriptions_attn', 'expt_dir_grouping': './experiments/bird200/grouping'}
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 47.40GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [03:51<15:26, 231.69s/it]Loading checkpoint shards:  40%|████      | 2/5 [05:54<08:23, 167.74s/it]Loading checkpoint shards:  60%|██████    | 3/5 [07:57<04:54, 147.43s/it]Loading checkpoint shards:  80%|████████  | 4/5 [10:20<02:25, 145.62s/it]Loading checkpoint shards: 100%|██████████| 5/5 [10:54<00:00, 105.27s/it]Loading checkpoint shards: 100%|██████████| 5/5 [10:54<00:00, 130.90s/it]
+Some parameters are on the meta device because they were offloaded to the cpu.
+local_model_path: /home/Dataset/Models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 27.82GB / 47.40GB
+初始化快思考模块...
+已加载历史统计量: 139 次预测
+初始化慢思考模块...
+快慢思考系统初始化完成!
+Bird200 subcat_to_sample: {'jpg': ['./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/121.Grasshopper_Sparrow/Grasshopper_Sparrow_0021_116107.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/156.White_eyed_Vireo/White_Eyed_Vireo_0064_159286.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/088.Western_Meadowlark/Western_Meadowlark_0091_78576.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/191.Red_headed_Woodpecker/Red_Headed_Woodpecker_0087_183271.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/115.Brewer_Sparrow/Brewer_Sparrow_0037_107442.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/083.White_breasted_Kingfisher/White_Breasted_Kingfisher_0024_73736.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/097.Orchard_Oriole/Orchard_Oriole_0085_91411.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/126.Nelson_Sharp_tailed_Sparrow/Nelson_Sharp_Tailed_Sparrow_0079_796934.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/171.Myrtle_Warbler/Myrtle_Warbler_0110_166785.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/059.California_Gull/California_Gull_0121_41196.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/028.Brown_Creeper/Brown_Creeper_0002_24838.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/081.Pied_Kingfisher/Pied_Kingfisher_0027_71434.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/039.Least_Flycatcher/Least_Flycatcher_0029_30362.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/014.Indigo_Bunting/Indigo_Bunting_0065_14558.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/078.Gray_Kingbird/Gray_Kingbird_0008_70282.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/193.Bewick_Wren/Bewick_Wren_0085_185474.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/166.Golden_winged_Warbler/Golden_Winged_Warbler_0071_164370.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/197.Marsh_Wren/Marsh_Wren_0038_188530.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/116.Chipping_Sparrow/Chipping_Sparrow_0075_108348.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/139.Scarlet_Tanager/Scarlet_Tanager_0042_138287.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/150.Sage_Thrasher/Sage_Thrasher_0045_155448.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/100.Brown_Pelican/Brown_Pelican_0074_93692.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/168.Kentucky_Warbler/Kentucky_Warbler_0067_165404.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/060.Glaucous_winged_Gull/Glaucous_Winged_Gull_0017_45224.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/008.Rhinoceros_Auklet/Rhinoceros_Auklet_0017_2155.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/082.Ringed_Kingfisher/Ringed_Kingfisher_0052_72871.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/079.Belted_Kingfisher/Belted_Kingfisher_0020_70922.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/056.Pine_Grosbeak/Pine_Grosbeak_0104_38362.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/091.Mockingbird/Mockingbird_0056_81986.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/084.Red_legged_Kittiwake/Red_Legged_Kittiwake_0043_795416.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/199.Winter_Wren/Winter_Wren_0116_189834.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/051.Horned_Grebe/Horned_Grebe_0064_35015.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/024.Red_faced_Cormorant/Red_Faced_Cormorant_0034_23425.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/113.Baird_Sparrow/Baird_Sparrow_0013_794587.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/119.Field_Sparrow/Field_Sparrow_0069_113827.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/020.Yellow_breasted_Chat/Yellow_Breasted_Chat_0062_21673.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/124.Le_Conte_Sparrow/Le_Conte_Sparrow_0023_795156.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/092.Nighthawk/Nighthawk_0016_84490.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/137.Cliff_Swallow/Cliff_Swallow_0045_133591.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/043.Yellow_bellied_Flycatcher/Yellow_Bellied_Flycatcher_0009_795510.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/089.Hooded_Merganser/Hooded_Merganser_0043_796783.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/087.Mallard/Mallard_0082_75954.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/196.House_Wren/House_Wren_0130_187109.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/123.Henslow_Sparrow/Henslow_Sparrow_0023_796582.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/175.Pine_Warbler/Pine_Warbler_0008_171330.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/112.Great_Grey_Shrike/Great_Grey_Shrike_0003_106552.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/109.American_Redstart/American_Redstart_0049_103176.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/068.Ruby_throated_Hummingbird/Ruby_Throated_Hummingbird_0003_58269.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/017.Cardinal/Cardinal_0060_17139.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/138.Tree_Swallow/Tree_Swallow_0075_136081.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/012.Yellow_headed_Blackbird/Yellow_Headed_Blackbird_0061_8208.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/006.Least_Auklet/Least_Auklet_0015_795065.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/132.White_crowned_Sparrow/White_Crowned_Sparrow_0071_127922.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/035.Purple_Finch/Purple_Finch_0013_27506.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/159.Black_and_white_Warbler/Black_And_White_Warbler_0048_160287.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/003.Sooty_Albatross/Sooty_Albatross_0006_796390.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/076.Dark_eyed_Junco/Dark_Eyed_Junco_0044_68213.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/007.Parakeet_Auklet/Parakeet_Auklet_0074_795976.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/096.Hooded_Oriole/Hooded_Oriole_0038_90575.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/041.Scissor_tailed_Flycatcher/Scissor_Tailed_Flycatcher_0111_42118.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/073.Blue_Jay/Blue_Jay_0028_63599.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/058.Pigeon_Guillemot/Pigeon_Guillemot_0100_40179.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/161.Blue_winged_Warbler/Blue_Winged_Warbler_0075_161844.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/173.Orange_crowned_Warbler/Orange_Crowned_Warbler_0021_168263.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/053.Western_Grebe/Western_Grebe_0091_36194.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/042.Vermilion_Flycatcher/Vermilion_Flycatcher_0026_42375.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/144.Common_Tern/Common_Tern_0087_147945.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/069.Rufous_Hummingbird/Rufous_Hummingbird_0106_60465.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/010.Red_winged_Blackbird/Red_Winged_Blackbird_0109_4454.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/128.Seaside_Sparrow/Seaside_Sparrow_0031_796526.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/177.Prothonotary_Warbler/Prothonotary_Warbler_0124_173686.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/153.Philadelphia_Vireo/Philadelphia_Vireo_0035_156596.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/013.Bobolink/Bobolink_0026_11057.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/180.Wilson_Warbler/Wilson_Warbler_0107_175320.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/108.White_necked_Raven/White_Necked_Raven_0002_797370.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/011.Rusty_Blackbird/Rusty_Blackbird_0087_6727.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/145.Elegant_Tern/Elegant_Tern_0028_151019.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/080.Green_Kingfisher/Green_Kingfisher_0010_71191.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/186.Cedar_Waxwing/Cedar_Waxwing_0048_178960.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/190.Red_cockaded_Woodpecker/Red_Cockaded_Woodpecker_0048_182599.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/170.Mourning_Warbler/Mourning_Warbler_0035_166586.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/046.Gadwall/Gadwall_0065_31659.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/015.Lazuli_Bunting/Lazuli_Bunting_0076_14662.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/075.Green_Jay/Green_Jay_0126_65716.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0026_26794.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/164.Cerulean_Warbler/Cerulean_Warbler_0090_797195.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/122.Harris_Sparrow/Harris_Sparrow_0010_116376.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/158.Bay_breasted_Warbler/Bay_Breasted_Warbler_0077_797144.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/142.Black_Tern/Black_Tern_0097_144724.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/160.Black_throated_Blue_Warbler/Black_Throated_Blue_Warbler_0017_161220.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/025.Pelagic_Cormorant/Pelagic_Cormorant_0055_23415.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/045.Northern_Fulmar/Northern_Fulmar_0001_43749.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/110.Geococcyx/Geococcyx_0056_104142.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/009.Brewer_Blackbird/Brewer_Blackbird_0140_2586.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/023.Brandt_Cormorant/Brandt_Cormorant_0022_23157.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/136.Barn_Swallow/Barn_Swallow_0027_129978.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/189.Red_bellied_Woodpecker/Red_Bellied_Woodpecker_0114_181092.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/151.Black_capped_Vireo/Black_Capped_Vireo_0028_155799.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/194.Cactus_Wren/Cactus_Wren_0116_185927.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/040.Olive_sided_Flycatcher/Olive_Sided_Flycatcher_0052_30639.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/032.Mangrove_Cuckoo/Mangrove_Cuckoo_0036_794606.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/120.Fox_Sparrow/Fox_Sparrow_0012_115324.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/129.Song_Sparrow/Song_Sparrow_0015_122081.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/114.Black_throated_Sparrow/Black_Throated_Sparrow_0102_107243.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/029.American_Crow/American_Crow_0030_25092.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/103.Sayornis/Sayornis_0125_98528.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/188.Pileated_Woodpecker/Pileated_Woodpecker_0025_180253.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/130.Tree_Sparrow/Tree_Sparrow_0090_110145.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/052.Pied_billed_Grebe/Pied_Billed_Grebe_0020_35958.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/167.Hooded_Warbler/Hooded_Warbler_0003_164915.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/141.Artic_Tern/Artic_Tern_0029_142220.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/099.Ovenbird/Ovenbird_0047_93203.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/195.Carolina_Wren/Carolina_Wren_0033_186848.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/181.Worm_eating_Warbler/Worm_Eating_Warbler_0034_795560.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/140.Summer_Tanager/Summer_Tanager_0125_139399.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/070.Green_Violetear/Green_Violetear_0002_795699.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/106.Horned_Puffin/Horned_Puffin_0022_100766.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/134.Cape_Glossy_Starling/Cape_Glossy_Starling_0079_129399.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/027.Shiny_Cowbird/Shiny_Cowbird_0056_24321.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/066.Western_Gull/Western_Gull_0045_54735.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/133.White_throated_Sparrow/White_Throated_Sparrow_0132_128833.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/048.European_Goldfinch/European_Goldfinch_0101_33127.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/155.Warbling_Vireo/Warbling_Vireo_0090_158403.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/054.Blue_Grosbeak/Blue_Grosbeak_0112_36679.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/026.Bronzed_Cowbird/Bronzed_Cowbird_0039_24026.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/063.Ivory_Gull/Ivory_Gull_0094_49347.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/105.Whip_poor_Will/Whip_Poor_Will_0034_796413.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/019.Gray_Catbird/Gray_Catbird_0126_19446.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/147.Least_Tern/Least_Tern_0116_153715.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/198.Rock_Wren/Rock_Wren_0009_189162.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/172.Nashville_Warbler/Nashville_Warbler_0053_167403.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/044.Frigatebird/Frigatebird_0092_43206.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/143.Caspian_Tern/Caspian_Tern_0097_145923.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/127.Savannah_Sparrow/Savannah_Sparrow_0094_119040.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/117.Clay_colored_Sparrow/Clay_Colored_Sparrow_0005_110911.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/077.Tropical_Kingbird/Tropical_Kingbird_0041_69954.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/030.Fish_Crow/Fish_Crow_0076_25971.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/055.Evening_Grosbeak/Evening_Grosbeak_0038_37228.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/135.Bank_Swallow/Bank_Swallow_0048_129546.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/067.Anna_Hummingbird/Anna_Hummingbird_0113_56296.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/183.Northern_Waterthrush/Northern_Waterthrush_0005_177023.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/018.Spotted_Catbird/Spotted_Catbird_0048_796817.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/090.Red_breasted_Merganser/Red_Breasted_Merganser_0052_79178.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/149.Brown_Thrasher/Brown_Thrasher_0014_155421.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/038.Great_Crested_Flycatcher/Great_Crested_Flycatcher_0070_29455.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/086.Pacific_Loon/Pacific_Loon_0051_75514.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/072.Pomarine_Jaeger/Pomarine_Jaeger_0069_61381.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/065.Slaty_backed_Gull/Slaty_Backed_Gull_0068_53206.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/200.Common_Yellowthroat/Common_Yellowthroat_0019_190524.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/104.American_Pipit/American_Pipit_0011_99630.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0032_39772.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/022.Chuck_will_Widow/Chuck_Will_Widow_0008_796968.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/125.Lincoln_Sparrow/Lincoln_Sparrow_0087_117444.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/179.Tennessee_Warbler/Tennessee_Warbler_0075_174763.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/174.Palm_Warbler/Palm_Warbler_0089_168968.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/071.Long_tailed_Jaeger/Long_Tailed_Jaeger_0021_797083.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/074.Florida_Jay/Florida_Jay_0103_64537.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/165.Chestnut_sided_Warbler/Chestnut_Sided_Warbler_0016_164060.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/187.American_Three_toed_Woodpecker/American_Three_Toed_Woodpecker_0046_796153.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/016.Painted_Bunting/Painted_Bunting_0079_15197.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/049.Boat_tailed_Grackle/Boat_Tailed_Grackle_0066_33368.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/021.Eastern_Towhee/Eastern_Towhee_0017_22138.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/031.Black_billed_Cuckoo/Black_Billed_Cuckoo_0084_26175.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/005.Crested_Auklet/Crested_Auklet_0005_794922.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/162.Canada_Warbler/Canada_Warbler_0008_162416.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/002.Laysan_Albatross/Laysan_Albatross_0070_788.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/094.White_breasted_Nuthatch/White_Breasted_Nuthatch_0059_85903.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/093.Clark_Nutcracker/Clark_Nutcracker_0058_85384.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/061.Heermann_Gull/Heermann_Gull_0020_45409.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/095.Baltimore_Oriole/Baltimore_Oriole_0091_88487.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/157.Yellow_throated_Vireo/Yellow_Throated_Vireo_0031_159712.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/185.Bohemian_Waxwing/Bohemian_Waxwing_0084_796639.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/111.Loggerhead_Shrike/Loggerhead_Shrike_0108_105023.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/062.Herring_Gull/Herring_Gull_0114_46956.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/107.Common_Raven/Common_Raven_0061_102519.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/184.Louisiana_Waterthrush/Louisiana_Waterthrush_0042_177551.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/146.Forsters_Tern/Forsters_Tern_0125_151399.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/154.Red_eyed_Vireo/Red_Eyed_Vireo_0133_156668.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/101.White_Pelican/White_Pelican_0016_96659.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/004.Groove_billed_Ani/Groove_Billed_Ani_0109_1592.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/085.Horned_Lark/Horned_Lark_0141_74396.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/131.Vesper_Sparrow/Vesper_Sparrow_0045_125643.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/034.Gray_crowned_Rosy_Finch/Gray_Crowned_Rosy_Finch_0027_27153.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/148.Green_tailed_Towhee/Green_Tailed_Towhee_0036_154875.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/178.Swainson_Warbler/Swainson_Warbler_0032_174728.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/098.Scott_Oriole/Scott_Oriole_0029_795846.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/001.Black_footed_Albatross/Black_Footed_Albatross_0003_796136.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/102.Western_Wood_Pewee/Western_Wood_Pewee_0021_98101.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/064.Ring_billed_Gull/Ring_Billed_Gull_0108_51108.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/037.Acadian_Flycatcher/Acadian_Flycatcher_0019_795592.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/163.Cape_May_Warbler/Cape_May_Warbler_0043_163172.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/182.Yellow_Warbler/Yellow_Warbler_0112_176301.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/176.Prairie_Warbler/Prairie_Warbler_0020_173359.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/192.Downy_Woodpecker/Downy_Woodpecker_0090_183964.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/152.Blue_headed_Vireo/Blue_Headed_Vireo_0060_156171.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/118.House_Sparrow/House_Sparrow_0030_111387.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/169.Magnolia_Warbler/Magnolia_Warbler_0054_165965.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/050.Eared_Grebe/Eared_Grebe_0062_34249.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/047.American_Goldfinch/American_Goldfinch_0091_31938.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/036.Northern_Flicker/Northern_Flicker_0127_28411.jpg']}
+构建知识库，包含 1 个类别, dog datasets:200
+从 ./experiments/bird200/knowledge_base 加载知识库...
+知识库已从 ./experiments/bird200/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 1 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:03<00:00,  3.52s/it]100%|██████████| 1/1 [00:03<00:00,  3.52s/it]
+处理类别: jpg
+类别 jpg 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [02:43<00:00, 163.45s/it]100%|██████████| 1/1 [02:43<00:00, 163.45s/it]
+处理类别: jpg
+wiki desc: Description for jpg category.
+MLLM description: ### Image 1: Bird Perched on a Wooden Post
+
+#### Distinctive Physical Features:
+- **Head**: The bird has a small, rounded head with a short, conical beak suited for seed-eating.
+- **Eyes**: Bright yellow eyes with black pupils, giving it an alert appearance.
+
+#### Color Patterns and Markings:
+- **Head**: A mix of white and brown feathers with a distinct black stripe running through the eye, resembling an "eyebrow."
+- **Body**: Primarily light gray with subtle streaking on the chest and belly, transitioning to darker gray on the wings and back.
+- **Tail**: Short, slightly rounded tail with a hint of brownish-gray coloration.
+
+#### Size and Proportions:
+- **Small Bird**: Compact body size, typical of sparrows or finches.
+- **Proportions**: Proportionate with a balanced head-to-body ratio, short legs, and a compact build.
+
+#### Behavioral Characteristics:
+- **Perching**: The bird is perched on a wooden post, suggesting it may be foraging or resting.
+- **Alertness**: Its posture and bright eyes indicate attentiveness to its surroundings.
+
+#### Unique Identifying Traits:
+- **"Eyebrow" Stripe**: The
+类别 jpg 文本特征维度: (512,)
+描述: ### Image 1: Bird Perched on a Wooden Post
+
+#### Distinctive Physical Features:
+- **Head**: The bird...
+知识库构建完成!
+图像知识库包含 1 个类别
+文本知识库包含 1 个类别
+知识库已保存到: ./experiments/bird200/knowledge_base
+
+开始初始化LCB统计参数...
+test train_samples:defaultdict(<class 'list'>, {'jpg': ['./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/121.Grasshopper_Sparrow/Grasshopper_Sparrow_0021_116107.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/156.White_eyed_Vireo/White_Eyed_Vireo_0064_159286.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/088.Western_Meadowlark/Western_Meadowlark_0091_78576.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/191.Red_headed_Woodpecker/Red_Headed_Woodpecker_0087_183271.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/115.Brewer_Sparrow/Brewer_Sparrow_0037_107442.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/083.White_breasted_Kingfisher/White_Breasted_Kingfisher_0024_73736.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/097.Orchard_Oriole/Orchard_Oriole_0085_91411.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/126.Nelson_Sharp_tailed_Sparrow/Nelson_Sharp_Tailed_Sparrow_0079_796934.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/171.Myrtle_Warbler/Myrtle_Warbler_0110_166785.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/059.California_Gull/California_Gull_0121_41196.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/028.Brown_Creeper/Brown_Creeper_0002_24838.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/081.Pied_Kingfisher/Pied_Kingfisher_0027_71434.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/039.Least_Flycatcher/Least_Flycatcher_0029_30362.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/014.Indigo_Bunting/Indigo_Bunting_0065_14558.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/078.Gray_Kingbird/Gray_Kingbird_0008_70282.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/193.Bewick_Wren/Bewick_Wren_0085_185474.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/166.Golden_winged_Warbler/Golden_Winged_Warbler_0071_164370.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/197.Marsh_Wren/Marsh_Wren_0038_188530.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/116.Chipping_Sparrow/Chipping_Sparrow_0075_108348.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/139.Scarlet_Tanager/Scarlet_Tanager_0042_138287.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/150.Sage_Thrasher/Sage_Thrasher_0045_155448.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/100.Brown_Pelican/Brown_Pelican_0074_93692.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/168.Kentucky_Warbler/Kentucky_Warbler_0067_165404.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/060.Glaucous_winged_Gull/Glaucous_Winged_Gull_0017_45224.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/008.Rhinoceros_Auklet/Rhinoceros_Auklet_0017_2155.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/082.Ringed_Kingfisher/Ringed_Kingfisher_0052_72871.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/079.Belted_Kingfisher/Belted_Kingfisher_0020_70922.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/056.Pine_Grosbeak/Pine_Grosbeak_0104_38362.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/091.Mockingbird/Mockingbird_0056_81986.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/084.Red_legged_Kittiwake/Red_Legged_Kittiwake_0043_795416.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/199.Winter_Wren/Winter_Wren_0116_189834.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/051.Horned_Grebe/Horned_Grebe_0064_35015.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/024.Red_faced_Cormorant/Red_Faced_Cormorant_0034_23425.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/113.Baird_Sparrow/Baird_Sparrow_0013_794587.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/119.Field_Sparrow/Field_Sparrow_0069_113827.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/020.Yellow_breasted_Chat/Yellow_Breasted_Chat_0062_21673.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/124.Le_Conte_Sparrow/Le_Conte_Sparrow_0023_795156.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/092.Nighthawk/Nighthawk_0016_84490.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/137.Cliff_Swallow/Cliff_Swallow_0045_133591.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/043.Yellow_bellied_Flycatcher/Yellow_Bellied_Flycatcher_0009_795510.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/089.Hooded_Merganser/Hooded_Merganser_0043_796783.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/087.Mallard/Mallard_0082_75954.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/196.House_Wren/House_Wren_0130_187109.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/123.Henslow_Sparrow/Henslow_Sparrow_0023_796582.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/175.Pine_Warbler/Pine_Warbler_0008_171330.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/112.Great_Grey_Shrike/Great_Grey_Shrike_0003_106552.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/109.American_Redstart/American_Redstart_0049_103176.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/068.Ruby_throated_Hummingbird/Ruby_Throated_Hummingbird_0003_58269.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/017.Cardinal/Cardinal_0060_17139.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/138.Tree_Swallow/Tree_Swallow_0075_136081.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/012.Yellow_headed_Blackbird/Yellow_Headed_Blackbird_0061_8208.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/006.Least_Auklet/Least_Auklet_0015_795065.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/132.White_crowned_Sparrow/White_Crowned_Sparrow_0071_127922.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/035.Purple_Finch/Purple_Finch_0013_27506.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/159.Black_and_white_Warbler/Black_And_White_Warbler_0048_160287.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/003.Sooty_Albatross/Sooty_Albatross_0006_796390.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/076.Dark_eyed_Junco/Dark_Eyed_Junco_0044_68213.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/007.Parakeet_Auklet/Parakeet_Auklet_0074_795976.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/096.Hooded_Oriole/Hooded_Oriole_0038_90575.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/041.Scissor_tailed_Flycatcher/Scissor_Tailed_Flycatcher_0111_42118.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/073.Blue_Jay/Blue_Jay_0028_63599.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/058.Pigeon_Guillemot/Pigeon_Guillemot_0100_40179.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/161.Blue_winged_Warbler/Blue_Winged_Warbler_0075_161844.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/173.Orange_crowned_Warbler/Orange_Crowned_Warbler_0021_168263.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/053.Western_Grebe/Western_Grebe_0091_36194.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/042.Vermilion_Flycatcher/Vermilion_Flycatcher_0026_42375.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/144.Common_Tern/Common_Tern_0087_147945.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/069.Rufous_Hummingbird/Rufous_Hummingbird_0106_60465.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/010.Red_winged_Blackbird/Red_Winged_Blackbird_0109_4454.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/128.Seaside_Sparrow/Seaside_Sparrow_0031_796526.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/177.Prothonotary_Warbler/Prothonotary_Warbler_0124_173686.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/153.Philadelphia_Vireo/Philadelphia_Vireo_0035_156596.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/013.Bobolink/Bobolink_0026_11057.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/180.Wilson_Warbler/Wilson_Warbler_0107_175320.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/108.White_necked_Raven/White_Necked_Raven_0002_797370.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/011.Rusty_Blackbird/Rusty_Blackbird_0087_6727.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/145.Elegant_Tern/Elegant_Tern_0028_151019.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/080.Green_Kingfisher/Green_Kingfisher_0010_71191.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/186.Cedar_Waxwing/Cedar_Waxwing_0048_178960.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/190.Red_cockaded_Woodpecker/Red_Cockaded_Woodpecker_0048_182599.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/170.Mourning_Warbler/Mourning_Warbler_0035_166586.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/046.Gadwall/Gadwall_0065_31659.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/015.Lazuli_Bunting/Lazuli_Bunting_0076_14662.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/075.Green_Jay/Green_Jay_0126_65716.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0026_26794.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/164.Cerulean_Warbler/Cerulean_Warbler_0090_797195.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/122.Harris_Sparrow/Harris_Sparrow_0010_116376.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/158.Bay_breasted_Warbler/Bay_Breasted_Warbler_0077_797144.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/142.Black_Tern/Black_Tern_0097_144724.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/160.Black_throated_Blue_Warbler/Black_Throated_Blue_Warbler_0017_161220.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/025.Pelagic_Cormorant/Pelagic_Cormorant_0055_23415.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/045.Northern_Fulmar/Northern_Fulmar_0001_43749.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/110.Geococcyx/Geococcyx_0056_104142.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/009.Brewer_Blackbird/Brewer_Blackbird_0140_2586.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/023.Brandt_Cormorant/Brandt_Cormorant_0022_23157.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/136.Barn_Swallow/Barn_Swallow_0027_129978.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/189.Red_bellied_Woodpecker/Red_Bellied_Woodpecker_0114_181092.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/151.Black_capped_Vireo/Black_Capped_Vireo_0028_155799.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/194.Cactus_Wren/Cactus_Wren_0116_185927.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/040.Olive_sided_Flycatcher/Olive_Sided_Flycatcher_0052_30639.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/032.Mangrove_Cuckoo/Mangrove_Cuckoo_0036_794606.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/120.Fox_Sparrow/Fox_Sparrow_0012_115324.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/129.Song_Sparrow/Song_Sparrow_0015_122081.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/114.Black_throated_Sparrow/Black_Throated_Sparrow_0102_107243.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/029.American_Crow/American_Crow_0030_25092.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/103.Sayornis/Sayornis_0125_98528.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/188.Pileated_Woodpecker/Pileated_Woodpecker_0025_180253.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/130.Tree_Sparrow/Tree_Sparrow_0090_110145.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/052.Pied_billed_Grebe/Pied_Billed_Grebe_0020_35958.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/167.Hooded_Warbler/Hooded_Warbler_0003_164915.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/141.Artic_Tern/Artic_Tern_0029_142220.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/099.Ovenbird/Ovenbird_0047_93203.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/195.Carolina_Wren/Carolina_Wren_0033_186848.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/181.Worm_eating_Warbler/Worm_Eating_Warbler_0034_795560.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/140.Summer_Tanager/Summer_Tanager_0125_139399.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/070.Green_Violetear/Green_Violetear_0002_795699.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/106.Horned_Puffin/Horned_Puffin_0022_100766.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/134.Cape_Glossy_Starling/Cape_Glossy_Starling_0079_129399.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/027.Shiny_Cowbird/Shiny_Cowbird_0056_24321.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/066.Western_Gull/Western_Gull_0045_54735.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/133.White_throated_Sparrow/White_Throated_Sparrow_0132_128833.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/048.European_Goldfinch/European_Goldfinch_0101_33127.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/155.Warbling_Vireo/Warbling_Vireo_0090_158403.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/054.Blue_Grosbeak/Blue_Grosbeak_0112_36679.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/026.Bronzed_Cowbird/Bronzed_Cowbird_0039_24026.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/063.Ivory_Gull/Ivory_Gull_0094_49347.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/105.Whip_poor_Will/Whip_Poor_Will_0034_796413.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/019.Gray_Catbird/Gray_Catbird_0126_19446.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/147.Least_Tern/Least_Tern_0116_153715.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/198.Rock_Wren/Rock_Wren_0009_189162.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/172.Nashville_Warbler/Nashville_Warbler_0053_167403.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/044.Frigatebird/Frigatebird_0092_43206.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/143.Caspian_Tern/Caspian_Tern_0097_145923.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/127.Savannah_Sparrow/Savannah_Sparrow_0094_119040.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/117.Clay_colored_Sparrow/Clay_Colored_Sparrow_0005_110911.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/077.Tropical_Kingbird/Tropical_Kingbird_0041_69954.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/030.Fish_Crow/Fish_Crow_0076_25971.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/055.Evening_Grosbeak/Evening_Grosbeak_0038_37228.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/135.Bank_Swallow/Bank_Swallow_0048_129546.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/067.Anna_Hummingbird/Anna_Hummingbird_0113_56296.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/183.Northern_Waterthrush/Northern_Waterthrush_0005_177023.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/018.Spotted_Catbird/Spotted_Catbird_0048_796817.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/090.Red_breasted_Merganser/Red_Breasted_Merganser_0052_79178.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/149.Brown_Thrasher/Brown_Thrasher_0014_155421.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/038.Great_Crested_Flycatcher/Great_Crested_Flycatcher_0070_29455.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/086.Pacific_Loon/Pacific_Loon_0051_75514.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/072.Pomarine_Jaeger/Pomarine_Jaeger_0069_61381.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/065.Slaty_backed_Gull/Slaty_Backed_Gull_0068_53206.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/200.Common_Yellowthroat/Common_Yellowthroat_0019_190524.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/104.American_Pipit/American_Pipit_0011_99630.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0032_39772.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/022.Chuck_will_Widow/Chuck_Will_Widow_0008_796968.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/125.Lincoln_Sparrow/Lincoln_Sparrow_0087_117444.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/179.Tennessee_Warbler/Tennessee_Warbler_0075_174763.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/174.Palm_Warbler/Palm_Warbler_0089_168968.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/071.Long_tailed_Jaeger/Long_Tailed_Jaeger_0021_797083.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/074.Florida_Jay/Florida_Jay_0103_64537.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/165.Chestnut_sided_Warbler/Chestnut_Sided_Warbler_0016_164060.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/187.American_Three_toed_Woodpecker/American_Three_Toed_Woodpecker_0046_796153.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/016.Painted_Bunting/Painted_Bunting_0079_15197.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/049.Boat_tailed_Grackle/Boat_Tailed_Grackle_0066_33368.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/021.Eastern_Towhee/Eastern_Towhee_0017_22138.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/031.Black_billed_Cuckoo/Black_Billed_Cuckoo_0084_26175.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/005.Crested_Auklet/Crested_Auklet_0005_794922.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/162.Canada_Warbler/Canada_Warbler_0008_162416.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/002.Laysan_Albatross/Laysan_Albatross_0070_788.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/094.White_breasted_Nuthatch/White_Breasted_Nuthatch_0059_85903.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/093.Clark_Nutcracker/Clark_Nutcracker_0058_85384.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/061.Heermann_Gull/Heermann_Gull_0020_45409.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/095.Baltimore_Oriole/Baltimore_Oriole_0091_88487.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/157.Yellow_throated_Vireo/Yellow_Throated_Vireo_0031_159712.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/185.Bohemian_Waxwing/Bohemian_Waxwing_0084_796639.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/111.Loggerhead_Shrike/Loggerhead_Shrike_0108_105023.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/062.Herring_Gull/Herring_Gull_0114_46956.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/107.Common_Raven/Common_Raven_0061_102519.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/184.Louisiana_Waterthrush/Louisiana_Waterthrush_0042_177551.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/146.Forsters_Tern/Forsters_Tern_0125_151399.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/154.Red_eyed_Vireo/Red_Eyed_Vireo_0133_156668.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/101.White_Pelican/White_Pelican_0016_96659.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/004.Groove_billed_Ani/Groove_Billed_Ani_0109_1592.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/085.Horned_Lark/Horned_Lark_0141_74396.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/131.Vesper_Sparrow/Vesper_Sparrow_0045_125643.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/034.Gray_crowned_Rosy_Finch/Gray_Crowned_Rosy_Finch_0027_27153.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/148.Green_tailed_Towhee/Green_Tailed_Towhee_0036_154875.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/178.Swainson_Warbler/Swainson_Warbler_0032_174728.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/098.Scott_Oriole/Scott_Oriole_0029_795846.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/001.Black_footed_Albatross/Black_Footed_Albatross_0003_796136.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/102.Western_Wood_Pewee/Western_Wood_Pewee_0021_98101.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/064.Ring_billed_Gull/Ring_Billed_Gull_0108_51108.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/037.Acadian_Flycatcher/Acadian_Flycatcher_0019_795592.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/163.Cape_May_Warbler/Cape_May_Warbler_0043_163172.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/182.Yellow_Warbler/Yellow_Warbler_0112_176301.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/176.Prairie_Warbler/Prairie_Warbler_0020_173359.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/192.Downy_Woodpecker/Downy_Woodpecker_0090_183964.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/152.Blue_headed_Vireo/Blue_Headed_Vireo_0060_156171.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/118.House_Sparrow/House_Sparrow_0030_111387.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/169.Magnolia_Warbler/Magnolia_Warbler_0054_165965.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/050.Eared_Grebe/Eared_Grebe_0062_34249.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/047.American_Goldfinch/American_Goldfinch_0091_31938.jpg', './datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/036.Northern_Flicker/Northern_Flicker_0127_28411.jpg']})
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/121.Grasshopper_Sparrow/Grasshopper_Sparrow_0021_116107.jpg
+图像检索结果: jpg (置信度: 0.7238)
+文本检索结果: jpg (置信度: 0.3049)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/156.White_eyed_Vireo/White_Eyed_Vireo_0064_159286.jpg
+图像检索结果: jpg (置信度: 0.7504)
+文本检索结果: jpg (置信度: 0.2552)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/088.Western_Meadowlark/Western_Meadowlark_0091_78576.jpg
+图像检索结果: jpg (置信度: 0.7172)
+文本检索结果: jpg (置信度: 0.2707)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/191.Red_headed_Woodpecker/Red_Headed_Woodpecker_0087_183271.jpg
+图像检索结果: jpg (置信度: 0.7087)
+文本检索结果: jpg (置信度: 0.2648)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/115.Brewer_Sparrow/Brewer_Sparrow_0037_107442.jpg
+图像检索结果: jpg (置信度: 0.7251)
+文本检索结果: jpg (置信度: 0.2620)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/083.White_breasted_Kingfisher/White_Breasted_Kingfisher_0024_73736.jpg
+图像检索结果: jpg (置信度: 0.6983)
+文本检索结果: jpg (置信度: 0.2495)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/097.Orchard_Oriole/Orchard_Oriole_0085_91411.jpg
+图像检索结果: jpg (置信度: 0.7338)
+文本检索结果: jpg (置信度: 0.2694)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/126.Nelson_Sharp_tailed_Sparrow/Nelson_Sharp_Tailed_Sparrow_0079_796934.jpg
+图像检索结果: jpg (置信度: 0.7183)
+文本检索结果: jpg (置信度: 0.2850)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/171.Myrtle_Warbler/Myrtle_Warbler_0110_166785.jpg
+图像检索结果: jpg (置信度: 0.7429)
+文本检索结果: jpg (置信度: 0.2938)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/059.California_Gull/California_Gull_0121_41196.jpg
+图像检索结果: jpg (置信度: 0.6822)
+文本检索结果: jpg (置信度: 0.2607)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/028.Brown_Creeper/Brown_Creeper_0002_24838.jpg
+图像检索结果: jpg (置信度: 0.7301)
+文本检索结果: jpg (置信度: 0.2460)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/081.Pied_Kingfisher/Pied_Kingfisher_0027_71434.jpg
+图像检索结果: jpg (置信度: 0.6911)
+文本检索结果: jpg (置信度: 0.2503)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/039.Least_Flycatcher/Least_Flycatcher_0029_30362.jpg
+图像检索结果: jpg (置信度: 0.7562)
+文本检索结果: jpg (置信度: 0.2553)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/014.Indigo_Bunting/Indigo_Bunting_0065_14558.jpg
+图像检索结果: jpg (置信度: 0.6778)
+文本检索结果: jpg (置信度: 0.2486)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/078.Gray_Kingbird/Gray_Kingbird_0008_70282.jpg
+图像检索结果: jpg (置信度: 0.7361)
+文本检索结果: jpg (置信度: 0.3041)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/193.Bewick_Wren/Bewick_Wren_0085_185474.jpg
+图像检索结果: jpg (置信度: 0.6969)
+文本检索结果: jpg (置信度: 0.2668)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/166.Golden_winged_Warbler/Golden_Winged_Warbler_0071_164370.jpg
+图像检索结果: jpg (置信度: 0.7230)
+文本检索结果: jpg (置信度: 0.2909)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/197.Marsh_Wren/Marsh_Wren_0038_188530.jpg
+图像检索结果: jpg (置信度: 0.7059)
+文本检索结果: jpg (置信度: 0.2389)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/116.Chipping_Sparrow/Chipping_Sparrow_0075_108348.jpg
+图像检索结果: jpg (置信度: 0.7062)
+文本检索结果: jpg (置信度: 0.2096)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/139.Scarlet_Tanager/Scarlet_Tanager_0042_138287.jpg
+图像检索结果: jpg (置信度: 0.7223)
+文本检索结果: jpg (置信度: 0.2645)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/150.Sage_Thrasher/Sage_Thrasher_0045_155448.jpg
+图像检索结果: jpg (置信度: 0.7009)
+文本检索结果: jpg (置信度: 0.2464)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/100.Brown_Pelican/Brown_Pelican_0074_93692.jpg
+图像检索结果: jpg (置信度: 0.6714)
+文本检索结果: jpg (置信度: 0.2568)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/168.Kentucky_Warbler/Kentucky_Warbler_0067_165404.jpg
+图像检索结果: jpg (置信度: 0.7233)
+文本检索结果: jpg (置信度: 0.2978)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/060.Glaucous_winged_Gull/Glaucous_Winged_Gull_0017_45224.jpg
+图像检索结果: jpg (置信度: 0.6925)
+文本检索结果: jpg (置信度: 0.2264)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/008.Rhinoceros_Auklet/Rhinoceros_Auklet_0017_2155.jpg
+图像检索结果: jpg (置信度: 0.6669)
+文本检索结果: jpg (置信度: 0.2275)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/082.Ringed_Kingfisher/Ringed_Kingfisher_0052_72871.jpg
+图像检索结果: jpg (置信度: 0.7136)
+文本检索结果: jpg (置信度: 0.2686)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/079.Belted_Kingfisher/Belted_Kingfisher_0020_70922.jpg
+图像检索结果: jpg (置信度: 0.7225)
+文本检索结果: jpg (置信度: 0.2468)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/056.Pine_Grosbeak/Pine_Grosbeak_0104_38362.jpg
+图像检索结果: jpg (置信度: 0.7064)
+文本检索结果: jpg (置信度: 0.2537)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/091.Mockingbird/Mockingbird_0056_81986.jpg
+图像检索结果: jpg (置信度: 0.7417)
+文本检索结果: jpg (置信度: 0.2529)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/084.Red_legged_Kittiwake/Red_Legged_Kittiwake_0043_795416.jpg
+图像检索结果: jpg (置信度: 0.6905)
+文本检索结果: jpg (置信度: 0.2749)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/199.Winter_Wren/Winter_Wren_0116_189834.jpg
+图像检索结果: jpg (置信度: 0.7004)
+文本检索结果: jpg (置信度: 0.2546)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/051.Horned_Grebe/Horned_Grebe_0064_35015.jpg
+图像检索结果: jpg (置信度: 0.6683)
+文本检索结果: jpg (置信度: 0.2241)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/024.Red_faced_Cormorant/Red_Faced_Cormorant_0034_23425.jpg
+图像检索结果: jpg (置信度: 0.6955)
+文本检索结果: jpg (置信度: 0.2373)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/113.Baird_Sparrow/Baird_Sparrow_0013_794587.jpg
+图像检索结果: jpg (置信度: 0.7178)
+文本检索结果: jpg (置信度: 0.2490)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/119.Field_Sparrow/Field_Sparrow_0069_113827.jpg
+图像检索结果: jpg (置信度: 0.7399)
+文本检索结果: jpg (置信度: 0.2838)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/020.Yellow_breasted_Chat/Yellow_Breasted_Chat_0062_21673.jpg
+图像检索结果: jpg (置信度: 0.7263)
+文本检索结果: jpg (置信度: 0.2674)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/124.Le_Conte_Sparrow/Le_Conte_Sparrow_0023_795156.jpg
+图像检索结果: jpg (置信度: 0.7142)
+文本检索结果: jpg (置信度: 0.2603)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/092.Nighthawk/Nighthawk_0016_84490.jpg
+图像检索结果: jpg (置信度: 0.7096)
+文本检索结果: jpg (置信度: 0.2610)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/137.Cliff_Swallow/Cliff_Swallow_0045_133591.jpg
+图像检索结果: jpg (置信度: 0.7231)
+文本检索结果: jpg (置信度: 0.2063)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/043.Yellow_bellied_Flycatcher/Yellow_Bellied_Flycatcher_0009_795510.jpg
+图像检索结果: jpg (置信度: 0.7336)
+文本检索结果: jpg (置信度: 0.2515)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/089.Hooded_Merganser/Hooded_Merganser_0043_796783.jpg
+图像检索结果: jpg (置信度: 0.6598)
+文本检索结果: jpg (置信度: 0.2213)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/087.Mallard/Mallard_0082_75954.jpg
+图像检索结果: jpg (置信度: 0.6500)
+文本检索结果: jpg (置信度: 0.2350)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/196.House_Wren/House_Wren_0130_187109.jpg
+图像检索结果: jpg (置信度: 0.7534)
+文本检索结果: jpg (置信度: 0.2788)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/123.Henslow_Sparrow/Henslow_Sparrow_0023_796582.jpg
+图像检索结果: jpg (置信度: 0.7116)
+文本检索结果: jpg (置信度: 0.2596)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/175.Pine_Warbler/Pine_Warbler_0008_171330.jpg
+图像检索结果: jpg (置信度: 0.7557)
+文本检索结果: jpg (置信度: 0.2865)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/112.Great_Grey_Shrike/Great_Grey_Shrike_0003_106552.jpg
+图像检索结果: jpg (置信度: 0.7408)
+文本检索结果: jpg (置信度: 0.2552)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/109.American_Redstart/American_Redstart_0049_103176.jpg
+图像检索结果: jpg (置信度: 0.6961)
+文本检索结果: jpg (置信度: 0.2047)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/068.Ruby_throated_Hummingbird/Ruby_Throated_Hummingbird_0003_58269.jpg
+图像检索结果: jpg (置信度: 0.7342)
+文本检索结果: jpg (置信度: 0.2189)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/017.Cardinal/Cardinal_0060_17139.jpg
+图像检索结果: jpg (置信度: 0.7317)
+文本检索结果: jpg (置信度: 0.2622)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/138.Tree_Swallow/Tree_Swallow_0075_136081.jpg
+图像检索结果: jpg (置信度: 0.7422)
+文本检索结果: jpg (置信度: 0.2642)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/012.Yellow_headed_Blackbird/Yellow_Headed_Blackbird_0061_8208.jpg
+图像检索结果: jpg (置信度: 0.7387)
+文本检索结果: jpg (置信度: 0.2986)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/006.Least_Auklet/Least_Auklet_0015_795065.jpg
+图像检索结果: jpg (置信度: 0.7026)
+文本检索结果: jpg (置信度: 0.2393)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/132.White_crowned_Sparrow/White_Crowned_Sparrow_0071_127922.jpg
+图像检索结果: jpg (置信度: 0.7249)
+文本检索结果: jpg (置信度: 0.2825)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/035.Purple_Finch/Purple_Finch_0013_27506.jpg
+图像检索结果: jpg (置信度: 0.7097)
+文本检索结果: jpg (置信度: 0.2605)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/159.Black_and_white_Warbler/Black_And_White_Warbler_0048_160287.jpg
+图像检索结果: jpg (置信度: 0.7639)
+文本检索结果: jpg (置信度: 0.2623)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/003.Sooty_Albatross/Sooty_Albatross_0006_796390.jpg
+图像检索结果: jpg (置信度: 0.6486)
+文本检索结果: jpg (置信度: 0.1901)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/076.Dark_eyed_Junco/Dark_Eyed_Junco_0044_68213.jpg
+图像检索结果: jpg (置信度: 0.6756)
+文本检索结果: jpg (置信度: 0.2578)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/007.Parakeet_Auklet/Parakeet_Auklet_0074_795976.jpg
+图像检索结果: jpg (置信度: 0.6808)
+文本检索结果: jpg (置信度: 0.2452)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/096.Hooded_Oriole/Hooded_Oriole_0038_90575.jpg
+图像检索结果: jpg (置信度: 0.7095)
+文本检索结果: jpg (置信度: 0.2798)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/041.Scissor_tailed_Flycatcher/Scissor_Tailed_Flycatcher_0111_42118.jpg
+图像检索结果: jpg (置信度: 0.6902)
+文本检索结果: jpg (置信度: 0.2543)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/073.Blue_Jay/Blue_Jay_0028_63599.jpg
+图像检索结果: jpg (置信度: 0.6771)
+文本检索结果: jpg (置信度: 0.2228)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/058.Pigeon_Guillemot/Pigeon_Guillemot_0100_40179.jpg
+图像检索结果: jpg (置信度: 0.6424)
+文本检索结果: jpg (置信度: 0.2427)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/161.Blue_winged_Warbler/Blue_Winged_Warbler_0075_161844.jpg
+图像检索结果: jpg (置信度: 0.7366)
+文本检索结果: jpg (置信度: 0.2584)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/173.Orange_crowned_Warbler/Orange_Crowned_Warbler_0021_168263.jpg
+图像检索结果: jpg (置信度: 0.6783)
+文本检索结果: jpg (置信度: 0.2730)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/053.Western_Grebe/Western_Grebe_0091_36194.jpg
+图像检索结果: jpg (置信度: 0.6902)
+文本检索结果: jpg (置信度: 0.2377)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/042.Vermilion_Flycatcher/Vermilion_Flycatcher_0026_42375.jpg
+图像检索结果: jpg (置信度: 0.6574)
+文本检索结果: jpg (置信度: 0.2395)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/144.Common_Tern/Common_Tern_0087_147945.jpg
+图像检索结果: jpg (置信度: 0.6937)
+文本检索结果: jpg (置信度: 0.2120)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/069.Rufous_Hummingbird/Rufous_Hummingbird_0106_60465.jpg
+图像检索结果: jpg (置信度: 0.7078)
+文本检索结果: jpg (置信度: 0.2400)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/010.Red_winged_Blackbird/Red_Winged_Blackbird_0109_4454.jpg
+图像检索结果: jpg (置信度: 0.7088)
+文本检索结果: jpg (置信度: 0.2558)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/128.Seaside_Sparrow/Seaside_Sparrow_0031_796526.jpg
+图像检索结果: jpg (置信度: 0.7476)
+文本检索结果: jpg (置信度: 0.2791)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/177.Prothonotary_Warbler/Prothonotary_Warbler_0124_173686.jpg
+图像检索结果: jpg (置信度: 0.7304)
+文本检索结果: jpg (置信度: 0.2558)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/153.Philadelphia_Vireo/Philadelphia_Vireo_0035_156596.jpg
+图像检索结果: jpg (置信度: 0.7490)
+文本检索结果: jpg (置信度: 0.2610)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/013.Bobolink/Bobolink_0026_11057.jpg
+图像检索结果: jpg (置信度: 0.7227)
+文本检索结果: jpg (置信度: 0.2534)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/180.Wilson_Warbler/Wilson_Warbler_0107_175320.jpg
+图像检索结果: jpg (置信度: 0.7011)
+文本检索结果: jpg (置信度: 0.2761)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/108.White_necked_Raven/White_Necked_Raven_0002_797370.jpg
+图像检索结果: jpg (置信度: 0.6957)
+文本检索结果: jpg (置信度: 0.2597)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/011.Rusty_Blackbird/Rusty_Blackbird_0087_6727.jpg
+图像检索结果: jpg (置信度: 0.7486)
+文本检索结果: jpg (置信度: 0.2832)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/145.Elegant_Tern/Elegant_Tern_0028_151019.jpg
+图像检索结果: jpg (置信度: 0.6888)
+文本检索结果: jpg (置信度: 0.1933)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/080.Green_Kingfisher/Green_Kingfisher_0010_71191.jpg
+图像检索结果: jpg (置信度: 0.7369)
+文本检索结果: jpg (置信度: 0.2243)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/186.Cedar_Waxwing/Cedar_Waxwing_0048_178960.jpg
+图像检索结果: jpg (置信度: 0.7278)
+文本检索结果: jpg (置信度: 0.2850)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/190.Red_cockaded_Woodpecker/Red_Cockaded_Woodpecker_0048_182599.jpg
+图像检索结果: jpg (置信度: 0.7084)
+文本检索结果: jpg (置信度: 0.2431)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/170.Mourning_Warbler/Mourning_Warbler_0035_166586.jpg
+图像检索结果: jpg (置信度: 0.7426)
+文本检索结果: jpg (置信度: 0.2816)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/046.Gadwall/Gadwall_0065_31659.jpg
+图像检索结果: jpg (置信度: 0.6355)
+文本检索结果: jpg (置信度: 0.2022)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/015.Lazuli_Bunting/Lazuli_Bunting_0076_14662.jpg
+图像检索结果: jpg (置信度: 0.7276)
+文本检索结果: jpg (置信度: 0.2430)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/075.Green_Jay/Green_Jay_0126_65716.jpg
+图像检索结果: jpg (置信度: 0.6971)
+文本检索结果: jpg (置信度: 0.2663)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0026_26794.jpg
+图像检索结果: jpg (置信度: 0.7374)
+文本检索结果: jpg (置信度: 0.2585)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/164.Cerulean_Warbler/Cerulean_Warbler_0090_797195.jpg
+图像检索结果: jpg (置信度: 0.6779)
+文本检索结果: jpg (置信度: 0.2820)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/122.Harris_Sparrow/Harris_Sparrow_0010_116376.jpg
+图像检索结果: jpg (置信度: 0.7436)
+文本检索结果: jpg (置信度: 0.2476)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/158.Bay_breasted_Warbler/Bay_Breasted_Warbler_0077_797144.jpg
+图像检索结果: jpg (置信度: 0.7261)
+文本检索结果: jpg (置信度: 0.2488)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/142.Black_Tern/Black_Tern_0097_144724.jpg
+图像检索结果: jpg (置信度: 0.7371)
+文本检索结果: jpg (置信度: 0.2937)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/160.Black_throated_Blue_Warbler/Black_Throated_Blue_Warbler_0017_161220.jpg
+图像检索结果: jpg (置信度: 0.7440)
+文本检索结果: jpg (置信度: 0.2619)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/025.Pelagic_Cormorant/Pelagic_Cormorant_0055_23415.jpg
+图像检索结果: jpg (置信度: 0.6866)
+文本检索结果: jpg (置信度: 0.2251)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/045.Northern_Fulmar/Northern_Fulmar_0001_43749.jpg
+图像检索结果: jpg (置信度: 0.6561)
+文本检索结果: jpg (置信度: 0.2422)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/110.Geococcyx/Geococcyx_0056_104142.jpg
+图像检索结果: jpg (置信度: 0.6897)
+文本检索结果: jpg (置信度: 0.2606)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/009.Brewer_Blackbird/Brewer_Blackbird_0140_2586.jpg
+图像检索结果: jpg (置信度: 0.7203)
+文本检索结果: jpg (置信度: 0.2895)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/023.Brandt_Cormorant/Brandt_Cormorant_0022_23157.jpg
+图像检索结果: jpg (置信度: 0.6512)
+文本检索结果: jpg (置信度: 0.1842)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/136.Barn_Swallow/Barn_Swallow_0027_129978.jpg
+图像检索结果: jpg (置信度: 0.7096)
+文本检索结果: jpg (置信度: 0.2812)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/189.Red_bellied_Woodpecker/Red_Bellied_Woodpecker_0114_181092.jpg
+图像检索结果: jpg (置信度: 0.7346)
+文本检索结果: jpg (置信度: 0.2640)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/151.Black_capped_Vireo/Black_Capped_Vireo_0028_155799.jpg
+图像检索结果: jpg (置信度: 0.7012)
+文本检索结果: jpg (置信度: 0.2619)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/194.Cactus_Wren/Cactus_Wren_0116_185927.jpg
+图像检索结果: jpg (置信度: 0.7397)
+文本检索结果: jpg (置信度: 0.2861)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/040.Olive_sided_Flycatcher/Olive_Sided_Flycatcher_0052_30639.jpg
+图像检索结果: jpg (置信度: 0.7322)
+文本检索结果: jpg (置信度: 0.2867)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/032.Mangrove_Cuckoo/Mangrove_Cuckoo_0036_794606.jpg
+图像检索结果: jpg (置信度: 0.7292)
+文本检索结果: jpg (置信度: 0.2677)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/120.Fox_Sparrow/Fox_Sparrow_0012_115324.jpg
+图像检索结果: jpg (置信度: 0.6773)
+文本检索结果: jpg (置信度: 0.1972)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/129.Song_Sparrow/Song_Sparrow_0015_122081.jpg
+图像检索结果: jpg (置信度: 0.7564)
+文本检索结果: jpg (置信度: 0.2538)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/114.Black_throated_Sparrow/Black_Throated_Sparrow_0102_107243.jpg
+图像检索结果: jpg (置信度: 0.7167)
+文本检索结果: jpg (置信度: 0.2633)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/029.American_Crow/American_Crow_0030_25092.jpg
+图像检索结果: jpg (置信度: 0.7173)
+文本检索结果: jpg (置信度: 0.2541)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/103.Sayornis/Sayornis_0125_98528.jpg
+图像检索结果: jpg (置信度: 0.7213)
+文本检索结果: jpg (置信度: 0.2978)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/188.Pileated_Woodpecker/Pileated_Woodpecker_0025_180253.jpg
+图像检索结果: jpg (置信度: 0.6005)
+文本检索结果: jpg (置信度: 0.2141)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/130.Tree_Sparrow/Tree_Sparrow_0090_110145.jpg
+图像检索结果: jpg (置信度: 0.6335)
+文本检索结果: jpg (置信度: 0.2906)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/052.Pied_billed_Grebe/Pied_Billed_Grebe_0020_35958.jpg
+图像检索结果: jpg (置信度: 0.6876)
+文本检索结果: jpg (置信度: 0.2326)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/167.Hooded_Warbler/Hooded_Warbler_0003_164915.jpg
+图像检索结果: jpg (置信度: 0.7370)
+文本检索结果: jpg (置信度: 0.2669)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/141.Artic_Tern/Artic_Tern_0029_142220.jpg
+图像检索结果: jpg (置信度: 0.6940)
+文本检索结果: jpg (置信度: 0.2317)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/099.Ovenbird/Ovenbird_0047_93203.jpg
+图像检索结果: jpg (置信度: 0.7224)
+文本检索结果: jpg (置信度: 0.2299)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/195.Carolina_Wren/Carolina_Wren_0033_186848.jpg
+图像检索结果: jpg (置信度: 0.7248)
+文本检索结果: jpg (置信度: 0.2577)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/181.Worm_eating_Warbler/Worm_Eating_Warbler_0034_795560.jpg
+图像检索结果: jpg (置信度: 0.7382)
+文本检索结果: jpg (置信度: 0.2489)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/140.Summer_Tanager/Summer_Tanager_0125_139399.jpg
+图像检索结果: jpg (置信度: 0.7102)
+文本检索结果: jpg (置信度: 0.2740)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/070.Green_Violetear/Green_Violetear_0002_795699.jpg
+图像检索结果: jpg (置信度: 0.6526)
+文本检索结果: jpg (置信度: 0.2211)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/106.Horned_Puffin/Horned_Puffin_0022_100766.jpg
+图像检索结果: jpg (置信度: 0.6518)
+文本检索结果: jpg (置信度: 0.2473)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/134.Cape_Glossy_Starling/Cape_Glossy_Starling_0079_129399.jpg
+图像检索结果: jpg (置信度: 0.7349)
+文本检索结果: jpg (置信度: 0.2711)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/027.Shiny_Cowbird/Shiny_Cowbird_0056_24321.jpg
+图像检索结果: jpg (置信度: 0.7276)
+文本检索结果: jpg (置信度: 0.2701)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/066.Western_Gull/Western_Gull_0045_54735.jpg
+图像检索结果: jpg (置信度: 0.6105)
+文本检索结果: jpg (置信度: 0.2578)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/133.White_throated_Sparrow/White_Throated_Sparrow_0132_128833.jpg
+图像检索结果: jpg (置信度: 0.7073)
+文本检索结果: jpg (置信度: 0.2739)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/048.European_Goldfinch/European_Goldfinch_0101_33127.jpg
+图像检索结果: jpg (置信度: 0.7122)
+文本检索结果: jpg (置信度: 0.2910)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/155.Warbling_Vireo/Warbling_Vireo_0090_158403.jpg
+图像检索结果: jpg (置信度: 0.7611)
+文本检索结果: jpg (置信度: 0.2477)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/054.Blue_Grosbeak/Blue_Grosbeak_0112_36679.jpg
+图像检索结果: jpg (置信度: 0.7273)
+文本检索结果: jpg (置信度: 0.2684)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/026.Bronzed_Cowbird/Bronzed_Cowbird_0039_24026.jpg
+图像检索结果: jpg (置信度: 0.7314)
+文本检索结果: jpg (置信度: 0.2712)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/063.Ivory_Gull/Ivory_Gull_0094_49347.jpg
+图像检索结果: jpg (置信度: 0.6838)
+文本检索结果: jpg (置信度: 0.2167)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/105.Whip_poor_Will/Whip_Poor_Will_0034_796413.jpg
+图像检索结果: jpg (置信度: 0.6891)
+文本检索结果: jpg (置信度: 0.2767)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/019.Gray_Catbird/Gray_Catbird_0126_19446.jpg
+图像检索结果: jpg (置信度: 0.7328)
+文本检索结果: jpg (置信度: 0.2581)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/147.Least_Tern/Least_Tern_0116_153715.jpg
+图像检索结果: jpg (置信度: 0.6941)
+文本检索结果: jpg (置信度: 0.2661)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/198.Rock_Wren/Rock_Wren_0009_189162.jpg
+图像检索结果: jpg (置信度: 0.7041)
+文本检索结果: jpg (置信度: 0.2596)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/172.Nashville_Warbler/Nashville_Warbler_0053_167403.jpg
+图像检索结果: jpg (置信度: 0.5415)
+文本检索结果: jpg (置信度: 0.2565)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/044.Frigatebird/Frigatebird_0092_43206.jpg
+图像检索结果: jpg (置信度: 0.7151)
+文本检索结果: jpg (置信度: 0.2114)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/143.Caspian_Tern/Caspian_Tern_0097_145923.jpg
+图像检索结果: jpg (置信度: 0.6916)
+文本检索结果: jpg (置信度: 0.2508)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/127.Savannah_Sparrow/Savannah_Sparrow_0094_119040.jpg
+图像检索结果: jpg (置信度: 0.7324)
+文本检索结果: jpg (置信度: 0.2676)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/117.Clay_colored_Sparrow/Clay_Colored_Sparrow_0005_110911.jpg
+图像检索结果: jpg (置信度: 0.7194)
+文本检索结果: jpg (置信度: 0.2696)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/077.Tropical_Kingbird/Tropical_Kingbird_0041_69954.jpg
+图像检索结果: jpg (置信度: 0.7480)
+文本检索结果: jpg (置信度: 0.2762)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/030.Fish_Crow/Fish_Crow_0076_25971.jpg
+图像检索结果: jpg (置信度: 0.6906)
+文本检索结果: jpg (置信度: 0.2782)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/055.Evening_Grosbeak/Evening_Grosbeak_0038_37228.jpg
+图像检索结果: jpg (置信度: 0.7257)
+文本检索结果: jpg (置信度: 0.2737)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/135.Bank_Swallow/Bank_Swallow_0048_129546.jpg
+图像检索结果: jpg (置信度: 0.6780)
+文本检索结果: jpg (置信度: 0.2562)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/067.Anna_Hummingbird/Anna_Hummingbird_0113_56296.jpg
+图像检索结果: jpg (置信度: 0.7085)
+文本检索结果: jpg (置信度: 0.2485)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/183.Northern_Waterthrush/Northern_Waterthrush_0005_177023.jpg
+图像检索结果: jpg (置信度: 0.6849)
+文本检索结果: jpg (置信度: 0.2329)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/018.Spotted_Catbird/Spotted_Catbird_0048_796817.jpg
+图像检索结果: jpg (置信度: 0.6889)
+文本检索结果: jpg (置信度: 0.2895)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/090.Red_breasted_Merganser/Red_Breasted_Merganser_0052_79178.jpg
+图像检索结果: jpg (置信度: 0.6851)
+文本检索结果: jpg (置信度: 0.2496)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/149.Brown_Thrasher/Brown_Thrasher_0014_155421.jpg
+图像检索结果: jpg (置信度: 0.7427)
+文本检索结果: jpg (置信度: 0.2607)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/038.Great_Crested_Flycatcher/Great_Crested_Flycatcher_0070_29455.jpg
+图像检索结果: jpg (置信度: 0.7366)
+文本检索结果: jpg (置信度: 0.2859)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/086.Pacific_Loon/Pacific_Loon_0051_75514.jpg
+图像检索结果: jpg (置信度: 0.6668)
+文本检索结果: jpg (置信度: 0.2414)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/072.Pomarine_Jaeger/Pomarine_Jaeger_0069_61381.jpg
+图像检索结果: jpg (置信度: 0.6782)
+文本检索结果: jpg (置信度: 0.2485)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/065.Slaty_backed_Gull/Slaty_Backed_Gull_0068_53206.jpg
+图像检索结果: jpg (置信度: 0.6570)
+文本检索结果: jpg (置信度: 0.2492)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/200.Common_Yellowthroat/Common_Yellowthroat_0019_190524.jpg
+图像检索结果: jpg (置信度: 0.7254)
+文本检索结果: jpg (置信度: 0.3031)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/104.American_Pipit/American_Pipit_0011_99630.jpg
+图像检索结果: jpg (置信度: 0.7129)
+文本检索结果: jpg (置信度: 0.2243)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0032_39772.jpg
+图像检索结果: jpg (置信度: 0.6175)
+文本检索结果: jpg (置信度: 0.2261)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/022.Chuck_will_Widow/Chuck_Will_Widow_0008_796968.jpg
+图像检索结果: jpg (置信度: 0.5943)
+文本检索结果: jpg (置信度: 0.2481)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/125.Lincoln_Sparrow/Lincoln_Sparrow_0087_117444.jpg
+图像检索结果: jpg (置信度: 0.7049)
+文本检索结果: jpg (置信度: 0.2219)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/179.Tennessee_Warbler/Tennessee_Warbler_0075_174763.jpg
+图像检索结果: jpg (置信度: 0.7358)
+文本检索结果: jpg (置信度: 0.2320)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/174.Palm_Warbler/Palm_Warbler_0089_168968.jpg
+图像检索结果: jpg (置信度: 0.7470)
+文本检索结果: jpg (置信度: 0.2737)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/071.Long_tailed_Jaeger/Long_Tailed_Jaeger_0021_797083.jpg
+图像检索结果: jpg (置信度: 0.6898)
+文本检索结果: jpg (置信度: 0.3227)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/074.Florida_Jay/Florida_Jay_0103_64537.jpg
+图像检索结果: jpg (置信度: 0.7057)
+文本检索结果: jpg (置信度: 0.2853)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/165.Chestnut_sided_Warbler/Chestnut_Sided_Warbler_0016_164060.jpg
+图像检索结果: jpg (置信度: 0.7205)
+文本检索结果: jpg (置信度: 0.2520)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/187.American_Three_toed_Woodpecker/American_Three_Toed_Woodpecker_0046_796153.jpg
+图像检索结果: jpg (置信度: 0.7306)
+文本检索结果: jpg (置信度: 0.2541)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/016.Painted_Bunting/Painted_Bunting_0079_15197.jpg
+图像检索结果: jpg (置信度: 0.7283)
+文本检索结果: jpg (置信度: 0.2544)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/049.Boat_tailed_Grackle/Boat_Tailed_Grackle_0066_33368.jpg
+图像检索结果: jpg (置信度: 0.6359)
+文本检索结果: jpg (置信度: 0.2560)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/021.Eastern_Towhee/Eastern_Towhee_0017_22138.jpg
+图像检索结果: jpg (置信度: 0.6935)
+文本检索结果: jpg (置信度: 0.2520)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/031.Black_billed_Cuckoo/Black_Billed_Cuckoo_0084_26175.jpg
+图像检索结果: jpg (置信度: 0.7352)
+文本检索结果: jpg (置信度: 0.2583)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/005.Crested_Auklet/Crested_Auklet_0005_794922.jpg
+图像检索结果: jpg (置信度: 0.6752)
+文本检索结果: jpg (置信度: 0.2617)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/162.Canada_Warbler/Canada_Warbler_0008_162416.jpg
+图像检索结果: jpg (置信度: 0.7058)
+文本检索结果: jpg (置信度: 0.2494)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/002.Laysan_Albatross/Laysan_Albatross_0070_788.jpg
+图像检索结果: jpg (置信度: 0.6882)
+文本检索结果: jpg (置信度: 0.2306)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/094.White_breasted_Nuthatch/White_Breasted_Nuthatch_0059_85903.jpg
+图像检索结果: jpg (置信度: 0.7388)
+文本检索结果: jpg (置信度: 0.2459)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/093.Clark_Nutcracker/Clark_Nutcracker_0058_85384.jpg
+图像检索结果: jpg (置信度: 0.7599)
+文本检索结果: jpg (置信度: 0.2720)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/061.Heermann_Gull/Heermann_Gull_0020_45409.jpg
+图像检索结果: jpg (置信度: 0.6802)
+文本检索结果: jpg (置信度: 0.2428)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/095.Baltimore_Oriole/Baltimore_Oriole_0091_88487.jpg
+图像检索结果: jpg (置信度: 0.7274)
+文本检索结果: jpg (置信度: 0.2589)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/157.Yellow_throated_Vireo/Yellow_Throated_Vireo_0031_159712.jpg
+图像检索结果: jpg (置信度: 0.7496)
+文本检索结果: jpg (置信度: 0.2794)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/185.Bohemian_Waxwing/Bohemian_Waxwing_0084_796639.jpg
+图像检索结果: jpg (置信度: 0.6506)
+文本检索结果: jpg (置信度: 0.2015)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/111.Loggerhead_Shrike/Loggerhead_Shrike_0108_105023.jpg
+图像检索结果: jpg (置信度: 0.6975)
+文本检索结果: jpg (置信度: 0.2352)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/062.Herring_Gull/Herring_Gull_0114_46956.jpg
+图像检索结果: jpg (置信度: 0.7206)
+文本检索结果: jpg (置信度: 0.2620)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/107.Common_Raven/Common_Raven_0061_102519.jpg
+图像检索结果: jpg (置信度: 0.6918)
+文本检索结果: jpg (置信度: 0.2736)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/184.Louisiana_Waterthrush/Louisiana_Waterthrush_0042_177551.jpg
+图像检索结果: jpg (置信度: 0.7505)
+文本检索结果: jpg (置信度: 0.2403)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/146.Forsters_Tern/Forsters_Tern_0125_151399.jpg
+图像检索结果: jpg (置信度: 0.7185)
+文本检索结果: jpg (置信度: 0.2641)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/154.Red_eyed_Vireo/Red_Eyed_Vireo_0133_156668.jpg
+图像检索结果: jpg (置信度: 0.7010)
+文本检索结果: jpg (置信度: 0.2603)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/101.White_Pelican/White_Pelican_0016_96659.jpg
+图像检索结果: jpg (置信度: 0.6405)
+文本检索结果: jpg (置信度: 0.2238)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/004.Groove_billed_Ani/Groove_Billed_Ani_0109_1592.jpg
+图像检索结果: jpg (置信度: 0.6976)
+文本检索结果: jpg (置信度: 0.2685)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/085.Horned_Lark/Horned_Lark_0141_74396.jpg
+图像检索结果: jpg (置信度: 0.7163)
+文本检索结果: jpg (置信度: 0.2388)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/131.Vesper_Sparrow/Vesper_Sparrow_0045_125643.jpg
+图像检索结果: jpg (置信度: 0.7235)
+文本检索结果: jpg (置信度: 0.2737)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/034.Gray_crowned_Rosy_Finch/Gray_Crowned_Rosy_Finch_0027_27153.jpg
+图像检索结果: jpg (置信度: 0.7211)
+文本检索结果: jpg (置信度: 0.2419)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/148.Green_tailed_Towhee/Green_Tailed_Towhee_0036_154875.jpg
+图像检索结果: jpg (置信度: 0.7259)
+文本检索结果: jpg (置信度: 0.2378)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/178.Swainson_Warbler/Swainson_Warbler_0032_174728.jpg
+图像检索结果: jpg (置信度: 0.7243)
+文本检索结果: jpg (置信度: 0.2457)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/098.Scott_Oriole/Scott_Oriole_0029_795846.jpg
+图像检索结果: jpg (置信度: 0.7482)
+文本检索结果: jpg (置信度: 0.2938)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/001.Black_footed_Albatross/Black_Footed_Albatross_0003_796136.jpg
+图像检索结果: jpg (置信度: 0.6546)
+文本检索结果: jpg (置信度: 0.2003)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/102.Western_Wood_Pewee/Western_Wood_Pewee_0021_98101.jpg
+图像检索结果: jpg (置信度: 0.7391)
+文本检索结果: jpg (置信度: 0.3090)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/064.Ring_billed_Gull/Ring_Billed_Gull_0108_51108.jpg
+图像检索结果: jpg (置信度: 0.6307)
+文本检索结果: jpg (置信度: 0.2513)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/037.Acadian_Flycatcher/Acadian_Flycatcher_0019_795592.jpg
+图像检索结果: jpg (置信度: 0.7166)
+文本检索结果: jpg (置信度: 0.2795)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/163.Cape_May_Warbler/Cape_May_Warbler_0043_163172.jpg
+图像检索结果: jpg (置信度: 0.6682)
+文本检索结果: jpg (置信度: 0.2581)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/182.Yellow_Warbler/Yellow_Warbler_0112_176301.jpg
+图像检索结果: jpg (置信度: 0.7379)
+文本检索结果: jpg (置信度: 0.2725)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/176.Prairie_Warbler/Prairie_Warbler_0020_173359.jpg
+图像检索结果: jpg (置信度: 0.7351)
+文本检索结果: jpg (置信度: 0.2622)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/192.Downy_Woodpecker/Downy_Woodpecker_0090_183964.jpg
+图像检索结果: jpg (置信度: 0.7327)
+文本检索结果: jpg (置信度: 0.2610)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/152.Blue_headed_Vireo/Blue_Headed_Vireo_0060_156171.jpg
+图像检索结果: jpg (置信度: 0.7361)
+文本检索结果: jpg (置信度: 0.2685)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/118.House_Sparrow/House_Sparrow_0030_111387.jpg
+图像检索结果: jpg (置信度: 0.7372)
+文本检索结果: jpg (置信度: 0.2705)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/169.Magnolia_Warbler/Magnolia_Warbler_0054_165965.jpg
+图像检索结果: jpg (置信度: 0.7312)
+文本检索结果: jpg (置信度: 0.2711)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/050.Eared_Grebe/Eared_Grebe_0062_34249.jpg
+图像检索结果: jpg (置信度: 0.6782)
+文本检索结果: jpg (置信度: 0.2215)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/047.American_Goldfinch/American_Goldfinch_0091_31938.jpg
+图像检索结果: jpg (置信度: 0.7155)
+文本检索结果: jpg (置信度: 0.3104)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/036.Northern_Flicker/Northern_Flicker_0127_28411.jpg
+图像检索结果: jpg (置信度: 0.7191)
+文本检索结果: jpg (置信度: 0.2326)
+融合结果: [('jpg', 1.0032786885245901)]
+快思考结果: jpg (置信度: 1.0000)
+需要慢思考: False
+类别 jpg: 200/200 正确
+LCB统计参数初始化完成!
+总样本数: 200
+正确预测: 200
+初始化准确率: 1.0000
+总预测次数: 200
+初始化准确率: 1.0000
+知识库构建完成!
+知识库构建完成，保存到: ./experiments/bird200/knowledge_base

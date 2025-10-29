@@ -187,8 +187,28 @@ class BirdDiscovery200:
                 self.targets.append(label)
                 self.samples.append(os.path.join(folder, name))
                 
-                # 提取子类别名称
-                subcat = name.split('.')[1] if '.' in name else f'bird_{label:03d}'
+                # 提取子类别名称 - 修复鸟类数据集的文件名解析
+                # 鸟类文件名格式: Grasshopper_Sparrow_0021_116107.jpg
+                # 需要提取鸟类名称部分，去掉数字和扩展名
+                if '.' in name:
+                    # 去掉扩展名
+                    name_without_ext = name.rsplit('.', 1)[0]
+                    # 分割并去掉最后的数字部分
+                    parts = name_without_ext.split('_')
+                    # 找到第一个纯数字部分的索引，之前的都是鸟类名称
+                    bird_name_parts = []
+                    for part in parts:
+                        if part.isdigit():
+                            break
+                        bird_name_parts.append(part)
+                    
+                    if bird_name_parts:
+                        subcat = '_'.join(bird_name_parts)
+                    else:
+                        subcat = f'bird_{label:03d}'
+                else:
+                    subcat = f'bird_{label:03d}'
+                
                 subcat = subcat.replace('_', ' ').strip()
                 
                 # 尝试匹配到已知的鸟类类别名称

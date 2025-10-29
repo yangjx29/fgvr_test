@@ -19,6 +19,7 @@ from fast_slow_thinking_system import FastSlowThinkingSystem
 from utils.util import is_similar
 import re 
 import hashlib
+import time
 from collections import defaultdict
 import numpy as np
 
@@ -340,7 +341,7 @@ if __name__ == "__main__":
     parser.add_argument('--mode',  
                         type=str, 
                         default='describe', 
-                        choices=['identify', 'howto', 'describe', 'guess', 'postprocess', 'build_gallery', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow'],  # 可选值列表
+                        choices=['identify', 'howto', 'describe', 'guess', 'postprocess', 'build_gallery', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow', 'fast_slow_infer', 'fast_slow_classify'],  # 可选值列表
                         help='operating mode for each stage')  
     parser.add_argument('--config_file_env',  
                         type=str,  
@@ -372,6 +373,10 @@ if __name__ == "__main__":
     parser.add_argument('--confidence_threshold', type=float, default=0.8, help='confidence threshold for fast thinking')
     parser.add_argument('--similarity_threshold', type=float, default=0.7, help='similarity threshold for trigger mechanism')
     parser.add_argument('--enable_mllm_intermediate_judge', action='store_true', default=False, help='enable MLLM intermediate judge between fast and slow thinking (for ablation studies)')
+    
+    # 快慢思考推理与分类分离相关参数
+    parser.add_argument('--infer_dir', type=str, default=None, help='directory to save inference results (for fast_slow_infer mode)')
+    parser.add_argument('--classify_dir', type=str, default=None, help='directory to save classification results (for fast_slow_classify mode)')
 
     args = parser.parse_args()  
     print(colored(args, 'blue'))  
@@ -644,79 +649,85 @@ if __name__ == "__main__":
         print(f"❌ 错误预测总数: {total - correct}")
         print(f"[slowonly] 准确率: {acc:.4f} ({correct}/{total})")
         
-    elif args.mode == 'fast_slow':
+    # fast_slow 模式：对测试集执行“快思考→必要时慢思考→最终融合”的整体验证
+    elif args.mode == 'fast_slow':  # 进入 fast_slow 评估分支
         """
         CUDA_VISIBLE_DEVICES=2 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_1 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_update_lcb_1_context256.log
-        """
+        """  # 用法示例：演示如何从命令行启动该模式
 
-        # 初始化完整的快慢思考系统
+        # 初始化完整的快慢思考系统（内部会初始化知识库构建器、快/慢思考模块、MLLM等）
         system = FastSlowThinkingSystem(
-            model_tag=cfg['model_size_mllm'],
-            model_name=cfg['model_size_mllm'],
-            device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg,
-            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
+            model_tag=cfg['model_size_mllm'],  # 使用配置中的多模态大模型标识
+            model_name=cfg['model_size_mllm'], # 模型名称（与 tag 一致）
+            device='cuda' if cfg['host'] in ["xiao"] else 'cpu',  # 按主机配置选择设备
+            cfg=cfg,  # 传递完整实验配置
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge  # 是否启用MLLM中间判别（可做消融）
         )
-        # 加载知识库
+        # 加载已构建好的知识库（图像/文本向量、统计信息等），供检索与判别使用
         system.load_knowledge_base(args.knowledge_base_dir)
 
-        # 构建测试样本
-        test_samples = {}
-        img_root = args.test_data_dir
-        class_folders = os.listdir(args.test_data_dir)
+        # 构建测试样本映射：{ 真值类别: [图像路径, ...] }
+        test_samples = {}  # 用于保存每个类别对应的所有测试图片
+        img_root = args.test_data_dir  # 测试集根目录
+        class_folders = os.listdir(args.test_data_dir)  # 列出类别子目录
         for i in range(len(class_folders)):
-            cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
-            img_path = os.path.join(img_root, class_folders[i])
-            file_names = os.listdir(img_path)
+            cat_name = class_folders[i].split('-')[-1].replace('_', ' ')  # 从目录名解析类别名（约定：用 '-' 分割并替换 '_' 为空格）
+            img_path = os.path.join(img_root, class_folders[i])  # 顶层类别目录路径
+            file_names = os.listdir(img_path)  # 获取该类别下的所有文件名
             for name in file_names:
-                path = os.path.join(img_path,name)
+                path = os.path.join(img_path,name)  # 组成单张图片的路径
                 if cat_name not in test_samples:
-                    test_samples[cat_name] = []
-                test_samples[cat_name].append(path)
+                    test_samples[cat_name] = []  # 首次出现该类别时初始化列表
+                test_samples[cat_name].append(path)  # 加入该类别的测试图片
 
-        print(f'test sample:{test_samples}')
-        print(f"[fast and slow] 测试数据集包含 {len(test_samples)} 个类别")
+        print(f'test sample:{test_samples}')  # 打印测试样本映射，便于调试核对
+        print(f"[fast and slow] 测试数据集包含 {len(test_samples)} 个类别")  # 打印类别总数
         
-        # 使用完整的快慢思考系统评估
-        correct = 0
-        total = 0
-        fast_only_correct = 0    # 仅快思考正确的数量
-        slow_triggered = 0       # 触发慢思考的数量
-        slow_triggered_correct = 0  # 触发慢思考且正确的数量
+        # 使用完整的快慢思考系统进行评估（统计多项指标）
+        correct = 0  # 预测正确的样本数
+        total = 0    # 评估的样本总数
+        fast_only_correct = 0    # 未触发慢思考且预测正确的样本数
+        slow_triggered = 0       # 触发过慢思考的样本数
+        slow_triggered_correct = 0  # 触发慢思考且最终预测正确的样本数
         
-        # for true_cat, paths in test_samples.items():
-        from tqdm import tqdm
-        for true_cat, paths in tqdm(test_samples.items(), desc="Processing fast and slow thinking"):
-            for path in paths:
-                # 使用完整的快慢思考系统分类
+        # 逐类别遍历，显示进度条
+        from tqdm import tqdm  # 引入进度条库
+        for true_cat, paths in tqdm(test_samples.items(), desc="Processing fast and slow thinking"):  # true_cat 为真值类别名
+            for path in paths:  # 遍历该类别下的每一张图片
+                # 使用完整的快慢思考系统进行单张图片分类（自动判断是否进入慢思考）
                 result = system.classify_single_image(path, use_slow_thinking=None, top_k=5)
                 
-                pred = result.get('final_prediction', 'unknown')
-                ok = is_similar(pred, true_cat, threshold=0.5)
-                used_slow = result.get('used_slow_thinking', False)
+                pred = result.get('final_prediction', 'unknown')  # 取得最终类别预测
+                ok = is_similar(pred, true_cat, threshold=0.5)    # 与真值进行相似匹配（大小写/空格等鲁棒）
+                used_slow = result.get('used_slow_thinking', False)  # 记录是否触发慢思考
                 
                 if ok:
+                    # 预测正确：打印详情并累加计数
                     print(f"succ. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
-                    correct += 1
+                    correct += 1  # 总正确数 +1
                     if not used_slow:
-                        fast_only_correct += 1
+                        fast_only_correct += 1  # 仅快思考就正确的数量 +1
                     if used_slow:
-                        slow_triggered_correct += 1
+                        slow_triggered_correct += 1  # 触发慢思考且正确的数量 +1
                 else:
+                    # 预测失败：打印详情
                     print(f"failed. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
+                    # 如果需要也可以在此统计“触发慢思考但失败”的数量
                     # if used_slow:
-                    #     slow_triggered_correct += 1  # 即使错误也统计
+                    #     slow_triggered_correct += 1  # 即使错误也统计（此处保持关闭）
                 
                 if used_slow:
-                    slow_triggered += 1
+                    slow_triggered += 1  # 样本进入过慢思考，累加触发数
                 
-                total += 1
-
-        acc = correct / total if total > 0 else 0.0
-        fast_only_acc = fast_only_correct / (total-slow_triggered) if total > 0 else 0.0
-        slow_trigger_ratio = slow_triggered / total if total > 0 else 0.0
-        slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0
+                total += 1  # 样本总数 +1（不论成功与否）
         
+        # 汇总评估指标
+        acc = correct / total if total > 0 else 0.0  # 总体准确率
+        fast_only_acc = fast_only_correct / (total-slow_triggered) if total > 0 else 0.0  # 仅快思考部分的准确率（注意：若分母为0会报错，此处保持原逻辑）
+        slow_trigger_ratio = slow_triggered / total if total > 0 else 0.0  # 慢思考触发比例
+        slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0  # 触发慢思考样本的准确率
+        
+        # 打印评估结果
         print(f"✅ 正确预测总数: {correct}")
         print(f"  - 其中仅快思考正确: {fast_only_correct}")
         print(f"  - 其中慢思考触发且正确: {slow_triggered_correct}")
@@ -792,6 +803,271 @@ if __name__ == "__main__":
             print(f"Gallery saved to: {args.gallery_out}")
         
         print(f"Gallery built with {len(gallery)} categories")
+    
+    elif args.mode == 'fast_slow_infer':
+        """
+        快慢思考推理模式：保存快思考和慢思考的推理结果，不进行最终分类
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_slow_infer --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=./datasets/dogs_120/images_discovery_all_1 --knowledge_base_dir=./experiments/dog120/knowledge_base --infer_dir=./experiments/dog120/infer
+        """
+        if args.test_data_dir is None:
+            raise ValueError("请提供测试数据目录 --test_data_dir")
+        
+        # 自动生成推理结果保存目录（基于数据集名称）
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        print(f"推理结果将保存到: {args.infer_dir}")
+        os.makedirs(args.infer_dir, exist_ok=True)
+        
+        # 初始化完整的快慢思考系统
+        system = FastSlowThinkingSystem(
+            model_tag=cfg['model_size_mllm'],
+            model_name=cfg['model_size_mllm'],
+            device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
+        )
+        # 加载知识库
+        system.load_knowledge_base(args.knowledge_base_dir)
+
+        # 构建测试样本
+        test_samples = {}
+        img_root = args.test_data_dir
+        class_folders = os.listdir(args.test_data_dir)
+        for i in range(len(class_folders)):
+            cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
+            img_path = os.path.join(img_root, class_folders[i])
+            file_names = os.listdir(img_path)
+            for name in file_names:
+                path = os.path.join(img_path,name)
+                if cat_name not in test_samples:
+                    test_samples[cat_name] = []
+                test_samples[cat_name].append(path)
+
+        print(f"[fast_slow_infer] 测试数据集包含 {len(test_samples)} 个类别")
+        
+        # 执行推理并保存结果
+        total_processed = 0
+        from tqdm import tqdm
+        for true_cat, paths in tqdm(test_samples.items(), desc="Processing inference"):
+            for path in paths:
+                try:
+                    # 执行快思考
+                    fast_result = system.fast_thinking.fast_thinking_pipeline(path, top_k=5)
+                    
+                    # 判断是否需要慢思考
+                    need_slow_thinking = fast_result["need_slow_thinking"]
+                    
+                    inference_data = {
+                        "query_image": path,
+                        "true_category": true_cat,
+                        "fast_result": fast_result,
+                        "need_slow_thinking": need_slow_thinking,
+                        "slow_result": None,
+                        # 保存分类前必须的所有信息
+                        "fast_top_k": fast_result.get("img_results", [])[:5] + fast_result.get("text_results", [])[:5],  # 快思考Top-K候选
+                        "fast_fused_results": fast_result.get("fused_results", [])[:5],  # 融合后的Top-K
+                        "timestamp": time.time()
+                    }
+                    
+                    # 如果需要慢思考，执行慢思考
+                    if need_slow_thinking:
+                        slow_result = system.slow_thinking.slow_thinking_pipeline_update(path, fast_result, top_k=5)
+                        inference_data["slow_result"] = slow_result
+                        # 保存慢思考的Top-K候选信息
+                        inference_data["slow_top_k"] = slow_result.get("enhanced_results", [])[:5] if slow_result else []
+                    
+                    # 保存推理结果
+                    base_name = os.path.splitext(os.path.basename(path))[0]
+                    safe_cat_name = true_cat.replace(' ', '_').replace('/', '_')
+                    infer_file = os.path.join(args.infer_dir, f"{safe_cat_name}_{base_name}.json")
+                    
+                    dump_json(infer_file, inference_data)
+                    total_processed += 1
+                    
+                    if total_processed % 100 == 0:
+                        print(f"已处理 {total_processed} 个样本")
+                        
+                except Exception as e:
+                    print(f"处理失败 {path}: {e}")
+                    continue
+        
+        print(f"推理完成！共处理 {total_processed} 个样本")
+        print(f"推理结果已保存到: {args.infer_dir}")
+    
+    elif args.mode == 'fast_slow_classify':
+        """
+        快慢思考分类模式：加载推理结果，执行分类逻辑并统计指标
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_slow_classify --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --infer_dir=./experiments/dog120/infer --classify_dir=./experiments/dog120/classify
+        """
+        # 自动生成推理结果加载目录和分类结果保存目录
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        if not os.path.exists(args.infer_dir):
+            raise ValueError(f"推理结果目录不存在: {args.infer_dir}")
+        
+        print(f"从目录加载推理结果: {args.infer_dir}")
+        print(f"分类结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # 初始化系统（用于最终决策，如果需要的话）
+        system = FastSlowThinkingSystem(
+            model_tag=cfg['model_size_mllm'],
+            model_name=cfg['model_size_mllm'],
+            device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
+            cfg=cfg,
+            enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
+        )
+        
+        # 加载所有推理结果文件
+        infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+        print(f"找到 {len(infer_files)} 个推理结果文件")
+        
+        # 统计指标
+        correct = 0
+        total = 0
+        fast_only_correct = 0
+        slow_triggered = 0
+        slow_triggered_correct = 0
+        
+        classification_results = []
+        
+        from tqdm import tqdm
+        for infer_file in tqdm(infer_files, desc="Processing classification"):
+            try:
+                infer_path = os.path.join(args.infer_dir, infer_file)
+                inference_data = load_json(infer_path)
+                
+                query_image = inference_data["query_image"]
+                true_cat = inference_data["true_category"]
+                fast_result = inference_data["fast_result"]
+                need_slow_thinking = inference_data["need_slow_thinking"]
+                slow_result = inference_data.get("slow_result")
+                
+                # 执行分类逻辑（完整的三种路径）
+                if not need_slow_thinking:
+                    # 路径1: 仅快思考分类
+                    final_prediction = fast_result["predicted_category"]
+                    final_confidence = fast_result["confidence"]
+                    used_slow_thinking = False
+                    fast_slow_consistent = True
+                    decision_path = "fast_only"
+                else:
+                    # 使用慢思考结果
+                    if slow_result is None:
+                        print(f"警告: {infer_file} 需要慢思考但没有慢思考结果")
+                        continue
+                    
+                    fast_pred = fast_result.get("predicted_category", "unknown")
+                    slow_pred = slow_result["predicted_category"]
+                    used_slow_thinking = True
+                    
+                    # 检查快慢思考是否一致
+                    if fast_pred != slow_pred and not is_similar(fast_pred, slow_pred, threshold=0.5):
+                        # 路径3: 快慢不一致，需要最终裁决
+                        fast_slow_consistent = False
+                        decision_path = "final_arbitration"
+                        
+                        # 这里可以实现不同的裁决策略：
+                        # 策略1: 直接用慢思考结果（当前默认）
+                        final_prediction = slow_pred
+                        final_confidence = slow_result["confidence"]
+                        
+                        # 策略2: 可选MLLM最终裁决（需要时可启用）
+                        # if system and hasattr(system, 'final_arbitration'):
+                        #     final_prediction, final_confidence = system.final_arbitration(
+                        #         query_image, fast_result, slow_result
+                        #     )
+                        
+                        print(f"快慢不一致: fast={fast_pred}, slow={slow_pred}, 裁决结果={final_prediction}")
+                    else:
+                        # 路径2: 快慢思考一致，直接用慢思考结果
+                        final_prediction = slow_pred
+                        final_confidence = slow_result["confidence"]
+                        fast_slow_consistent = True
+                        decision_path = "slow_consistent"
+                
+                # 评估预测结果
+                is_correct = is_similar(final_prediction, true_cat, threshold=0.5)
+                
+                if is_correct:
+                    correct += 1
+                    if not used_slow_thinking:
+                        fast_only_correct += 1
+                    if used_slow_thinking:
+                        slow_triggered_correct += 1
+                        
+                if used_slow_thinking:
+                    slow_triggered += 1
+                
+                total += 1
+                
+                # 保存分类结果
+                result = {
+                    "query_image": query_image,
+                    "true_category": true_cat,
+                    "final_prediction": final_prediction,
+                    "final_confidence": final_confidence,
+                    "used_slow_thinking": used_slow_thinking,
+                    "fast_slow_consistent": fast_slow_consistent,
+                    "decision_path": decision_path,  # 记录决策路径
+                    "is_correct": is_correct,
+                    "fast_prediction": fast_result.get("predicted_category", "unknown"),
+                    "fast_confidence": fast_result.get("confidence", 0.0),
+                    "slow_prediction": slow_result["predicted_category"] if slow_result else None,
+                    "slow_confidence": slow_result["confidence"] if slow_result else None
+                }
+                
+                classification_results.append(result)
+                
+            except Exception as e:
+                print(f"处理分类失败 {infer_file}: {e}")
+                continue
+        
+        # 计算并打印指标
+        acc = correct / total if total > 0 else 0.0
+        fast_only_acc = fast_only_correct / (total-slow_triggered) if (total-slow_triggered) > 0 else 0.0
+        slow_trigger_ratio = slow_triggered / total if total > 0 else 0.0
+        slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0
+        
+        print(f"✅ 正确预测总数: {correct}")
+        print(f"  - 其中仅快思考正确: {fast_only_correct}")
+        print(f"  - 其中慢思考触发且正确: {slow_triggered_correct}")
+        print(f"❌ 错误预测总数: {total - correct}")
+        print(f"📊 慢思考触发数量: {slow_triggered}")
+        print(f"[fast_slow_classify] 总体准确率: {acc:.4f} ({correct}/{total})")
+        print(f"[fast_slow_classify] 快思考准确率: {fast_only_acc:.4f}")
+        print(f"[fast_slow_classify] 慢思考触发比例: {slow_trigger_ratio:.4f}")
+        print(f"[fast_slow_classify] 慢思考准确率: {slow_trigger_acc:.4f}")
+        
+        # 保存分类结果
+        results_file = os.path.join(args.classify_dir, "classification_results.json")
+        dump_json(results_file, {
+            "summary": {
+                "total_samples": total,
+                "correct_predictions": correct,
+                "accuracy": acc,
+                "fast_only_correct": fast_only_correct,
+                "fast_only_accuracy": fast_only_acc,
+                "slow_triggered": slow_triggered,
+                "slow_trigger_ratio": slow_trigger_ratio,
+                "slow_triggered_correct": slow_triggered_correct,
+                "slow_trigger_accuracy": slow_trigger_acc
+            },
+            "detailed_results": classification_results
+        })
+        
+        print(f"分类结果已保存到: {results_file}")
     
     else:
         raise NotImplementedError 
