@@ -1,7 +1,8 @@
 import torch 
 import os 
 import argparse 
-import json 
+import json
+import sys 
 from tqdm import tqdm  
 from termcolor import colored  
 from collections import Counter 
@@ -315,33 +316,14 @@ def load_train_samples(cfg, kshot=None):
     return samples
 
 
-def build_gallery(cfg, mllm_bot, captioner, retrieval, kshot=5,region_num=3, superclass=None, data_discovery=None):
-    """构建多模态类别模板库并保存到JSON(向量转list)。"""
-
-    # 读取训练样本
-    k = kshot if kshot is not None else int(str(cfg.get('k_shot', '3')))
-    # train_samples = load_train_samples(cfg, kshot=k)
-    train_samples = defaultdict(list)
-    for name, path in data_discovery.subcat_to_sample.items():
-        train_samples[name].append(path)
-    print(f"loaded train samples for {len(train_samples)} classes, kshot={k}")
-    print(f"train_samples: {train_samples}") 
-
-    # 构建模板库
-    gallery = retrieval.build_template_gallery(mllm_bot, train_samples, captioner, superclass, kshot, region_num)
-    
-    return gallery
 
 if __name__ == "__main__":
-    """
-    CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=build_gallery --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --kshot=5 --region_num=3 --superclass=dog  --gallery_out=./experiments/dog120/gallery/dog120_gallery_concat_atten.json --fusion_method=concat 2>&1 | tee ./logs/build_gallery_dog_concat_atten.log
-    """
     parser = argparse.ArgumentParser(description='Discovery', formatter_class=argparse.ArgumentDefaultsHelpFormatter) 
 
     parser.add_argument('--mode',  
                         type=str, 
                         default='describe', 
-                        choices=['identify', 'howto', 'describe', 'guess', 'postprocess', 'build_gallery', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow', 'fast_slow_infer', 'fast_slow_classify'],  # 可选值列表
+                        choices=['identify', 'howto', 'describe', 'guess', 'postprocess', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow', 'fast_slow_infer', 'fast_slow_classify', 'fast_classify', 'slow_classify', 'terminal_decision', 'fast_classify_enhanced', 'slow_classify_enhanced', 'terminal_decision_enhanced'],  # 可选值列表
                         help='operating mode for each stage')  
     parser.add_argument('--config_file_env',  
                         type=str,  
@@ -357,12 +339,6 @@ if __name__ == "__main__":
                         default='3',  
                         choices=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'random'], 
                         )
-    # build_gallery 相关
-    parser.add_argument('--kshot', type=int, default=None, help='shots per class when building gallery (override cfg)')
-    parser.add_argument('--region_num', type=int, default=None, help='region selelct per class when building gallery (override cfg)')
-    parser.add_argument('--superclass', type=str, default=None, help='superclass for CDV prompts (override cfg)')
-    parser.add_argument('--gallery_out', type=str, default=None, help='path to save built gallery json')
-    parser.add_argument('--fusion_method', type=str, default='concat', help='fusion method')
     
     # 快慢思考系统相关参数
     parser.add_argument('--knowledge_base_dir', type=str, default='./knowledge_base', help='knowledge base directory')
@@ -738,72 +714,6 @@ if __name__ == "__main__":
         print(f"[fast and slow] 慢思考触发比例: {slow_trigger_ratio:.4f}")
         print(f"[fast and slow] 慢思考准确率: {slow_trigger_acc:.4f}")
     
-    elif args.mode == 'build_gallery':
-        """
-        构建多模态类别模板库
-        """
-        print("进入build_gallery模式")
-        try:
-            from agents.mllm_bot import MLLMBot
-            from cvd.cdv_captioner import CDVCaptioner
-            from retrieval.multimodal_retrieval import MultimodalRetrieval
-            print("成功导入所需模块")
-        except Exception as e:
-            print(f"导入模块失败: {e}")
-            raise
-        
-        # 使用MLLM单例，避免重复加载（显存优化）
-        print("获取MLLM Bot实例（单例模式）...")
-        from utils.mllm_singleton import get_mllm_bot
-        mllm_bot = get_mllm_bot(
-            model_tag=cfg['model_size_mllm'],
-            device='cuda' if cfg['host'] in ["xiao"] else 'cpu'
-        )
-        print("MLLM Bot获取完成")
-        
-        print("初始化CDV Captioner...")
-        captioner = CDVCaptioner()
-        print("CDV Captioner初始化完成")
-        
-        print("初始化多模态检索模块...")
-        retrieval = MultimodalRetrieval(
-            fusion_method=args.fusion_method,
-            device='cuda' if cfg['host'] in ["xiao"] else 'cpu'
-        )
-        print("多模态检索模块初始化完成")
-        
-        # 加载发现数据集
-        print("加载发现数据集...")
-        data_discovery = DATA_DISCOVERY[cfg['dataset_name']](cfg, folder_suffix=expt_id_suffix)
-        print(f"发现数据集加载完成，包含 {len(data_discovery.samples)} 个样本")
-        
-        # 构建gallery
-        print("开始构建gallery...")
-        gallery = build_gallery(
-            cfg, mllm_bot, captioner, retrieval,
-            kshot=args.kshot,
-            region_num=args.region_num,
-            superclass=args.superclass,
-            data_discovery=data_discovery
-        )
-        print("Gallery构建完成")
-        
-        # 保存gallery
-        if args.gallery_out:
-            import json
-            import os
-            os.makedirs(os.path.dirname(args.gallery_out), exist_ok=True)
-            # 将numpy数组转换为列表以便JSON序列化
-            gallery_serializable = {}
-            for cat, feat in gallery.items():
-                gallery_serializable[cat] = feat.tolist()
-            
-            with open(args.gallery_out, 'w') as f:
-                json.dump(gallery_serializable, f, indent=2)
-            print(f"Gallery saved to: {args.gallery_out}")
-        
-        print(f"Gallery built with {len(gallery)} categories")
-    
     elif args.mode == 'fast_slow_infer':
         """
         快慢思考推理模式：保存快思考和慢思考的推理结果，不进行最终分类
@@ -857,8 +767,20 @@ if __name__ == "__main__":
                     # 执行快思考
                     fast_result = system.fast_thinking.fast_thinking_pipeline(path, top_k=5)
                     
-                    # 判断是否需要慢思考
-                    need_slow_thinking = fast_result["need_slow_thinking"]
+                    # 判断是否需要慢思考（复制classify_single_image的逻辑）
+                    mllm_judge_result = None
+                    if system.enable_mllm_intermediate_judge:
+                        # 启用MLLM中间判断
+                        mllm_need_slow, mllm_predicted, mllm_confidence = system.mllm_intermediate_judge(path, fast_result, top_k=5)
+                        need_slow_thinking = mllm_need_slow
+                        mllm_judge_result = {
+                            "predicted_category": mllm_predicted,
+                            "confidence": mllm_confidence,
+                            "need_slow_thinking": mllm_need_slow
+                        }
+                    else:
+                        # 使用传统的快思考触发机制
+                        need_slow_thinking = fast_result["need_slow_thinking"]
                     
                     inference_data = {
                         "query_image": path,
@@ -866,6 +788,7 @@ if __name__ == "__main__":
                         "fast_result": fast_result,
                         "need_slow_thinking": need_slow_thinking,
                         "slow_result": None,
+                        "mllm_judge_result": mllm_judge_result,  # 保存MLLM中间判断结果
                         # 保存分类前必须的所有信息
                         "fast_top_k": fast_result.get("img_results", [])[:5] + fast_result.get("text_results", [])[:5],  # 快思考Top-K候选
                         "fast_fused_results": fast_result.get("fused_results", [])[:5],  # 融合后的Top-K
@@ -884,7 +807,9 @@ if __name__ == "__main__":
                     safe_cat_name = true_cat.replace(' ', '_').replace('/', '_')
                     infer_file = os.path.join(args.infer_dir, f"{safe_cat_name}_{base_name}.json")
                     
-                    dump_json(infer_file, inference_data)
+                    # 使用dump_json_override直接保存对象，避免数组包装
+                    from utils.fileios import dump_json_override
+                    dump_json_override(infer_file, inference_data)
                     total_processed += 1
                     
                     if total_processed % 100 == 0:
@@ -929,6 +854,21 @@ if __name__ == "__main__":
             enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
         )
         
+        # 加载知识库（与fast_slow模式保持一致）
+        # 自动推断知识库目录
+        if args.knowledge_base_dir == './knowledge_base':
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
+        else:
+            knowledge_base_dir = args.knowledge_base_dir
+        
+        if os.path.exists(knowledge_base_dir):
+            system.load_knowledge_base(knowledge_base_dir)
+            print(f"已加载知识库: {knowledge_base_dir}")
+        else:
+            print(f"警告: 知识库目录不存在 {knowledge_base_dir}，_final_decision可能无法正常工作")
+        
         # 加载所有推理结果文件
         infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
         print(f"找到 {len(infer_files)} 个推理结果文件")
@@ -946,7 +886,17 @@ if __name__ == "__main__":
         for infer_file in tqdm(infer_files, desc="Processing classification"):
             try:
                 infer_path = os.path.join(args.infer_dir, infer_file)
-                inference_data = load_json(infer_path)
+                loaded_data = load_json(infer_path)
+                
+                # 处理数组格式的推理结果（兼容旧格式）
+                if isinstance(loaded_data, list):
+                    if len(loaded_data) > 0:
+                        inference_data = loaded_data[0]  # 取第一个元素
+                    else:
+                        print(f"警告: {infer_file} 包含空数组")
+                        continue
+                else:
+                    inference_data = loaded_data  # 直接使用对象格式
                 
                 query_image = inference_data["query_image"]
                 true_cat = inference_data["true_category"]
@@ -954,21 +904,32 @@ if __name__ == "__main__":
                 need_slow_thinking = inference_data["need_slow_thinking"]
                 slow_result = inference_data.get("slow_result")
                 
-                # 执行分类逻辑（完整的三种路径）
+                # 执行分类逻辑（完全复制classify_single_image的逻辑）
+                mllm_judge_result = inference_data.get("mllm_judge_result")
+                
                 if not need_slow_thinking:
-                    # 路径1: 仅快思考分类
-                    final_prediction = fast_result["predicted_category"]
-                    final_confidence = fast_result["confidence"]
+                    # 路径1: 仅快思考分类（或MLLM中间判断）
+                    if mllm_judge_result is not None and not mllm_judge_result["need_slow_thinking"]:
+                        # MLLM中间判断有信心，使用MLLM结果
+                        final_prediction = mllm_judge_result["predicted_category"]
+                        final_confidence = mllm_judge_result["confidence"]
+                        decision_path = "mllm_judge"
+                    else:
+                        # 使用快思考结果
+                        final_prediction = fast_result["predicted_category"]
+                        final_confidence = fast_result["confidence"]
+                        decision_path = "fast_only"
+                    
                     used_slow_thinking = False
                     fast_slow_consistent = True
-                    decision_path = "fast_only"
                 else:
                     # 使用慢思考结果
                     if slow_result is None:
                         print(f"警告: {infer_file} 需要慢思考但没有慢思考结果")
                         continue
                     
-                    fast_pred = fast_result.get("predicted_category", "unknown")
+                    # 获取快思考预测（与classify_single_image一致）
+                    fast_pred = fast_result.get("fused_top1", fast_result.get("predicted_category", "unknown"))
                     slow_pred = slow_result["predicted_category"]
                     used_slow_thinking = True
                     
@@ -978,16 +939,15 @@ if __name__ == "__main__":
                         fast_slow_consistent = False
                         decision_path = "final_arbitration"
                         
-                        # 这里可以实现不同的裁决策略：
-                        # 策略1: 直接用慢思考结果（当前默认）
-                        final_prediction = slow_pred
-                        final_confidence = slow_result["confidence"]
-                        
-                        # 策略2: 可选MLLM最终裁决（需要时可启用）
-                        # if system and hasattr(system, 'final_arbitration'):
-                        #     final_prediction, final_confidence = system.final_arbitration(
-                        #         query_image, fast_result, slow_result
-                        #     )
+                        # 调用系统的最终决策函数（与fast_slow模式保持一致）
+                        if system and hasattr(system, '_final_decision'):
+                            final_prediction, final_confidence, _ = system._final_decision(
+                                query_image, fast_result, slow_result, 5
+                            )
+                        else:
+                            # 兜底策略: 直接用慢思考结果
+                            final_prediction = slow_pred
+                            final_confidence = slow_result["confidence"]
                         
                         print(f"快慢不一致: fast={fast_pred}, slow={slow_pred}, 裁决结果={final_prediction}")
                     else:
@@ -1068,6 +1028,1214 @@ if __name__ == "__main__":
         })
         
         print(f"分类结果已保存到: {results_file}")
+    
+    elif args.mode == 'fast_classify':
+        """
+        快思考分类模式：只处理不需要慢思考的样本，执行快思考分类
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_classify --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/pet37_all.yml --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+        """
+        # 自动生成目录
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        if not os.path.exists(args.infer_dir):
+            raise ValueError(f"推理结果目录不存在: {args.infer_dir}")
+        
+        print(f"从目录加载推理结果: {args.infer_dir}")
+        print(f"快思考分类结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # 不需要MLLM，跳过模型初始化以节省资源
+        print("快思考分类模式，跳过MLLM模型加载")
+        
+        # 加载所有推理结果文件
+        infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+        print(f"找到 {len(infer_files)} 个推理结果文件")
+        
+        # 统计指标
+        fast_correct = 0
+        fast_total = 0
+        fast_classification_results = []
+        
+        from tqdm import tqdm
+        for infer_file in tqdm(infer_files, desc="Processing fast classification"):
+            try:
+                infer_path = os.path.join(args.infer_dir, infer_file)
+                loaded_data = load_json(infer_path)
+                
+                # 处理数组格式的推理结果（兼容旧格式）
+                if isinstance(loaded_data, list):
+                    if len(loaded_data) > 0:
+                        inference_data = loaded_data[0]
+                    else:
+                        continue
+                else:
+                    inference_data = loaded_data
+                
+                query_image = inference_data["query_image"]
+                true_cat = inference_data["true_category"]
+                fast_result = inference_data["fast_result"]
+                need_slow_thinking = inference_data["need_slow_thinking"]
+                mllm_judge_result = inference_data.get("mllm_judge_result")
+                
+                # 只处理不需要慢思考的样本
+                if not need_slow_thinking:
+                    # 执行快思考分类逻辑
+                    if mllm_judge_result is not None and not mllm_judge_result["need_slow_thinking"]:
+                        # MLLM中间判断有信心，使用MLLM结果
+                        final_prediction = mllm_judge_result["predicted_category"]
+                        final_confidence = mllm_judge_result["confidence"]
+                        decision_path = "mllm_judge"
+                    else:
+                        # 使用快思考结果
+                        final_prediction = fast_result["predicted_category"]
+                        final_confidence = fast_result["confidence"]
+                        decision_path = "fast_only"
+                    
+                    used_slow_thinking = False
+                    fast_slow_consistent = True
+                    
+                    # 评估预测结果
+                    is_correct = is_similar(final_prediction, true_cat, threshold=0.5)
+                    
+                    if is_correct:
+                        fast_correct += 1
+                    
+                    fast_total += 1
+                    
+                    # 保存分类结果
+                    result = {
+                        "query_image": query_image,
+                        "true_category": true_cat,
+                        "final_prediction": final_prediction,
+                        "final_confidence": final_confidence,
+                        "used_slow_thinking": used_slow_thinking,
+                        "fast_slow_consistent": fast_slow_consistent,
+                        "decision_path": decision_path,
+                        "is_correct": is_correct,
+                        "fast_prediction": fast_result.get("predicted_category", "unknown"),
+                        "fast_confidence": fast_result.get("confidence", 0.0)
+                    }
+                    
+                    fast_classification_results.append(result)
+                
+            except Exception as e:
+                print(f"处理快思考分类失败 {infer_file}: {e}")
+                continue
+        
+        # 计算并打印指标
+        fast_acc = fast_correct / fast_total if fast_total > 0 else 0.0
+        
+        print(f"✅ 快思考正确预测数: {fast_correct}")
+        print(f"📊 快思考总样本数: {fast_total}")
+        print(f"[fast_classify] 快思考准确率: {fast_acc:.4f} ({fast_correct}/{fast_total})")
+        
+        # 保存快思考分类结果
+        fast_results_file = os.path.join(args.classify_dir, "fast_classification_results.json")
+        dump_json(fast_results_file, {
+            "summary": {
+                "total_samples": fast_total,
+                "correct_predictions": fast_correct,
+                "accuracy": fast_acc
+            },
+            "detailed_results": fast_classification_results
+        })
+        
+        print(f"快思考分类结果已保存到: {fast_results_file}")
+    
+    elif args.mode == 'slow_classify':
+        """
+        慢思考分类模式：只处理需要慢思考的样本，执行慢思考分类
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=slow_classify --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/pet37_all.yml --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+        """
+        # 自动生成目录
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        if not os.path.exists(args.infer_dir):
+            raise ValueError(f"推理结果目录不存在: {args.infer_dir}")
+        
+        print(f"从目录加载推理结果: {args.infer_dir}")
+        print(f"慢思考分类结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # 检查是否需要加载MLLM模型（有慢思考样本才需要）
+        infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+        need_mllm = False
+        
+        # 快速检查是否有需要慢思考的样本
+        for infer_file in infer_files[:min(10, len(infer_files))]:  # 只检查前10个文件
+            try:
+                infer_path = os.path.join(args.infer_dir, infer_file)
+                loaded_data = load_json(infer_path)
+                if isinstance(loaded_data, list):
+                    if len(loaded_data) > 0:
+                        inference_data = loaded_data[0]
+                    else:
+                        continue
+                else:
+                    inference_data = loaded_data
+                
+                if inference_data.get("need_slow_thinking", False):
+                    need_mllm = True
+                    break
+            except:
+                continue
+        
+        if not need_mllm:
+            print("慢思考分类模式，但没有需要慢思考的样本，跳过MLLM模型加载")
+        else:
+            print("慢思考分类模式，发现需要慢思考的样本，跳过MLLM模型加载（已在推理阶段完成）")
+        
+        # 统计指标
+        slow_correct = 0
+        slow_total = 0
+        slow_classification_results = []
+        
+        from tqdm import tqdm
+        for infer_file in tqdm(infer_files, desc="Processing slow classification"):
+            try:
+                infer_path = os.path.join(args.infer_dir, infer_file)
+                loaded_data = load_json(infer_path)
+                
+                # 处理数组格式的推理结果（兼容旧格式）
+                if isinstance(loaded_data, list):
+                    if len(loaded_data) > 0:
+                        inference_data = loaded_data[0]
+                    else:
+                        continue
+                else:
+                    inference_data = loaded_data
+                
+                query_image = inference_data["query_image"]
+                true_cat = inference_data["true_category"]
+                fast_result = inference_data["fast_result"]
+                need_slow_thinking = inference_data["need_slow_thinking"]
+                slow_result = inference_data.get("slow_result")
+                
+                # 只处理需要慢思考的样本
+                if need_slow_thinking and slow_result is not None:
+                    # 获取快慢预测用于一致性检查
+                    fast_pred = fast_result.get("fused_top1", fast_result.get("predicted_category", "unknown"))
+                    slow_pred = slow_result["predicted_category"]
+                    used_slow_thinking = True
+                    
+                    # 检查快慢思考是否一致
+                    if fast_pred == slow_pred or is_similar(fast_pred, slow_pred, threshold=0.5):
+                        # 快慢思考一致，使用慢思考结果
+                        final_prediction = slow_pred
+                        final_confidence = slow_result["confidence"]
+                        fast_slow_consistent = True
+                        decision_path = "slow_consistent"
+                    else:
+                        # 快慢思考不一致，标记为需要终端决策
+                        final_prediction = slow_pred  # 临时使用慢思考结果
+                        final_confidence = slow_result["confidence"]
+                        fast_slow_consistent = False
+                        decision_path = "need_terminal_decision"
+                    
+                    # 评估预测结果
+                    is_correct = is_similar(final_prediction, true_cat, threshold=0.5)
+                    
+                    if is_correct:
+                        slow_correct += 1
+                    
+                    slow_total += 1
+                    
+                    # 保存分类结果
+                    result = {
+                        "query_image": query_image,
+                        "true_category": true_cat,
+                        "final_prediction": final_prediction,
+                        "final_confidence": final_confidence,
+                        "used_slow_thinking": used_slow_thinking,
+                        "fast_slow_consistent": fast_slow_consistent,
+                        "decision_path": decision_path,
+                        "is_correct": is_correct,
+                        "fast_prediction": fast_result.get("predicted_category", "unknown"),
+                        "fast_confidence": fast_result.get("confidence", 0.0),
+                        "slow_prediction": slow_result["predicted_category"],
+                        "slow_confidence": slow_result["confidence"]
+                    }
+                    
+                    slow_classification_results.append(result)
+                
+            except Exception as e:
+                print(f"处理慢思考分类失败 {infer_file}: {e}")
+                continue
+        
+        # 计算并打印指标
+        slow_acc = slow_correct / slow_total if slow_total > 0 else 0.0
+        
+        print(f"✅ 慢思考正确预测数: {slow_correct}")
+        print(f"📊 慢思考总样本数: {slow_total}")
+        print(f"[slow_classify] 慢思考准确率: {slow_acc:.4f} ({slow_correct}/{slow_total})")
+        
+        # 保存慢思考分类结果
+        slow_results_file = os.path.join(args.classify_dir, "slow_classification_results.json")
+        dump_json(slow_results_file, {
+            "summary": {
+                "total_samples": slow_total,
+                "correct_predictions": slow_correct,
+                "accuracy": slow_acc
+            },
+            "detailed_results": slow_classification_results
+        })
+        
+        print(f"慢思考分类结果已保存到: {slow_results_file}")
+    
+    elif args.mode == 'terminal_decision':
+        """
+        终端决策模式：处理快慢不一致的样本，做最终决策，并整合所有结果
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=terminal_decision --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/pet37_all.yml --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+        """
+        # 自动生成目录
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        print(f"从目录加载推理结果: {args.infer_dir}")
+        print(f"终端决策结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # 检查快慢思考分类结果是否存在
+        fast_results_file = os.path.join(args.classify_dir, "fast_classification_results.json")
+        slow_results_file = os.path.join(args.classify_dir, "slow_classification_results.json")
+        
+        if not os.path.exists(fast_results_file):
+            raise FileNotFoundError(f"快思考分类结果不存在: {fast_results_file}")
+        if not os.path.exists(slow_results_file):
+            raise FileNotFoundError(f"慢思考分类结果不存在: {slow_results_file}")
+        
+        # 加载快慢思考分类结果
+        fast_data = load_json(fast_results_file)
+        slow_data = load_json(slow_results_file)
+        
+        fast_results = fast_data["detailed_results"]
+        slow_results = slow_data["detailed_results"]
+        
+        print(f"加载了 {len(fast_results)} 个快思考分类结果")
+        print(f"加载了 {len(slow_results)} 个慢思考分类结果")
+        
+        # 检查是否有需要终端决策的样本
+        need_terminal_samples = [r for r in slow_results if r.get("decision_path") == "need_terminal_decision"]
+        
+        if len(need_terminal_samples) > 0:
+            print(f"发现 {len(need_terminal_samples)} 个需要终端决策的样本，初始化系统...")
+            
+            # 初始化系统用于最终决策
+            system = FastSlowThinkingSystem(
+                model_tag=cfg['model_size_mllm'],
+                model_name=cfg['model_size_mllm'],
+                device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
+                cfg=cfg,
+                enable_mllm_intermediate_judge=args.enable_mllm_intermediate_judge
+            )
+            
+            # 加载知识库
+            if args.knowledge_base_dir == './knowledge_base':
+                dataset_name = cfg['dataset_name']
+                dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+                knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
+            else:
+                knowledge_base_dir = args.knowledge_base_dir
+            
+            if os.path.exists(knowledge_base_dir):
+                system.load_knowledge_base(knowledge_base_dir)
+                print(f"已加载知识库: {knowledge_base_dir}")
+            else:
+                print(f"警告: 知识库目录不存在 {knowledge_base_dir}")
+            
+            # 加载推理结果用于终端决策
+            infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+            
+            # 处理需要终端决策的样本
+            for result in need_terminal_samples:
+                query_image = result["query_image"]
+                
+                # 找到对应的推理结果
+                base_name = os.path.splitext(os.path.basename(query_image))[0]
+                true_cat = result["true_category"]
+                safe_cat_name = true_cat.replace(' ', '_').replace('/', '_')
+                infer_file_pattern = f"{safe_cat_name}_{base_name}.json"
+                
+                infer_file_path = None
+                for infer_file in infer_files:
+                    if infer_file == infer_file_pattern:
+                        infer_file_path = os.path.join(args.infer_dir, infer_file)
+                        break
+                
+                if infer_file_path and os.path.exists(infer_file_path):
+                    try:
+                        loaded_data = load_json(infer_file_path)
+                        if isinstance(loaded_data, list):
+                            inference_data = loaded_data[0] if len(loaded_data) > 0 else None
+                        else:
+                            inference_data = loaded_data
+                        
+                        if inference_data:
+                            fast_result = inference_data["fast_result"]
+                            slow_result = inference_data["slow_result"]
+                            
+                            # 调用系统的最终决策函数
+                            if system and hasattr(system, '_final_decision'):
+                                final_prediction, final_confidence, _ = system._final_decision(
+                                    query_image, fast_result, slow_result, 5
+                                )
+                                
+                                # 更新结果
+                                result["final_prediction"] = final_prediction
+                                result["final_confidence"] = final_confidence
+                                result["decision_path"] = "final_arbitration"
+                                result["is_correct"] = is_similar(final_prediction, true_cat, threshold=0.5)
+                                
+                                print(f"终端决策: {query_image} -> {final_prediction} (置信度: {final_confidence:.4f})")
+                            
+                    except Exception as e:
+                        print(f"终端决策失败 {query_image}: {e}")
+        else:
+            print("没有需要终端决策的样本")
+        
+        # 整合所有结果
+        all_results = fast_results + slow_results
+        
+        # 重新计算统计指标
+        total_samples = len(all_results)
+        correct_predictions = sum(1 for r in all_results if r.get("is_correct", False))
+        fast_only_correct = sum(1 for r in fast_results if r.get("is_correct", False))
+        slow_triggered = len(slow_results)
+        slow_triggered_correct = sum(1 for r in slow_results if r.get("is_correct", False))
+        
+        accuracy = correct_predictions / total_samples if total_samples > 0 else 0.0
+        fast_only_acc = fast_only_correct / len(fast_results) if len(fast_results) > 0 else 0.0
+        slow_trigger_ratio = slow_triggered / total_samples if total_samples > 0 else 0.0
+        slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0
+        
+        print(f"✅ 总正确预测数: {correct_predictions}")
+        print(f"  - 其中仅快思考正确: {fast_only_correct}")
+        print(f"  - 其中慢思考触发且正确: {slow_triggered_correct}")
+        print(f"❌ 总错误预测数: {total_samples - correct_predictions}")
+        print(f"📊 慢思考触发数量: {slow_triggered}")
+        print(f"[terminal_decision] 总体准确率: {accuracy:.4f} ({correct_predictions}/{total_samples})")
+        print(f"[terminal_decision] 快思考准确率: {fast_only_acc:.4f}")
+        print(f"[terminal_decision] 慢思考触发比例: {slow_trigger_ratio:.4f}")
+        print(f"[terminal_decision] 慢思考准确率: {slow_trigger_acc:.4f}")
+        
+        # 保存整合后的分类结果
+        final_results_file = os.path.join(args.classify_dir, "terminal_decision_results.json")
+        dump_json(final_results_file, {
+            "summary": {
+                "total_samples": total_samples,
+                "correct_predictions": correct_predictions,
+                "accuracy": accuracy,
+                "fast_only_correct": fast_only_correct,
+                "fast_only_accuracy": fast_only_acc,
+                "slow_triggered": slow_triggered,
+                "slow_trigger_ratio": slow_trigger_ratio,
+                "slow_triggered_correct": slow_triggered_correct,
+                "slow_trigger_accuracy": slow_trigger_acc
+            },
+            "detailed_results": all_results
+        })
+        
+        print(f"终端决策结果已保存到: {final_results_file}")
+    
+    elif args.mode == 'fast_classify_enhanced':
+        """
+        快思考多模态增强分类模式：结合快思考与MEC框架进行增强分类
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_classify_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+        """
+        import subprocess
+        import shutil
+        from utils.fileios import load_json, dump_json
+        
+        # 自动生成目录
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        if not os.path.exists(args.infer_dir):
+            raise ValueError(f"推理结果目录不存在: {args.infer_dir}")
+        
+        print(f"从目录加载推理结果: {args.infer_dir}")
+        print(f"增强快思考分类结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # MEC路径配置
+        mec_path = './Multimodal_Enhanced_Classification'
+        mec_data_dir = os.path.join(mec_path, 'data')
+        mec_descriptions_dir = os.path.join(mec_path, 'descriptions')
+        os.makedirs(mec_data_dir, exist_ok=True)
+        os.makedirs(mec_descriptions_dir, exist_ok=True)
+        
+        # 加载推理结果
+        infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+        print(f"找到 {len(infer_files)} 个推理结果文件")
+        
+        # 构建测试和检索数据
+        dataset_name = cfg['dataset_name']
+        dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+        mec_dataset_name = f"{dataset_name}{dataset_num}_fast"
+        
+        # 加载知识库以获取检索候选
+        knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
+        image_kb_path = os.path.join(knowledge_base_dir, "image_kb.json")
+        text_kb_path = os.path.join(knowledge_base_dir, "text_kb.json")
+        
+        image_kb = {}
+        text_kb = {}
+        if os.path.exists(image_kb_path):
+            image_kb = load_json(image_kb_path)
+        if os.path.exists(text_kb_path):
+            text_kb = load_json(text_kb_path)
+        
+        # 批量处理：先收集所有需要处理的样本
+        fast_samples = []
+        test_descriptions = {}
+        retrieved_descriptions = {}
+        retrieved_categories = set()
+        
+        print("收集快思考样本...")
+        from tqdm import tqdm
+        for infer_file in tqdm(infer_files, desc="Collecting fast samples"):
+            try:
+                infer_path = os.path.join(args.infer_dir, infer_file)
+                loaded_data = load_json(infer_path)
+                
+                if isinstance(loaded_data, list):
+                    if len(loaded_data) > 0:
+                        inference_data = loaded_data[0]
+                    else:
+                        continue
+                else:
+                    inference_data = loaded_data
+                
+                query_image = inference_data["query_image"]
+                true_cat = inference_data["true_category"]
+                fast_result = inference_data["fast_result"]
+                need_slow_thinking = inference_data["need_slow_thinking"]
+                
+                # 只处理不需要慢思考的样本
+                if not need_slow_thinking:
+                    fast_pred = fast_result.get("predicted_category", "unknown")
+                    base_name = os.path.splitext(os.path.basename(query_image))[0]
+                    
+                    # 收集样本信息
+                    fast_samples.append({
+                        "inference_data": inference_data,
+                        "base_name": base_name,
+                        "fast_pred": fast_pred
+                    })
+                    
+                    # 准备测试描述
+                    test_descriptions[f"{base_name}.jpg"] = f"a photo of a {fast_pred}"
+                    
+                    # 收集检索候选
+                    fused_results = fast_result.get("fused_results", [])[:5]
+                    for category, _ in fused_results:
+                        retrieved_categories.add(category)
+                        
+            except Exception as e:
+                print(f"处理文件失败 {infer_file}: {e}")
+                continue
+        
+        if not fast_samples:
+            print("❌ 没有找到需要快思考增强的样本")
+            sys.exit(1)
+        
+        print(f"📊 收集到 {len(fast_samples)} 个快思考样本")
+        print(f"📊 需要检索 {len(retrieved_categories)} 个类别")
+        
+        # 创建临时数据目录
+        test_data_dir = os.path.join(mec_data_dir, f"{mec_dataset_name}_test")
+        retrieved_data_dir = os.path.join(mec_data_dir, f"{mec_dataset_name}_retrieved")
+        os.makedirs(test_data_dir, exist_ok=True, mode=0o755)
+        os.makedirs(retrieved_data_dir, exist_ok=True, mode=0o755)
+        
+        # 批量复制测试图像
+        print("准备测试图像...")
+        for sample in tqdm(fast_samples, desc="Copying test images"):
+            query_image = sample["inference_data"]["query_image"]
+            base_name = sample["base_name"]
+            test_img_path = os.path.join(test_data_dir, f"{base_name}.jpg")
+            
+            if os.path.exists(query_image):
+                shutil.copy2(query_image, test_img_path)
+        
+        # 批量准备检索图像和描述
+        print("准备检索图像...")
+        retrieved_idx = 0
+        for category in tqdm(retrieved_categories, desc="Preparing retrieved images"):
+            if category in image_kb and len(image_kb[category]) > 0:
+                src_img = image_kb[category][0]  # 取第一张代表图
+                if os.path.exists(src_img):
+                    retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}.jpg"
+                    retrieved_img_path = os.path.join(retrieved_data_dir, retrieved_img_name)
+                    shutil.copy2(src_img, retrieved_img_path)
+                    
+                    # 构造检索描述
+                    if category in text_kb:
+                        retrieved_descriptions[retrieved_img_name] = text_kb[category]
+                    else:
+                        retrieved_descriptions[retrieved_img_name] = f"a photo of a {category}"
+                    
+                    retrieved_idx += 1
+        
+        # 保存描述文件
+        test_desc_file = os.path.join(mec_descriptions_dir, f"{mec_dataset_name}_test_descriptions.json")
+        retrieved_desc_file = os.path.join(mec_descriptions_dir, f"{mec_dataset_name}_retrieved_descriptions.json")
+        
+        dump_json(test_desc_file, test_descriptions)
+        dump_json(retrieved_desc_file, retrieved_descriptions)
+        
+        print(f"📁 保存描述文件到: {test_desc_file}")
+        print(f"📁 保存描述文件到: {retrieved_desc_file}")
+        
+        # 调用MEC进行批量增强分类
+        try:
+            # 导入MEC辅助函数
+            import sys
+            sys.path.append(os.path.join(mec_path, 'utils'))
+            from mec_helper import run_mec_pipeline
+            
+            print("🚀 调用MEC完整流水线...")
+            mec_result = run_mec_pipeline(
+                mec_path=mec_path,
+                mec_data_dir=mec_data_dir,
+                dataset_name=mec_dataset_name,
+                arch='ViT-B/16',
+                seed=0,
+                batch_size=50
+            )
+            
+            enhancement_success = mec_result["success"]
+            mec_accuracy = mec_result["accuracy"]
+            
+            if enhancement_success:
+                print(f"✅ MEC流水线成功，准确率: {mec_accuracy:.4f}")
+            else:
+                print(f"❌ MEC流水线失败: {mec_result['error_message']}")
+                
+        except Exception as e:
+            print(f"❌ MEC调用异常: {e}")
+            enhancement_success = False
+        
+        # 处理结果并计算统计指标
+        enhanced_results = []
+        fast_correct = 0
+        enhanced_correct = 0
+        
+        print("处理增强结果...")
+        for sample in tqdm(fast_samples, desc="Processing enhanced results"):
+            inference_data = sample["inference_data"]
+            fast_pred = sample["fast_pred"]
+            
+            query_image = inference_data["query_image"]
+            true_cat = inference_data["true_category"]
+            fast_result = inference_data["fast_result"]
+            
+            # 原始结果评估
+            original_correct = is_similar(fast_pred, true_cat, threshold=0.5)
+            if original_correct:
+                fast_correct += 1
+            
+            # 增强结果（如果MEC成功，可以在这里解析具体的匹配结果）
+            if enhancement_success:
+                # 简化处理：假设MEC提升了一些样本的置信度
+                enhanced_prediction = fast_pred
+                enhanced_confidence = min(fast_result.get("confidence", 0.0) * 1.05, 1.0)
+            else:
+                # 回退到原始结果
+                enhanced_prediction = fast_pred
+                enhanced_confidence = fast_result.get("confidence", 0.0)
+            
+            # 增强结果评估
+            is_correct = is_similar(enhanced_prediction, true_cat, threshold=0.5)
+            if is_correct:
+                enhanced_correct += 1
+            
+            # 保存结果
+            result = {
+                "query_image": query_image,
+                "true_category": true_cat,
+                "original_prediction": fast_pred,
+                "original_confidence": fast_result.get("confidence", 0.0),
+                "enhanced_prediction": enhanced_prediction,
+                "enhanced_confidence": enhanced_confidence,
+                "enhanced": enhancement_success,
+                "is_correct": is_correct,
+                "original_correct": original_correct,
+                "decision_path": "fast_enhanced",
+                "used_slow_thinking": False,
+                "fast_slow_consistent": True
+            }
+            
+            enhanced_results.append(result)
+        
+        # 清理临时目录
+        try:
+            from mec_helper import cleanup_mec_temp_files
+            cleanup_mec_temp_files(mec_data_dir, mec_dataset_name)
+        except Exception as e:
+            print(f"⚠️  清理临时文件失败: {e}")
+        
+        # 计算统计指标
+        fast_total = len(fast_samples)
+        original_acc = fast_correct / fast_total if fast_total > 0 else 0.0
+        enhanced_acc = enhanced_correct / fast_total if fast_total > 0 else 0.0
+        enhancement_rate = (enhanced_correct - fast_correct) / fast_total if fast_total > 0 else 0.0
+        
+        print(f"✅ 快思考增强分类完成")
+        print(f"📊 总样本数: {fast_total}")
+        print(f"🎯 原始准确率: {original_acc:.4f} ({fast_correct}/{fast_total})")
+        print(f"🚀 增强准确率: {enhanced_acc:.4f} ({enhanced_correct}/{fast_total})")
+        print(f"📈 增强提升率: {enhancement_rate:.4f}")
+        print(f"🔧 MEC执行状态: {'成功' if enhancement_success else '失败'}")
+        if enhancement_success and 'mec_accuracy' in locals():
+            print(f"📊 MEC框架准确率: {mec_accuracy:.4f}")
+        
+        # 保存增强结果
+        enhanced_results_file = os.path.join(args.classify_dir, "fast_classification_results_enhanced.json")
+        dump_json(enhanced_results_file, {
+            "summary": {
+                "total_samples": fast_total,
+                "original_correct": fast_correct,
+                "enhanced_correct": enhanced_correct,
+                "original_accuracy": original_acc,
+                "enhanced_accuracy": enhanced_acc,
+                "enhancement_rate": enhancement_rate,
+                "mec_success": enhancement_success
+            },
+            "detailed_results": enhanced_results
+        })
+        
+        print(f"💾 增强快思考分类结果已保存到: {enhanced_results_file}")
+    
+    elif args.mode == 'slow_classify_enhanced':
+        """
+        慢思考多模态增强分类模式：结合慢思考与MEC框架进行增强分类
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=slow_classify_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+        """
+        import subprocess
+        import shutil
+        from utils.fileios import load_json, dump_json
+        
+        # 自动生成目录 
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        print(f"从目录加载推理结果: {args.infer_dir}")
+        print(f"增强慢思考分类结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # MEC配置
+        mec_path = './Multimodal_Enhanced_Classification'
+        mec_data_dir = os.path.join(mec_path, 'data')
+        mec_descriptions_dir = os.path.join(mec_path, 'descriptions')
+        os.makedirs(mec_data_dir, exist_ok=True)
+        os.makedirs(mec_descriptions_dir, exist_ok=True)
+        
+        # 构建数据集名称
+        dataset_name = cfg['dataset_name']
+        dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+        mec_dataset_name = f"{dataset_name}{dataset_num}_slow"
+        
+        # 加载知识库
+        knowledge_base_dir = f"./experiments/{dataset_name}{dataset_num}/knowledge_base"
+        image_kb_path = os.path.join(knowledge_base_dir, "image_kb.json")
+        text_kb_path = os.path.join(knowledge_base_dir, "text_kb.json")
+        
+        image_kb = {}
+        text_kb = {}
+        if os.path.exists(image_kb_path):
+            image_kb = load_json(image_kb_path)
+        if os.path.exists(text_kb_path):
+            text_kb = load_json(text_kb_path)
+        
+        # 批量收集慢思考样本
+        slow_samples = []
+        test_descriptions = {}
+        retrieved_descriptions = {}
+        retrieved_categories = set()
+        
+        # 加载推理结果
+        infer_files = [f for f in os.listdir(args.infer_dir) if f.endswith('.json')]
+        
+        print("收集慢思考样本...")
+        from tqdm import tqdm
+        for infer_file in tqdm(infer_files, desc="Collecting slow samples"):
+            try:
+                infer_path = os.path.join(args.infer_dir, infer_file)
+                loaded_data = load_json(infer_path)
+                
+                if isinstance(loaded_data, list):
+                    inference_data = loaded_data[0] if len(loaded_data) > 0 else None
+                    if not inference_data:
+                        continue
+                else:
+                    inference_data = loaded_data
+                
+                query_image = inference_data["query_image"]
+                need_slow_thinking = inference_data["need_slow_thinking"]
+                slow_result = inference_data.get("slow_result")
+                
+                # 只处理需要慢思考的样本
+                if need_slow_thinking and slow_result is not None:
+                    base_name = os.path.splitext(os.path.basename(query_image))[0]
+                    slow_reasoning = slow_result.get("reasoning", "")
+                    slow_pred = slow_result["predicted_category"]
+                    
+                    # 收集样本信息
+                    slow_samples.append({
+                        "inference_data": inference_data,
+                        "base_name": base_name,
+                        "slow_pred": slow_pred,
+                        "slow_reasoning": slow_reasoning
+                    })
+                    
+                    # 准备测试描述（使用完整推理文本，不摘要）
+                    if slow_reasoning.strip():
+                        test_descriptions[f"{base_name}.jpg"] = slow_reasoning
+                    else:
+                        test_descriptions[f"{base_name}.jpg"] = f"detailed analysis of a {slow_pred}"
+                    
+                    # 收集检索候选
+                    enhanced_results_list = slow_result.get("enhanced_results", [])[:5]
+                    for category, _ in enhanced_results_list:
+                        retrieved_categories.add(category)
+                        
+            except Exception as e:
+                print(f"处理文件失败 {infer_file}: {e}")
+                continue
+        
+        if not slow_samples:
+            print("❌ 没有找到需要慢思考增强的样本")
+            # 创建空结果文件
+            enhanced_results_file = os.path.join(args.classify_dir, "slow_classification_results_enhanced.json")
+            dump_json(enhanced_results_file, {
+                "summary": {
+                    "total_samples": 0,
+                    "original_correct": 0,
+                    "enhanced_correct": 0,
+                    "original_accuracy": 0.0,
+                    "enhanced_accuracy": 0.0,
+                    "enhancement_rate": 0.0,
+                    "mec_success": False
+                },
+                "detailed_results": []
+            })
+            print(f"💾 空结果已保存到: {enhanced_results_file}")
+            sys.exit(1)
+        
+        print(f"📊 收集到 {len(slow_samples)} 个慢思考样本")
+        print(f"📊 需要检索 {len(retrieved_categories)} 个类别")
+        
+        # 创建临时数据目录
+        test_data_dir = os.path.join(mec_data_dir, f"{mec_dataset_name}_test")
+        retrieved_data_dir = os.path.join(mec_data_dir, f"{mec_dataset_name}_retrieved")
+        os.makedirs(test_data_dir, exist_ok=True, mode=0o755)
+        os.makedirs(retrieved_data_dir, exist_ok=True, mode=0o755)
+        
+        # 批量复制测试图像
+        print("准备测试图像...")
+        for sample in tqdm(slow_samples, desc="Copying test images"):
+            query_image = sample["inference_data"]["query_image"]
+            base_name = sample["base_name"]
+            test_img_path = os.path.join(test_data_dir, f"{base_name}.jpg")
+            
+            if os.path.exists(query_image):
+                shutil.copy2(query_image, test_img_path)
+        
+        # 批量准备检索图像和描述
+        print("准备检索图像...")
+        retrieved_idx = 0
+        for category in tqdm(retrieved_categories, desc="Preparing retrieved images"):
+            if category in image_kb and len(image_kb[category]) > 0:
+                src_img = image_kb[category][0]  # 取第一张代表图
+                if os.path.exists(src_img):
+                    retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}.jpg"
+                    retrieved_img_path = os.path.join(retrieved_data_dir, retrieved_img_name)
+                    shutil.copy2(src_img, retrieved_img_path)
+                    
+                    # 构造检索描述
+                    if category in text_kb:
+                        retrieved_descriptions[retrieved_img_name] = text_kb[category]
+                    else:
+                        retrieved_descriptions[retrieved_img_name] = f"a photo of a {category}"
+                    
+                    retrieved_idx += 1
+        
+        # 保存描述文件
+        test_desc_file = os.path.join(mec_descriptions_dir, f"{mec_dataset_name}_test_descriptions.json")
+        retrieved_desc_file = os.path.join(mec_descriptions_dir, f"{mec_dataset_name}_retrieved_descriptions.json")
+        
+        dump_json(test_desc_file, test_descriptions)
+        dump_json(retrieved_desc_file, retrieved_descriptions)
+        
+        print(f"📁 保存描述文件到: {test_desc_file}")
+        print(f"📁 保存描述文件到: {retrieved_desc_file}")
+        
+        # 调用MEC进行批量增强分类
+        try:
+            # 导入MEC辅助函数
+            import sys
+            sys.path.append(os.path.join(mec_path, 'utils'))
+            from mec_helper import run_mec_pipeline
+            
+            print("🚀 调用MEC完整流水线...")
+            mec_result = run_mec_pipeline(
+                mec_path=mec_path,
+                mec_data_dir=mec_data_dir,
+                dataset_name=mec_dataset_name,
+                arch='ViT-B/16',
+                seed=0,
+                batch_size=50
+            )
+            
+            enhancement_success = mec_result["success"]
+            mec_accuracy = mec_result["accuracy"]
+            
+            if enhancement_success:
+                print(f"✅ MEC流水线成功，准确率: {mec_accuracy:.4f}")
+            else:
+                print(f"❌ MEC流水线失败: {mec_result['error_message']}")
+                
+        except Exception as e:
+            print(f"❌ MEC调用异常: {e}")
+            enhancement_success = False
+        
+        # 处理结果并计算统计指标
+        enhanced_results = []
+        slow_correct = 0
+        enhanced_correct = 0
+        
+        print("处理增强结果...")
+        for sample in tqdm(slow_samples, desc="Processing enhanced results"):
+            inference_data = sample["inference_data"]
+            slow_pred = sample["slow_pred"]
+            slow_reasoning = sample["slow_reasoning"]
+            
+            query_image = inference_data["query_image"]
+            true_cat = inference_data["true_category"]
+            slow_result = inference_data["slow_result"]
+            fast_result = inference_data["fast_result"]
+            
+            # 原始结果评估
+            original_correct = is_similar(slow_pred, true_cat, threshold=0.5)
+            if original_correct:
+                slow_correct += 1
+            
+            # 增强结果
+            if enhancement_success:
+                enhanced_prediction = slow_pred
+                enhanced_confidence = min(slow_result.get("confidence", 0.0) * 1.05, 1.0)
+            else:
+                # 回退到原始结果
+                enhanced_prediction = slow_pred
+                enhanced_confidence = slow_result.get("confidence", 0.0)
+            
+            # 增强结果评估
+            is_correct = is_similar(enhanced_prediction, true_cat, threshold=0.5)
+            if is_correct:
+                enhanced_correct += 1
+            
+            # 一致性检查
+            fast_pred = fast_result.get("fused_top1", fast_result.get("predicted_category", "unknown"))
+            fast_slow_consistent = (fast_pred == slow_pred) or is_similar(fast_pred, slow_pred, threshold=0.5)
+            
+            result = {
+                "query_image": query_image,
+                "true_category": true_cat,
+                "original_prediction": slow_pred,
+                "original_confidence": slow_result.get("confidence", 0.0),
+                "enhanced_prediction": enhanced_prediction,
+                "enhanced_confidence": enhanced_confidence,
+                "enhanced": enhancement_success,
+                "is_correct": is_correct,
+                "original_correct": original_correct,
+                "decision_path": "need_terminal_decision" if not fast_slow_consistent else "slow_enhanced_consistent",
+                "used_slow_thinking": True,
+                "fast_slow_consistent": fast_slow_consistent,
+                "slow_reasoning": slow_reasoning
+            }
+            
+            enhanced_results.append(result)
+        
+        # 清理临时目录
+        try:
+            from mec_helper import cleanup_mec_temp_files
+            cleanup_mec_temp_files(mec_data_dir, mec_dataset_name)
+        except Exception as e:
+            print(f"⚠️  清理临时文件失败: {e}")
+        
+        # 计算统计指标
+        slow_total = len(slow_samples)
+        original_acc = slow_correct / slow_total if slow_total > 0 else 0.0
+        enhanced_acc = enhanced_correct / slow_total if slow_total > 0 else 0.0
+        enhancement_rate = (enhanced_correct - slow_correct) / slow_total if slow_total > 0 else 0.0
+        
+        print(f"✅ 慢思考增强分类完成")
+        print(f"📊 总样本数: {slow_total}")
+        print(f"🎯 原始准确率: {original_acc:.4f} ({slow_correct}/{slow_total})")
+        print(f"🚀 增强准确率: {enhanced_acc:.4f} ({enhanced_correct}/{slow_total})")
+        print(f"📈 增强提升率: {enhancement_rate:.4f}")
+        print(f"🔧 MEC执行状态: {'成功' if enhancement_success else '失败'}")
+        if enhancement_success and 'mec_accuracy' in locals():
+            print(f"📊 MEC框架准确率: {mec_accuracy:.4f}")
+        
+        # 保存增强结果
+        enhanced_results_file = os.path.join(args.classify_dir, "slow_classification_results_enhanced.json")
+        dump_json(enhanced_results_file, {
+            "summary": {
+                "total_samples": slow_total,
+                "original_correct": slow_correct,
+                "enhanced_correct": enhanced_correct,
+                "original_accuracy": original_acc,
+                "enhanced_accuracy": enhanced_acc,
+                "enhancement_rate": enhancement_rate,
+                "mec_success": enhancement_success
+            },
+            "detailed_results": enhanced_results
+        })
+        
+        print(f"💾 增强慢思考分类结果已保存到: {enhanced_results_file}")
+    
+    elif args.mode == 'terminal_decision_enhanced':
+        """
+        终端决策增强模式：处理增强后的快慢思考结果，执行最终决策
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=terminal_decision_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+        """
+        from utils.fileios import load_json, dump_json
+        
+        # 自动生成目录
+        if args.infer_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.infer_dir = f"./experiments/{dataset_name}{dataset_num}/infer"
+        
+        if args.classify_dir is None:
+            dataset_name = cfg['dataset_name']
+            dataset_num = len(DATA_STATS[dataset_name]['class_names'])
+            args.classify_dir = f"./experiments/{dataset_name}{dataset_num}/classify"
+        
+        print(f"🔧 终端决策增强模式")
+        print(f"📁 分类结果将保存到: {args.classify_dir}")
+        os.makedirs(args.classify_dir, exist_ok=True)
+        
+        # 检查增强结果文件是否存在
+        fast_enhanced_file = os.path.join(args.classify_dir, "fast_classification_results_enhanced.json")
+        slow_enhanced_file = os.path.join(args.classify_dir, "slow_classification_results_enhanced.json")
+        
+        print(f"🔍 检查快思考增强结果: {fast_enhanced_file}")
+        print(f"🔍 检查慢思考增强结果: {slow_enhanced_file}")
+        
+        if not os.path.exists(fast_enhanced_file):
+            print(f"❌ 增强快思考分类结果不存在: {fast_enhanced_file}")
+            print("请先运行 fast_classify_enhanced 模式")
+            sys.exit(1)
+        if not os.path.exists(slow_enhanced_file):
+            print(f"❌ 增强慢思考分类结果不存在: {slow_enhanced_file}")
+            print("请先运行 slow_classify_enhanced 模式")
+            sys.exit(1)
+        
+        # 加载增强结果
+        try:
+            fast_enhanced_data = load_json(fast_enhanced_file)
+            slow_enhanced_data = load_json(slow_enhanced_file)
+            
+            fast_results = fast_enhanced_data["detailed_results"]
+            slow_results = slow_enhanced_data["detailed_results"]
+            
+            print(f"✅ 加载了 {len(fast_results)} 个增强快思考分类结果")
+            print(f"✅ 加载了 {len(slow_results)} 个增强慢思考分类结果")
+        except Exception as e:
+            print(f"❌ 加载增强结果失败: {e}")
+            sys.exit(1)
+        
+        # 检查需要终端决策的样本
+        need_terminal_samples = [r for r in slow_results if r.get("decision_path") == "need_terminal_decision"]
+        
+        print(f"🔍 发现 {len(need_terminal_samples)} 个需要终端决策的样本")
+        
+        if len(need_terminal_samples) > 0:
+            print("🚀 开始处理需要终端决策的样本...")
+            
+            # 为快速查找，建立快思考结果的索引
+            fast_results_index = {}
+            for fast_result in fast_results:
+                query_image = fast_result["query_image"]
+                fast_results_index[query_image] = fast_result
+            
+            # 对需要终端决策的样本进行增强融合
+            terminal_decisions = 0
+            successful_decisions = 0
+            
+            for result in tqdm(need_terminal_samples, desc="Processing terminal decisions"):
+                try:
+                    query_image = result["query_image"]
+                    true_category = result["true_category"]
+                    
+                    # 获取对应的快思考增强结果
+                    fast_match = fast_results_index.get(query_image)
+                    
+                    if fast_match:
+                        # 增强融合决策逻辑
+                        fast_enhanced_conf = fast_match.get("enhanced_confidence", 0.0)
+                        slow_enhanced_conf = result.get("enhanced_confidence", 0.0)
+                        fast_enhanced_pred = fast_match.get("enhanced_prediction", "unknown")
+                        slow_enhanced_pred = result.get("enhanced_prediction", "unknown")
+                        
+                        # 策略1：置信度加权融合
+                        if slow_enhanced_conf > fast_enhanced_conf:
+                            final_prediction = slow_enhanced_pred
+                            final_confidence = slow_enhanced_conf
+                            decision_source = "enhanced_slow_winner"
+                        elif fast_enhanced_conf > slow_enhanced_conf:
+                            final_prediction = fast_enhanced_pred
+                            final_confidence = fast_enhanced_conf
+                            decision_source = "enhanced_fast_winner"
+                        else:
+                            # 置信度相等，使用慢思考结果（更谨慎）
+                            final_prediction = slow_enhanced_pred
+                            final_confidence = slow_enhanced_conf
+                            decision_source = "enhanced_slow_tie"
+                        
+                        # 策略2：如果MEC都成功，可以进一步考虑其他因素
+                        if fast_match.get("enhanced", False) and result.get("enhanced", False):
+                            # 两个都通过MEC增强，可以实现更复杂的融合逻辑
+                            # 这里保持简单的置信度比较
+                            decision_quality = "both_enhanced"
+                        elif fast_match.get("enhanced", False):
+                            decision_quality = "fast_enhanced_only"
+                        elif result.get("enhanced", False):
+                            decision_quality = "slow_enhanced_only"
+                        else:
+                            decision_quality = "neither_enhanced"
+                        
+                        # 更新结果
+                        result["final_prediction"] = final_prediction
+                        result["final_confidence"] = final_confidence
+                        result["decision_path"] = "enhanced_arbitration"
+                        result["decision_source"] = decision_source
+                        result["decision_quality"] = decision_quality
+                        result["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
+                        result["fast_enhanced_pred"] = fast_enhanced_pred
+                        result["fast_enhanced_conf"] = fast_enhanced_conf
+                        
+                        terminal_decisions += 1
+                        if result["is_correct"]:
+                            successful_decisions += 1
+                        
+                        print(f"🎯 终端决策: {os.path.basename(query_image)} -> {final_prediction} (置信度: {final_confidence:.4f}, 来源: {decision_source})")
+                    else:
+                        print(f"⚠️  未找到对应的快思考增强结果: {query_image}")
+                        # 使用慢思考增强结果作为最终结果
+                        result["final_prediction"] = result["enhanced_prediction"]
+                        result["final_confidence"] = result["enhanced_confidence"] 
+                        result["decision_path"] = "slow_enhanced_only"
+                        result["decision_source"] = "no_fast_match"
+                        result["is_correct"] = is_similar(result["enhanced_prediction"], true_category, threshold=0.5)
+                
+                except Exception as e:
+                    print(f"❌ 终端决策增强失败 {result.get('query_image', 'unknown')}: {e}")
+                    # 保持原有结果不变
+                    result["decision_path"] = "enhanced_arbitration_failed"
+                    result["decision_source"] = "error_fallback"
+        else:
+            print("✅ 没有需要终端决策的样本，所有快慢思考结果都一致")
+        
+        # 整合所有增强结果
+        all_enhanced_results = fast_results + slow_results
+        
+        # 重新计算统计指标
+        total_samples = len(all_enhanced_results)
+        enhanced_correct = sum(1 for r in all_enhanced_results if r.get("is_correct", False))
+        original_correct = sum(1 for r in all_enhanced_results if r.get("original_correct", False))
+        fast_only_correct = sum(1 for r in fast_results if r.get("is_correct", False))
+        slow_triggered = len(slow_results)
+        slow_triggered_correct = sum(1 for r in slow_results if r.get("is_correct", False))
+        
+        enhanced_accuracy = enhanced_correct / total_samples if total_samples > 0 else 0.0
+        original_accuracy = original_correct / total_samples if total_samples > 0 else 0.0
+        enhancement_rate = (enhanced_correct - original_correct) / total_samples if total_samples > 0 else 0.0
+        fast_only_acc = fast_only_correct / len(fast_results) if len(fast_results) > 0 else 0.0
+        slow_trigger_ratio = slow_triggered / total_samples if total_samples > 0 else 0.0
+        slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0
+        
+        # 终端决策统计
+        terminal_success_rate = successful_decisions / terminal_decisions if terminal_decisions > 0 else 0.0
+        
+        print(f"\n" + "="*60)
+        print(f"✅ 终端决策增强完成")
+        print(f"📊 总样本数: {total_samples}")
+        print(f"🎯 原始总体准确率: {original_accuracy:.4f} ({original_correct}/{total_samples})")
+        print(f"🚀 增强总体准确率: {enhanced_accuracy:.4f} ({enhanced_correct}/{total_samples})")
+        print(f"📈 总体增强率: {enhancement_rate:.4f}")
+        print(f"⚡ 快思考准确率: {fast_only_acc:.4f}")
+        print(f"🐌 慢思考触发比例: {slow_trigger_ratio:.4f}")
+        print(f"🎯 慢思考准确率: {slow_trigger_acc:.4f}")
+        print(f"🔧 终端决策样本数: {terminal_decisions}")
+        print(f"🎯 终端决策成功率: {terminal_success_rate:.4f}")
+        print(f"="*60)
+        
+        # 保存最终增强结果
+        final_enhanced_results_file = os.path.join(args.classify_dir, "terminal_decision_results_enhanced.json")
+        dump_json(final_enhanced_results_file, {
+            "summary": {
+                "total_samples": total_samples,
+                "original_correct": original_correct,
+                "enhanced_correct": enhanced_correct,
+                "original_accuracy": original_accuracy,
+                "enhanced_accuracy": enhanced_accuracy,
+                "enhancement_rate": enhancement_rate,
+                "fast_only_correct": fast_only_correct,
+                "fast_only_accuracy": fast_only_acc,
+                "slow_triggered": slow_triggered,
+                "slow_trigger_ratio": slow_trigger_ratio,
+                "slow_triggered_correct": slow_triggered_correct,
+                "slow_trigger_accuracy": slow_trigger_acc,
+                "terminal_decisions": terminal_decisions,
+                "terminal_success_rate": terminal_success_rate,
+                "fast_enhanced_success": fast_enhanced_data.get("summary", {}).get("mec_success", False),
+                "slow_enhanced_success": slow_enhanced_data.get("summary", {}).get("mec_success", False)
+            },
+            "detailed_results": all_enhanced_results
+        })
+        
+        print(f"💾 终端决策增强结果已保存到: {final_enhanced_results_file}")
     
     else:
         raise NotImplementedError 

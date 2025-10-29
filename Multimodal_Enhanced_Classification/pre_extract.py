@@ -70,8 +70,19 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
     os.makedirs(save_dir, exist_ok=True)
 
     # 加载文本描述
-    retrieved_descriptions = load_json(f"./descriptions/{args.test_set}_retrieved_descriptions.json")
-    test_descriptions = load_json(f"./descriptions/{args.test_set}_test_descriptions.json")
+    retrieved_desc_file = f"./descriptions/{args.test_set}_retrieved_descriptions.json"
+    test_desc_file = f"./descriptions/{args.test_set}_test_descriptions.json"
+    
+    if not os.path.exists(retrieved_desc_file):
+        raise FileNotFoundError(f"检索描述文件不存在: {retrieved_desc_file}")
+    if not os.path.exists(test_desc_file):
+        raise FileNotFoundError(f"测试描述文件不存在: {test_desc_file}")
+    
+    retrieved_descriptions = load_json(retrieved_desc_file)
+    test_descriptions = load_json(test_desc_file)
+    
+    print(f"加载检索描述: {len(retrieved_descriptions)} 条")
+    print(f"加载测试描述: {len(test_descriptions)} 条")
 
     # 存储所有提取的多模态特征
     all_retrieved_data = []  # 检索到的[图-文]特征

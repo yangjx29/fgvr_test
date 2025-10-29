@@ -62,6 +62,7 @@ case "${DATASET}" in
     "bird")
         DATASET_NUM="200"
         CONFIG_FILE="bird200_all.yml"
+        DATASET_DIR="CUB_200_2011/CUB_200_2011"  # 鸟类数据集特殊路径
         ;;
     "flower")
         DATASET_NUM="102"

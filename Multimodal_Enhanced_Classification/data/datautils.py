@@ -85,8 +85,15 @@ def build_dataset(set_id, transform, data_root, mode='test', n_shot=None, split=
             # 构建完整数据集（测试模式或不限制样本数）
             testset = build_fewshot_dataset(set_id, os.path.join(data_root, ID_to_DIRNAME[set_id.lower()]), transform, mode=mode)
     else:
-        # 不支持的数据集类型
-        raise NotImplementedError
+        # 处理动态生成的数据集（如从discovering.py调用）
+        # 假设数据集位于 data_root/set_id 目录下
+        testdir = os.path.join(data_root, set_id)
+        if os.path.exists(testdir) and os.path.isdir(testdir):
+            print(f"使用通用ImageFolder加载数据集: {testdir}")
+            testset = datasets.ImageFolder(testdir, transform=transform)
+        else:
+            print(f"未找到数据集目录: {testdir}")
+            raise FileNotFoundError(f"数据集目录不存在: {testdir}")
         
     return testset
 

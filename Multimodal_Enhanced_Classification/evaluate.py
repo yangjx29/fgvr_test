@@ -420,6 +420,11 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
     print(f"Loading retrieved [image-text] features from: {retrieved_path}")
     print(f"Loading test [image-text] features from: {test_path}")
     
+    if not os.path.exists(retrieved_path):
+        raise FileNotFoundError(f"检索特征文件不存在: {retrieved_path}")
+    if not os.path.exists(test_path):
+        raise FileNotFoundError(f"测试特征文件不存在: {test_path}")
+    
     retrieved_data = torch.load(retrieved_path)  # [(multimodal_features, target), ...] - 检索到的[图-文]
     test_data = torch.load(test_path)            # [(multimodal_features, target), ...] - 待测试的[图-文]
     

@@ -183,6 +183,59 @@ data/
 
 ---
 
+## 集成到快慢思考系统
+
+本MEC框架已被集成到快慢思考系统中，提供以下增强模式：
+
+### 增强模式
+- **fast_classify_enhanced**: 快思考与MEC结合，对不需要慢思考的样本进行多模态增强分类
+- **slow_classify_enhanced**: 慢思考与MEC结合，使用完整推理文本进行增强分类
+- **terminal_decision_enhanced**: 终端决策增强，整合增强后的快慢思考结果
+
+### 调用方式
+```bash
+# 快思考增强
+python discovering.py --mode=fast_classify_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+
+# 慢思考增强  
+python discovering.py --mode=slow_classify_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+
+# 终端决策增强
+python discovering.py --mode=terminal_decision_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
+```
+
+### 输出文件
+- `fast_classification_results_enhanced.json`: 增强快思考分类结果
+- `slow_classification_results_enhanced.json`: 增强慢思考分类结果  
+- `terminal_decision_results_enhanced.json`: 终端决策增强结果
+
+### 数据流程
+```
+推理结果 → 构造MEC输入 → 特征提取 → 多模态匹配 → 增强分类结果
+```
+
+MEC框架通过以下方式与快慢思考系统集成：
+1. **数据对齐**: 自动从推理结果构造测试端和检索端数据
+2. **描述生成**: 使用快/慢思考结果和知识库构造文本描述
+3. **特征缓存**: 复用MEC的特征提取和缓存机制
+4. **结果融合**: 将MEC相似度匹配结果与原始预测进行融合
+5. **批量处理**: 先收集样本再批量调用MEC，提高处理效率
+6. **错误恢复**: MEC失败时自动回退到原始分类方法
+7. **自动清理**: 完成后自动清理临时文件和缓存
+
+### 辅助函数（utils/mec_helper.py）
+- `run_mec_pipeline()`: 运行完整的MEC流水线
+- `parse_mec_output()`: 解析MEC输出结果
+- `create_mec_data_structure()`: 创建MEC标准数据结构  
+- `cleanup_mec_temp_files()`: 清理临时文件
+
+### 技术改进
+- **动态数据集支持**: 修改了 `data/datautils.py` 支持任意目录结构
+- **错误检查增强**: 在 `evaluate.py` 和 `pre_extract.py` 中添加文件存在检查
+- **统一接口**: 所有增强模式使用相同的MEC调用接口
+
+---
+
 ## 引用
 
 若本实现或文档对您的研究有帮助，欢迎引用论文：

@@ -62,22 +62,27 @@ case "${DATASET}" in
     "dog")
         DATASET_NUM="120"
         CONFIG_FILE="dog120_all.yml"
+        DATASET_DIR="dogs_120"
         ;;
     "bird")
         DATASET_NUM="200"
         CONFIG_FILE="bird200_all.yml"
+        DATASET_DIR="CUB_200_2011/CUB_200_2011"  # 鸟类数据集特殊路径
         ;;
     "flower")
         DATASET_NUM="102"
         CONFIG_FILE="flower102_all.yml"
+        DATASET_DIR="flowers_102"
         ;;
     "pet")
         DATASET_NUM="37"
         CONFIG_FILE="pet37_all.yml"
+        DATASET_DIR="pet_37"
         ;;
     "car")
         DATASET_NUM="196"
         CONFIG_FILE="car196_all.yml"
+        DATASET_DIR="car_196"
         ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"

@@ -5,11 +5,11 @@
 
 # GPU配置
 gpu:
-  cuda_visible_devices: "7"  # GPU编号，多GPU用逗号分隔如 "0,1,2"
+  cuda_visible_devices: "6"  # GPU编号，多GPU用逗号分隔如 "0,1,2"
 
 # 数据集配置
 dataset:
-  name: "bird"                 # 数据集名称: dog, bird, flower, pet, car
+  name: "pet"                 # 数据集名称: dog, bird, flower, pet, car
   test_data_suffix: "1"      # 测试数据后缀: 每个类别的样本数量
                                # 可选值: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, random
                                # 例如: "5" 表示每个类别使用5个样本进行测试
@@ -20,8 +20,13 @@ hyperparameters:
   
 # 运行模式配置 (仅用于run_discovery.sh)
 modes:
-  discovery_mode: "build_knowledge_base"  # build_knowledge_base, fastonly, slowonly, fast_slow
-  eval_mode: "fast_slow"                  # fastonly, slowonly, fast_slow
+  # 发现模式 - 支持19种模式，分为5大类：
+  # 1. 传统VQA流程: identify, howto, describe, guess, postprocess
+  # 2. 快慢思考系统: build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow  
+  # 3. 分离式推理分类: fast_slow_infer, fast_slow_classify
+  # 4. 并行分类: fast_classify, slow_classify, terminal_decision
+  # 5. 多模态增强: fast_classify_enhanced, slow_classify_enhanced, terminal_decision_enhanced
+  discovery_mode: "terminal_decision"
 
 # 环境配置
 environment:
@@ -43,6 +48,8 @@ dataset_mapping:
     num_classes: 200
     config_file: "bird200_all.yml"
     data_dir: "CUB_200_2011"
+    # 鸟类数据集特殊路径：CUB_200_2011有两层同名目录
+    special_subdir: "CUB_200_2011"
   flower:
     num_classes: 102
     config_file: "flower102_all.yml"

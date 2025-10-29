@@ -4,7 +4,14 @@
 # 通用发现脚本 - Universal Discovery Runner
 # =============================================================================
 # 用法：直接运行 bash run_discovery.sh
-# 支持四种模式，所有参数从 config.yaml 文件读取
+# 支持19种发现模式，所有参数从 config.yaml 文件读取
+# 
+# 支持的模式分类：
+# 1. 传统VQA流程：identify, howto, describe, guess, postprocess
+# 2. 快慢思考系统：build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow
+# 3. 分离式推理分类：fast_slow_infer, fast_slow_classify
+# 4. 并行分类：fast_classify, slow_classify, terminal_decision
+# 5. 多模态增强：fast_classify_enhanced, slow_classify_enhanced, terminal_decision_enhanced
 
 # =============================================================================
 # YAML配置读取函数
@@ -24,7 +31,13 @@ fi
 get_yaml_value() {
     local key=$1
     local file=$2
-    grep "^[[:space:]]*${key}:" "$file" | sed 's/^[[:space:]]*[^:]*:[[:space:]]*//' | sed 's/[[:space:]]*#.*//' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/"
+    # 提取值，去除注释，去除引号，去除前后空格
+    grep "^[[:space:]]*${key}:" "$file" | \
+    sed 's/^[[:space:]]*[^:]*:[[:space:]]*//' | \
+    sed 's/[[:space:]]*#.*//' | \
+    sed 's/^[[:space:]]*"\(.*\)"[[:space:]]*$/\1/' | \
+    sed 's/^[[:space:]]*'\''\(.*\)'\''[[:space:]]*$/\1/' | \
+    sed 's/^[[:space:]]*\(.*\)[[:space:]]*$/\1/'
 }
 
 # 读取配置参数
@@ -69,7 +82,7 @@ case "${DATASET}" in
     "bird")
         DATASET_NUM="200"
         CONFIG_FILE="bird200_all.yml"
-        DATASET_DIR="CUB_200_2011"
+        DATASET_DIR="CUB_200_2011/CUB_200_2011"  # 鸟类数据集特殊路径
         ;;
     "flower")
         DATASET_NUM="102"
@@ -96,6 +109,9 @@ esac
 # 生成路径
 KNOWLEDGE_BASE_DIR="./experiments/${DATASET}${DATASET_NUM}/knowledge_base"
 TEST_DATA_DIR="./datasets/${DATASET_DIR}/images_discovery_all_${TEST_DATA_SUFFIX}"
+DISCOVERY_DATA_DIR="./datasets/${DATASET_DIR}/images_discovery_all_${KSHOT}"  # 发现数据集目录
+INFER_DIR="./experiments/${DATASET}${DATASET_NUM}/infer"  # 推理结果目录
+CLASSIFY_DIR="./experiments/${DATASET}${DATASET_NUM}/classify"  # 分类结果目录
 RESULTS_OUT="./results/${DATASET}_${MODE}_results.json"
 LOG_DIR="${LOG_BASE_DIR}/discovery/${DATASET}${DATASET_NUM}"
 
@@ -195,38 +211,206 @@ fi
 mkdir -p "$(dirname "${RESULTS_OUT}")"
 
 # 构建命令
-if [ "${MODE}" = "build_knowledge_base" ]; then
-    CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-        --mode=${MODE} \
-        --config_file_env=./configs/env_machine.yml \
-        --config_file_expt=./configs/expts/${CONFIG_FILE} \
-        --num_per_category=${KSHOT} \
-        --knowledge_base_dir=${KNOWLEDGE_BASE_DIR}"
-elif [ "${MODE}" = "fastonly" ] || [ "${MODE}" = "slowonly" ] || [ "${MODE}" = "fast_slow" ]; then
-    # 检查必要文件是否存在
-    if [ ! -d "${KNOWLEDGE_BASE_DIR}" ]; then
-        print_error "知识库目录不存在: ${KNOWLEDGE_BASE_DIR}"
-        print_error "请先运行 build_knowledge_base 模式构建知识库"
-        exit 1
-    fi
+case "${MODE}" in
+    # 1. 传统VQA流程模式 - Traditional VQA Pipeline Modes
+    "identify")
+        if [ ! -d "${DISCOVERY_DATA_DIR}" ]; then
+            print_error "发现数据目录不存在: ${DISCOVERY_DATA_DIR}"
+            exit 1
+        fi
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --dataset_dir=${DISCOVERY_DATA_DIR} \
+            --results_out=${RESULTS_OUT}"
+        ;;
+    "howto"|"describe"|"guess")
+        if [ ! -d "${DISCOVERY_DATA_DIR}" ]; then
+            print_error "发现数据目录不存在: ${DISCOVERY_DATA_DIR}"
+            exit 1
+        fi
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --num_per_category=${KSHOT} \
+            --dataset_dir=${DISCOVERY_DATA_DIR} \
+            --results_out=${RESULTS_OUT}"
+        ;;
+    "postprocess")
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --results_out=${RESULTS_OUT}"
+        ;;
     
-    if [ ! -d "${TEST_DATA_DIR}" ]; then
-        print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
-        exit 1
-    fi
+    # 2. 快慢思考系统模式 - Fast-Slow Thinking System Modes
+    "build_knowledge_base")
+        mkdir -p "$(dirname "${KNOWLEDGE_BASE_DIR}")"
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --num_per_category=${KSHOT} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR}"
+        ;;
+    "classify")
+        if [ ! -d "${KNOWLEDGE_BASE_DIR}" ]; then
+            print_error "知识库目录不存在: ${KNOWLEDGE_BASE_DIR}"
+            print_error "请先运行 build_knowledge_base 模式构建知识库"
+            exit 1
+        fi
+        # classify模式需要单张图像，这里提供示例命令
+        print_warning "classify模式需要单张图像输入，请手动指定 --query_image 参数"
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --query_image=./path/to/image.jpg"
+        ;;
+    "evaluate"|"fastonly"|"slowonly"|"fast_slow")
+        if [ ! -d "${KNOWLEDGE_BASE_DIR}" ]; then
+            print_error "知识库目录不存在: ${KNOWLEDGE_BASE_DIR}"
+            print_error "请先运行 build_knowledge_base 模式构建知识库"
+            exit 1
+        fi
+        if [ ! -d "${TEST_DATA_DIR}" ]; then
+            print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
+            exit 1
+        fi
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --test_data_dir=${TEST_DATA_DIR} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --results_out=${RESULTS_OUT}"
+        ;;
     
-    CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-        --mode=${MODE} \
-        --config_file_env=./configs/env_machine.yml \
-        --config_file_expt=./configs/expts/${CONFIG_FILE} \
-        --test_data_dir=${TEST_DATA_DIR} \
-        --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-        --results_out=${RESULTS_OUT}"
-else
-    print_error "不支持的运行模式: ${MODE}"
-    print_error "支持的模式: build_knowledge_base, fastonly, slowonly, fast_slow"
-    exit 1
-fi
+    # 3. 分离式推理分类模式 - Separated Inference-Classification Modes
+    "fast_slow_infer")
+        if [ ! -d "${KNOWLEDGE_BASE_DIR}" ]; then
+            print_error "知识库目录不存在: ${KNOWLEDGE_BASE_DIR}"
+            print_error "请先运行 build_knowledge_base 模式构建知识库"
+            exit 1
+        fi
+        if [ ! -d "${TEST_DATA_DIR}" ]; then
+            print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
+            exit 1
+        fi
+        mkdir -p "${INFER_DIR}"
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --test_data_dir=${TEST_DATA_DIR} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --infer_dir=${INFER_DIR}"
+        ;;
+    "fast_slow_classify")
+        if [ ! -d "${INFER_DIR}" ]; then
+            print_error "推理结果目录不存在: ${INFER_DIR}"
+            print_error "请先运行 fast_slow_infer 模式生成推理结果"
+            exit 1
+        fi
+        mkdir -p "${CLASSIFY_DIR}"
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --infer_dir=${INFER_DIR} \
+            --classify_dir=${CLASSIFY_DIR}"
+        ;;
+    
+    # 4. 并行分类模式 - Parallel Classification Modes
+    "fast_classify"|"slow_classify")
+        if [ ! -d "${INFER_DIR}" ]; then
+            print_error "推理结果目录不存在: ${INFER_DIR}"
+            print_error "请先运行 fast_slow_infer 模式生成推理结果"
+            exit 1
+        fi
+        mkdir -p "${CLASSIFY_DIR}"
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --infer_dir=${INFER_DIR} \
+            --classify_dir=${CLASSIFY_DIR}"
+        ;;
+    "terminal_decision")
+        if [ ! -d "${CLASSIFY_DIR}" ]; then
+            print_error "分类结果目录不存在: ${CLASSIFY_DIR}"
+            print_error "请先运行 fast_classify 和 slow_classify 模式"
+            exit 1
+        fi
+        # 检查快思考和慢思考结果文件
+        FAST_RESULTS="${CLASSIFY_DIR}/fast_classification_results.json"
+        SLOW_RESULTS="${CLASSIFY_DIR}/slow_classification_results.json"
+        if [ ! -f "${FAST_RESULTS}" ] || [ ! -f "${SLOW_RESULTS}" ]; then
+            print_error "缺少必要的分类结果文件"
+            print_error "请确保已运行 fast_classify 和 slow_classify 模式"
+            exit 1
+        fi
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --infer_dir=${INFER_DIR} \
+            --classify_dir=${CLASSIFY_DIR}"
+        ;;
+    
+    # 5. 多模态增强分类模式 - Enhanced Classification Modes
+    "fast_classify_enhanced"|"slow_classify_enhanced")
+        if [ ! -d "${INFER_DIR}" ]; then
+            print_error "推理结果目录不存在: ${INFER_DIR}"
+            print_error "请先运行 fast_slow_infer 模式生成推理结果"
+            exit 1
+        fi
+        mkdir -p "${CLASSIFY_DIR}"
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --infer_dir=${INFER_DIR} \
+            --classify_dir=${CLASSIFY_DIR}"
+        ;;
+    "terminal_decision_enhanced")
+        if [ ! -d "${CLASSIFY_DIR}" ]; then
+            print_error "分类结果目录不存在: ${CLASSIFY_DIR}"
+            print_error "请先运行 fast_classify_enhanced 和 slow_classify_enhanced 模式"
+            exit 1
+        fi
+        # 检查增强版分类结果文件
+        FAST_ENHANCED_RESULTS="${CLASSIFY_DIR}/fast_classification_results_enhanced.json"
+        SLOW_ENHANCED_RESULTS="${CLASSIFY_DIR}/slow_classification_results_enhanced.json"
+        if [ ! -f "${FAST_ENHANCED_RESULTS}" ] || [ ! -f "${SLOW_ENHANCED_RESULTS}" ]; then
+            print_error "缺少必要的增强分类结果文件"
+            print_error "请确保已运行 fast_classify_enhanced 和 slow_classify_enhanced 模式"
+            exit 1
+        fi
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --infer_dir=${INFER_DIR} \
+            --classify_dir=${CLASSIFY_DIR}"
+        ;;
+    
+    # 默认情况 - 不支持的模式
+    *)
+        print_error "不支持的运行模式: ${MODE}"
+        print_error "支持的模式分类："
+        print_error "  1. 传统VQA流程: identify, howto, describe, guess, postprocess"
+        print_error "  2. 快慢思考系统: build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow"
+        print_error "  3. 分离式推理分类: fast_slow_infer, fast_slow_classify"
+        print_error "  4. 并行分类: fast_classify, slow_classify, terminal_decision"
+        print_error "  5. 多模态增强: fast_classify_enhanced, slow_classify_enhanced, terminal_decision_enhanced"
+        exit 1
+        ;;
+esac
 
 # 创建启动脚本
 TEMP_SCRIPT="/tmp/run_discovery_${DATASET}_$$.sh"
