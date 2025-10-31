@@ -1,0 +1,398 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow_infer', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/bird200_all.yml', num_per_category='3', knowledge_base_dir='./experiments/bird200/knowledge_base', query_image=None, test_data_dir='./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1', results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/bird200/infer', classify_dir=None)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'bird', 'num_classes': 200, 'num_base': 100, 'num_novel': 100, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/CUB_200_2011/CUB_200_2011/', 'expt_dir': './experiments/bird200', 'expt_dir_describe': './experiments/bird200/describe', 'path_vqa_questions': './experiments/bird200/describe/bird_vqa_questions_ours', 'path_vqa_answers': './experiments/bird200/describe/bird_attributes_pairs', 'path_llm_prompts': './experiments/bird200/describe/bird_llm_prompts', 'path_identify_answers': './experiments/bird200/identify', 'expt_dir_guess': './experiments/bird200/guess', 'path_llm_replies_raw': './experiments/bird200/guess/bird_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/bird200/guess/bird_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/bird200/guess/bird_llm_gussed_names', 'expt_dir_gallery': './experiments/bird200/gallery', 'path_references': './experiments/bird200/gallery/bird_image_references', 'path_regions': './experiments/bird200/gallery/bird_image_regions', 'path_descriptions': './experiments/bird200/gallery/bird_image_descriptions_attn', 'expt_dir_grouping': './experiments/bird200/grouping'}
+推理结果将保存到: ./experiments/bird200/infer
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 47.40GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.81s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.97s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:04,  2.02s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.03s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.55s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.74s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 47.40GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/bird200/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/bird200/knowledge_base/category_image_paths.json 加载
+加载了 200 个类别的图像路径
+知识库已从 ./experiments/bird200/knowledge_base 加载
+知识库加载完成!
+[fast_slow_infer] 测试数据集包含 200 个类别
+
+🔄 推理类别 [1/200]: 014.Indigo Bunting (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/014.Indigo_Bunting/Indigo_Bunting_0065_14558.jpg
+图像检索结果: Indigo Bunting (置信度: 1.0000)
+文本检索结果: Indigo Bunting (置信度: 0.3320)
+融合结果: [('Indigo Bunting', 0.3404323602064711), ('Lazuli Bunting', 0.1843547712575646), ('Green Violetear', 0.17806482846065172)]
+快思考结果: Indigo Bunting (置信度: 0.7353)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Indigo Bunting | 置信度: 0.735 | 仅快思考
+     📊 图片进度: 1/200 | 已处理: 1 个样本
+✨ 类别 014.Indigo Bunting 推理完成: 1 张图片
+📈 当前总体进度: 1/200 | 已处理: 1 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [2/200]: 105.Whip poor Will (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/105.Whip_poor_Will/Whip_Poor_Will_0034_796413.jpg
+图像检索结果: Whip-poor Will (置信度: 1.0000)
+文本检索结果: Nighthawk (置信度: 0.3630)
+融合结果: [('Nighthawk', 0.3454245810862384), ('Bewick Wren', 0.18365564723649333), ('Spotted Catbird', 0.1470721357516826)]
+快思考结果: Nighthawk (置信度: 0.7650)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Nighthawk | 置信度: 0.765 | 仅快思考
+     📊 图片进度: 2/200 | 已处理: 2 个样本
+✨ 类别 105.Whip poor Will 推理完成: 1 张图片
+📈 当前总体进度: 2/200 | 已处理: 2 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [3/200]: 110.Geococcyx (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/110.Geococcyx/Geococcyx_0056_104142.jpg
+图像检索结果: Geococcyx (置信度: 1.0000)
+文本检索结果: Geococcyx (置信度: 0.3386)
+融合结果: [('Geococcyx', 0.2681082801862818), ('Sage Thrasher', 0.20032113651114125), ('Savannah Sparrow', 0.19247820321766154)]
+快思考结果: conflict (置信度: 0.5158)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/110.Geococcyx/Geococcyx_0056_104142.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's posture and the angle of the photograph can obscure some key features that are crucial for accurate identification.", "The lighting conditions may affect the visibility of certain details, such as coloration or patterns on the bird's feathers.", 'The background is somewhat cluttered with grass and rocks, which could distract from the bird itself.'], 'key_regions': ['The head and beak area, as these can vary significantly between species and are often used for identification.', "The wing pattern, which can be quite distinctive but may not be fully visible due to the bird's position.", 'The tail and its movement, which can provide clues about the species but may be partially obscured.'], 'additional_info_needed': "A clearer view of the bird's head and beak, a better angle showing more of the wing pattern, and a less cluttered background would help in distinguishing this bird from similar categories."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird in the image has a distinctive head and beak area that is characteristic of the roadrunner species. Here's a detailed description:\n\n- **Color**: The head is primarily dark, almost black, with a slightly lighter patch around the eye, giving it a masked appearance. The beak is long, slender, and slightly curved downward, which is typical for路跑者 (roadrunners).\n  \n- **Texture and Patterns**: The feathers on the head appear smooth and glossy, contrasting with the more textured and patterned plumage on the body. The body feathers have a mix of dark and light brown spots and streaks, creating a mottled effect.\n\n- **Shape and Size**: The beak is elongated and pointed, which is longer than the width of the head. This shape is adapted for catching insects and small prey. The head itself is relatively small compared to the body, which is typical for路跑者 (roadrunners).\n\n- **Unique Features**: The most distinctive feature is the crest on top of the head, which is raised and appears to be slightly ruffled. This crest is a key identifying feature of路跑者 (roadrunners) and helps in distinguishing them from other birds.\n\n- **Variations**: The coloration", "The bird in the image appears to be a roadrunner, identifiable by its long tail and distinctive wing pattern. Here’s a detailed description of the wing:\n\n- **Color**: The wings have a mix of dark brown and black feathers with lighter, almost white or cream-colored spots and streaks. This coloration is typical for roadrunners, providing camouflage in their natural habitat.\n\n- **Texture**: The feathers appear slightly ruffled, suggesting movement or perhaps a recent interaction with the environment. The texture seems smooth but with a slight sheen, indicating healthy plumage.\n\n- **Patterns**: The wing pattern includes a combination of solid dark areas and lighter spots. The spots are irregularly shaped and distributed across the wing, creating a mottled effect. This pattern helps the bird blend into its surroundings, such as sandy ground and sparse vegetation.\n\n- **Shape and Size**: The wings are relatively large compared to the bird's body, which is characteristic of roadrunners. They extend outward from the body, and the tips are pointed, aiding in flight.\n\n- **Unique Features**: The wingtips are darker than the rest of the wing, possibly indicating a different feather type or a specialized adaptation for flight. There are no visible markings or patterns that stand out distinctly from other road", "The bird in the image appears to be a Roadrunner, identifiable by its long, slender tail with a distinctive pattern. Here's a breakdown of its tail's characteristics:\n\n- **Color**: The tail is primarily dark brown with lighter, almost white or cream-colored markings along the edges and underside. This coloration helps it blend into the sandy and grassy environment.\n- **Texture**: The tail feathers seem smooth and slightly glossy, typical of birds adapted for speed and agility.\n- **Shape and Size**: The tail is long and narrow, extending beyond the body and curving slightly upwards. It is proportionally large compared to the bird's body, which is characteristic of Roadrunners.\n- **Patterns**: The tail has a series of dark bands or stripes alternating with lighter areas, creating a banded appearance. These bands are more pronounced towards the tip of the tail.\n- **Unique Features**: The tail's length and shape are key identifiers for Roadrunners. Its flexibility allows for rapid movement and maneuverability.\n\nThese features collectively help distinguish the Roadrunner's tail from other bird species, making it a distinctive part of the bird's overall appearance."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The bird in the image is a Roadrunner, characterized by its long, slender body, long tail, and distinctive wing pattern. It stands on a ground covered with patches of grass and rocks, blending well with its environment. The bird's posture suggests it might be in motion or alert.
+
+#### Head and Beak Area:
+- **Color**: The head is predominantly dark, almost black, with a lighter patch around the eye, creating a masked appearance. The beak is long, slender, and slightly curved downward, typical of Roadrunners.
+- **Texture and Patterns**: The head feathers are smooth and glossy, contrasting with the more textured and patterned body feathers.
+- **Shape and Size**: The beak is elongated and pointed, longer than the width of the head. The head is relatively small compared to the body.
+- **Unique Features**: The most distinctive feature is the raised crest on top of the head, which is slightly ruffled, a key identifying feature of Roadrunners.
+
+#### Wing Pattern:
+- **Color**: The wings have a mix of dark brown and black feathers with lighter spots and streaks, creating a mottled effect.
+- **Texture**: The feathers appear
+步骤4: 执行多模态检索...
+多模态检索结果: [('Geococcyx', 0.4000000241264308), ('Sage Thrasher', 0.33189399050044016), ('Savannah Sparrow', 0.3231692973247296), ('Song Sparrow', 0.32078760008724105), ('Eastern Towhee', 0.3144323651118455)]
+步骤5: 最终推理...
+最终预测: Geococcyx (置信度: 0.9500)
+推理过程: The bird in the image exhibits several key characteristics consistent with the Geococcyx species, including the long, slender body, long tail, and distinctive wing pattern. The raised crest on the head is a particularly strong indicator of this species. The similarity scores also suggest that Geococcyx is the closest match among the given options. | Key Features: ['Long, slender body', 'Long tail', 'Distinctive wing pattern with dark brown and black feathers', 'Raised crest on the head'] | Uncertainty: ['The similarity scores to other birds like the Sage Thrasher and Savannah Sparrow are relatively close, but the distinctive crest and overall body shape of the Geococcyx make it the most likely match.']
+统计更新: 类别=Geococcyx, 置信度=0.950, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.516 | 需要慢思考
+     📊 图片进度: 3/200 | 已处理: 3 个样本
+✨ 类别 110.Geococcyx 推理完成: 1 张图片
+📈 当前总体进度: 3/200 | 已处理: 3 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [4/200]: 188.Pileated Woodpecker (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/188.Pileated_Woodpecker/Pileated_Woodpecker_0025_180253.jpg
+图像检索结果: Pileated Woodpecker (置信度: 1.0000)
+文本检索结果: Pileated Woodpecker (置信度: 0.3019)
+融合结果: [('Pileated Woodpecker', 0.33303284737907474), ('Red-headed Woodpecker', 0.18633409519830058), ('Red-cockaded Woodpecker', 0.16631858954353937)]
+快思考结果: Pileated Woodpecker (置信度: 0.7081)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Pileated Woodpecker | 置信度: 0.708 | 仅快思考
+     📊 图片进度: 4/200 | 已处理: 4 个样本
+✨ 类别 188.Pileated Woodpecker 推理完成: 1 张图片
+📈 当前总体进度: 4/200 | 已处理: 4 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [5/200]: 120.Fox Sparrow (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/120.Fox_Sparrow/Fox_Sparrow_0012_115324.jpg
+图像检索结果: Fox Sparrow (置信度: 1.0000)
+文本检索结果: Fox Sparrow (置信度: 0.3158)
+融合结果: [('Fox Sparrow', 0.30899162087284154), ('Song Sparrow', 0.21046645375906903), ('Lincoln Sparrow', 0.1815959484811874)]
+快思考结果: Fox Sparrow (置信度: 0.6053)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Fox Sparrow | 置信度: 0.605 | 仅快思考
+     📊 图片进度: 5/200 | 已处理: 5 个样本
+✨ 类别 120.Fox Sparrow 推理完成: 1 张图片
+📈 当前总体进度: 5/200 | 已处理: 5 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [6/200]: 180.Wilson Warbler (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/180.Wilson_Warbler/Wilson_Warbler_0107_175320.jpg
+图像检索结果: Wilson Warbler (置信度: 1.0000)
+文本检索结果: Wilson Warbler (置信度: 0.3405)
+融合结果: [('Wilson Warbler', 0.2617727981849772), ('Mourning Warbler', 0.2012180202189953), ('Yellow Warbler', 0.19171807849927552)]
+快思考结果: conflict (置信度: 0.4127)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/180.Wilson_Warbler/Wilson_Warbler_0107_175320.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's coloration is not entirely uniform, which can lead to confusion with other warbler species.", 'The background is blurred and contains similar green hues, making it hard to distinguish the bird from its surroundings.', 'The lighting conditions appear to be natural but not particularly bright or clear, which can affect the visibility of finer details.'], 'key_regions': ['The head and upper chest area, as these regions often have distinctive markings that can help identify the species.', 'The wing patterns, which can vary among warbler species and are crucial for accurate identification.', 'The tail and lower body, as these areas can also provide distinguishing features.'], 'additional_info_needed': "A clearer view of the bird's wing patterns and tail, as well as more distinct background elements that could help differentiate it from similar species."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird's head and upper chest area display a vibrant yellow color with subtle hints of greenish-yellow, particularly noticeable around the eye region. The feathers appear smooth and slightly glossy, reflecting light softly. The head is rounded with a small, pointed beak that is pale yellow, almost white, and slightly curved downward. The eye is dark and surrounded by a thin, darker ring, which contrasts sharply with the bright yellow of the head. The upper chest area maintains the same vivid yellow hue, blending seamlessly into the rest of the body. There are no visible markings or spots on the head or upper chest, making it a uniform coloration. The overall shape of the head is compact and rounded, typical of warbler species. This area does not show any significant variations or special characteristics that set it apart from other similar birds, but the uniformity and brightness of the yellow color make it quite distinctive.", "The bird in the image appears to be a Wilson's Warbler, identifiable by its bright yellow plumage and black cap. Here’s a breakdown of its wing patterns and other visual characteristics:\n\n- **Color and Texture**: The bird's body is predominantly a vibrant yellow, with a slightly darker shade on the back and wings. The texture seems smooth and glossy, typical of many warbler species. The wings have subtle dark streaks or bars, which are characteristic of Wilson's Warblers.\n\n- **Shape and Size**: The wings are relatively short compared to the length of the tail, which is another distinguishing feature of Wilson's Warblers. The overall size of the bird is small, consistent with warbler species.\n\n- **Unique Features**: The most distinctive feature is the black cap on the head, which contrasts sharply with the yellow body. This cap is a key identifying mark for Wilson's Warblers.\n\n- **Variations and Special Characteristics**: The wing patterns, while not highly complex, do include some dark markings that help in identification. These markings are more pronounced towards the wingtips and may vary slightly between individuals. The bird's posture and the angle at which it is perched also contribute to the clarity of these markings.\n\nThese features collectively make the bird easily identifiable as a", "The bird in the image has a vibrant yellow body with a slightly darker yellowish-green hue on its wings and back. Its tail is not fully visible, but it appears to be short and rounded, consistent with many warbler species. The lower body, including the belly and undertail coverts, is a bright, uniform yellow.\n\nThe texture of the feathers looks smooth and slightly glossy, reflecting light, which enhances the vividness of the yellow color. There are no distinct patterns or markings on the body, making the bird's coloration quite uniform across its visible parts.\n\nThe shape of the bird is compact and rounded, typical of warblers, with a small head and a short, pointed beak. The size relative to the branch it is perched on suggests it is a smaller bird, likely a warbler species.\n\nNo unique or distinctive features stand out beyond the overall coloration and shape. The bird does not have any visible spots, stripes, or other markings that would set it apart from other similar warbler species. The image focuses on the bird's upper body and part of its tail, so the lower body and tail are not fully discernible."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The bird in the image is a small, brightly colored warbler with a predominantly yellow plumage. It is perched on a slender branch amidst lush green foliage, which provides a natural backdrop that highlights its vivid yellow color. The bird's compact and rounded shape, along with its small, pointed beak, is characteristic of warbler species.
+
+#### Head and Upper Chest Area:
+- **Color and Texture**: The head and upper chest area are a vibrant yellow with subtle hints of greenish-yellow, particularly noticeable around the eye region. The feathers are smooth and slightly glossy, reflecting light softly.
+- **Markings**: The head is rounded with a small, pointed beak that is pale yellow, almost white, and slightly curved downward. The eye is dark, surrounded by a thin, darker ring, which contrasts sharply with the bright yellow of the head. The upper chest area maintains the same vivid yellow hue, blending seamlessly into the rest of the body. There are no visible markings or spots on the head or upper chest, making it a uniform coloration.
+- **Distinctive Feature**: The compact, rounded head and the uniform yellow coloration are key identifiers for this species.
+
+#### Wing Patterns:
+-
+步骤4: 执行多模态检索...
+多模态检索结果: [('Wilson Warbler', 0.40000001519938383), ('Magnolia Warbler', 0.3611242559489111), ('Prairie Warbler', 0.34867953808087404), ('Pine Warbler', 0.3480476744381723), ('Blue-winged Warbler', 0.3462463362770114)]
+步骤5: 最终推理...
+最终预测: Wilson Warbler (置信度: 0.9500)
+推理过程: The bird in the image exhibits several key characteristics consistent with the Wilson Warbler. The vibrant yellow plumage, especially the greenish-yellow around the eye region, is a hallmark of this species. Additionally, the compact, rounded head and the lack of any distinct markings on the head and upper chest further support this identification. The similarity score of 0.4000 for the Wilson Warbler also indicates a high level of confidence in this classification. | Key Features: ['Vibrant yellow plumage with greenish-yellow around the eye region', 'Compact, rounded head', 'Uniform yellow coloration without visible markings', 'Pale yellow, slightly curved beak'] | Uncertainty: ['The similarity scores for other warbler species are relatively close, but the Wilson Warbler has the highest score.']
+统计更新: 类别=Wilson Warbler, 置信度=0.950, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.413 | 需要慢思考
+     📊 图片进度: 6/200 | 已处理: 6 个样本
+✨ 类别 180.Wilson Warbler 推理完成: 1 张图片
+📈 当前总体进度: 6/200 | 已处理: 6 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [7/200]: 159.Black and white Warbler (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/159.Black_and_white_Warbler/Black_And_White_Warbler_0048_160287.jpg
+图像检索结果: Black-and-white Warbler (置信度: 1.0000)
+文本检索结果: Black-and-white Warbler (置信度: 0.3254)
+融合结果: [('Black-and-white Warbler', 0.2641174728020293), ('Cerulean Warbler', 0.1947070904556782), ('Pine Warbler', 0.18617515722437508)]
+快思考结果: conflict (置信度: 0.4514)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/159.Black_and_white_Warbler/Black_And_White_Warbler_0048_160287.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's plumage has subtle color variations that can be easily mistaken for other warbler species.", 'The lighting and angle of the photograph may obscure some key identifying features.', "The background is out of focus, which can lead to misinterpretation of the bird's environment."], 'key_regions': ['The head and eye region, as these often have distinctive markings that are crucial for identification.', 'The wing pattern, which can vary slightly between similar species.', 'The tail and overall body shape, as these can also be important distinguishing factors.'], 'additional_info_needed': "A clearer view of the bird's head and wing patterns, as well as more context about its habitat and behavior, could help in distinguishing it from similar species."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird's head is predominantly white with black stripes running horizontally across it, creating a distinct pattern. The eye is dark and appears to be surrounded by a thin, dark ring, which contrasts sharply with the white feathers around it. The beak is short and pointed, with a light brownish-gray coloration. The texture of the feathers appears smooth and slightly glossy, especially noticeable on the head where the contrast between the white and black is most pronounced. The overall shape of the head is rounded, typical of many small songbirds. There are no visible variations or special characteristics in the head region that stand out distinctly from other similar birds, but the clear, sharp contrast between the white and black stripes makes it easily identifiable.", "The bird in the image displays a distinctive wing pattern characteristic of certain warbler species. Here's a detailed description:\n\n- **Color and Texture**: The wings exhibit a striking contrast with black and white stripes. The black areas appear smooth and glossy, while the white areas have a slightly textured appearance, possibly due to feather structure. This creates a sharp, almost geometric pattern.\n\n- **Shape and Size**: The wings are relatively broad compared to the body, which is typical for many warblers. They extend outward from the body, covering much of the back and sides. The wingtips are pointed, aiding in flight efficiency.\n\n- **Unique Features**: The wing pattern is symmetrical, with the black and white stripes running parallel along the length of the wing. The contrast is very pronounced, making it easy to identify even at a distance.\n\n- **Variations and Special Characteristics**: While the overall pattern is consistent, there might be slight variations in the width and spacing of the stripes among different individuals of the same species. Additionally, the exact coloration can vary depending on the lighting conditions and the individual's age and sex.\n\nThis wing pattern is a key identifying feature that helps distinguish this bird from other similar species, such as the Black-and-white Warbler (Mniotilta", "The bird in the image appears to be a Black-and-white Warbler (Mniotilta varia), identifiable by several distinct features:\n\n1. **Color, Texture, and Patterns**:\n   - The bird has a predominantly black and white plumage with intricate patterns. The back is black with white streaks, while the underparts are white with black streaks.\n   - The head has a distinctive black cap and a white stripe running through the eye, creating a mask-like appearance.\n\n2. **Shape and Size**:\n   - The bird is relatively small, with a compact body and short, pointed beak suitable for probing into crevices and leaves for insects.\n   - Its wings are short and rounded, and the tail is short and square-cut.\n\n3. **Unique or Distinctive Features**:\n   - The black-and-white pattern is highly characteristic and helps distinguish it from other warblers.\n   - The bird's posture, with its head slightly lowered and beak pointing downward, suggests it might be foraging for food.\n\n4. **Variations or Special Characteristics**:\n   - The Black-and-white Warbler is known for its striking contrast between black and white feathers, which is clearly visible in the image.\n   - The bird's"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Head and Eye Region:
+- **Color and Pattern**: The head is predominantly white with distinct black horizontal stripes running across it, creating a mask-like appearance. The eye is dark, surrounded by a thin, dark ring, contrasting sharply with the white feathers around it.
+- **Texture**: The feathers on the head appear smooth and slightly glossy, particularly noticeable in the contrast between the white and black stripes.
+- **Shape**: The head is rounded, typical of small songbirds, and there are no other distinctive markings or variations.
+
+#### Wing Pattern:
+- **Color and Texture**: The wings display a striking black and white striped pattern. The black areas are smooth and glossy, while the white areas have a slightly textured appearance, likely due to feather structure.
+- **Shape and Size**: The wings are broad relative to the body, extending outward and covering much of the back and sides. The tips are pointed, aiding in flight efficiency.
+- **Unique Features**: The wing pattern is symmetrical, with black and white stripes running parallel along the length of the wing. The contrast is very pronounced, making it easily identifiable.
+
+#### Tail and Overall Body Shape:
+- **Color, Texture, and Patterns**: The back is black with white
+步骤4: 执行多模态检索...
+多模态检索结果: [('Black-and-white Warbler', 0.39999995136229877), ('White-breasted Nuthatch', 0.34795203956364396), ('Louisiana Waterthrush', 0.34352751181288516), ('American-Three-toed Woodpecker', 0.33810958026827476), ('Song Sparrow', 0.33802696664829884)]
+步骤5: 最终推理...
+最终预测: Black-and-white Warbler (置信度: 0.9500)
+推理过程: The bird in the image exhibits several key characteristics consistent with the Black-and-white Warbler. The distinct black and white striped pattern on the head and wings, the overall body shape, and the coloration of the back are all highly indicative of this species. The similarity score of 0.4000 for the Black-and-white Warbler also supports this classification as the highest-ranking candidate. | Key Features: ['Head and Eye Region: The head is predominantly white with distinct black horizontal stripes, creating a mask-like appearance.', 'Wing Pattern: The wings display a striking black and white striped pattern with smooth and glossy black areas and slightly textured white areas.', 'Tail and Overall Body Shape: The back is black with white.'] | Uncertainty: ['While the Black-and-white Warbler is the top candidate, the similarity scores for the White-breasted Nuthatch and Louisiana Waterthrush are relatively close, indicating some visual overlap in certain features.']
+统计更新: 类别=Black-and-white Warbler, 置信度=0.950, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.451 | 需要慢思考
+     📊 图片进度: 7/200 | 已处理: 7 个样本
+✨ 类别 159.Black and white Warbler 推理完成: 1 张图片
+📈 当前总体进度: 7/200 | 已处理: 7 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [8/200]: 127.Savannah Sparrow (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/127.Savannah_Sparrow/Savannah_Sparrow_0094_119040.jpg
+图像检索结果: Savannah Sparrow (置信度: 1.0000)
+文本检索结果: Savannah Sparrow (置信度: 0.3570)
+融合结果: [('Savannah Sparrow', 0.28500288221679754), ('Song Sparrow', 0.2182944578148665), ('Lincoln Sparrow', 0.1997687676004947)]
+快思考结果: conflict (置信度: 0.4476)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/127.Savannah_Sparrow/Savannah_Sparrow_0094_119040.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's plumage has subtle variations that can be easily mistaken for other sparrow species.", "The background is somewhat blurred, which can obscure important details about the bird's features.", 'The lighting and shadows affect the visibility of certain features, making it harder to discern specific traits.'], 'key_regions': ['The head and face region, as these often have distinctive markings or coloration that can be crucial for identification.', 'The wing patterns, as they can vary significantly between different sparrow species.', 'The tail and rump, as these areas can also provide key distinguishing features.'], 'additional_info_needed': "A clearer view of the bird's head and face, including any unique markings or coloration, would greatly aid in accurate classification. Additionally, a better view of the wing patterns and tail would be beneficial."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird's head and face display a distinctive pattern that is key to its identification. The head is primarily light brown with a subtle streaking pattern, which extends down the neck. A prominent feature is the white stripe that runs through the eye, creating a mask-like appearance. This stripe is bordered by darker brown feathers above and below it, adding contrast. The top of the head has a slightly lighter, almost yellowish tinge, which blends into the brown. The beak is short and conical, typical of seed-eating birds, and appears to be a light grayish-brown color. The overall size of the head is proportionate to the body, and the facial features are well-defined, aiding in distinguishing this bird from others in its category.", 'The bird in the image appears to be a sparrow, identifiable by its small size and distinctive wing patterns. Here\'s a detailed description of its wing patterns:\n\n- **Color**: The wings display a mix of brown, black, and white feathers. The primary feathers (remiges) have dark brown edges with lighter brown centers, creating a mottled appearance. The secondary feathers (remixes) show a more pronounced contrast with darker tips and lighter bases.\n\n- **Texture**: The feathers appear soft and slightly fluffy, typical of many sparrow species. The texture is consistent across the wing, with no significant variation in thickness or sheen.\n\n- **Patterns**: The wing patterns are intricate and varied. The primary feathers have a distinct "barred" pattern where the dark and light colors alternate, giving them a striped look. The secondary feathers also exhibit a barred pattern but with less contrast compared to the primaries. The wingtips are darker, almost black, which helps define the shape of the wing.\n\n- **Shape and Size**: The wings are relatively short and broad for a sparrow, which is characteristic of many species. They are proportionate to the body size, neither too long nor too short.\n\n- **Unique Features**: The wing patterns are quite distinctive and serve', "The bird in the image has a distinctive appearance with several key features:\n\n- **Color**: The tail and rump are primarily brown with subtle streaks and lighter edges, creating a mottled pattern. The coloration is consistent with many sparrow species.\n\n- **Texture**: The feathers appear soft and slightly fluffy, typical of small songbirds. There's a slight sheen to the feathers, indicating they are not overly dry or worn.\n\n- **Patterns**: The tail and rump exhibit a mix of brown shades with lighter streaking, which helps break up the overall shape and provides camouflage against the natural environment.\n\n- **Shape and Size**: The tail is relatively short compared to some other bird species, and it tapers to a point. The rump is rounded and blends seamlessly into the body.\n\n- **Unique Features**: The tail and rump are not particularly long or elaborate, which distinguishes them from birds like swallows or some larger sparrows. The subtle color variations and the lack of prominent markings make it a characteristic feature for identification.\n\nThese features collectively help in distinguishing the bird from similar categories, such as other sparrow species, by providing a unique combination of color, texture, and shape."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Detailed Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The bird in the image is a small passerine, likely a sparrow, perched on a rocky surface. Its plumage is predominantly brown with subtle streaking, blending well with the natural environment. The bird's posture is upright, and its short, conical beak suggests it is adapted for seed-eating. The lighting highlights the texture and color variations in its feathers, making it easier to identify distinctive features.
+
+#### Head and Face Region:
+- **Head Coloration**: The head is light brown with a subtle streaking pattern extending down the neck. A prominent white stripe runs through the eye, creating a mask-like appearance. The top of the head has a slightly lighter, almost yellowish tinge, which blends into the brown. The beak is short and conical, light grayish-brown in color, and the overall size of the head is proportionate to the body.
+- **Facial Features**: The facial features are well-defined, with the white stripe through the eye being a key identifying characteristic. The beak's shape and color further support the identification as a sparrow.
+
+#### Wing Patterns:
+- **Color**: The wings display a mix of brown, black, and
+步骤4: 执行多模态检索...
+多模态检索结果: [('Savannah Sparrow', 0.39999997966836426), ('Song Sparrow', 0.3510958481640362), ('Le-Conte Sparrow', 0.34553678717836644), ('Baird Sparrow', 0.3437717098176454), ('Brewer Sparrow', 0.3431031756860494)]
+步骤5: 最终推理...
+最终预测: Song Sparrow (置信度: 0.9500)
+推理过程: The bird in the image exhibits several key characteristics consistent with a Song Sparrow. The light brown plumage with subtle streaking, the white stripe through the eye, and the short, conical beak are all indicative of this species. The similarity score also supports this, with 'Song Sparrow' having the highest score among the candidates. The distinctive white stripe through the eye is particularly diagnostic for the Song Sparrow, distinguishing it from other sparrow species like the Savannah Sparrow, which typically lacks this feature. | Key Features: Light brown plumage with subtle streaking, white stripe through the eye, short conical beak | Uncertainty: While the visual evidence strongly supports the Song Sparrow, slight variations in plumage can sometimes lead to confusion with other sparrow species. However, the presence of the white stripe through the eye provides strong evidence for the Song Sparrow.
+统计更新: 类别=Song Sparrow, 置信度=0.950, LCB=0.500, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.448 | 需要慢思考
+     📊 图片进度: 8/200 | 已处理: 8 个样本
+✨ 类别 127.Savannah Sparrow 推理完成: 1 张图片
+📈 当前总体进度: 8/200 | 已处理: 8 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [9/200]: 183.Northern Waterthrush (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/183.Northern_Waterthrush/Northern_Waterthrush_0005_177023.jpg
+图像检索结果: Northern Waterthrush (置信度: 1.0000)
+文本检索结果: Ovenbird (置信度: 0.3536)
+融合结果: [('Northern Waterthrush', 0.26309839016755443), ('Ovenbird', 0.24403931908013501), ('Louisiana Waterthrush', 0.20477089742346413)]
+快思考结果: conflict (置信度: 0.4934)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/183.Northern_Waterthrush/Northern_Waterthrush_0005_177023.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's plumage is not fully visible, which can lead to misclassification.", 'The background is cluttered with leaves and twigs, which can obscure key features.', 'The lighting conditions are somewhat dim, affecting the visibility of finer details.'], 'key_regions': ['The head and eye region for identifying species-specific markings.', 'The wing patterns for distinguishing between similar species.', 'The tail and overall body shape for confirming the species.'], 'additional_info_needed': "A clearer view of the bird's plumage, especially the wing patterns and tail, as well as more distinct environmental markers that could help confirm the species."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird in the image appears to be a Northern Waterthrush (Parkesia noveboracensis). Here's a detailed description focusing on the head and eye region:\n\n- **Color**: The head is primarily olive-brown with a distinct white stripe running through the eye, which is a key identifying feature. This stripe is bordered by darker brown feathers above and below it, creating a sharp contrast.\n- **Texture and Patterns**: The plumage has a slightly glossy sheen, especially noticeable on the back and wings. The head and neck have a fine, soft texture compared to the more robust body feathers.\n- **Shape and Size**: The head is relatively small and rounded, typical of warblers. The eye is dark and round, surrounded by the white stripe mentioned earlier.\n- **Unique Features**: The white stripe through the eye is particularly distinctive and helps in distinguishing the Northern Waterthrush from other similar species like the Louisiana Waterthrush, which lacks this stripe.\n- **Variations**: There may be slight variations in the intensity of the coloration and the width of the stripe among individuals, but these do not significantly alter the identification.\n\nThese characteristics make the Northern Waterthrush easily identifiable when observing its head and eye region.", "The bird in the image appears to be a Northern Waterthrush (Parkesia noveboracensis), identifiable by several distinct features:\n\n1. **Color and Texture**: The bird has a brownish-gray back with darker streaks, which is typical for the species. Its underparts are white with prominent black streaking, especially noticeable on the flanks and breast. The texture seems smooth and slightly glossy.\n\n2. **Shape and Size**: The bird's body is slender and compact, with a relatively short tail and a pointed beak. It is small to medium-sized, fitting within the typical range of warblers.\n\n3. **Unique Features**:\n   - **Head Pattern**: The head has a distinctive pattern with a pale supercilium (eyebrow) that extends from the bill through the eye, contrasting sharply with the darker crown.\n   - **Wing Patterns**: The wings have a series of dark bars or stripes, which are more pronounced near the tips. These bars are a key identifying feature for distinguishing the Northern Waterthrush from other similar species like the Louisiana Waterthrush.\n\n4. **Variations and Special Characteristics**:\n   - The Northern Waterthrush often shows a slight variation in color intensity, with some individuals appearing more olive", "The bird in the image appears to be a Northern Waterthrush (Parkesia noveboracensis). Here's a breakdown of its visual characteristics:\n\n- **Color and Texture**: The bird has a brownish-gray back with darker streaks, and its underparts are a lighter grayish-white with dark streaking. The head is marked with a distinct white stripe above the eye and a black stripe below it, creating a mask-like appearance. The wings have a series of dark bars, and the tail is short and rounded.\n\n- **Shape and Size**: The bird is small, with a compact body and a relatively short, slightly curved bill. Its size is consistent with other warblers, which are typically smaller than thrushes.\n\n- **Unique Features**: The most distinctive feature is the white supercilium (stripe above the eye) and the black stripe below it, forming a mask-like pattern around the eye. This is a key identifying characteristic of the Northern Waterthrush.\n\n- **Special Characteristics**: The Northern Waterthrush often has a slightly upturned bill, which can be seen in this image. It also has a tendency to hold its tail upright when perched, which is another distinguishing feature.\n\nThese features collectively help confirm the identification as a Northern"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The bird in the image is small and slender, with a compact body and a relatively short, slightly curved bill. Its plumage is predominantly brownish-gray on the back and wings, with darker streaks. The underparts are lighter, with prominent dark streaking on the flanks and breast. The head is marked with a distinctive white stripe above the eye and a black stripe below it, creating a mask-like appearance. The tail is short and rounded, and the bird appears to be foraging on the forest floor, surrounded by leaves and twigs.
+
+#### Head and Eye Region:
+- **Color**: The head is olive-brown with a distinct white stripe running through the eye. This stripe is bordered by darker brown feathers above and below it, creating a sharp contrast.
+- **Texture and Patterns**: The plumage has a slightly glossy sheen, especially noticeable on the back and wings. The head and neck have a fine, soft texture compared to the more robust body feathers.
+- **Shape and Size**: The head is relatively small and rounded, typical of warblers. The eye is dark and round, surrounded by the white stripe mentioned earlier.
+- **Unique Features**: The white stripe through the
+步骤4: 执行多模态检索...
+多模态检索结果: [('Northern Waterthrush', 0.39999996720051273), ('Clay-colored Sparrow', 0.33580272479129214), ('Tennessee Warbler', 0.332816596871539), ('Song Sparrow', 0.3325725512657906), ('Ovenbird', 0.32797767665639627)]
+步骤5: 最终推理...
+最终预测: Northern Waterthrush (置信度: 0.4000)
+推理过程: JSON parsing failed, using top similarity result
+统计更新: 类别=Northern Waterthrush, 置信度=0.400, LCB=0.000, 一致性=True, 更新m=False
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.493 | 需要慢思考
+     📊 图片进度: 9/200 | 已处理: 9 个样本
+✨ 类别 183.Northern Waterthrush 推理完成: 1 张图片
+📈 当前总体进度: 9/200 | 已处理: 9 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [10/200]: 144.Common Tern (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/144.Common_Tern/Common_Tern_0087_147945.jpg
+图像检索结果: Common Tern (置信度: 1.0000)
+文本检索结果: Caspian Tern (置信度: 0.3864)
+融合结果: [('Common Tern', 0.2824030598159633), ('Caspian Tern', 0.27514239149015457), ('Artic Tern', 0.1978952215067924)]
+快思考结果: conflict (置信度: 0.4826)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/144.Common_Tern/Common_Tern_0087_147945.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's plumage is not fully visible, which can lead to misclassification.", 'The angle and lighting conditions may obscure some distinguishing features.', "The presence of the fish in its beak could be misleading as it does not affect the bird's species identification."], 'key_regions': ['The head and neck region for identifying the species-specific markings.', 'The wingtips and tail for assessing the overall shape and size.', 'The beak and eye region for subtle differences that can be crucial in tern species identification.'], 'additional_info_needed': "A clearer view of the bird's body, including the wings and tail, would help in distinguishing between the Common Tern and Caspian Tern. Also, a closer look at the beak shape and any unique markings on the head or body would be beneficial."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird in the image is a Common Tern (Sterna hirundo). Here's a detailed description focusing on the head and neck region:\n\n- **Color**: The head and neck are predominantly black with a white stripe running through the eye, which is a distinctive feature of the Common Tern. The black coloration extends from the top of the head down to the back of the neck, creating a sharp contrast with the white underparts.\n\n- **Texture and Patterns**: The feathers on the head and neck appear smooth and glossy, reflecting light, especially noticeable on the black areas. The white stripe through the eye is crisp and well-defined, adding to the bird's striking appearance.\n\n- **Shape and Size**: The head is small and rounded, typical of terns, and the beak is slender and pointed, adapted for catching fish. The neck is relatively short compared to some other seabirds, but it is still proportionate to the body size.\n\n- **Unique Features**: The white stripe through the eye is one of the most distinguishing features of the Common Tern. This stripe is continuous and does not break at the eye, unlike some other tern species. Additionally, the black cap extends down the back of the neck, forming a distinct collar-like pattern.\n\n", "The bird in the image has distinct wingtips and a tail that contribute to its overall shape and size. Here's a detailed description:\n\n- **Color**: The wings appear predominantly white with subtle grayish tones near the tips, which may indicate wear or natural coloration. The tail is also white, with a slight hint of gray at the very tip, suggesting a possible age-related discoloration.\n\n- **Texture**: The feathers look smooth and slightly glossy, typical of many seabirds, which helps them glide through the air efficiently. There are no visible patterns or markings on the wings or tail that would suggest a specific species beyond the general white coloration.\n\n- **Shape and Size**: The wings are long and pointed, extending far beyond the body, which is characteristic of birds designed for long-distance flight, such as terns. The tail is relatively short compared to the wings, with a forked appearance, which aids in maneuverability during flight.\n\n- **Unique Features**: The bird's beak is slender and pointed, adapted for catching fish, which aligns with the fish it appears to be carrying. The head is small and streamlined, further emphasizing its aerodynamic design.\n\n- **Variations or Special Characteristics**: The bird's plumage shows some signs of wear", "The bird in the image appears to be a Common Tern (Sterna hirundo), identifiable by several distinct features:\n\n1. **Color and Texture**: The bird's body is predominantly white with a black cap on its head, extending down the back of the neck. The wings are also white, with a slight grayish tint at the tips. The beak is slender and pointed, with a bright orange-red coloration that contrasts sharply with the black tip.\n\n2. **Shape and Size**: The beak is long and narrow, characteristic of terns, which helps them catch fish efficiently. The eye is small and dark, located near the base of the beak, giving it a sharp and focused appearance.\n\n3. **Unique Features**: The most distinguishing feature is the black cap on the head, which is a hallmark of the Common Tern. This cap extends down the back of the neck, creating a stark contrast against the white plumage. The orange-red beak is another key identifier, as it is relatively large compared to the bird's overall size and is a vivid color.\n\n4. **Variations and Special Characteristics**: The Common Tern has a streamlined body shape, which is well-suited for flight and diving. The wings are long and pointed"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The bird in the image is a Common Tern (Sterna hirundo), characterized by its sleek and streamlined body, long pointed wings, and a slender, bright orange-red beak. It is captured in flight, holding a small fish in its beak, which adds context to its behavior but does not affect its species identification.
+
+#### Head and Neck Region:
+- **Color**: The head and neck are predominantly black, with a distinct white stripe running through the eye. The black coloration extends down the back of the neck, creating a sharp contrast with the white underparts.
+- **Texture and Patterns**: The feathers on the head and neck are smooth and glossy, reflecting light, especially noticeable on the black areas. The white stripe through the eye is crisp and well-defined, adding to the bird's striking appearance.
+- **Shape and Size**: The head is small and rounded, typical of terns, and the beak is slender and pointed, adapted for catching fish. The neck is relatively short but proportionate to the body size.
+
+#### Wingtips and Tail:
+- **Color**: The wings appear predominantly white with subtle grayish tones near the tips, indicating natural coloration or wear.
+步骤4: 执行多模态检索...
+多模态检索结果: [('Common Tern', 0.3999999551486904), ('Elegant Tern', 0.35394159929485447), ('Forsters Tern', 0.3359542288250918), ('Frigatebird', 0.3358653420922874), ('Sooty Albatross', 0.3295706822923526)]
+步骤5: 最终推理...
+最终预测: Common Tern (Sterna hirundo) (置信度: 0.9500)
+推理过程: The image shows a bird with a sleek and streamlined body, long pointed wings, and a slender, bright orange-red beak, which are characteristic features of the Common Tern. The black head and neck with a white stripe through the eye, as well as the white underparts, further confirm this identification. The similarity scores also indicate that the Common Tern is the most closely related among the candidates, with a score of 0.4000, significantly higher than the other options. | Key Features: Sleek and streamlined body, long pointed wings, slender bright orange-red beak, black head and neck with a white stripe through the eye, and white underparts. | Uncertainty: There are no significant uncertainty factors affecting the classification. The visual evidence strongly supports the identification of the bird as a Common Tern.
+统计更新: 类别=Common Tern (Sterna hirundo), 置信度=0.950, LCB=0.500, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.483 | 需要慢思考
+     📊 图片进度: 10/200 | 已处理: 10 个样本
+✨ 类别 144.Common Tern 推理完成: 1 张图片
+📈 当前总体进度: 10/200 | 已处理: 10 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [11/200]: 134.Cape Glossy Starling (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/134.Cape_Glossy_Starling/Cape_Glossy_Starling_0079_129399.jpg
+图像检索结果: Cape-Glossy Starling (置信度: 1.0000)
+文本检索结果: Cape-Glossy Starling (置信度: 0.3853)
+融合结果: [('Cape-Glossy Starling', 0.4297587165578467), ('Shiny Cowbird', 0.16320228655972788), ('Rusty Blackbird', 0.146134732758242)]
+快思考结果: Cape-Glossy Starling (置信度: 0.9297)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Cape-Glossy Starling | 置信度: 0.930 | 仅快思考
+     📊 图片进度: 11/200 | 已处理: 11 个样本
+✨ 类别 134.Cape Glossy Starling 推理完成: 1 张图片
+📈 当前总体进度: 11/200 | 已处理: 11 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [12/200]: 037.Acadian Flycatcher (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/037.Acadian_Flycatcher/Acadian_Flycatcher_0019_795592.jpg
+图像检索结果: Acadian Flycatcher (置信度: 1.0000)
+文本检索结果: Least Flycatcher (置信度: 0.3329)
+融合结果: [('Least Flycatcher', 0.24539986615847856), ('Acadian Flycatcher', 0.21787410126846346), ('Olive-sided Flycatcher', 0.18336387579479524)]
+快思考结果: conflict (置信度: 0.4906)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/037.Acadian_Flycatcher/Acadian_Flycatcher_0019_795592.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's plumage is not fully visible, which can lead to misclassification due to the lack of distinct features.", 'The lighting conditions are low, making it harder to discern finer details that could aid in identification.', "The presence of the nest and chicks introduces a context that may not be directly relevant to the bird's species identification."], 'key_regions': ['The head and beak area for identifying the species-specific features such as eye shape and beak structure.', 'The wing patterns and tail feathers for distinguishing between similar species.', 'The overall body shape and size relative to the nest and chicks for contextual clues.'], 'additional_info_needed': "A clearer view of the bird's plumage, especially the wing patterns and tail feathers, would significantly aid in accurate classification. Additionally, knowing the geographic location or habitat where the photo was taken could provide crucial context for species identification."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird in the image appears to be a type of flycatcher, identifiable by several distinct features:\n\n1. **Color and Texture**: The bird has a predominantly grayish-brown plumage with subtle streaking on its chest and belly. The head is darker than the body, with a slightly lighter patch around the eyes. The texture seems smooth and slightly glossy.\n\n2. **Shape and Size**: The beak is short and pointed, typical of insectivorous birds like flycatchers. It is relatively small compared to the bird's body size, which is consistent with its diet and hunting method.\n\n3. **Unique Features**:\n   - **Eyes**: The eyes are dark and round, giving the bird an alert appearance.\n   - **Beak Structure**: The beak is straight and slightly curved at the tip, ideal for catching insects in flight.\n   - **Tail**: The tail is long and slightly forked, aiding in maneuverability during flight.\n\n4. **Distinctive Characteristics**:\n   - The bird's overall shape and proportions suggest it is adapted for perching and quick movements.\n   - The coloration and pattern help it blend into its environment, providing camouflage against predators.\n\nThese features collectively point towards the bird being a species of flycatch", "The bird in the image appears to be an adult flycatcher, likely a type of Empidonax flycatcher (such as the Acadian Flycatcher), based on its overall shape and coloration. Here's a breakdown of its distinguishing features:\n\n1. **Color and Texture**:\n   - The bird has a predominantly olive-green upperparts with subtle streaking, which is typical for many flycatchers.\n   - The underparts are lighter, with a pale yellowish wash on the breast and belly, and a faint streaking pattern.\n   - The wings have a distinct pattern: they are dark brownish-gray with a series of white wing bars that are more prominent near the tips of the outermost primary feathers.\n\n2. **Shape and Size**:\n   - The bird is small, with a compact body and a short, slightly pointed beak, characteristic of insectivorous birds like flycatchers.\n   - Its head is rounded, and it has a short, thick neck, which is also typical for this family.\n\n3. **Unique or Distinctive Features**:\n   - The tail is relatively long and slightly forked, which is a common feature among flycatchers.\n   - The legs are thin and dark, and the feet", "The bird in the image is perched on a nest with chicks, providing a clear view of its body shape and size relative to the nest and chicks. Here's a detailed description:\n\n- **Color**: The bird has a predominantly olive-green upper body with darker streaks along its back and wings. Its underparts are lighter, with a pale yellowish hue. The head is rounded with a short, pointed beak that appears dark in color.\n\n- **Texture and Patterns**: The feathers have a slightly glossy appearance, especially noticeable on the back and wings. There are subtle streaks and spots on the chest and belly, adding to the bird's intricate pattern. The tail is long and slender, extending beyond the nest.\n\n- **Shape and Size**: The bird is relatively small compared to the nest and chicks. It fits comfortably within the nest, which is made of twigs and lined with softer materials like grass or feathers. The chicks appear smaller than the adult bird, nestled closely together in the nest.\n\n- **Unique or Distinctive Features**: The bird's eyes are dark and round, giving it an alert expression. Its beak is short and pointed, adapted for catching insects. The tail is a key feature, being long and tapering to a point, which"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Detailed Description for Fine-Grained Classification
+
+#### Head and Beak Area:
+- **Color and Texture**: The bird has a predominantly grayish-brown plumage with subtle streaking on its chest and belly. The head is darker than the body, with a slightly lighter patch around the eyes. The texture appears smooth and slightly glossy.
+- **Shape and Size**: The beak is short and pointed, typical of insectivorous birds like flycatchers. It is relatively small compared to the bird's body size, consistent with its diet and hunting method.
+- **Unique Features**:
+  - **Eyes**: Dark and round, giving the bird an alert appearance.
+  - **Beak Structure**: Straight and slightly curved at the tip, ideal for catching insects in flight.
+  - **Tail**: Long and slightly forked, aiding in maneuverability during flight.
+
+#### Wing Patterns and Tail Feathers:
+- **Color and Texture**: The bird has a predominantly olive-green upperparts with subtle streaking, typical of many flycatchers. The underparts are lighter, with a pale yellowish wash on the breast and belly, and faint streaking pattern.
+- **Shape and Size**: Small, compact body with a short, slightly pointed beak. The
+步骤4: 执行多模态检索...
+多模态检索结果: [('Acadian Flycatcher', 0.3999999631322239), ('Yellow-bellied Flycatcher', 0.3410732447709814), ('Tennessee Warbler', 0.33055410375334676), ('Least Flycatcher', 0.3302581505271189), ('Blue-headed Vireo', 0.330102929421652)]
+步骤5: 最终推理...
+最终预测: Acadian Flycatcher (置信度: 0.8500)
+推理过程: The bird in the image exhibits several key characteristics that align closely with the Acadian Flycatcher. The overall coloration, including the grayish-brown plumage with subtle streaking on the chest and belly, the dark head with a lighter eye patch, and the long, slightly forked tail are consistent with the Acadian Flycatcher. Additionally, the short, pointed beak and the compact body shape further support this identification. The similarity score of 0.4000 also indicates a high likelihood of this being the correct category. | Key Features: ['Grayish-brown plumage with subtle chest and belly streaking', 'Dark head with a lighter eye patch', 'Long, slightly forked tail', 'Short, pointed beak'] | Uncertainty: ['While the Acadian Flycatcher is the top candidate, there is a slight margin of error due to the similarity scores with other species like the Yellow-bellied Flycatcher.']
+统计更新: 类别=Acadian Flycatcher, 置信度=0.850, LCB=0.500, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+  📸 [1/1] 推理完成 | 快思考预测: conflict | 置信度: 0.491 | 需要慢思考
+     📊 图片进度: 12/200 | 已处理: 12 个样本
+✨ 类别 037.Acadian Flycatcher 推理完成: 1 张图片
+📈 当前总体进度: 12/200 | 已处理: 12 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [13/200]: 142.Black Tern (1 张图片)
+开始快思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/142.Black_Tern/Black_Tern_0097_144724.jpg
+图像检索结果: Black Tern (置信度: 1.0000)
+文本检索结果: Brewer Blackbird (置信度: 0.3295)
+融合结果: [('Brewer Blackbird', 0.22312248474915844), ('Clark Nutcracker', 0.21239580665865251), ('Least Auklet', 0.19672752702756532)]
+快思考结果: conflict (置信度: 0.4422)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_1/142.Black_Tern/Black_Tern_0097_144724.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The bird's plumage is predominantly black, which can be similar to other species like the Brewer Blackbird.", 'The image resolution and lighting conditions may not provide enough detail for accurate identification.', "The bird's posture and angle can sometimes obscure key identifying features."], 'key_regions': ['The head and beak area, as these can vary significantly between species.', 'The wing patterns and tail shape, which are crucial for differentiation.', 'The overall body shape and size, as some birds can appear quite similar at first glance.'], 'additional_info_needed': "A clearer view of the bird's wings, tail, and any distinctive markings or coloration that could help differentiate it from other species."}
+步骤2: 提取关键区域特征...
+区域描述: ["The bird in the image has a predominantly black head with a glossy sheen, indicating a smooth and possibly slightly reflective texture. The beak is short and pointed, with a dark coloration that matches the head, giving it a streamlined appearance. The beak's shape is typical for birds that feed by probing into water or mud, suggesting it might be a wading bird.\n\nThe eye is small and dark, which is common among many bird species, providing a contrast against the black plumage. There are no visible patterns or markings on the head, making it appear uniform in color. The overall size of the head relative to the body suggests a compact structure, which could be indicative of a smaller bird species.\n\nThe beak is relatively short compared to some other bird species, such as herons or egrets, which have longer, more slender beaks. This shorter beak could suggest a diet that involves catching prey in shallow water or on the ground rather than in deeper water or in flight.\n\nIn summary, the bird's head and beak are characterized by their dark color, smooth texture, and compact shape, which are distinctive features that help distinguish it from larger, more elongated-beaked birds.", "The bird in the image appears to be a Black Tern (Chlidonias niger). Here's a detailed description focusing on the wing patterns and tail shape:\n\n- **Color and Texture**: The bird has a predominantly black plumage with a glossy sheen, especially noticeable on the head and back. The wings have a subtle iridescence, appearing slightly lighter than the body, with a hint of grayish-blue near the tips. The tail is short and forked, with a dark coloration.\n\n- **Shape and Size**: The wings are relatively long and pointed, tapering towards the tip. The tail is short and deeply forked, which is characteristic of terns. The overall size of the bird is small, typical of terns, with a compact body and a slender build.\n\n- **Unique Features**: The Black Tern's most distinctive feature is its forked tail, which is clearly visible in the image. This is a key characteristic that helps differentiate it from other tern species. Additionally, the bird's legs are orange with dark bands around them, which can also aid in identification.\n\n- **Variations and Special Characteristics**: The Black Tern's plumage can vary slightly depending on the season and age of the bird. Juveniles", "The bird in the image appears to be a Black Tern (Chlidonias niger). Here's a detailed description of its visual characteristics:\n\n- **Color, Texture, and Patterns**: The bird has a predominantly black plumage with a glossy sheen, especially noticeable on the head and back. Its wings have a slightly iridescent blue-gray hue, particularly visible in the primary feathers. The underparts are white, creating a stark contrast with the black upper parts. The legs are orange-red, and the beak is short, straight, and black.\n\n- **Shape and Size Relative to the Object**: The bird is relatively small in size, fitting comfortably on the wooden post it is perched on. Its body is compact and streamlined, typical of terns, which are designed for efficient flight over water. The wings are long and pointed, and the tail is forked into two narrow, pointed tips.\n\n- **Unique or Distinctive Features**: The most distinctive feature is the forked tail, which is characteristic of terns. Additionally, the bird's posture, with its head slightly tilted and its body facing forward, gives it an alert and attentive appearance.\n\n- **Variations or Special Characteristics**: Black Terns are known for their striking contrast between"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Head and Beak Area:
+- **Color and Texture**: The bird's head is predominantly black with a glossy sheen, indicating smooth and slightly reflective plumage. The beak is short, pointed, and dark, matching the head's coloration. The beak's streamlined shape suggests it is adapted for probing into water or mud.
+- **Eye**: Small and dark, providing a contrast against the black plumage.
+- **Overall Structure**: The head is compact, consistent with a smaller bird species.
+
+#### Wing Patterns and Tail Shape:
+- **Color and Texture**: The wings have a subtle iridescence, appearing slightly lighter than the body, with a hint of grayish-blue near the tips. The tail is short and forked, with a dark coloration.
+- **Shape and Size**: The wings are long and pointed, tapering towards the tip. The tail is short and deeply forked, characteristic of terns.
+- **Unique Features**: The forked tail is a key identifier, along with the orange-red legs with dark bands.
+
+#### Overall Body Shape and Size:
+- **Color, Texture, and Patterns**: Predominantly black plumage with a glossy sheen on the head and
+步骤4: 执行多模态检索...
+多模态检索结果: [('Black Tern', 0.39999998297246425), ('Brewer Blackbird', 0.35043766721216363), ('Cape-Glossy Starling', 0.3411769815663183), ('Forsters Tern', 0.339312664697887), ('Red-winged Blackbird', 0.33836201681154443)]
+步骤5: 最终推理...
+最终预测: Black Tern (置信度: 0.9500)

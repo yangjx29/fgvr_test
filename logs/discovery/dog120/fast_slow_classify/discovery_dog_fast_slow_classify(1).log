@@ -1,0 +1,95 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow_classify', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/dog120_all.yml', num_per_category='3', knowledge_base_dir='./knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/dog120/infer', classify_dir='./experiments/dog120/classify')
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'dog', 'num_classes': 120, 'num_base': 60, 'num_novel': 60, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'OPT6.7B-COCO', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/dogs_120', 'expt_dir': './experiments/dog120', 'expt_dir_describe': './experiments/dog120/describe', 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours', 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs', 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts', 'path_identify_answers': './experiments/dog120/identify', 'expt_dir_guess': './experiments/dog120/guess', 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names', 'expt_dir_gallery': './experiments/dog120/gallery', 'path_references': './experiments/dog120/gallery/dog_image_references', 'path_regions': './experiments/dog120/gallery/dog_image_regions', 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn', 'expt_dir_grouping': './experiments/dog120/grouping'}
+从目录加载推理结果: ./experiments/dog120/infer
+分类结果将保存到: ./experiments/dog120/classify
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.77s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.94s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.06s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.10s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.61s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.79s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/dog120/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/dog120/knowledge_base/category_image_paths.json 加载
+加载了 119 个类别的图像路径
+知识库已从 ./experiments/dog120/knowledge_base 加载
+知识库加载完成!
+已加载知识库: ./experiments/dog120/knowledge_base
+找到 120 个推理结果文件
+Processing classification:   0%|          | 0/120 [00:00<?, ?it/s]Processing classification:   1%|          | 1/120 [00:05<11:07,  5.61s/it]Processing classification:   2%|▏         | 2/120 [00:11<10:59,  5.58s/it]Processing classification:   3%|▎         | 4/120 [00:16<07:03,  3.65s/it]Processing classification:   6%|▌         | 7/120 [00:21<04:55,  2.62s/it]Processing classification:   7%|▋         | 8/120 [00:27<06:11,  3.31s/it]Processing classification:   8%|▊         | 9/120 [00:33<07:07,  3.85s/it]Processing classification:   8%|▊         | 10/120 [00:39<08:13,  4.49s/it]Processing classification:   9%|▉         | 11/120 [00:46<09:10,  5.05s/it]Processing classification:  12%|█▎        | 15/120 [00:52<05:09,  2.95s/it]Processing classification:  13%|█▎        | 16/120 [00:58<06:00,  3.47s/it]Processing classification:  18%|█▊        | 22/120 [01:03<03:08,  1.92s/it]Processing classification:  19%|█▉        | 23/120 [01:09<03:49,  2.37s/it]Processing classification:  20%|██        | 24/120 [01:14<04:28,  2.80s/it]Processing classification:  21%|██        | 25/120 [01:19<05:10,  3.26s/it]Processing classification:  22%|██▎       | 27/120 [01:25<04:46,  3.08s/it]Processing classification:  23%|██▎       | 28/120 [01:30<05:23,  3.52s/it]Processing classification:  24%|██▍       | 29/120 [01:37<06:21,  4.19s/it]Processing classification:  25%|██▌       | 30/120 [01:47<08:31,  5.68s/it]Processing classification:  26%|██▌       | 31/120 [01:59<10:39,  7.19s/it]Processing classification:  28%|██▊       | 33/120 [02:10<09:19,  6.44s/it]Processing classification:  29%|██▉       | 35/120 [02:22<09:05,  6.42s/it]Processing classification:  30%|███       | 36/120 [02:36<11:00,  7.86s/it]Processing classification:  31%|███       | 37/120 [02:50<12:57,  9.37s/it]Processing classification:  33%|███▎      | 40/120 [03:01<08:41,  6.52s/it]Processing classification:  36%|███▌      | 43/120 [03:13<07:03,  5.50s/it]Processing classification:  38%|███▊      | 45/120 [03:26<07:08,  5.71s/it]Processing classification:  40%|████      | 48/120 [03:41<06:39,  5.54s/it]Processing classification:  42%|████▎     | 51/120 [03:52<05:35,  4.86s/it]Processing classification:  46%|████▌     | 55/120 [04:04<04:25,  4.08s/it]Processing classification:  48%|████▊     | 57/120 [04:17<04:49,  4.59s/it]Processing classification:  50%|█████     | 60/120 [04:30<04:35,  4.59s/it]Processing classification:  51%|█████     | 61/120 [04:43<05:29,  5.59s/it]Processing classification:  52%|█████▏    | 62/120 [04:53<06:13,  6.44s/it]Processing classification:  52%|█████▎    | 63/120 [05:06<07:14,  7.63s/it]Processing classification:  53%|█████▎    | 64/120 [05:17<07:38,  8.19s/it]Processing classification:  55%|█████▌    | 66/120 [05:31<07:01,  7.80s/it]Processing classification:  57%|█████▊    | 69/120 [05:41<04:58,  5.85s/it]Processing classification:  62%|██████▏   | 74/120 [05:53<03:04,  4.02s/it]Processing classification:  62%|██████▎   | 75/120 [06:02<03:33,  4.74s/it]Processing classification:  63%|██████▎   | 76/120 [06:15<04:22,  5.97s/it]Processing classification:  65%|██████▌   | 78/120 [06:27<04:14,  6.05s/it]Processing classification:  67%|██████▋   | 80/120 [06:40<04:02,  6.06s/it]Processing classification:  68%|██████▊   | 82/120 [06:53<03:57,  6.24s/it]Processing classification:  70%|███████   | 84/120 [07:06<03:47,  6.31s/it]Processing classification:  71%|███████   | 85/120 [07:19<04:24,  7.55s/it]Processing classification:  72%|███████▎  | 87/120 [07:31<03:50,  7.00s/it]Processing classification:  75%|███████▌  | 90/120 [07:45<02:59,  5.99s/it]Processing classification:  77%|███████▋  | 92/120 [07:59<02:55,  6.28s/it]Processing classification:  82%|████████▏ | 98/120 [08:11<01:26,  3.93s/it]Processing classification:  82%|████████▎ | 99/120 [08:21<01:38,  4.69s/it]Processing classification:  85%|████████▌ | 102/120 [08:34<01:21,  4.53s/it]Processing classification:  88%|████████▊ | 106/120 [08:46<00:55,  3.96s/it]Processing classification:  89%|████████▉ | 107/120 [08:57<01:02,  4.83s/it]Processing classification:  93%|█████████▎| 112/120 [09:10<00:29,  3.74s/it]Processing classification:  94%|█████████▍| 113/120 [09:21<00:32,  4.63s/it]Processing classification:  95%|█████████▌| 114/120 [09:37<00:37,  6.25s/it]Processing classification: 100%|██████████| 120/120 [09:37<00:00,  4.81s/it]
+快慢不一致: fast=Collie, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Irish Setter, slow=Otterhound, 裁决结果=Irish Setter
+快慢不一致: fast=Chow, slow=Miniature Schnauzer, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Saint Bernard, slow=Greater Swiss Mountain Dog, 裁决结果=Saint Bernard
+快慢不一致: fast=Chow, slow=Samoyed, 裁决结果=Samoyed
+快慢不一致: fast=Welsh Springer Spaniel, slow=Basenji, 裁决结果=Basenji
+快慢不一致: fast=German Short-haired Pointer, slow=Bluetick Coonhound, 裁决结果=Bluetick Coonhound
+快慢不一致: fast=Bouvier des Flandres, slow=Maltese Dog, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Curly-coater Retriever, slow=Irish Water Spaniel, 裁决结果=Kerry Blue Terrier
+快慢不一致: fast=Irish Wolfhound, slow=Saluki, 裁决结果=Saluki
+快慢不一致: fast=Tibetan Terrier, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Clumber, slow=English Springer Spaniel, 裁决结果=English Springer Spaniel
+快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Cavalier King Charles Spaniel
+快慢不一致: fast=Bluetick, slow=Standard Poodle, 裁决结果=Beagle and Foxhound
+快慢不一致: fast=Airedale, slow=American Cocker Spaniel, 裁决结果=American Cocker Spaniel
+快慢不一致: fast=Old English Sheepdog, slow=Maltese Dog, 裁决结果=Old English Sheepdog
+快慢不一致: fast=Vizsla, slow=Rhodesian Ridgeback, 裁决结果=Rhodesian Ridgeback
+快慢不一致: fast=Toy Terrier, slow=Chihuahua, 裁决结果=Chihuahua
+快慢不一致: fast=Cocker Spaniel, slow=Gordon Setter, 裁决结果=Gordon Setter
+快慢不一致: fast=Miniature Pinscher, slow=Toy Terrier, 裁决结果=Chihuahua
+快慢不一致: fast=Eskimo Dog, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Kerry Blue Terrier, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Staffordshire Bullterrier, slow=Boxer, 裁决结果=American Staffordshire Terrier
+快慢不一致: fast=Mexican Hairless, slow=Black-and-tan Coonhound, 裁决结果=Doberman
+快慢不一致: fast=Whippet, slow=Great Dane, 裁决结果=Whippet
+快慢不一致: fast=Irish Terrier, slow=Miniature Poodle, 裁决结果=Irish Terrier
+快慢不一致: fast=Clumber, slow=English Setter, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=EntleBucher, slow=Mixed Breed (Hound-like), 裁决结果=EntleBucher
+快慢不一致: fast=Labrador Retriever, slow=German Short-haired Pointer, 裁决结果=German Short-haired Pointer
+快慢不一致: fast=Cocker Spaniel, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Giant Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Rhodesian Ridgeback, slow=Bloodhound, 裁决结果=Bloodhound
+快慢不一致: fast=Papillon, slow=Japanese Chin, 裁决结果=Japanese Chin
+快慢不一致: fast=Walker Hound, slow=Basenji and Corgi, 裁决结果=Basenji and Corgi
+快慢不一致: fast=Bloodhound, slow=Vizsla, 裁决结果=Bloodhound
+快慢不一致: fast=Mexican Hairless, slow=Rat Terrier, 裁决结果=Toy Terrier
+快慢不一致: fast=Kelpie, slow=German Shepherd, 裁决结果=Kelpie
+快慢不一致: fast=Lhasa, slow=Shih Tzu, 裁决结果=Shih-Tzu
+快慢不一致: fast=Chow, slow=Chihuahua, 裁决结果=Chow
+快慢不一致: fast=Flat-coated Retriever, slow=Giant Schnauzer, 裁决结果=Flat-coated Retriever
+快慢不一致: fast=Miniature Schnauzer, slow=Sealyham Terrier, 裁决结果=Sealyham Terrier
+快慢不一致: fast=Otterhound, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Shetland Sheepdog, slow=Afghan Hound, 裁决结果=Rough Collie
+快慢不一致: fast=Otterhound, slow=Airedale Terrier, 裁决结果=Airedale Terrier
+快慢不一致: fast=Bull Mastiff, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Dandi Dinmont, slow=Kuvasz, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=English Springer Spaniel, slow=Scotch Terrier, 裁决结果=Great Pyrenees
+快慢不一致: fast=Curly-coater Retriever, slow=Airedale Terrier, 裁决结果=Airedale
+快慢不一致: fast=Beagle, slow=Basset Hound, 裁决结果=Basset Hound
+快慢不一致: fast=Miniature Poodle, slow=Silky Terrier, 裁决结果=Bedlington Terrier
+快慢不一致: fast=Borzoi, slow=Brittany Spaniel, 裁决结果=Brittany Spaniel
+快慢不一致: fast=EntleBucher, slow=Greater Swiss Mountain Dog, 裁决结果=EntleBucher
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Schipperke
+快慢不一致: fast=Cardigan, slow=Great Pyrenees, 裁决结果=Great Pyrenees
+快慢不一致: fast=Mexican Hairless, slow=Italian Greyhound, 裁决结果=Mexican Hairless
+快慢不一致: fast=Kerry Blue Terrier, slow=Bouvier des Flandres, 裁决结果=Scottish Terrier (Scottie) and Bouvier des Flandres
+✅ 正确预测总数: 92
+  - 其中仅快思考正确: 17
+  - 其中慢思考触发且正确: 75
+❌ 错误预测总数: 28
+📊 慢思考触发数量: 102
+[fast_slow_classify] 总体准确率: 0.7667 (92/120)
+[fast_slow_classify] 快思考准确率: 0.9444
+[fast_slow_classify] 慢思考触发比例: 0.8500
+[fast_slow_classify] 慢思考准确率: 0.7353
+分类结果已保存到: ./experiments/dog120/classify/classification_results.json
+总耗时: 00:09:47
