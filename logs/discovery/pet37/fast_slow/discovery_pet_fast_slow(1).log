@@ -1,0 +1,832 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='3', knowledge_base_dir='./experiments/pet37/knowledge_base', query_image=None, test_data_dir='./datasets/pet_37/images_discovery_all_1', results_out='./results/pet_fast_slow_results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir=None, classify_dir=None)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.84s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:06,  2.01s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.06s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.07s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.58s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.77s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/pet37/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/pet37/knowledge_base/category_image_paths.json 加载
+加载了 37 个类别的图像路径
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+test sample:{'014.German Shorthaired': ['./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg'], '004.Beagle': ['./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg'], '034.Staffordshire Bull Terrier': ['./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg'], '018.Keeshond': ['./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg'], '028.Saint Bernard': ['./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg'], '026.Ragdoll': ['./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg'], '016.Havanese': ['./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg'], '025.Pug': ['./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg'], '015.Great Pyrenees': ['./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg'], '012.English Cocker Spaniel': ['./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg'], '021.Miniature Pinscher': ['./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg'], '017.Japanese Chin': ['./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg'], '030.Scottish Terrier': ['./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg'], '022.Newfoundland': ['./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg'], '031.Shiba Inu': ['./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg'], '003.Basset Hound': ['./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg'], '010.Chihuahua': ['./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg'], '029.Samoyed': ['./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg'], '033.Sphynx': ['./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg'], '019.Leonberger': ['./datasets/pet_37/images_discovery_all_1/019.Leonberger/019.Leonberger_148.jpg'], '006.Birman': ['./datasets/pet_37/images_discovery_all_1/006.Birman/006.Birman_11.jpg'], '007.Bombay': ['./datasets/pet_37/images_discovery_all_1/007.Bombay/007.Bombay_135.jpg'], '020.Maine Coon': ['./datasets/pet_37/images_discovery_all_1/020.Maine_Coon/020.Maine_Coon_163.jpg'], '032.Siamese': ['./datasets/pet_37/images_discovery_all_1/032.Siamese/032.Siamese_153.jpg'], '005.Bengal': ['./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg'], '000.Abyssinian': ['./datasets/pet_37/images_discovery_all_1/000.Abyssinian/000.Abyssinian_126.jpg'], '036.Yorkshire Terrier': ['./datasets/pet_37/images_discovery_all_1/036.Yorkshire_Terrier/036.Yorkshire_Terrier_16.jpg'], '027.Russian Blue': ['./datasets/pet_37/images_discovery_all_1/027.Russian_Blue/027.Russian_Blue_170.jpg'], '023.Persian': ['./datasets/pet_37/images_discovery_all_1/023.Persian/023.Persian_190.jpg'], '013.English Setter': ['./datasets/pet_37/images_discovery_all_1/013.English_Setter/013.English_Setter_137.jpg'], '008.Boxer': ['./datasets/pet_37/images_discovery_all_1/008.Boxer/008.Boxer_109.jpg'], '024.Pomeranian': ['./datasets/pet_37/images_discovery_all_1/024.Pomeranian/024.Pomeranian_105.jpg'], '002.American Pit Bull Terrier': ['./datasets/pet_37/images_discovery_all_1/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_14.jpg'], '035.Wheaten Terrier': ['./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg'], '009.British Shorthair': ['./datasets/pet_37/images_discovery_all_1/009.British_Shorthair/009.British_Shorthair_108.jpg'], '011.Egyptian Mau': ['./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg'], '001.American Bulldog': ['./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg']}
+[fast and slow] 测试数据集包含 37 个类别
+
+🔄 处理类别 [1/37]: 014.German Shorthaired (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg
+图像检索结果: German Shorthaired (置信度: 1.0000)
+文本检索结果: German Shorthaired (置信度: 0.3422)
+融合结果: [('German Shorthaired', 0.34067803565107413), ('English Setter', 0.24384191935100863), ('American Bulldog', 0.14328325474782594)]
+快思考结果: German Shorthaired (置信度: 0.6946)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: German Shorthaired (置信度: 0.6946)
+总耗时: 0.19秒
+  📸 [1/1] ✅ 正确 | 预测: German Shorthaired | 真值: 014.German Shorthaired | 慢思考: 否 | 置信度: 0.695
+     📊 图片进度: 1/37 | 累积准确率: 1.000 (1/1) | 类别准确率: 1.000 (1/1)
+✨ 类别 014.German Shorthaired 完成: 1/1 = 1.000
+📈 当前总体进度: 1/37 | 累积准确率: 1.000 (1/1)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [2/37]: 004.Beagle (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg
+图像检索结果: Beagle (置信度: 1.0000)
+文本检索结果: Beagle (置信度: 0.2946)
+融合结果: [('Beagle', 0.31642605904184407), ('Miniature Pinscher', 0.17685161586850878), ('Chihuahua', 0.1763879321996243)]
+快思考结果: Beagle (置信度: 0.6478)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Beagle (置信度: 0.6478)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Beagle | 真值: 004.Beagle | 慢思考: 否 | 置信度: 0.648
+     📊 图片进度: 2/37 | 累积准确率: 1.000 (2/2) | 类别准确率: 1.000 (1/1)
+✨ 类别 004.Beagle 完成: 1/1 = 1.000
+📈 当前总体进度: 2/37 | 累积准确率: 1.000 (2/2)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [3/37]: 034.Staffordshire Bull Terrier (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 1.0000)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.3107)
+融合结果: [('Staffordshire Bull Terrier', 0.3630112031444174), ('American Pit Bull Terrier', 0.2216827155120911), ('Miniature Pinscher', 0.146580664163071)]
+快思考结果: Staffordshire Bull Terrier (置信度: 0.7889)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Staffordshire Bull Terrier (置信度: 0.7889)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Staffordshire Bull Terrier | 真值: 034.Staffordshire Bull Terrier | 慢思考: 否 | 置信度: 0.789
+     📊 图片进度: 3/37 | 累积准确率: 1.000 (3/3) | 类别准确率: 1.000 (1/1)
+✨ 类别 034.Staffordshire Bull Terrier 完成: 1/1 = 1.000
+📈 当前总体进度: 3/37 | 累积准确率: 1.000 (3/3)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [4/37]: 018.Keeshond (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg
+图像检索结果: Keeshond (置信度: 1.0000)
+文本检索结果: Keeshond (置信度: 0.3566)
+融合结果: [('Keeshond', 0.4026447618349654), ('Great Pyrenees', 0.17582893674559907), ('Leonberger', 0.14852211708350785)]
+快思考结果: Keeshond (置信度: 0.8926)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Keeshond (置信度: 0.8926)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Keeshond | 真值: 018.Keeshond | 慢思考: 否 | 置信度: 0.893
+     📊 图片进度: 4/37 | 累积准确率: 1.000 (4/4) | 类别准确率: 1.000 (1/1)
+✨ 类别 018.Keeshond 完成: 1/1 = 1.000
+📈 当前总体进度: 4/37 | 累积准确率: 1.000 (4/4)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [5/37]: 028.Saint Bernard (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg
+图像检索结果: Saint Bernard (置信度: 1.0000)
+文本检索结果: Saint Bernard (置信度: 0.3430)
+融合结果: [('Saint Bernard', 0.3827266300066573), ('Japanese Chin', 0.17452174727955172), ('Leonberger', 0.16332276174946436)]
+快思考结果: Saint Bernard (置信度: 0.8511)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Saint Bernard (置信度: 0.8511)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Saint Bernard | 真值: 028.Saint Bernard | 慢思考: 否 | 置信度: 0.851
+     📊 图片进度: 5/37 | 累积准确率: 1.000 (5/5) | 类别准确率: 1.000 (1/1)
+✨ 类别 028.Saint Bernard 完成: 1/1 = 1.000
+📈 当前总体进度: 5/37 | 累积准确率: 1.000 (5/5)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [6/37]: 026.Ragdoll (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg
+图像检索结果: Ragdoll (置信度: 1.0000)
+文本检索结果: Ragdoll (置信度: 0.3275)
+融合结果: [('Ragdoll', 0.3323158541663748), ('Birman', 0.2212521424997718), ('Persian', 0.17366862232013353)]
+快思考结果: Ragdoll (置信度: 0.6895)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Ragdoll (置信度: 0.6895)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Ragdoll | 真值: 026.Ragdoll | 慢思考: 否 | 置信度: 0.689
+     📊 图片进度: 6/37 | 累积准确率: 1.000 (6/6) | 类别准确率: 1.000 (1/1)
+✨ 类别 026.Ragdoll 完成: 1/1 = 1.000
+📈 当前总体进度: 6/37 | 累积准确率: 1.000 (6/6)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [7/37]: 016.Havanese (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg
+图像检索结果: Havanese (置信度: 1.0000)
+文本检索结果: Havanese (置信度: 0.3329)
+融合结果: [('Havanese', 0.3145056748732192), ('Yorkshire Terrier', 0.229278928929195), ('Japanese Chin', 0.17168684536739)]
+快思考结果: Havanese (置信度: 0.6150)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Havanese (置信度: 0.6150)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Havanese | 真值: 016.Havanese | 慢思考: 否 | 置信度: 0.615
+     📊 图片进度: 7/37 | 累积准确率: 1.000 (7/7) | 类别准确率: 1.000 (1/1)
+✨ 类别 016.Havanese 完成: 1/1 = 1.000
+📈 当前总体进度: 7/37 | 累积准确率: 1.000 (7/7)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [8/37]: 025.Pug (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg
+图像检索结果: Pug (置信度: 1.0000)
+文本检索结果: Pug (置信度: 0.3405)
+融合结果: [('Pug', 0.4633894110067946), ('Boxer', 0.15982646648922275), ('American Bulldog', 0.13595168152971873)]
+快思考结果: Pug (置信度: 0.9597)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Pug (置信度: 0.9597)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Pug | 真值: 025.Pug | 慢思考: 否 | 置信度: 0.960
+     📊 图片进度: 8/37 | 累积准确率: 1.000 (8/8) | 类别准确率: 1.000 (1/1)
+✨ 类别 025.Pug 完成: 1/1 = 1.000
+📈 当前总体进度: 8/37 | 累积准确率: 1.000 (8/8)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [9/37]: 015.Great Pyrenees (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg
+图像检索结果: Great Pyrenees (置信度: 1.0000)
+文本检索结果: Great Pyrenees (置信度: 0.3399)
+融合结果: [('Great Pyrenees', 0.4192432129725081), ('Samoyed', 0.20458470960297892), ('Newfoundland', 0.14621947836135407)]
+快思考结果: Great Pyrenees (置信度: 0.9074)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Great Pyrenees (置信度: 0.9074)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Great Pyrenees | 真值: 015.Great Pyrenees | 慢思考: 否 | 置信度: 0.907
+     📊 图片进度: 9/37 | 累积准确率: 1.000 (9/9) | 类别准确率: 1.000 (1/1)
+✨ 类别 015.Great Pyrenees 完成: 1/1 = 1.000
+📈 当前总体进度: 9/37 | 累积准确率: 1.000 (9/9)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [10/37]: 012.English Cocker Spaniel (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg
+图像检索结果: English Cocker Spaniel (置信度: 1.0000)
+文本检索结果: English Cocker Spaniel (置信度: 0.3754)
+融合结果: [('English Cocker Spaniel', 0.46887277010522904), ('English Setter', 0.19701613490619965), ('Basset Hound', 0.12957775341494687)]
+快思考结果: English Cocker Spaniel (置信度: 0.9604)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: English Cocker Spaniel (置信度: 0.9604)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: English Cocker Spaniel | 真值: 012.English Cocker Spaniel | 慢思考: 否 | 置信度: 0.960
+     📊 图片进度: 10/37 | 累积准确率: 1.000 (10/10) | 类别准确率: 1.000 (1/1)
+✨ 类别 012.English Cocker Spaniel 完成: 1/1 = 1.000
+📈 当前总体进度: 10/37 | 累积准确率: 1.000 (10/10)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [11/37]: 021.Miniature Pinscher (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg
+图像检索结果: Miniature Pinscher (置信度: 1.0000)
+文本检索结果: Miniature Pinscher (置信度: 0.3478)
+融合结果: [('Miniature Pinscher', 0.4839162314280135), ('Chihuahua', 0.1787775320467301), ('Abyssinian', 0.12201781505866655)]
+快思考结果: Miniature Pinscher (置信度: 0.9698)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Miniature Pinscher (置信度: 0.9698)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Miniature Pinscher | 真值: 021.Miniature Pinscher | 慢思考: 否 | 置信度: 0.970
+     📊 图片进度: 11/37 | 累积准确率: 1.000 (11/11) | 类别准确率: 1.000 (1/1)
+✨ 类别 021.Miniature Pinscher 完成: 1/1 = 1.000
+📈 当前总体进度: 11/37 | 累积准确率: 1.000 (11/11)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [12/37]: 017.Japanese Chin (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg
+图像检索结果: Japanese Chin (置信度: 1.0000)
+文本检索结果: Japanese Chin (置信度: 0.3080)
+融合结果: [('Japanese Chin', 0.333558764491902), ('Havanese', 0.17322906013873832), ('Pomeranian', 0.17303021778502772)]
+快思考结果: Japanese Chin (置信度: 0.7145)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Japanese Chin (置信度: 0.7145)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Japanese Chin | 真值: 017.Japanese Chin | 慢思考: 否 | 置信度: 0.714
+     📊 图片进度: 12/37 | 累积准确率: 1.000 (12/12) | 类别准确率: 1.000 (1/1)
+✨ 类别 017.Japanese Chin 完成: 1/1 = 1.000
+📈 当前总体进度: 12/37 | 累积准确率: 1.000 (12/12)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [13/37]: 030.Scottish Terrier (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg
+图像检索结果: Scottish Terrier (置信度: 1.0000)
+文本检索结果: Scottish Terrier (置信度: 0.3369)
+融合结果: [('Scottish Terrier', 0.5584950545772176), ('Wheaten Terrier', 0.13445496177601238), ('German Shorthaired', 0.11102059679253706)]
+快思考结果: Scottish Terrier (置信度: 0.9921)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Scottish Terrier (置信度: 0.9921)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Scottish Terrier | 真值: 030.Scottish Terrier | 慢思考: 否 | 置信度: 0.992
+     📊 图片进度: 13/37 | 累积准确率: 1.000 (13/13) | 类别准确率: 1.000 (1/1)
+✨ 类别 030.Scottish Terrier 完成: 1/1 = 1.000
+📈 当前总体进度: 13/37 | 累积准确率: 1.000 (13/13)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [14/37]: 022.Newfoundland (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg
+图像检索结果: Newfoundland (置信度: 1.0000)
+文本检索结果: Newfoundland (置信度: 0.3589)
+融合结果: [('Newfoundland', 0.4179672101482016), ('Havanese', 0.17767092813887903), ('Scottish Terrier', 0.16866041952891955)]
+快思考结果: Newfoundland (置信度: 0.9131)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Newfoundland (置信度: 0.9131)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Newfoundland | 真值: 022.Newfoundland | 慢思考: 否 | 置信度: 0.913
+     📊 图片进度: 14/37 | 累积准确率: 1.000 (14/14) | 类别准确率: 1.000 (1/1)
+✨ 类别 022.Newfoundland 完成: 1/1 = 1.000
+📈 当前总体进度: 14/37 | 累积准确率: 1.000 (14/14)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [15/37]: 031.Shiba Inu (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg
+图像检索结果: Shiba Inu (置信度: 1.0000)
+文本检索结果: Shiba Inu (置信度: 0.3225)
+融合结果: [('Shiba Inu', 0.4521208206161124), ('Pomeranian', 0.15863431026377986), ('Chihuahua', 0.12980432296319613)]
+快思考结果: Shiba Inu (置信度: 0.9510)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Shiba Inu (置信度: 0.9510)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Shiba Inu | 真值: 031.Shiba Inu | 慢思考: 否 | 置信度: 0.951
+     📊 图片进度: 15/37 | 累积准确率: 1.000 (15/15) | 类别准确率: 1.000 (1/1)
+✨ 类别 031.Shiba Inu 完成: 1/1 = 1.000
+📈 当前总体进度: 15/37 | 累积准确率: 1.000 (15/15)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [16/37]: 003.Basset Hound (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg
+图像检索结果: Basset Hound (置信度: 1.0000)
+文本检索结果: Basset Hound (置信度: 0.3320)
+融合结果: [('Basset Hound', 0.4480612391575438), ('Beagle', 0.19488623594084092), ('German Shorthaired', 0.13718215637204664)]
+快思考结果: Basset Hound (置信度: 0.9431)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Basset Hound (置信度: 0.9431)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Basset Hound | 真值: 003.Basset Hound | 慢思考: 否 | 置信度: 0.943
+     📊 图片进度: 16/37 | 累积准确率: 1.000 (16/16) | 类别准确率: 1.000 (1/1)
+✨ 类别 003.Basset Hound 完成: 1/1 = 1.000
+📈 当前总体进度: 16/37 | 累积准确率: 1.000 (16/16)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [17/37]: 010.Chihuahua (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg
+图像检索结果: Chihuahua (置信度: 1.0000)
+文本检索结果: Chihuahua (置信度: 0.3038)
+融合结果: [('Chihuahua', 0.3514658072932822), ('Miniature Pinscher', 0.27159241144695584), ('Sphynx', 0.13658150071426042)]
+快思考结果: Chihuahua (置信度: 0.6835)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Chihuahua (置信度: 0.6835)
+总耗时: 0.01秒
+  📸 [1/1] ✅ 正确 | 预测: Chihuahua | 真值: 010.Chihuahua | 慢思考: 否 | 置信度: 0.684
+     📊 图片进度: 17/37 | 累积准确率: 1.000 (17/17) | 类别准确率: 1.000 (1/1)
+✨ 类别 010.Chihuahua 完成: 1/1 = 1.000
+📈 当前总体进度: 17/37 | 累积准确率: 1.000 (17/17)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [18/37]: 029.Samoyed (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg
+图像检索结果: Samoyed (置信度: 1.0000)
+文本检索结果: Samoyed (置信度: 0.3197)
+融合结果: [('Samoyed', 0.367944186364041), ('Pomeranian', 0.17077387650647471), ('Shiba Inu', 0.16454580132999727)]
+快思考结果: Samoyed (置信度: 0.8177)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Samoyed (置信度: 0.8177)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Samoyed | 真值: 029.Samoyed | 慢思考: 否 | 置信度: 0.818
+     📊 图片进度: 18/37 | 累积准确率: 1.000 (18/18) | 类别准确率: 1.000 (1/1)
+✨ 类别 029.Samoyed 完成: 1/1 = 1.000
+📈 当前总体进度: 18/37 | 累积准确率: 1.000 (18/18)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [19/37]: 033.Sphynx (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg
+图像检索结果: Sphynx (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3318)
+融合结果: [('Sphynx', 0.271981546049913), ('Abyssinian', 0.2512426603584997), ('Egyptian Mau', 0.20171446735187182)]
+快思考结果: conflict (置信度: 0.5447)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The cat's furless appearance can be misleading, as it resembles both Sphynx and Abyssinian breeds.", "The lighting and angle can affect the perception of the cat's features, making it harder to distinguish between breeds.", "The lack of visible breed-specific traits like the Abyssinian's ticked coat pattern or the Sphynx's unique facial structure."], 'key_regions': ['Ears and facial structure', 'Body shape and texture', 'Eye color and expression'], 'additional_info_needed': "A clearer view of the cat's face, including its ears and facial features, would help in distinguishing between Sphynx and Abyssinian breeds. Additionally, a closer look at the body texture and any visible coat patterns could provide more definitive clues."}
+步骤2: 提取关键区域特征...
+区域描述: ["The cat in the image has a distinctive appearance characterized by its unique ears and facial structure:\n\n- **Color and Texture**: The cat's fur is predominantly a light brown with darker brown markings, creating a marbled effect. The skin appears smooth and slightly wrinkled, especially noticeable around the neck and chest area. The fur is short and lacks the typical fluffy texture found in many other cat breeds.\n\n- **Ears**: The ears are large, upright, and pointed, which is a notable feature of the breed. They have a pinkish hue on the inside, contrasting with the darker fur on the outside. The ears are proportionally large compared to the head, adding to the cat's striking appearance.\n\n- **Facial Structure**: The face is narrow and elongated, with a flat nose and large, expressive yellow eyes. The whiskers are prominent and extend outward from the muzzle, contributing to the cat's alert and attentive expression.\n\n- **Unique Features**: The combination of the hairless coat, large ears, and distinctive facial features makes this cat easily identifiable as a Sphynx breed. The lack of fur not only gives it a unique look but also requires special care for skin health and temperature regulation.\n\nThese characteristics collectively set this cat apart from other breeds, making", "The image depicts a Sphynx cat, characterized by its unique body shape and texture:\n\n- **Color**: The cat has a predominantly light brown coat with darker brown markings, particularly around the back and sides. The furless skin is visible, showing a smooth, slightly wrinkled texture.\n\n- **Texture**: The skin appears smooth and somewhat wrinkled, especially noticeable along the spine and sides. The lack of fur gives it a distinctively hairless appearance.\n\n- **Patterns**: The furless skin displays subtle variations in tone, with darker patches concentrated towards the back and sides, creating a mottled effect. The head has a lighter coloration compared to the body.\n\n- **Shape and Size**: The cat's body is compact and rounded, with a short, sturdy build. Its ears are large and pointed, standing upright, which is typical for the breed. The overall size appears average for a domestic cat.\n\n- **Unique Features**: The most distinctive feature is the absence of fur, which sets the Sphynx apart from other breeds. The cat's eyes are large and expressive, adding to its unique appearance.\n\n- **Special Characteristics**: The Sphynx cat's skin is often described as soft to the touch, and it may have a slightly oily", 'The cat in the image has striking green eyes with a bright, alert expression. The eye color is vivid and contrasts sharply with the muted tones of the fur. The texture around the eyes appears smooth, with no visible whiskers or fur growth, which is characteristic of the breed. The shape of the eyes is almond-like, typical of many cat breeds, and they are large relative to the head, enhancing their expressive appearance. There are no noticeable variations or special characteristics in the eye color or shape; it is consistent and prominent. The overall expression conveys a sense of curiosity and attentiveness.']
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The image showcases a Sphynx cat with a distinctive and unique appearance. The cat has a hairless coat, characterized by a smooth, slightly wrinkled skin with a marbled effect of light brown and darker brown markings. The overall body shape is compact and rounded, with a short, sturdy build. The cat's posture is relaxed yet alert, with large, upright ears and expressive yellow eyes.
+
+#### Ears and Facial Structure:
+- **Color and Texture**: The cat's fur is predominantly light brown with darker brown markings, creating a marbled effect. The skin is smooth and slightly wrinkled, especially noticeable around the neck and chest area. The fur is short and lacks the typical fluffy texture found in many other cat breeds.
+- **Ears**: The ears are large, upright, and pointed, with a pinkish hue on the inside. They are proportionally large compared to the head, adding to the cat's striking appearance.
+- **Facial Structure**: The face is narrow and elongated, with a flat nose and large, expressive yellow eyes. The whiskers are prominent and extend outward from the muzzle, contributing to the cat's alert and attentive expression.
+- **Unique Features**:
+步骤4: 执行多模态检索...
+多模态检索结果: [('Sphynx', 0.40000002372259513), ('Bengal', 0.34057089637741095), ('Abyssinian', 0.302777875207515), ('Maine Coon', 0.2999811019640884), ('British Shorthair', 0.29830457822983475)]
+步骤5: 最终推理...
+最终预测: Sphynx (置信度: 0.9500)
+推理过程: The image clearly depicts a Sphynx cat based on several distinctive features. The hairless coat with a marbled pattern of light brown and darker brown is characteristic of the Sphynx breed. The large, upright ears, narrow elongated face, and flat nose are also consistent with Sphynx cats. The similarity score of 0.4000 for Sphynx is significantly higher than any other breed, further supporting this classification. | Key Features: ['Hairless coat with a marbled pattern', 'Large, upright ears', 'Narrow, elongated face', 'Flat nose', 'Prominent whiskers'] | Uncertainty: []
+统计更新: 类别=Sphynx, 置信度=0.950, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+分类完成: Sphynx (置信度: 0.9500)
+总耗时: 44.17秒
+  📸 [1/1] ✅ 正确 | 预测: Sphynx | 真值: 033.Sphynx | 慢思考: 是 | 置信度: 0.950
+     📊 图片进度: 19/37 | 累积准确率: 1.000 (19/19) | 类别准确率: 1.000 (1/1)
+✨ 类别 033.Sphynx 完成: 1/1 = 1.000
+📈 当前总体进度: 19/37 | 累积准确率: 1.000 (19/19)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [20/37]: 019.Leonberger (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/019.Leonberger/019.Leonberger_148.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/019.Leonberger/019.Leonberger_148.jpg
+图像检索结果: Leonberger (置信度: 1.0000)
+文本检索结果: Leonberger (置信度: 0.3713)
+融合结果: [('Leonberger', 0.3832384819134337), ('Wheaten Terrier', 0.1799569631956758), ('Newfoundland', 0.15188282784222373)]
+快思考结果: Leonberger (置信度: 0.8552)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Leonberger (置信度: 0.8552)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: Leonberger | 真值: 019.Leonberger | 慢思考: 否 | 置信度: 0.855
+     📊 图片进度: 20/37 | 累积准确率: 1.000 (20/20) | 类别准确率: 1.000 (1/1)
+✨ 类别 019.Leonberger 完成: 1/1 = 1.000
+📈 当前总体进度: 20/37 | 累积准确率: 1.000 (20/20)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [21/37]: 006.Birman (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/006.Birman/006.Birman_11.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/006.Birman/006.Birman_11.jpg
+图像检索结果: Birman (置信度: 1.0000)
+文本检索结果: Birman (置信度: 0.3245)
+融合结果: [('Birman', 0.31069066766344133), ('Ragdoll', 0.26414117790125335), ('Persian', 0.16439472530041713)]
+快思考结果: Birman (置信度: 0.5478)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Birman (置信度: 0.5478)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Birman | 真值: 006.Birman | 慢思考: 否 | 置信度: 0.548
+     📊 图片进度: 21/37 | 累积准确率: 1.000 (21/21) | 类别准确率: 1.000 (1/1)
+✨ 类别 006.Birman 完成: 1/1 = 1.000
+📈 当前总体进度: 21/37 | 累积准确率: 1.000 (21/21)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [22/37]: 007.Bombay (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/007.Bombay/007.Bombay_135.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/007.Bombay/007.Bombay_135.jpg
+图像检索结果: Bombay (置信度: 1.0000)
+文本检索结果: Bombay (置信度: 0.2953)
+融合结果: [('Bombay', 0.29285594615779936), ('Siamese', 0.18967153807320902), ('Russian Blue', 0.18574097538514742)]
+快思考结果: Bombay (置信度: 0.5418)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Bombay (置信度: 0.5418)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Bombay | 真值: 007.Bombay | 慢思考: 否 | 置信度: 0.542
+     📊 图片进度: 22/37 | 累积准确率: 1.000 (22/22) | 类别准确率: 1.000 (1/1)
+✨ 类别 007.Bombay 完成: 1/1 = 1.000
+📈 当前总体进度: 22/37 | 累积准确率: 1.000 (22/22)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [23/37]: 020.Maine Coon (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/020.Maine_Coon/020.Maine_Coon_163.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/020.Maine_Coon/020.Maine_Coon_163.jpg
+图像检索结果: Maine Coon (置信度: 1.0000)
+文本检索结果: Maine Coon (置信度: 0.3316)
+融合结果: [('Maine Coon', 0.3176734739884002), ('Bengal', 0.20499393423238108), ('Persian', 0.17238160721324403)]
+快思考结果: Maine Coon (置信度: 0.6462)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Maine Coon (置信度: 0.6462)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Maine Coon | 真值: 020.Maine Coon | 慢思考: 否 | 置信度: 0.646
+     📊 图片进度: 23/37 | 累积准确率: 1.000 (23/23) | 类别准确率: 1.000 (1/1)
+✨ 类别 020.Maine Coon 完成: 1/1 = 1.000
+📈 当前总体进度: 23/37 | 累积准确率: 1.000 (23/23)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [24/37]: 032.Siamese (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/032.Siamese/032.Siamese_153.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/032.Siamese/032.Siamese_153.jpg
+图像检索结果: Siamese (置信度: 1.0000)
+文本检索结果: Siamese (置信度: 0.2953)
+融合结果: [('Siamese', 0.3176517361744506), ('Ragdoll', 0.22479253881761144), ('Birman', 0.1859112733058513)]
+快思考结果: Siamese (置信度: 0.6238)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Siamese (置信度: 0.6238)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Siamese | 真值: 032.Siamese | 慢思考: 否 | 置信度: 0.624
+     📊 图片进度: 24/37 | 累积准确率: 1.000 (24/24) | 类别准确率: 1.000 (1/1)
+✨ 类别 032.Siamese 完成: 1/1 = 1.000
+📈 当前总体进度: 24/37 | 累积准确率: 1.000 (24/24)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [25/37]: 005.Bengal (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg
+图像检索结果: Bengal (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3572)
+融合结果: [('Abyssinian', 0.3309805457464984), ('Bengal', 0.3143352036829792), ('Siamese', 0.13670870745702393)]
+快思考结果: conflict (置信度: 0.5531)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/005.Bengal/005.Bengal_14.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The cat's fur pattern is not distinctly Bengal or Abyssinian, which can lead to confusion.", "The lighting and angle of the photo may affect the perception of the cat's features, making it harder to identify breed-specific traits.", "The background is blurred, which might distract from the cat's facial features and fur patterns."], 'key_regions': ['Ears and fur pattern', 'Facial features such as eyes and whiskers', 'Body fur texture and coloration'], 'additional_info_needed': "A clearer view of the cat's body, including its tail and overall coat pattern, would help in distinguishing between Bengal and Abyssinian breeds."}
+步骤2: 提取关键区域特征...
+区域描述: ["The image shows a close-up of a cat with distinct features:\n\n- **Color and Texture**: The cat has a rich, warm brown fur coat with darker stripes and markings, indicative of a tabby pattern. The fur appears soft and well-groomed, with a slight sheen that suggests good health.\n\n- **Ears**: The ears are large, pointed, and upright, characteristic of many domestic cats. They have a light brown coloration with some darker markings inside, possibly indicating a slightly darker inner ear. The texture seems smooth and soft.\n\n- **Fur Pattern**: The tabby pattern is prominent, with darker stripes and markings running across the fur. This pattern is consistent throughout the visible areas of the cat's body, suggesting a typical tabby coat.\n\n- **Shape and Size**: The ears are relatively large compared to the head, which is common for many cat breeds. They are triangular in shape and positioned at the top of the head, giving the cat an alert appearance.\n\n- **Unique Features**: The cat's eyes are a striking green, which stands out against the brown fur. The eyes are wide open, giving the cat a curious or attentive expression. The whiskers are long and white, contrasting sharply with the brown fur.\n\n- **Special Characteristics", "The image features a close-up of a cat's face, highlighting its facial features with remarkable clarity.\n\n1. **Eyes**: The cat has striking green eyes with vertical pupils, which are characteristic of certain breeds like the Abyssinian. The irises are a vibrant green, and the pupils are narrow and elongated, giving the cat an intense and focused gaze. The eyes are large relative to the head, adding to the cat's expressive appearance.\n\n2. **Whiskers**: The whiskers are prominent and well-defined, extending outward from the sides of the mouth. They are white and appear slightly curved, providing a stark contrast against the cat's fur. The whiskers are long and fine, contributing to the cat's overall alert and attentive expression.\n\n3. **Color and Texture**: The cat's fur is a rich golden-brown color with darker brown stripes, creating a tabby pattern. The texture appears smooth and glossy, suggesting a healthy coat. The fur around the eyes is slightly lighter, blending into the golden hue of the rest of the face.\n\n4. **Shape and Size**: The cat's ears are pointed and upright, indicating attentiveness. The ears are medium-sized compared to the head, with visible inner structures and a slight pinkish hue at", "The cat in the image has a rich, warm brown coat with a distinct tabby pattern. The fur appears dense and slightly textured, giving it a soft yet slightly rough feel. The tabby pattern is characterized by swirling bands and stripes, which are more prominent on the head and less so on the body. The fur around the neck and chest area is lighter, almost golden, contrasting with the darker brown on the back and sides.\n\nThe cat's ears are large and pointed, standing upright, which adds to its alert appearance. The eyes are a striking green, with vertical pupils, and they are wide open, giving the cat an intense and focused expression. The whiskers are long and white, extending outward from the face, providing a stark contrast against the darker fur.\n\nThe overall shape of the cat is compact and muscular, typical of many domestic cats. The size relative to the image suggests it is an adult, as the proportions are well-developed. There are no visible markings or spots that deviate from the tabby pattern, making the fur's texture and coloration the most defining features. The cat's posture and gaze suggest attentiveness, adding to the distinctive character of the image."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The image showcases a close-up of a cat with a rich, warm brown fur coat featuring a distinct tabby pattern. The cat's fur is dense and slightly textured, giving it a soft yet slightly rough feel. The tabby pattern is characterized by swirling bands and stripes, which are more pronounced on the head and less so on the body. The fur around the neck and chest area is lighter, almost golden, contrasting with the darker brown on the back and sides. The cat's ears are large, pointed, and upright, and its eyes are striking green with vertical pupils, giving it an intense and focused expression. The whiskers are long and white, extending outward from the face, providing a stark contrast against the darker fur.
+
+#### Ears and Fur Pattern:
+- **Color and Texture**: The cat's fur is a rich, warm brown with darker stripes and markings, indicative of a tabby pattern. The fur appears soft and well-groomed, with a slight sheen that suggests good health.
+- **Ears**: The ears are large, pointed, and upright, with a light brown coloration and some darker markings inside. The texture seems smooth and soft.
+- **Fur Pattern
+步骤4: 执行多模态检索...
+多模态检索结果: [('Bengal', 0.39999996792997494), ('Sphynx', 0.3405709115349515), ('Maine Coon', 0.32598128156304074), ('British Shorthair', 0.32545861897473033), ('Egyptian Mau', 0.31919313841913005)]
+步骤5: 最终推理...
+最终预测: Bengal (置信度: 0.8500)
+推理过程: The cat in the image exhibits several key characteristics consistent with the Bengal breed. The rich, warm brown fur with distinct tabby patterns, including swirling bands and stripes, is a hallmark of the Bengal breed. Additionally, the large, pointed ears and the striking green eyes with vertical pupils are also typical of Bengals. The overall appearance, including the fur texture and the facial structure, aligns closely with the Bengal breed. The similarity score of 0.4000 further supports this classification as the top candidate. | Key Features: ['Rich, warm brown fur with tabby patterns', 'Large, pointed ears', 'Striking green eyes with vertical pupils', 'Dense, slightly textured fur'] | Uncertainty: ['While the Bengal is the top candidate, there could be slight overlaps with other breeds like the Sphynx due to the unique tabby pattern, but the combination of features makes the Bengal the most likely.']
+统计更新: 类别=Bengal, 置信度=0.850, LCB=0.500, 一致性=False, 更新m=True
+跳过增量更新：预测类别未知或为空
+快慢思考结果不一致，进行最终融合决策...
+分类完成: Bengal (置信度: 0.8500)
+总耗时: 96.58秒
+  📸 [1/1] ✅ 正确 | 预测: Bengal | 真值: 005.Bengal | 慢思考: 是 | 置信度: 0.850
+     📊 图片进度: 25/37 | 累积准确率: 1.000 (25/25) | 类别准确率: 1.000 (1/1)
+✨ 类别 005.Bengal 完成: 1/1 = 1.000
+📈 当前总体进度: 25/37 | 累积准确率: 1.000 (25/25)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [26/37]: 000.Abyssinian (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/000.Abyssinian/000.Abyssinian_126.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/000.Abyssinian/000.Abyssinian_126.jpg
+图像检索结果: Abyssinian (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3200)
+融合结果: [('Abyssinian', 0.3308812314613921), ('Siamese', 0.21071136393734521), ('British Shorthair', 0.15739527577682147)]
+快思考结果: Abyssinian (置信度: 0.6906)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Abyssinian (置信度: 0.6906)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: Abyssinian | 真值: 000.Abyssinian | 慢思考: 否 | 置信度: 0.691
+     📊 图片进度: 26/37 | 累积准确率: 1.000 (26/26) | 类别准确率: 1.000 (1/1)
+✨ 类别 000.Abyssinian 完成: 1/1 = 1.000
+📈 当前总体进度: 26/37 | 累积准确率: 1.000 (26/26)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [27/37]: 036.Yorkshire Terrier (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/036.Yorkshire_Terrier/036.Yorkshire_Terrier_16.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/036.Yorkshire_Terrier/036.Yorkshire_Terrier_16.jpg
+图像检索结果: Yorkshire Terrier (置信度: 1.0000)
+文本检索结果: Yorkshire Terrier (置信度: 0.3307)
+融合结果: [('Yorkshire Terrier', 0.4166143292530638), ('Scottish Terrier', 0.20767168854513476), ('Havanese', 0.14028469924965212)]
+快思考结果: Yorkshire Terrier (置信度: 0.9043)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Yorkshire Terrier (置信度: 0.9043)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Yorkshire Terrier | 真值: 036.Yorkshire Terrier | 慢思考: 否 | 置信度: 0.904
+     📊 图片进度: 27/37 | 累积准确率: 1.000 (27/27) | 类别准确率: 1.000 (1/1)
+✨ 类别 036.Yorkshire Terrier 完成: 1/1 = 1.000
+📈 当前总体进度: 27/37 | 累积准确率: 1.000 (27/27)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [28/37]: 027.Russian Blue (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/027.Russian_Blue/027.Russian_Blue_170.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/027.Russian_Blue/027.Russian_Blue_170.jpg
+图像检索结果: Russian Blue (置信度: 1.0000)
+文本检索结果: Russian Blue (置信度: 0.3218)
+融合结果: [('Russian Blue', 0.3224328855022055), ('British Shorthair', 0.23890336333143136), ('Egyptian Mau', 0.16929155737457294)]
+快思考结果: Russian Blue (置信度: 0.6286)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Russian Blue (置信度: 0.6286)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Russian Blue | 真值: 027.Russian Blue | 慢思考: 否 | 置信度: 0.629
+     📊 图片进度: 28/37 | 累积准确率: 1.000 (28/28) | 类别准确率: 1.000 (1/1)
+✨ 类别 027.Russian Blue 完成: 1/1 = 1.000
+📈 当前总体进度: 28/37 | 累积准确率: 1.000 (28/28)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [29/37]: 023.Persian (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/023.Persian/023.Persian_190.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/023.Persian/023.Persian_190.jpg
+图像检索结果: Persian (置信度: 1.0000)
+文本检索结果: Persian (置信度: 0.3292)
+融合结果: [('Persian', 0.35601668897710864), ('Maine Coon', 0.2225773648388924), ('Birman', 0.16630624346582895)]
+快思考结果: Persian (置信度: 0.7654)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Persian (置信度: 0.7654)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Persian | 真值: 023.Persian | 慢思考: 否 | 置信度: 0.765
+     📊 图片进度: 29/37 | 累积准确率: 1.000 (29/29) | 类别准确率: 1.000 (1/1)
+✨ 类别 023.Persian 完成: 1/1 = 1.000
+📈 当前总体进度: 29/37 | 累积准确率: 1.000 (29/29)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [30/37]: 013.English Setter (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/013.English_Setter/013.English_Setter_137.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/013.English_Setter/013.English_Setter_137.jpg
+图像检索结果: English Setter (置信度: 1.0000)
+文本检索结果: English Setter (置信度: 0.3360)
+融合结果: [('English Setter', 0.3699126535996062), ('Havanese', 0.1862143052306028), ('German Shorthaired', 0.17726597124858506)]
+快思考结果: English Setter (置信度: 0.8209)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: English Setter (置信度: 0.8209)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: English Setter | 真值: 013.English Setter | 慢思考: 否 | 置信度: 0.821
+     📊 图片进度: 30/37 | 累积准确率: 1.000 (30/30) | 类别准确率: 1.000 (1/1)
+✨ 类别 013.English Setter 完成: 1/1 = 1.000
+📈 当前总体进度: 30/37 | 累积准确率: 1.000 (30/30)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [31/37]: 008.Boxer (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/008.Boxer/008.Boxer_109.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/008.Boxer/008.Boxer_109.jpg
+图像检索结果: Boxer (置信度: 1.0000)
+文本检索结果: Boxer (置信度: 0.3038)
+融合结果: [('Boxer', 0.30920499507032456), ('American Bulldog', 0.2148842827446999), ('Staffordshire Bull Terrier', 0.17346126372142442)]
+快思考结果: Boxer (置信度: 0.6021)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Boxer (置信度: 0.6021)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Boxer | 真值: 008.Boxer | 慢思考: 否 | 置信度: 0.602
+     📊 图片进度: 31/37 | 累积准确率: 1.000 (31/31) | 类别准确率: 1.000 (1/1)
+✨ 类别 008.Boxer 完成: 1/1 = 1.000
+📈 当前总体进度: 31/37 | 累积准确率: 1.000 (31/31)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [32/37]: 024.Pomeranian (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/024.Pomeranian/024.Pomeranian_105.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/024.Pomeranian/024.Pomeranian_105.jpg
+图像检索结果: Pomeranian (置信度: 1.0000)
+文本检索结果: Pomeranian (置信度: 0.3218)
+融合结果: [('Pomeranian', 0.29814467820964874), ('Keeshond', 0.20555031155386277), ('Japanese Chin', 0.19461997458859093)]
+快思考结果: Pomeranian (置信度: 0.5602)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Pomeranian (置信度: 0.5602)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Pomeranian | 真值: 024.Pomeranian | 慢思考: 否 | 置信度: 0.560
+     📊 图片进度: 32/37 | 累积准确率: 1.000 (32/32) | 类别准确率: 1.000 (1/1)
+✨ 类别 024.Pomeranian 完成: 1/1 = 1.000
+📈 当前总体进度: 32/37 | 累积准确率: 1.000 (32/32)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [33/37]: 002.American Pit Bull Terrier (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_14.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_14.jpg
+图像检索结果: American Pit Bull Terrier (置信度: 1.0000)
+文本检索结果: American Pit Bull Terrier (置信度: 0.3143)
+融合结果: [('American Pit Bull Terrier', 0.3152453416927916), ('Staffordshire Bull Terrier', 0.2357393368642779), ('American Bulldog', 0.18434059703870423)]
+快思考结果: American Pit Bull Terrier (置信度: 0.5965)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: American Pit Bull Terrier (置信度: 0.5965)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: American Pit Bull Terrier | 真值: 002.American Pit Bull Terrier | 慢思考: 否 | 置信度: 0.597
+     📊 图片进度: 33/37 | 累积准确率: 1.000 (33/33) | 类别准确率: 1.000 (1/1)
+✨ 类别 002.American Pit Bull Terrier 完成: 1/1 = 1.000
+📈 当前总体进度: 33/37 | 累积准确率: 1.000 (33/33)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [34/37]: 035.Wheaten Terrier (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg
+图像检索结果: Wheaten Terrier (置信度: 1.0000)
+文本检索结果: Wheaten Terrier (置信度: 0.3255)
+融合结果: [('Wheaten Terrier', 0.30791972968422), ('Havanese', 0.2686055761792006), ('Great Pyrenees', 0.1642725654892505)]
+快思考结果: conflict (置信度: 0.4865)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/035.Wheaten_Terrier/035.Wheaten_Terrier_109.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The dog's fur is light and fluffy, which can be characteristic of several breeds.", 'The lighting and angle of the photo may obscure some distinguishing features.', 'The presence of a collar and leash could be misleading if not considered as part of the breed.'], 'key_regions': ['The face and facial structure', 'The coat texture and color gradient', 'The overall body shape and size'], 'additional_info_needed': 'More detailed images or videos showing the dog in different poses and environments to better assess its physical traits and behavior.'}
+步骤2: 提取关键区域特征...
+区域描述: ["The image shows a close-up of a dog's face, likely a breed with a fluffy coat, possibly a Soft Coated Wheaten Terrier or a similar breed. Here are the visual characteristics:\n\n- **Color**: The fur is predominantly light beige or cream-colored, with a slightly darker shade around the eyes and muzzle, giving it a soft, natural appearance.\n- **Texture**: The fur appears thick, soft, and slightly wavy, contributing to a fluffy and well-groomed look. The texture is consistent across the face, with no visible shedding or mats.\n- **Patterns**: There are no distinct patterns or markings on the face; the coloration is uniform except for the darker areas around the eyes and muzzle.\n- **Shape and Size**: The face is rounded and medium-sized, typical of breeds like the Soft Coated Wheaten Terrier. The ears are floppy and hang down, adding to the overall gentle expression.\n- **Unique Features**: The dog has expressive brown eyes, which stand out against the lighter fur. Its nose is black, and the mouth is slightly open, revealing a pink tongue, which adds a playful element to the expression.\n- **Distinctive Characteristics**: The dog's facial structure includes a broad forehead, a short snout, and", "The dog in the image has a thick, fluffy coat with a predominantly light beige or cream color. The fur appears soft and slightly wavy, giving it a textured appearance. There is a noticeable gradient in the coat's color, with the fur around the face being lighter and more white, while the body fur transitions into a slightly darker shade of beige.\n\nThe coat's texture is dense and voluminous, contributing to the dog's overall fluffy look. The fur around the face is particularly prominent, framing the dog's expressive eyes and adding to its endearing expression. The ears are covered in long, soft fur that hangs down, enhancing the dog's gentle demeanor.\n\nUnique features include the dog's wide, open mouth with a pink tongue visible, suggesting a happy or relaxed state. The fur around the mouth area is slightly darker than the rest of the face, creating a subtle contrast. The dog is wearing a collar with a metal clasp and leash attachment, which adds a functional element to the visual composition.\n\nIn summary, the dog's coat is characterized by its soft, fluffy texture, light beige coloration, and a gentle gradient effect. These features, combined with the dog's relaxed expression and the functional collar, make it distinct within the category of dogs.", "The image shows a medium-sized dog with a fluffy, light beige coat. The fur appears soft and slightly wavy, giving it a textured look. The dog's face is round with a slightly wrinkled forehead, and its eyes are dark brown and expressive. The ears are long and hang down, blending into the fur. The dog has a black nose and a pink tongue that is slightly visible, suggesting it might be panting.\n\nThe dog is wearing a collar with a metal clasp and a leash attached, indicating it is likely a pet. The background is blurred, showing an outdoor setting with greenery, which helps to emphasize the dog as the main subject.\n\nThis dog's overall appearance suggests it could be a breed like a Soft Coated Wheaten Terrier or a similar type of fluffy, medium-sized dog. Its size is moderate, neither too small nor too large, fitting comfortably within the category of medium-sized dogs. The combination of its light beige coat, soft texture, and friendly expression makes it stand out as a gentle and approachable companion."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### **Overall Appearance**
+The image showcases a medium-sized dog with a fluffy, light beige coat. The fur is thick, soft, and slightly wavy, giving it a voluminous and well-groomed appearance. The dog's face is rounded with a slightly wrinkled forehead, and its dark brown eyes are expressive and stand out against the lighter fur. The ears are long and floppy, blending seamlessly into the fur, and the black nose contrasts nicely with the light fur. The dog's mouth is slightly open, revealing a pink tongue, which adds a playful and relaxed expression to its face.
+
+#### **Face and Facial Structure**
+- **Color**: The fur is predominantly light beige or cream-colored, with a slightly darker shade around the eyes and muzzle, creating a soft, natural appearance.
+- **Texture**: The fur is thick, soft, and wavy, contributing to a fluffy and well-groomed look. There are no visible shedding or mats.
+- **Patterns**: There are no distinct patterns or markings on the face; the coloration is uniform except for the darker areas around the eyes and muzzle.
+- **Shape and Size**: The face is rounded and medium-sized, typical of breeds like the Soft Coated
+步骤4: 执行多模态检索...
+多模态检索结果: [('Wheaten Terrier', 0.4000000069815773), ('Havanese', 0.3464691772965265), ('Pomeranian', 0.34151844044232793), ('German Shorthaired', 0.3354536176478931), ('English Cocker Spaniel', 0.3295148062229107)]
+步骤5: 最终推理...
+最终预测: Wheaten Terrier (置信度: 0.8500)
+推理过程: The dog in the image exhibits several characteristic features of a Wheaten Terrier. The light beige coat with a slightly darker shade around the eyes and muzzle is typical of the breed. The fluffy, wavy fur, rounded face, and expressive eyes are also consistent with the Wheaten Terrier. The long, floppy ears blend into the fur, and the overall size and shape of the head align with the breed standards. While the similarity scores suggest other breeds like Havanese and Pomeranian could be close matches, the specific combination of coat texture, facial structure, and coloration strongly points towards a Wheaten Terrier. | Key Features: Light beige coat, wavy fur, rounded face, expressive eyes, long floppy ears, and a slightly darker shade around the eyes and muzzle. | Uncertainty: The similarity scores to Havanese and Pomeranian are relatively high, indicating some visual overlap. However, the distinct combination of features such as the coat texture and facial structure helps in distinguishing the Wheaten Terrier.
+统计更新: 类别=Wheaten Terrier, 置信度=0.850, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+分类完成: Wheaten Terrier (置信度: 0.8500)
+总耗时: 83.28秒
+  📸 [1/1] ✅ 正确 | 预测: Wheaten Terrier | 真值: 035.Wheaten Terrier | 慢思考: 是 | 置信度: 0.850
+     📊 图片进度: 34/37 | 累积准确率: 1.000 (34/34) | 类别准确率: 1.000 (1/1)
+✨ 类别 035.Wheaten Terrier 完成: 1/1 = 1.000
+📈 当前总体进度: 34/37 | 累积准确率: 1.000 (34/34)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [35/37]: 009.British Shorthair (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/009.British_Shorthair/009.British_Shorthair_108.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/009.British_Shorthair/009.British_Shorthair_108.jpg
+图像检索结果: British Shorthair (置信度: 1.0000)
+文本检索结果: British Shorthair (置信度: 0.3890)
+融合结果: [('British Shorthair', 0.38924992326341695), ('Russian Blue', 0.3008966321606309), ('Egyptian Mau', 0.1296623972740026)]
+快思考结果: British Shorthair (置信度: 0.7435)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: British Shorthair (置信度: 0.7435)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: British Shorthair | 真值: 009.British Shorthair | 慢思考: 否 | 置信度: 0.743
+     📊 图片进度: 35/37 | 累积准确率: 1.000 (35/35) | 类别准确率: 1.000 (1/1)
+✨ 类别 009.British Shorthair 完成: 1/1 = 1.000
+📈 当前总体进度: 35/37 | 累积准确率: 1.000 (35/35)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [36/37]: 011.Egyptian Mau (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg
+图像检索结果: Egyptian Mau (置信度: 1.0000)
+文本检索结果: British Shorthair (置信度: 0.3093)
+融合结果: [('Egyptian Mau', 0.26655321991999964), ('British Shorthair', 0.2299238876905046), ('Russian Blue', 0.21819607736690647)]
+快思考结果: conflict (置信度: 0.5246)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/011.Egyptian_Mau/011.Egyptian_Mau_112.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The cat's fur pattern is not typical for either the Egyptian Mau or the British Shorthair, which makes it difficult to confidently classify.", 'The lighting and shadows in the image can obscure some features that are crucial for accurate identification.', 'The background elements like grass and ferns can be misleading as they do not provide distinctive features for classification.'], 'key_regions': ["The cat's face and ears, as these areas often have unique patterns and markings that can help identify breeds.", 'The body fur pattern, as it can vary significantly between different cat breeds.', 'The eyes and whiskers, as these features can be quite distinctive and aid in identification.'], 'additional_info_needed': "A clearer view of the cat's face and body, including its fur pattern, eye color, and any visible breed-specific traits, would greatly assist in accurate classification."}
+步骤2: 提取关键区域特征...
+区域描述: ["The cat in the image has a predominantly gray coat with black stripes, which is characteristic of a tabby pattern. Its fur appears soft and slightly textured, typical of domestic cats. The cat's face is elongated with a straight nose and a small pink nose pad. Its eyes are yellow with dark pupils, giving it an alert expression. The ears are pointed and upright, indicating attentiveness. The overall size of the cat seems average for a domestic feline. There are no visible unique markings or features that stand out distinctly from other tabby cats, but the combination of gray and black stripes is quite striking.", "The cat in the image has a predominantly gray coat with black stripes, which is characteristic of a tabby pattern. The fur appears soft and slightly textured, with the stripes being more pronounced around the head and less so towards the body. The cat's body is partially obscured by grass and foliage, but the visible portion shows a consistent pattern of dark and light stripes. The ears are pointed and alert, and the overall body shape is compact and typical of a domestic cat. There are no unique markings or spots that deviate from the tabby pattern, making it distinct within the category of cats with similar coat patterns.", "The cat in the image has striking yellow-green eyes with vertical pupils, which are characteristic of many domestic cats. The eyes are large and prominent, giving the cat an alert and attentive appearance. The fur around the eyes is darker, creating a contrast that highlights the eyes.\n\nThe whiskers are white and extend outward from the sides of the cat's face, curving slightly upwards. They are relatively long compared to the cat's head, adding to its distinctive look. The texture of the fur appears soft and fine, with a mix of gray and black stripes, typical of a tabby pattern. The stripes are not uniform in width and are interspersed with lighter areas, contributing to the cat's unique appearance. The overall coloration is a blend of gray, black, and white, which is common for tabby cats. The cat's ears are pointed and upright, indicating attentiveness, and they have a slight pinkish hue inside, which is visible in the image."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The image depicts a cat with a predominantly gray coat featuring black tabby stripes. The cat is lying amidst greenery, with its body partially obscured by grass and ferns. The cat's posture suggests it is relaxed yet alert, with its ears perked up and eyes wide open.
+
+#### Key Region Descriptions:
+
+1. **The Cat's Face and Ears:**
+   - **Eyes:** The cat has large, yellow-green eyes with vertical pupils, giving it an alert and attentive expression.
+   - **Nose and Whiskers:** The nose is small and pink, and the whiskers are white and extend outward, curving slightly upwards. They are relatively long compared to the cat's head.
+   - **Ears:** The ears are pointed and upright, with a slight pinkish hue inside, indicating attentiveness.
+
+2. **The Body Fur Pattern:**
+   - The cat's coat is primarily gray with distinct black tabby stripes. The stripes are more pronounced around the head and less so towards the body. The fur appears soft and slightly textured, with a mix of gray and black stripes interspersed with lighter areas.
+
+#### Characteristics Differentiating This Cat:
+- **Tab
+步骤4: 执行多模态检索...
+多模态检索结果: [('Egyptian Mau', 0.39999997542857935), ('British Shorthair', 0.3304658877377928), ('Bengal', 0.31919322384351556), ('Russian Blue', 0.31347690821018354), ('Maine Coon', 0.3121587460885528)]
+步骤5: 最终推理...
+最终预测: British Shorthair (置信度: 0.8500)
+推理过程: The cat in the image exhibits several characteristics consistent with a British Shorthair breed. The coat pattern, with its distinct tabby markings, is typical of the breed. The cat's size, facial structure, and overall build also align well with the British Shorthair. The similarity score to other breeds like the Egyptian Mau and Bengal is lower, further supporting this classification. | Key Features: ['Tabby coat pattern with distinct black stripes on a gray background', 'Small, pink nose and white whiskers', 'Upright, pointed ears with a slight pinkish hue inside', 'Relaxed yet alert posture with perked-up ears and wide-open eyes'] | Uncertainty: ['The similarity scores to other breeds are close, making it challenging to definitively rule out other possibilities.']
+统计更新: 类别=British Shorthair, 置信度=0.850, LCB=0.500, 一致性=False, 更新m=True
+跳过增量更新：预测类别未知或为空
+快慢思考结果不一致，进行最终融合决策...
+分类完成: Egyptian Mau (置信度: 0.8500)
+总耗时: 83.24秒
+  📸 [1/1] ✅ 正确 | 预测: Egyptian Mau | 真值: 011.Egyptian Mau | 慢思考: 是 | 置信度: 0.850
+     📊 图片进度: 36/37 | 累积准确率: 1.000 (36/36) | 类别准确率: 1.000 (1/1)
+✨ 类别 011.Egyptian Mau 完成: 1/1 = 1.000
+📈 当前总体进度: 36/37 | 累积准确率: 1.000 (36/36)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [37/37]: 001.American Bulldog (1 张图片)
+开始分类图像: ./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg
+图像检索结果: American Bulldog (置信度: 1.0000)
+文本检索结果: Boxer (置信度: 0.2799)
+融合结果: [('Boxer', 0.2460943033452831), ('American Bulldog', 0.24073441606010118), ('Staffordshire Bull Terrier', 0.21555367107801157)]
+快思考结果: conflict (置信度: 0.4543)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/001.American_Bulldog/001.American_Bulldog_107.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The dog's facial features and body structure are ambiguous, as it shares similarities with both the American Bulldog and the Boxer.", 'The image quality is not high, which can obscure finer details that could aid in classification.', 'The background elements, such as the glass cabinet and furniture, do not provide distinctive features that could help differentiate between breeds.'], 'key_regions': ['The face, particularly the shape of the snout and the size of the ears, is crucial for distinguishing between these breeds.', 'The body structure, including the build and muscle tone, also plays a significant role in breed identification.', 'The coloration and pattern of the fur can sometimes be indicative, but in this case, the dog appears mostly white with some dark markings.'], 'additional_info_needed': "A clearer image with better lighting and more distinct features would help in distinguishing the breed more accurately. Additional information like the dog's lineage or any visible physical traits unique to one breed over another would also be beneficial."}
+步骤2: 提取关键区域特征...
+区域描述: ["The dog in the image appears to be a Boxer breed. Here's a detailed description of its facial features:\n\n- **Color**: The dog has a predominantly white coat with distinct black markings. The most prominent marking is a large, dark patch over one eye, which is characteristic of the breed. There are also smaller black spots scattered across the body.\n\n- **Texture and Patterns**: The fur looks smooth and short, typical of Boxers. The black patches have a slightly darker, almost glossy texture compared to the white fur, which is smoother.\n\n- **Shape and Size**: The snout is broad and short, a key feature of the Boxer breed. It is relatively small in proportion to the head, giving it a square-like appearance. The ears are medium-sized, triangular, and stand upright, though they may droop slightly at the tips.\n\n- **Unique Features**: The dog's expression is alert and attentive, with wide, dark eyes that give it an expressive look. The black nose contrasts sharply with the white fur around it, making it a focal point.\n\n- **Variations/Characteristics**: Boxers often have a brindle pattern, which is not present here. However, the presence of the large black patch over one eye is a common variation within", 'The dog in the image appears to be a Boxer, identifiable by several distinct physical characteristics:\n\n1. **Color, Texture, and Patterns**: The dog has a predominantly white coat with dark brown markings on its face, ears, and legs. The fur looks smooth and short, typical of the Boxer breed.\n\n2. **Shape and Size Relative to the Object**: The dog is medium-sized, with a broad chest and a muscular build. Its body is well-proportioned, with a deep chest and a strong, square-shaped head.\n\n3. **Unique or Distinctive Features**:\n   - **Head Shape**: The dog has a broad, square-shaped head with a short muzzle, which is characteristic of the Boxer breed.\n   - **Ears**: The ears are large, triangular, and fold over at the tips, often referred to as "bat ears."\n   - **Mouth and Teeth**: The dog\'s mouth is slightly open, revealing its teeth, which is common for Boxers when they are relaxed or panting.\n   - **Body Structure**: The dog has a sturdy, muscular build with a deep chest and a broad back, which contributes to its overall strength and agility.\n\n4. **Variations or Special Characteristics**: Boxers typically have', "The dog in the image is predominantly white with distinct dark brown or black markings. Its fur appears smooth and short, typical of a boxer breed. The most noticeable markings include a broad, dark brown patch over one eye and ear, extending down the side of the face. The nose is black, and there's a hint of pink around the mouth area. The dog's body is mostly white, with some darker spots scattered across its chest and legs. The ears are medium-sized and folded over, characteristic of the breed. The dog is sitting in a bed, which provides a contrast to its lighter fur. The background includes a glass cabinet with wine glasses, adding context to the setting."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The dog in the image is predominantly white with distinct dark brown or black markings. It has a broad, square-shaped head with a short muzzle, characteristic of the Boxer breed. The ears are medium-sized, triangular, and fold over at the tips. The dog is sitting in a bed, providing a contrast to its lighter fur. The background includes a glass cabinet with wine glasses, adding context to the setting.
+
+#### Key Regions and Distinctive Features:
+1. **Face (particularly the snout and ears)**:
+   - **Shape and Size**: The snout is broad and short, a key feature of the Boxer breed. The ears are medium-sized, triangular, and fold over at the tips, often referred to as "bat ears."
+   - **Color and Texture**: The dog has a predominantly white coat with dark brown or black markings. The fur looks smooth and short, typical of the Boxer breed. The black markings have a slightly darker, almost glossy texture compared to the white fur.
+   - **Expression**: The dog's expression is alert and attentive, with wide, dark eyes that give it an expressive look.
+
+2. **Body Structure**:
+   - **Build and
+步骤4: 执行多模态检索...
+多模态检索结果: [('American Bulldog', 0.39999994406633504), ('Boxer', 0.36784904288650017), ('Staffordshire Bull Terrier', 0.32426942489978816), ('English Setter', 0.3230496763725262), ('Havanese', 0.32018212288888565)]
+步骤5: 最终推理...
+最终预测: Boxer (置信度: 0.9500)
+推理过程: The dog in the image exhibits several key characteristics of a Boxer breed, including the broad, square-shaped head, short muzzle, medium-sized triangular ears that fold over at the tips, and the predominantly white coat with dark brown or black markings. These features are consistent with the visual description provided by the structured description and the similarity scores. The high similarity score (0.3678) further supports the classification of this dog as a Boxer. | Key Features: ['Broad, square-shaped head', 'Short muzzle', 'Medium-sized triangular ears that fold over at the tips', 'Predominantly white coat with dark brown or black markings'] | Uncertainty: ['The similarity scores suggest some overlap with other breeds like the American Bulldog, but the distinctive features of the Boxer, such as the bat ears and facial structure, are more prominent in this image.']
+统计更新: 类别=Boxer, 置信度=0.950, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+分类完成: Boxer (置信度: 0.9500)
+总耗时: 85.48秒
+  📸 [1/1] ❌ 错误 | 预测: Boxer | 真值: 001.American Bulldog | 慢思考: 是 | 置信度: 0.950
+     📊 图片进度: 37/37 | 累积准确率: 0.973 (36/37) | 类别准确率: 0.000 (0/1)
+✨ 类别 001.American Bulldog 完成: 0/1 = 0.000
+📈 当前总体进度: 37/37 | 累积准确率: 0.973 (36/37)
+--------------------------------------------------------------------------------
+✅ 正确预测总数: 36
+  - 其中仅快思考正确: 32
+  - 其中慢思考触发且正确: 4
+❌ 错误预测总数: 1
+📊 慢思考触发数量: 5
+[fast and slow] 总体准确率: 0.9730 (36/37)
+[fast and slow] 快思考准确率: 1.0000
+[fast and slow] 慢思考触发比例: 0.1351
+[fast and slow] 慢思考准确率: 0.8000
+总耗时: 00:06:43

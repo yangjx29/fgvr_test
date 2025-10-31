@@ -1998,12 +1998,8 @@ if __name__ == "__main__":
         
         print(f"✅ 快思考增强分类完成")
         print(f"📊 总样本数: {fast_total}")
-        print(f"🎯 原始准确率: {original_acc:.4f} ({fast_correct}/{fast_total})")
-        print(f"🚀 增强准确率: {enhanced_acc:.4f} ({enhanced_correct}/{fast_total})")
-        print(f"📈 增强提升率: {enhancement_rate:.4f}")
+        print(f"🚀 最终准确率: {enhanced_acc:.4f} ({enhanced_correct}/{fast_total})")
         print(f"🔧 MEC执行状态: {'成功' if enhancement_success else '失败'}")
-        if enhancement_success and 'mec_accuracy' in locals():
-            print(f"📊 MEC框架准确率: {mec_accuracy:.4f}")
         
         # 保存增强结果
         enhanced_results_file = os.path.join(args.classify_dir, "fast_classification_results_enhanced.json")
@@ -2387,12 +2383,8 @@ if __name__ == "__main__":
         
         print(f"✅ 慢思考增强分类完成")
         print(f"📊 总样本数: {slow_total}")
-        print(f"🎯 原始准确率: {original_acc:.4f} ({slow_correct}/{slow_total})")
-        print(f"🚀 增强准确率: {enhanced_acc:.4f} ({enhanced_correct}/{slow_total})")
-        print(f"📈 增强提升率: {enhancement_rate:.4f}")
+        print(f"🚀 最终准确率: {enhanced_acc:.4f} ({enhanced_correct}/{slow_total})")
         print(f"🔧 MEC执行状态: {'成功' if enhancement_success else '失败'}")
-        if enhancement_success and 'mec_accuracy' in locals():
-            print(f"📊 MEC框架准确率: {mec_accuracy:.4f}")
         
         # 保存增强结果
         enhanced_results_file = os.path.join(args.classify_dir, "slow_classification_results_enhanced.json")
