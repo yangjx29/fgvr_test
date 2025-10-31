@@ -1,0 +1,62 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='terminal_decision', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/car196_all.yml', num_per_category='3', knowledge_base_dir='./knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/car196/infer', classify_dir='./experiments/car196/classify')
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'car', 'num_classes': 196, 'num_base': 98, 'num_novel': 98, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/car_196', 'expt_dir': './experiments/car196', 'expt_dir_describe': './experiments/car196/describe', 'path_vqa_questions': './experiments/car196/describe/car_vqa_questions_ours', 'path_vqa_answers': './experiments/car196/describe/car_attributes_pairs', 'path_llm_prompts': './experiments/car196/describe/car_llm_prompts', 'path_identify_answers': './experiments/car196/identify', 'expt_dir_guess': './experiments/car196/guess', 'path_llm_replies_raw': './experiments/car196/guess/car_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/car196/guess/car_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/car196/guess/car_llm_gussed_names', 'expt_dir_gallery': './experiments/car196/gallery', 'path_references': './experiments/car196/gallery/car_image_references', 'path_regions': './experiments/car196/gallery/car_image_regions', 'path_descriptions': './experiments/car196/gallery/car_image_descriptions_attn', 'expt_dir_grouping': './experiments/car196/grouping'}
+从目录加载推理结果: ./experiments/car196/infer
+终端决策结果将保存到: ./experiments/car196/classify
+加载了 87 个快思考分类结果
+加载了 109 个慢思考分类结果
+发现 22 个需要终端决策的样本，初始化系统...
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.27s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.30s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:07<00:04,  2.35s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.36s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.79s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.03s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/car196/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/car196/knowledge_base/category_image_paths.json 加载
+加载了 255 个类别的图像路径
+知识库已从 ./experiments/car196/knowledge_base 加载
+知识库加载完成!
+已加载知识库: ./experiments/car196/knowledge_base
+终端决策: ./datasets/car_196/images_discovery_all_1/164.Mercedes-Benz_E-Class_Sedan_2012/164.Mercedes-Benz_E-Class_Sedan_2012_01820.jpg -> Mercedes-Benz E-Class Sedan 2012 (置信度: 0.9000) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/123.Geo_Metro_Convertible_1993/123.Geo_Metro_Convertible_1993_00596.jpg -> Geo Metro Convertible 1993 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/163.Mercedes-Benz_SL-Class_Coupe_2009/163.Mercedes-Benz_SL-Class_Coupe_2009_02723.jpg -> Mercedes-Benz SL-Class Coupe 2009 (置信度: 0.9000) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/058.Chevrolet_Traverse_SUV_2012/058.Chevrolet_Traverse_SUV_2012_00692.jpg -> Chevrolet Traverse SUV 2012 (置信度: 0.9000) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/134.Hyundai_Sonata_Hybrid_Sedan_2012/134.Hyundai_Sonata_Hybrid_Sedan_2012_04907.jpg -> Hyundai Sonata Hybrid Sedan 2012 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/045.Bugatti_Veyron_16.4_Convertible_2009/045.Bugatti_Veyron_16.4_Convertible_2009_04334.jpg -> Bugatti Veyron 16 (置信度: 0.9000) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/024.Audi_S4_Sedan_2007/024.Audi_S4_Sedan_2007_03892.jpg -> Audi S4 Sedan 2007 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/119.GMC_Savana_Van_2012/119.GMC_Savana_Van_2012_04214.jpg -> GMC Savana Van 2012 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/174.Ram_C_V_Cargo_Van_Minivan_2012/174.Ram_C_V_Cargo_Van_Minivan_2012_03611.jpg -> Chrysler Town and Country Minivan 2012 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/144.Jaguar_XK_XKR_2012/144.Jaguar_XK_XKR_2012_06238.jpg -> Jaguar XK XKR 2012 (置信度: 0.9000) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/069.Chevrolet_Silverado_2500HD_Regular_Cab_2012/069.Chevrolet_Silverado_2500HD_Regular_Cab_2012_01736.jpg -> Chevrolet Silverado 2500HD Regular Cab 2012 (置信度: 0.9000) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/062.Chevrolet_Tahoe_Hybrid_SUV_2012/062.Chevrolet_Tahoe_Hybrid_SUV_2012_00823.jpg -> Chevrolet Tahoe Hybrid SUV 2012 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/072.Chevrolet_Monte_Carlo_Coupe_2007/072.Chevrolet_Monte_Carlo_Coupe_2007_02459.jpg -> Chevrolet Monte Carlo Coupe 2007 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/092.Dodge_Magnum_Wagon_2008/092.Dodge_Magnum_Wagon_2008_07869.jpg -> Dodge Magnum Wagon 2008 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/004.Acura_TL_Type-S_2008/004.Acura_TL_Type-S_2008_02240.jpg -> Acura TL Type-S 2008 (置信度: 0.8500) 正确: False
+终端决策: ./datasets/car_196/images_discovery_all_1/143.Isuzu_Ascender_SUV_2008/143.Isuzu_Ascender_SUV_2008_03587.jpg -> Isuzu Ascender SUV 2008 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/060.Chevrolet_HHR_SS_2010/060.Chevrolet_HHR_SS_2010_06779.jpg -> Chevrolet HHR SS 2010 (置信度: 0.9500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/061.Chevrolet_Impala_Sedan_2007/061.Chevrolet_Impala_Sedan_2007_00676.jpg -> Chevrolet Impala Sedan 2007 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/176.Rolls-Royce_Ghost_Sedan_2012/176.Rolls-Royce_Ghost_Sedan_2012_03914.jpg -> Rolls-Royce Ghost Sedan 2012 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/155.Land_Rover_LR2_SUV_2012/155.Land_Rover_LR2_SUV_2012_03494.jpg -> Land Rover LR2 SUV 2012 (置信度: 0.9500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/091.Dodge_Dakota_Club_Cab_2007/091.Dodge_Dakota_Club_Cab_2007_00287.jpg -> Dodge Dakota Club Cab 2007 (置信度: 0.8500) 正确: True
+终端决策: ./datasets/car_196/images_discovery_all_1/159.Mazda_Tribute_SUV_2011/159.Mazda_Tribute_SUV_2011_04866.jpg -> Mazda Tribute SUV 2011 (置信度: 0.8500) 正确: True
+✅ 总正确预测数: 193
+  - 其中仅快思考正确: 85
+  - 其中慢思考触发且正确: 108
+❌ 总错误预测数: 3
+📊 慢思考触发数量: 109
+[terminal_decision] 总体准确率: 0.9847 (193/196)
+[terminal_decision] 快思考准确率: 0.9770
+[terminal_decision] 慢思考触发比例: 0.5561
+[terminal_decision] 慢思考准确率: 0.9908
+终端决策结果已保存到: ./experiments/car196/classify/terminal_decision_results.json
+总耗时: 00:05:34

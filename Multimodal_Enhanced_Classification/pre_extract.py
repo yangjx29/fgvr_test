@@ -8,6 +8,8 @@ from tqdm import tqdm
 import os
 import json
 import sys
+# 导入YAML配置文件处理模块
+import yaml
 
 # 导入PyTorch深度学习框架
 import torch
@@ -33,6 +35,23 @@ from utils.tools import set_random_seed
 
 # 导入CLIP模型
 from clip import clip
+
+# 读取配置文件
+def load_config(config_path="./config.yaml"):
+    """
+    读取YAML配置文件
+    """
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+        return config
+    except Exception as e:
+        print(f"⚠️  读取配置文件失败: {e}")
+        # 返回默认配置
+        return {
+            "k_shot_image_processing": "average",
+            "similarity_processing": "image_text_pair"
+        }
 # 加载CLIP模型到CPU
 # 参数:
 #   arch: 模型架构名称（如'ViT-B/16'）

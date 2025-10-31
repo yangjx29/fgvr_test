@@ -265,28 +265,49 @@ def run_evaluation(
 def parse_accuracy_from_output(output: str) -> Optional[float]:
     """从MEC输出中解析准确率"""
     try:
+        import re
         lines = output.split('\n')
+        
         for line in lines:
-            # 查找准确率信息
-            if 'Acc@1' in line and '%' in line:
-                # 提取百分比数字
-                import re
+            # 优先匹配新格式：🎯 最终准确率: 0.xxxx (xx.xx%)
+            if '最终准确率' in line or 'final accuracy' in line.lower():
+                # 匹配 0.xxxx 格式
+                match = re.search(r'[:：]\s*(\d+\.\d+)', line)
+                if match:
+                    accuracy = float(match.group(1))
+                    print(f"✅ 解析到准确率: {accuracy:.4f}")
+                    return accuracy
+            
+            # 匹配 Acc@1 格式
+            elif 'Acc@1' in line and '%' in line:
                 match = re.search(r'(\d+\.\d+)%', line)
                 if match:
-                    return float(match.group(1)) / 100.0
+                    accuracy = float(match.group(1)) / 100.0
+                    print(f"✅ 解析到准确率: {accuracy:.4f}")
+                    return accuracy
+            
+            # 匹配 accuracy: 0.xxxx 格式
             elif 'accuracy' in line.lower() and ':' in line:
-                # 查找 accuracy: 0.xxxx 格式
-                import re
                 match = re.search(r'accuracy[:\s]+(\d+\.\d+)', line.lower())
                 if match:
-                    return float(match.group(1))
+                    accuracy = float(match.group(1))
+                    print(f"✅ 解析到准确率: {accuracy:.4f}")
+                    return accuracy
         
-        # 如果没有找到，返回默认值
-        print("⚠️  未找到准确率信息，使用默认值 0.5")
+        # 如果没有找到，打印输出内容用于调试
+        print("⚠️  未找到准确率信息")
+        print("📋 输出内容（最后10行）:")
+        output_lines = output.split('\n')
+        for line in output_lines[-10:]:
+            if line.strip():
+                print(f"  {line}")
+        print("⚠️  使用默认值 0.5")
         return 0.5
         
     except Exception as e:
-        print(f"解析准确率异常: {e}")
+        print(f"❌ 解析准确率异常: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 

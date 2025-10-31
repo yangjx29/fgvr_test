@@ -6,6 +6,8 @@ import time
 import os
 # 导入JSON处理模块
 import json
+# 导入YAML配置文件处理模块
+import yaml
 
 # 导入PyTorch深度学习框架
 import torch
@@ -19,6 +21,31 @@ from data.cls_to_names import get_classnames, CUSTOM_TEMPLATES
 
 # 导入CLIP模型
 from clip import clip
+
+# 读取配置文件
+def load_config(config_path="./config.yaml"):
+    """
+    读取YAML配置文件
+    """
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+        return config
+    except Exception as e:
+        print(f"⚠️  读取配置文件失败: {e}")
+        # 返回默认配置
+        return {
+            "k_shot_image_processing": "average",
+            "similarity_processing": "image_text_pair",
+            "similarity_processing_hyper_parameter": {
+                "weighted_separate": {
+                    "weights": [0.4, 0.4, 0.1, 0.1]
+                },
+                "image_text_pair": {
+                    "concat_method": "simple"
+                }
+            }
+        }
 # 加载CLIP模型到CPU
 # 参数:
 #   arch: 模型架构名称（如'ViT-B/16'）
@@ -161,6 +188,113 @@ def get_entropy_weight_test2(output, img_t=0.5, text_t=0.5):
         text_weights = F.softmax(text_confidence.t()/text_t, dim=-1) # shape: (n_cls, n_des)
 
     return image_weights, text_weights
+
+# 新增：weighted_separate相似度计算
+@torch.no_grad()
+def calculate_weighted_separate_similarity(test_img_feat, test_text_feat, 
+                                         retrieved_img_feat, retrieved_text_feat, 
+                                         weights=[0.4, 0.4, 0.1, 0.1]):
+    """
+    计算weighted_separate相似度
+    使用 a1*cos(Ti,Tj')+a2*cos(Ii,Ij')+a3*cos(Ii,Tj')+a4*cos(Ti,Ij') 形式
+    
+    参数:
+        test_img_feat: 测试图像特征
+        test_text_feat: 测试文本特征  
+        retrieved_img_feat: 检索图像特征
+        retrieved_text_feat: 检索文本特征
+        weights: [文-文，图-图，图-文，文-图] 权重
+    
+    返回:
+        similarity: 加权相似度
+    """
+    # L2归一化
+    test_img_norm = test_img_feat / (test_img_feat.norm() + 1e-8)
+    test_text_norm = test_text_feat / (test_text_feat.norm() + 1e-8)
+    retrieved_img_norm = retrieved_img_feat / (retrieved_img_feat.norm() + 1e-8)
+    retrieved_text_norm = retrieved_text_feat / (retrieved_text_feat.norm() + 1e-8)
+    
+    # 计算四种相似度
+    text_text_sim = torch.dot(test_text_norm, retrieved_text_norm)  # Ti, Tj'
+    img_img_sim = torch.dot(test_img_norm, retrieved_img_norm)      # Ii, Ij'
+    img_text_sim = torch.dot(test_img_norm, retrieved_text_norm)    # Ii, Tj'
+    text_img_sim = torch.dot(test_text_norm, retrieved_img_norm)    # Ti, Ij'
+    
+    # 加权求和
+    weighted_similarity = (
+        weights[0] * text_text_sim +
+        weights[1] * img_img_sim +
+        weights[2] * img_text_sim +
+        weights[3] * text_img_sim
+    )
+    
+    return weighted_similarity
+
+# 新增：simultaneously_enhance k-shot处理
+@torch.no_grad()
+def process_simultaneously_enhance(test_features, retrieved_features_list, config):
+    """
+    实现simultaneously_enhance策略
+    k张图像形成的子图-描述对同时作为增强视图
+    
+    参数:
+        test_features: 测试图像特征 (n_views, feature_dim)
+        retrieved_features_list: k张检索图像特征列表 [(n_views, feature_dim), ...]
+        config: 配置参数
+    
+    返回:
+        similarity: 平均相似度
+    """
+    similarities = []
+    
+    # 处理测试图像的多视图
+    if test_features.dim() > 1 and test_features.size(0) > 1:
+        test_entropy = calculate_batch_entropy(test_features)
+        test_weights = F.softmax(-test_entropy / 0.5, dim=0)
+        weighted_test = (test_features * test_weights.unsqueeze(-1)).sum(dim=0)
+    else:
+        weighted_test = test_features.squeeze(0) if test_features.dim() > 1 else test_features
+    
+    # 对每张检索图像计算相似度
+    for retrieved_features in retrieved_features_list:
+        if retrieved_features.dim() > 1 and retrieved_features.size(0) > 1:
+            # 多视图情况：每个子视图都参与增强
+            view_similarities = []
+            for view_idx in range(retrieved_features.size(0)):
+                single_view = retrieved_features[view_idx]
+                
+                # L2归一化
+                weighted_test_norm = weighted_test / (weighted_test.norm() + 1e-8)
+                single_view_norm = single_view / (single_view.norm() + 1e-8)
+                
+                # 计算相似度
+                view_sim = torch.dot(weighted_test_norm, single_view_norm)
+                view_similarities.append(view_sim)
+            
+            # 对所有视图的相似度进行熵加权平均
+            if view_similarities:
+                view_sims = torch.stack(view_similarities)
+                view_entropy = calculate_batch_entropy(view_sims.unsqueeze(-1))
+                view_weights = F.softmax(-view_entropy / 0.5, dim=0)
+                weighted_similarity = (view_sims * view_weights).sum()
+                similarities.append(weighted_similarity)
+        else:
+            # 单视图情况
+            single_view = retrieved_features.squeeze(0) if retrieved_features.dim() > 1 else retrieved_features
+            
+            # L2归一化
+            weighted_test_norm = weighted_test / (weighted_test.norm() + 1e-8)
+            single_view_norm = single_view / (single_view.norm() + 1e-8)
+            
+            # 计算相似度
+            similarity = torch.dot(weighted_test_norm, single_view_norm)
+            similarities.append(similarity)
+    
+    # 返回平均相似度
+    if similarities:
+        return torch.stack(similarities).mean()
+    else:
+        return torch.tensor(0.0).cuda()
 
 # Sinkhorn算法：用于求解最优传输问题
 # 这是一种迭代算法，用于找到两个分布之间的最优传输矩阵
@@ -417,6 +551,19 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
     print(f"🔄 执行MEC评估: {dataset_name}")
     print("🎯 策略: [测试图-文] vs [检索图-文] 匹配")
     
+    # 加载配置文件
+    config = load_config()
+    k_shot_processing = config.get("k_shot_image_processing", "average")
+    similarity_processing = config.get("similarity_processing", "image_text_pair")
+    similarity_params = config.get("similarity_processing_hyper_parameter", {})
+    
+    print(f"📋 K-shot处理策略: {k_shot_processing}")
+    print(f"📋 相似度计算策略: {similarity_processing}")
+    
+    if similarity_processing == "weighted_separate":
+        weights = similarity_params.get("weighted_separate", {}).get("weights", [0.4, 0.4, 0.1, 0.1])
+        print(f"📋 权重配置: {weights}")
+    
     # 构建特征文件路径
     save_dir = f"./pre_extracted_feat/{args.arch.replace('/', '')}/seed{args.seed}"
     retrieved_path = os.path.join(save_dir, f"{dataset_name}_retrieved.pth")
@@ -479,63 +626,148 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
                     if not retrieved_label.is_cuda:
                         retrieved_label = retrieved_label.cuda()
                     
-                    # AWC框架处理：支持k张图像的加权相似度计算
-                    category_similarities = []
-                    
-                    # 处理测试图像特征
-                    if test_features.dim() > 1 and test_features.size(0) > 1:
-                        # 多视图情况：使用熵加权方法
-                        test_entropy = calculate_batch_entropy(test_features)
-                        test_weights = F.softmax(-test_entropy / 0.5, dim=0)
-                        weighted_test = (test_features * test_weights.unsqueeze(-1)).sum(dim=0)
-                    else:
-                        weighted_test = test_features.squeeze(0) if test_features.dim() > 1 else test_features
-                    
-                    # 处理检索图像特征（支持k张图像）
-                    if retrieved_features.dim() > 1 and retrieved_features.size(0) > 1:
-                        # k张图像情况：分组处理每张图像的多视图
-                        # 假设 retrieved_features shape: (k*n_views, feature_dim)
-                        # 需要确定每张图像的视图数量
-                        n_views_per_image = test_features.size(0) if test_features.dim() > 1 else 1
-                        total_views = retrieved_features.size(0)
-                        k_images = total_views // n_views_per_image if n_views_per_image > 0 else 1
+                    # 根据配置选择相似度计算策略
+                    if similarity_processing == "weighted_separate":
+                        # 使用weighted_separate策略
+                        # 注意：当前实现假设特征包含图像和文本特征
+                        # 需要将特征分离为图像和文本部分
+                        feature_dim = test_features.size(-1)
+                        img_dim = feature_dim // 2  # 假设前一半是图像特征，后一半是文本特征
                         
-                        for k in range(k_images):
-                            start_idx = k * n_views_per_image
-                            end_idx = (k + 1) * n_views_per_image
-                            single_image_features = retrieved_features[start_idx:end_idx]
+                        # 分离测试特征
+                        if test_features.dim() > 1 and test_features.size(0) > 1:
+                            test_entropy = calculate_batch_entropy(test_features)
+                            test_weights = F.softmax(-test_entropy / 0.5, dim=0)
+                            weighted_test = (test_features * test_weights.unsqueeze(-1)).sum(dim=0)
+                        else:
+                            weighted_test = test_features.squeeze(0) if test_features.dim() > 1 else test_features
+                        
+                        test_img_feat = weighted_test[:img_dim]
+                        test_text_feat = weighted_test[img_dim:]
+                        
+                        # 处理检索特征
+                        category_similarities = []
+                        if retrieved_features.dim() > 1 and retrieved_features.size(0) > 1:
+                            # k张图像情况
+                            n_views_per_image = test_features.size(0) if test_features.dim() > 1 else 1
+                            total_views = retrieved_features.size(0)
+                            k_images = total_views // n_views_per_image if n_views_per_image > 0 else 1
                             
-                            # 对单张图像的多视图进行熵加权
-                            if single_image_features.size(0) > 1:
-                                retrieved_entropy = calculate_batch_entropy(single_image_features)
-                                retrieved_weights = F.softmax(-retrieved_entropy / 0.5, dim=0)
-                                weighted_retrieved = (single_image_features * retrieved_weights.unsqueeze(-1)).sum(dim=0)
+                            for k in range(k_images):
+                                start_idx = k * n_views_per_image
+                                end_idx = (k + 1) * n_views_per_image
+                                single_image_features = retrieved_features[start_idx:end_idx]
+                                
+                                # 对单张图像的多视图进行熵加权
+                                if single_image_features.size(0) > 1:
+                                    retrieved_entropy = calculate_batch_entropy(single_image_features)
+                                    retrieved_weights = F.softmax(-retrieved_entropy / 0.5, dim=0)
+                                    weighted_retrieved = (single_image_features * retrieved_weights.unsqueeze(-1)).sum(dim=0)
+                                else:
+                                    weighted_retrieved = single_image_features.squeeze(0)
+                                
+                                # 分离检索特征
+                                retrieved_img_feat = weighted_retrieved[:img_dim]
+                                retrieved_text_feat = weighted_retrieved[img_dim:]
+                                
+                                # 计算weighted_separate相似度
+                                single_similarity = calculate_weighted_separate_similarity(
+                                    test_img_feat, test_text_feat,
+                                    retrieved_img_feat, retrieved_text_feat,
+                                    weights
+                                )
+                                category_similarities.append(single_similarity)
+                            
+                            # 对k个相似度取平均
+                            if category_similarities:
+                                avg_similarity = torch.stack(category_similarities).mean()
                             else:
-                                weighted_retrieved = single_image_features.squeeze(0)
+                                avg_similarity = torch.tensor(0.0).cuda()
+                        else:
+                            # 单张图像情况
+                            weighted_retrieved = retrieved_features.squeeze(0) if retrieved_features.dim() > 1 else retrieved_features
+                            retrieved_img_feat = weighted_retrieved[:img_dim]
+                            retrieved_text_feat = weighted_retrieved[img_dim:]
+                            
+                            avg_similarity = calculate_weighted_separate_similarity(
+                                test_img_feat, test_text_feat,
+                                retrieved_img_feat, retrieved_text_feat,
+                                weights
+                            )
+                    
+                    elif k_shot_processing == "simultaneously_enhance":
+                        # 使用simultaneously_enhance策略
+                        # 将检索特征按k张图像分组
+                        retrieved_features_list = []
+                        if retrieved_features.dim() > 1 and retrieved_features.size(0) > 1:
+                            n_views_per_image = test_features.size(0) if test_features.dim() > 1 else 1
+                            total_views = retrieved_features.size(0)
+                            k_images = total_views // n_views_per_image if n_views_per_image > 0 else 1
+                            
+                            for k in range(k_images):
+                                start_idx = k * n_views_per_image
+                                end_idx = (k + 1) * n_views_per_image
+                                single_image_features = retrieved_features[start_idx:end_idx]
+                                retrieved_features_list.append(single_image_features)
+                        else:
+                            retrieved_features_list.append(retrieved_features)
+                        
+                        avg_similarity = process_simultaneously_enhance(test_features, retrieved_features_list, config)
+                    
+                    else:
+                        # 默认策略：average
+                        category_similarities = []
+                        
+                        # 处理测试图像特征
+                        if test_features.dim() > 1 and test_features.size(0) > 1:
+                            test_entropy = calculate_batch_entropy(test_features)
+                            test_weights = F.softmax(-test_entropy / 0.5, dim=0)
+                            weighted_test = (test_features * test_weights.unsqueeze(-1)).sum(dim=0)
+                        else:
+                            weighted_test = test_features.squeeze(0) if test_features.dim() > 1 else test_features
+                        
+                        # 处理检索图像特征（支持k张图像）
+                        if retrieved_features.dim() > 1 and retrieved_features.size(0) > 1:
+                            n_views_per_image = test_features.size(0) if test_features.dim() > 1 else 1
+                            total_views = retrieved_features.size(0)
+                            k_images = total_views // n_views_per_image if n_views_per_image > 0 else 1
+                            
+                            for k in range(k_images):
+                                start_idx = k * n_views_per_image
+                                end_idx = (k + 1) * n_views_per_image
+                                single_image_features = retrieved_features[start_idx:end_idx]
+                                
+                                # 对单张图像的多视图进行熵加权
+                                if single_image_features.size(0) > 1:
+                                    retrieved_entropy = calculate_batch_entropy(single_image_features)
+                                    retrieved_weights = F.softmax(-retrieved_entropy / 0.5, dim=0)
+                                    weighted_retrieved = (single_image_features * retrieved_weights.unsqueeze(-1)).sum(dim=0)
+                                else:
+                                    weighted_retrieved = single_image_features.squeeze(0)
+                                
+                                # L2归一化
+                                weighted_test_norm = weighted_test / (weighted_test.norm() + 1e-8)
+                                weighted_retrieved_norm = weighted_retrieved / (weighted_retrieved.norm() + 1e-8)
+                                
+                                # 计算单张图像的相似度
+                                single_similarity = torch.dot(weighted_test_norm, weighted_retrieved_norm)
+                                category_similarities.append(single_similarity)
+                            
+                            # 对k个相似度取平均
+                            if category_similarities:
+                                avg_similarity = torch.stack(category_similarities).mean()
+                            else:
+                                avg_similarity = torch.tensor(0.0).cuda()
+                        else:
+                            # 单张图像情况：直接计算
+                            weighted_retrieved = retrieved_features.squeeze(0) if retrieved_features.dim() > 1 else retrieved_features
                             
                             # L2归一化
                             weighted_test_norm = weighted_test / (weighted_test.norm() + 1e-8)
                             weighted_retrieved_norm = weighted_retrieved / (weighted_retrieved.norm() + 1e-8)
                             
-                            # 计算单张图像的相似度
-                            single_similarity = torch.dot(weighted_test_norm, weighted_retrieved_norm)
-                            category_similarities.append(single_similarity)
-                        
-                        # 对k个相似度取平均
-                        if category_similarities:
-                            avg_similarity = torch.stack(category_similarities).mean()
-                        else:
-                            avg_similarity = torch.tensor(0.0).cuda()
-                    else:
-                        # 单张图像情况：直接计算
-                        weighted_retrieved = retrieved_features.squeeze(0) if retrieved_features.dim() > 1 else retrieved_features
-                        
-                        # L2归一化
-                        weighted_test_norm = weighted_test / (weighted_test.norm() + 1e-8)
-                        weighted_retrieved_norm = weighted_retrieved / (weighted_retrieved.norm() + 1e-8)
-                        
-                        # 计算相似度
-                        avg_similarity = torch.dot(weighted_test_norm, weighted_retrieved_norm)
+                            # 计算相似度
+                            avg_similarity = torch.dot(weighted_test_norm, weighted_retrieved_norm)
                     
                     similarities.append(avg_similarity)
                     retrieved_labels.append(retrieved_label)

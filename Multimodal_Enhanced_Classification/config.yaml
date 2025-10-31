@@ -1,19 +1,25 @@
 ### K-shot检索图像的处理逻辑
 # 多图像直接取平均还是更精细化处理
-k_shot_image_processing: "average_images"
+k_shot_image_processing: "simultaneously_enhance"
 # 选项： 
-#    average       # 多图像直接取平均
-#    fine_grained  # 更精细化处理
+#    average       # 多图像最终加权相似度直接取平均
+#    simultaneously_enhance  # k张图像形成的 子图-描述 对同时作为增强视图，送入检索图像加权，比如原来有k张检索图像，每张检索图像有M个子视图，则会总共k*(M+1)个增强视图，对这么k*(M+1)个视图同时进行加权
+
 
 ### 图-文 与 图-文 相似度的计算
 # 粗糙图文拼接相似度还是加权后分开图文，分别加权计算相似度
-image_text_similarity: "coarse_concat"
+similarity_processing: "weighted_separate"
 # 选项：
-#    coarse_concat        # 粗糙图文拼接相似度
-#    weighted_separate    # 加权后分开图文，分别加权计算相似度
-
+#    image_text_pair        # 图文对拼接进行加权
+#    weighted_separate    # 加权后分开图文，分别加权计算相似度，比如 Ti、Tj 是测试图文对，Ti'、Tj' 是检索得到的图文对，则可以使用 a1*cos(Ti,Tj')+a2*cos(Ii,Ij')+a3*cos(Ii,Tj')+a4*cos(Ti,Ij')这种形式
+similarity_processing_hyper_parameter:
+  weighted_separate:
+    weights: [0.4, 0.4, 0.1, 0.1]    # [文-文，图-图，图-文，文-图]，同模态设置更高，跨模态设计更低
+  image_text_pair:
+    # 图文对拼接模式的参数（保留兼容性）
+    concat_method: "simple"
 
 ### 其他待实现逻辑
-### ...
+### 是否使用最优传输
 
 
