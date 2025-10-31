@@ -1598,12 +1598,9 @@ if __name__ == "__main__":
         # 重新计算slow_triggered_correct，包含终端决策的结果
         slow_triggered_correct = 0
         for r in slow_results:
-            if r.get("decision_path") == "slow_consistent":
-                # 一致的慢思考样本
-                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
-            elif r.get("decision_path") == "final_arbitration":
-                # 经过终端决策的样本
-                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
+            # 所有慢思考触发的样本，只要最终正确就计入
+            if r.get("is_correct", False):
+                slow_triggered_correct += 1
         
         accuracy = correct_predictions / total_samples if total_samples > 0 else 0.0
         fast_only_acc = fast_only_correct / len(fast_results) if len(fast_results) > 0 else 0.0
@@ -2457,8 +2454,19 @@ if __name__ == "__main__":
             
             print(f"✅ 加载了 {len(fast_results)} 个增强快思考分类结果")
             print(f"✅ 加载了 {len(slow_results)} 个增强慢思考分类结果")
+            
+            # 关键修复：更新增强结果中的is_correct字段
+            print(f"🔄 更新增强结果中的is_correct字段...")
+            for result in fast_results + slow_results:
+                true_category = result.get("true_category")
+                final_prediction = result.get("final_prediction")
+                if true_category and final_prediction:
+                    result["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
+            print(f"✅ 已更新所有增强结果的is_correct字段")
         except Exception as e:
             print(f"❌ 加载增强结果失败: {e}")
+            import traceback
+            traceback.print_exc()
             sys.exit(1)
         
         # 检查需要终端决策的样本
@@ -2639,12 +2647,9 @@ if __name__ == "__main__":
         # 重新计算slow_triggered_correct，包含终端决策的结果（与terminal_decision模式保持一致）
         slow_triggered_correct = 0
         for r in slow_results:
-            if r.get("decision_path") == "slow_consistent":
-                # 一致的慢思考样本
-                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
-            elif r.get("decision_path") == "enhanced_arbitration":
-                # 经过终端决策的样本
-                slow_triggered_correct += 1 if r.get("is_correct", False) else 0
+            # 所有慢思考触发的样本，只要最终正确就计入
+            if r.get("is_correct", False):
+                slow_triggered_correct += 1
         
         enhanced_accuracy = enhanced_correct / total_samples if total_samples > 0 else 0.0
         fast_only_acc = fast_only_correct / len(fast_results) if len(fast_results) > 0 else 0.0
