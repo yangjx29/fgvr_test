@@ -44,7 +44,7 @@ class MultimodalRetrieval:
         self.clip_processor = CLIPProcessor.from_pretrained(image_encoder_name, local_files_only=True)
         
         # 延迟加载BLIP模型：只在使用cross_atten融合方法时才加载
-        self.blip_load_path = '/home/Dataset/Models/blip/blip2-flan-t5-xxl'
+        self.blip_load_path = './models/Blip/blip2-flan-t5-xxl'
         self.blip_processor = None
         self.blip_model = None
         

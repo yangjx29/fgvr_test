@@ -582,7 +582,7 @@ def create_long_tail_discovery_set(root, files, targets, class_names, selection=
 
 
 if __name__ == "__main__":
-    root = "/home/miu/GoldsGym/global_datasets/pet_37"
+    root = "./datasets/pet_37"
     tfms = _transform(224)
 
     dataset = PetDataset(root, train=True, transform=tfms)

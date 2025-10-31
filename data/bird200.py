@@ -472,7 +472,7 @@ def create_long_tail_discovery_set(root, files, targets, class_names, selection=
 
 
 if __name__ == "__main__":
-    root = "/home/miu/GoldsGym/global_datasets/CUB_200_2011/CUB_200_2011"
+    root = "./datasets/CUB_200_2011/CUB_200_2011"
     tfms = _transform(224)
     cfg = {
         "data_dir": root,
