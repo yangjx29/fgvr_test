@@ -1,0 +1,1056 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='build_knowledge_base', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='4', knowledge_base_dir='./experiments/pet37/knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir=None, classify_dir=None)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.14s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.18s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.17s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.17s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.64s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.88s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+Pet37 subcat_to_sample: {'German Shorthaired': ['./datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_122.jpg', './datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_175.jpg', './datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_104.jpg', './datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_155.jpg'], 'Beagle': ['./datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_175.jpg', './datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_157.jpg', './datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_164.jpg', './datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_140.jpg'], 'Staffordshire Bull Terrier': ['./datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_165.jpg', './datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_181.jpg', './datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_179.jpg', './datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_152.jpg'], 'Keeshond': ['./datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_117.jpg', './datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_128.jpg', './datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_104.jpg', './datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_142.jpg'], 'Saint Bernard': ['./datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_178.jpg', './datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_169.jpg', './datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_156.jpg', './datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_170.jpg'], 'Ragdoll': ['./datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_143.jpg', './datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_134.jpg', './datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_153.jpg', './datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_172.jpg'], 'Havanese': ['./datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_139.jpg', './datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_175.jpg', './datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_135.jpg', './datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_133.jpg'], 'Pug': ['./datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_165.jpg', './datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_117.jpg', './datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_13.jpg', './datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_105.jpg'], 'Great Pyrenees': ['./datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_106.jpg', './datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg', './datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_134.jpg', './datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_103.jpg'], 'English Cocker Spaniel': ['./datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_165.jpg', './datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_101.jpg', './datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_11.jpg', './datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_140.jpg'], 'Miniature Pinscher': ['./datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_121.jpg', './datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_160.jpg', './datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_106.jpg', './datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_110.jpg'], 'Japanese Chin': ['./datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_17.jpg', './datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_171.jpg', './datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_127.jpg', './datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_150.jpg'], 'Scottish Terrier': ['./datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_148.jpg', './datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_173.jpg', './datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_176.jpg', './datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_179.jpg'], 'Newfoundland': ['./datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_118.jpg', './datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_134.jpg', './datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_140.jpg', './datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_16.jpg'], 'Shiba Inu': ['./datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_137.jpg', './datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_173.jpg', './datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_108.jpg', './datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_157.jpg'], 'Basset Hound': ['./datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_153.jpg', './datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_135.jpg', './datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_155.jpg', './datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_129.jpg'], 'Chihuahua': ['./datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_179.jpg', './datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_132.jpg', './datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_158.jpg', './datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_116.jpg'], 'Samoyed': ['./datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_139.jpg', './datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_11.jpg', './datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_101.jpg', './datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_114.jpg'], 'Sphynx': ['./datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_166.jpg', './datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_110.jpg', './datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_143.jpg', './datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_160.jpg'], 'Leonberger': ['./datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_138.jpg', './datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_136.jpg', './datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_173.jpg', './datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_181.jpg'], 'Birman': ['./datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_133.jpg', './datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_156.jpg', './datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_179.jpg', './datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_134.jpg'], 'Bombay': ['./datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_10.jpg', './datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_151.jpg', './datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_148.jpg', './datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_166.jpg'], 'Maine Coon': ['./datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_171.jpg', './datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_104.jpg', './datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_141.jpg', './datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_176.jpg'], 'Siamese': ['./datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_157.jpg', './datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_119.jpg', './datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_143.jpg', './datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_164.jpg'], 'Bengal': ['./datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_122.jpg', './datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_190.jpg', './datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_119.jpg', './datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_191.jpg'], 'Abyssinian': ['./datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_106.jpg', './datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_136.jpg', './datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_148.jpg', './datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_146.jpg'], 'Yorkshire Terrier': ['./datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_102.jpg', './datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_14.jpg', './datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_183.jpg', './datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_161.jpg'], 'Russian Blue': ['./datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_100.jpg', './datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_151.jpg', './datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_137.jpg', './datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_103.jpg'], 'Persian': ['./datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_102.jpg', './datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_181.jpg', './datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_104.jpg', './datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_176.jpg'], 'English Setter': ['./datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_181.jpg', './datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_183.jpg', './datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_143.jpg', './datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_129.jpg'], 'Boxer': ['./datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_189.jpg', './datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_174.jpg', './datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_183.jpg', './datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_101.jpg'], 'Pomeranian': ['./datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_17.jpg', './datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_178.jpg', './datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_100.jpg', './datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_130.jpg'], 'American Pit Bull Terrier': ['./datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_18.jpg', './datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_142.jpg', './datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_108.jpg', './datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_136.jpg'], 'Wheaten Terrier': ['./datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_182.jpg', './datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_13.jpg', './datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_140.jpg', './datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_186.jpg'], 'British Shorthair': ['./datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_166.jpg', './datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_145.jpg', './datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_108.jpg', './datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_100.jpg'], 'Egyptian Mau': ['./datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_13.jpg', './datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_165.jpg', './datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_138.jpg', './datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_14.jpg'], 'American Bulldog': ['./datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_115.jpg', './datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_144.jpg', './datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_135.jpg', './datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_16.jpg']}
+构建知识库，包含 37 个类别, dog datasets:37
+从 ./experiments/pet37/knowledge_base 加载知识库...
+类别图像路径已从旧位置 ./experiments/pet37/knowledge_base/category_images_path/category_image_paths.json 加载
+加载了 37 个类别的图像路径
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 37 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/37 [00:00<?, ?it/s]  3%|▎         | 1/37 [00:00<00:13,  2.59it/s]  8%|▊         | 3/37 [00:00<00:04,  7.26it/s] 16%|█▌        | 6/37 [00:00<00:02, 12.17it/s] 24%|██▍       | 9/37 [00:00<00:01, 15.15it/s] 32%|███▏      | 12/37 [00:00<00:01, 17.38it/s] 41%|████      | 15/37 [00:01<00:01, 18.54it/s] 49%|████▊     | 18/37 [00:01<00:00, 19.94it/s] 57%|█████▋    | 21/37 [00:01<00:00, 20.32it/s] 65%|██████▍   | 24/37 [00:01<00:00, 20.57it/s] 73%|███████▎  | 27/37 [00:01<00:00, 20.10it/s] 81%|████████  | 30/37 [00:01<00:00, 21.68it/s] 89%|████████▉ | 33/37 [00:01<00:00, 22.85it/s] 97%|█████████▋| 36/37 [00:02<00:00, 18.76it/s]100%|██████████| 37/37 [00:02<00:00, 17.47it/s]
+处理类别: German Shorthaired
+类别 German Shorthaired 图像特征维度: (512,)
+处理类别: Beagle
+类别 Beagle 图像特征维度: (512,)
+处理类别: Staffordshire Bull Terrier
+类别 Staffordshire Bull Terrier 图像特征维度: (512,)
+处理类别: Keeshond
+类别 Keeshond 图像特征维度: (512,)
+处理类别: Saint Bernard
+类别 Saint Bernard 图像特征维度: (512,)
+处理类别: Ragdoll
+类别 Ragdoll 图像特征维度: (512,)
+处理类别: Havanese
+类别 Havanese 图像特征维度: (512,)
+处理类别: Pug
+类别 Pug 图像特征维度: (512,)
+处理类别: Great Pyrenees
+类别 Great Pyrenees 图像特征维度: (512,)
+处理类别: English Cocker Spaniel
+类别 English Cocker Spaniel 图像特征维度: (512,)
+处理类别: Miniature Pinscher
+类别 Miniature Pinscher 图像特征维度: (512,)
+处理类别: Japanese Chin
+类别 Japanese Chin 图像特征维度: (512,)
+处理类别: Scottish Terrier
+类别 Scottish Terrier 图像特征维度: (512,)
+处理类别: Newfoundland
+类别 Newfoundland 图像特征维度: (512,)
+处理类别: Shiba Inu
+类别 Shiba Inu 图像特征维度: (512,)
+处理类别: Basset Hound
+类别 Basset Hound 图像特征维度: (512,)
+处理类别: Chihuahua
+类别 Chihuahua 图像特征维度: (512,)
+处理类别: Samoyed
+类别 Samoyed 图像特征维度: (512,)
+处理类别: Sphynx
+类别 Sphynx 图像特征维度: (512,)
+处理类别: Leonberger
+类别 Leonberger 图像特征维度: (512,)
+处理类别: Birman
+类别 Birman 图像特征维度: (512,)
+处理类别: Bombay
+类别 Bombay 图像特征维度: (512,)
+处理类别: Maine Coon
+类别 Maine Coon 图像特征维度: (512,)
+处理类别: Siamese
+类别 Siamese 图像特征维度: (512,)
+处理类别: Bengal
+类别 Bengal 图像特征维度: (512,)
+处理类别: Abyssinian
+类别 Abyssinian 图像特征维度: (512,)
+处理类别: Yorkshire Terrier
+类别 Yorkshire Terrier 图像特征维度: (512,)
+处理类别: Russian Blue
+类别 Russian Blue 图像特征维度: (512,)
+处理类别: Persian
+类别 Persian 图像特征维度: (512,)
+处理类别: English Setter
+类别 English Setter 图像特征维度: (512,)
+处理类别: Boxer
+类别 Boxer 图像特征维度: (512,)
+处理类别: Pomeranian
+类别 Pomeranian 图像特征维度: (512,)
+处理类别: American Pit Bull Terrier
+类别 American Pit Bull Terrier 图像特征维度: (512,)
+处理类别: Wheaten Terrier
+类别 Wheaten Terrier 图像特征维度: (512,)
+处理类别: British Shorthair
+类别 British Shorthair 图像特征维度: (512,)
+处理类别: Egyptian Mau
+类别 Egyptian Mau 图像特征维度: (512,)
+处理类别: American Bulldog
+类别 American Bulldog 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/37 [00:00<?, ?it/s]  0%|          | 0/37 [00:27<?, ?it/s]
+处理类别: German Shorthaired
+wiki desc: Description for German Shorthaired category.
+MLLM description: The German Shorthaired Pointer is a versatile hunting dog known for its distinctive physical features, color patterns, size, and energetic behavior.
+
+1. **Distinctive Physical Features**: German Shorthaired Pointers have a medium to large-sized body with a broad head, long muzzle, and floppy ears. Their eyes are almond-shaped and expressive, often appearing alert and intelligent. They have a short, dense coat that can come in various colors, including liver, black, brown, or white, sometimes with white markings.
+
+2. **Color Patterns and Markings**: The breed's coat can vary widely in color, but it typically has a solid color or a combination of liver and white, with some dogs having a brindle pattern. The white markings can range from a small patch on the chest to a full white blaze down the center of the face. The coat is short and smooth, giving the dog a sleek appearance.
+
+3. **Size and Proportions**: German Shorthaired Pointers are medium to large-sized dogs, with males typically weighing between 60-75 pounds and females slightly lighter at around 50-65 pounds. They have a strong, muscular build with a deep chest and a level back. Their legs are straight and powerful, supporting
+构建知识库时出错: list indices must be integers or slices, not str
+使用已加载的知识库
+
+开始初始化LCB统计参数...
+test train_samples:defaultdict(<class 'list'>, {'German Shorthaired': ['./datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_122.jpg', './datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_175.jpg', './datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_104.jpg', './datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_155.jpg'], 'Beagle': ['./datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_175.jpg', './datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_157.jpg', './datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_164.jpg', './datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_140.jpg'], 'Staffordshire Bull Terrier': ['./datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_165.jpg', './datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_181.jpg', './datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_179.jpg', './datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_152.jpg'], 'Keeshond': ['./datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_117.jpg', './datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_128.jpg', './datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_104.jpg', './datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_142.jpg'], 'Saint Bernard': ['./datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_178.jpg', './datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_169.jpg', './datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_156.jpg', './datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_170.jpg'], 'Ragdoll': ['./datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_143.jpg', './datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_134.jpg', './datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_153.jpg', './datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_172.jpg'], 'Havanese': ['./datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_139.jpg', './datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_175.jpg', './datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_135.jpg', './datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_133.jpg'], 'Pug': ['./datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_165.jpg', './datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_117.jpg', './datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_13.jpg', './datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_105.jpg'], 'Great Pyrenees': ['./datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_106.jpg', './datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg', './datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_134.jpg', './datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_103.jpg'], 'English Cocker Spaniel': ['./datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_165.jpg', './datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_101.jpg', './datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_11.jpg', './datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_140.jpg'], 'Miniature Pinscher': ['./datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_121.jpg', './datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_160.jpg', './datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_106.jpg', './datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_110.jpg'], 'Japanese Chin': ['./datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_17.jpg', './datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_171.jpg', './datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_127.jpg', './datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_150.jpg'], 'Scottish Terrier': ['./datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_148.jpg', './datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_173.jpg', './datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_176.jpg', './datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_179.jpg'], 'Newfoundland': ['./datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_118.jpg', './datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_134.jpg', './datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_140.jpg', './datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_16.jpg'], 'Shiba Inu': ['./datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_137.jpg', './datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_173.jpg', './datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_108.jpg', './datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_157.jpg'], 'Basset Hound': ['./datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_153.jpg', './datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_135.jpg', './datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_155.jpg', './datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_129.jpg'], 'Chihuahua': ['./datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_179.jpg', './datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_132.jpg', './datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_158.jpg', './datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_116.jpg'], 'Samoyed': ['./datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_139.jpg', './datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_11.jpg', './datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_101.jpg', './datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_114.jpg'], 'Sphynx': ['./datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_166.jpg', './datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_110.jpg', './datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_143.jpg', './datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_160.jpg'], 'Leonberger': ['./datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_138.jpg', './datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_136.jpg', './datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_173.jpg', './datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_181.jpg'], 'Birman': ['./datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_133.jpg', './datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_156.jpg', './datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_179.jpg', './datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_134.jpg'], 'Bombay': ['./datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_10.jpg', './datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_151.jpg', './datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_148.jpg', './datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_166.jpg'], 'Maine Coon': ['./datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_171.jpg', './datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_104.jpg', './datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_141.jpg', './datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_176.jpg'], 'Siamese': ['./datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_157.jpg', './datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_119.jpg', './datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_143.jpg', './datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_164.jpg'], 'Bengal': ['./datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_122.jpg', './datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_190.jpg', './datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_119.jpg', './datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_191.jpg'], 'Abyssinian': ['./datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_106.jpg', './datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_136.jpg', './datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_148.jpg', './datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_146.jpg'], 'Yorkshire Terrier': ['./datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_102.jpg', './datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_14.jpg', './datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_183.jpg', './datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_161.jpg'], 'Russian Blue': ['./datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_100.jpg', './datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_151.jpg', './datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_137.jpg', './datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_103.jpg'], 'Persian': ['./datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_102.jpg', './datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_181.jpg', './datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_104.jpg', './datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_176.jpg'], 'English Setter': ['./datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_181.jpg', './datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_183.jpg', './datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_143.jpg', './datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_129.jpg'], 'Boxer': ['./datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_189.jpg', './datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_174.jpg', './datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_183.jpg', './datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_101.jpg'], 'Pomeranian': ['./datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_17.jpg', './datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_178.jpg', './datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_100.jpg', './datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_130.jpg'], 'American Pit Bull Terrier': ['./datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_18.jpg', './datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_142.jpg', './datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_108.jpg', './datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_136.jpg'], 'Wheaten Terrier': ['./datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_182.jpg', './datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_13.jpg', './datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_140.jpg', './datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_186.jpg'], 'British Shorthair': ['./datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_166.jpg', './datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_145.jpg', './datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_108.jpg', './datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_100.jpg'], 'Egyptian Mau': ['./datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_13.jpg', './datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_165.jpg', './datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_138.jpg', './datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_14.jpg'], 'American Bulldog': ['./datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_115.jpg', './datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_144.jpg', './datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_135.jpg', './datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_16.jpg']})
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_122.jpg
+图像检索结果: German Shorthaired (置信度: 0.8554)
+文本检索结果: German Shorthaired (置信度: 0.3299)
+融合结果: [('German Shorthaired', 0.36842155996404713), ('Scottish Terrier', 0.18120518331566163), ('English Setter', 0.16400778973622926)]
+快思考结果: German Shorthaired (置信度: 0.8239)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_175.jpg
+图像检索结果: German Shorthaired (置信度: 0.8546)
+文本检索结果: German Shorthaired (置信度: 0.3017)
+融合结果: [('German Shorthaired', 0.30213510188900056), ('Boxer', 0.1984562353726478), ('Basset Hound', 0.18807555749379115)]
+快思考结果: German Shorthaired (置信度: 0.5884)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_104.jpg
+图像检索结果: German Shorthaired (置信度: 0.8473)
+文本检索结果: German Shorthaired (置信度: 0.3346)
+融合结果: [('German Shorthaired', 0.37863347027145444), ('English Setter', 0.2846361020114966), ('Basset Hound', 0.11568001443668016)]
+快思考结果: German Shorthaired (置信度: 0.7468)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/014.German_Shorthaired/014.German_Shorthaired_155.jpg
+图像检索结果: German Shorthaired (置信度: 0.8430)
+文本检索结果: German Shorthaired (置信度: 0.3421)
+融合结果: [('German Shorthaired', 0.36697768959842747), ('English Setter', 0.17403133739867518), ('Newfoundland', 0.1686463908307136)]
+快思考结果: German Shorthaired (置信度: 0.8196)
+需要慢思考: False
+类别 German Shorthaired: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_175.jpg
+图像检索结果: Beagle (置信度: 0.8155)
+文本检索结果: Beagle (置信度: 0.3010)
+融合结果: [('Beagle', 0.273744123612271), ('Shiba Inu', 0.24520113174953767), ('American Bulldog', 0.16367601314707406)]
+快思考结果: conflict (置信度: 0.3673)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_157.jpg
+图像检索结果: Basset Hound (置信度: 0.8167)
+文本检索结果: Beagle (置信度: 0.3246)
+融合结果: [('Beagle', 0.33008281118234023), ('Basset Hound', 0.30658716759641985), ('German Shorthaired', 0.1340702803835036)]
+快思考结果: conflict (置信度: 0.3106)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_164.jpg
+图像检索结果: Beagle (置信度: 0.8483)
+文本检索结果: Beagle (置信度: 0.2979)
+融合结果: [('Beagle', 0.2562234306677443), ('Chihuahua', 0.24565609549322434), ('Shiba Inu', 0.20157740796132692)]
+快思考结果: conflict (置信度: 0.2707)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/004.Beagle/004.Beagle_140.jpg
+图像检索结果: Beagle (置信度: 0.8165)
+文本检索结果: Beagle (置信度: 0.2911)
+融合结果: [('Beagle', 0.3629448780759436), ('Basset Hound', 0.2656505660183968), ('Boxer', 0.14047769252506512)]
+快思考结果: Beagle (置信度: 0.7358)
+需要慢思考: False
+类别 Beagle: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_165.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 0.8698)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.3171)
+融合结果: [('Staffordshire Bull Terrier', 0.291733568344937), ('American Pit Bull Terrier', 0.23605073555670697), ('Boxer', 0.19233041792474703)]
+快思考结果: conflict (置信度: 0.3037)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_181.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 0.8496)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.2901)
+融合结果: [('Staffordshire Bull Terrier', 0.29841463807664936), ('American Pit Bull Terrier', 0.20776605806320386), ('German Shorthaired', 0.1872951017256828)]
+快思考结果: Staffordshire Bull Terrier (置信度: 0.5666)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_179.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 0.8436)
+文本检索结果: American Pit Bull Terrier (置信度: 0.3118)
+融合结果: [('Staffordshire Bull Terrier', 0.2576490660663448), ('American Pit Bull Terrier', 0.25069309305394805), ('American Bulldog', 0.23669890403114277)]
+快思考结果: conflict (置信度: 0.2840)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_152.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 0.8144)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.2882)
+融合结果: [('Staffordshire Bull Terrier', 0.2946119958504302), ('American Pit Bull Terrier', 0.20797835490673264), ('Boxer', 0.2001034954126926)]
+快思考结果: conflict (置信度: 0.3812)
+需要慢思考: True
+类别 Staffordshire Bull Terrier: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_117.jpg
+图像检索结果: Keeshond (置信度: 0.8580)
+文本检索结果: Keeshond (置信度: 0.3676)
+融合结果: [('Keeshond', 0.3876354599341017), ('Pomeranian', 0.22398742302618938), ('Samoyed', 0.1598451742466541)]
+快思考结果: Keeshond (置信度: 0.8472)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_128.jpg
+图像检索结果: Keeshond (置信度: 0.8411)
+文本检索结果: Keeshond (置信度: 0.3501)
+融合结果: [('Keeshond', 0.3957290047749144), ('Pomeranian', 0.17567476336994478), ('Leonberger', 0.15647334540410646)]
+快思考结果: Keeshond (置信度: 0.8832)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_104.jpg
+图像检索结果: Keeshond (置信度: 0.7991)
+文本检索结果: Keeshond (置信度: 0.3544)
+融合结果: [('Keeshond', 0.3705799156769377), ('Pomeranian', 0.2302055397100987), ('Samoyed', 0.1517668039552749)]
+快思考结果: Keeshond (置信度: 0.8007)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/018.Keeshond/018.Keeshond_142.jpg
+图像检索结果: Keeshond (置信度: 0.8195)
+文本检索结果: Leonberger (置信度: 0.3166)
+融合结果: [('Leonberger', 0.27662674384038954), ('Wheaten Terrier', 0.20041487450080533), ('Keeshond', 0.19806616958225887)]
+快思考结果: conflict (置信度: 0.2773)
+需要慢思考: True
+类别 Keeshond: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_178.jpg
+图像检索结果: Saint Bernard (置信度: 0.8500)
+文本检索结果: Saint Bernard (置信度: 0.3341)
+融合结果: [('Saint Bernard', 0.3321044946058852), ('English Setter', 0.21454897313385685), ('Great Pyrenees', 0.19579591388030657)]
+快思考结果: Saint Bernard (置信度: 0.6869)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_169.jpg
+图像检索结果: Saint Bernard (置信度: 0.8585)
+文本检索结果: Saint Bernard (置信度: 0.3438)
+融合结果: [('Saint Bernard', 0.34430589321695393), ('English Setter', 0.1718680158738167), ('Basset Hound', 0.15958485021262844)]
+快思考结果: Saint Bernard (置信度: 0.7594)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_156.jpg
+图像检索结果: Saint Bernard (置信度: 0.8054)
+文本检索结果: Saint Bernard (置信度: 0.3477)
+融合结果: [('Saint Bernard', 0.38768841121040404), ('Leonberger', 0.19728784868794103), ('Great Pyrenees', 0.17757525975032457)]
+快思考结果: Saint Bernard (置信度: 0.8560)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/028.Saint_Bernard/028.Saint_Bernard_170.jpg
+图像检索结果: Saint Bernard (置信度: 0.8397)
+文本检索结果: Saint Bernard (置信度: 0.3548)
+融合结果: [('Saint Bernard', 0.39420401546798767), ('Boxer', 0.17766998340525933), ('Leonberger', 0.15306135649009356)]
+快思考结果: Saint Bernard (置信度: 0.8796)
+需要慢思考: False
+类别 Saint Bernard: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_143.jpg
+图像检索结果: Ragdoll (置信度: 0.8997)
+文本检索结果: Ragdoll (置信度: 0.3386)
+融合结果: [('Ragdoll', 0.28132687154851976), ('Birman', 0.1999008560088225), ('Persian', 0.1876417892083289)]
+快思考结果: conflict (置信度: 0.2951)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_134.jpg
+图像检索结果: Ragdoll (置信度: 0.8988)
+文本检索结果: Ragdoll (置信度: 0.3317)
+融合结果: [('Ragdoll', 0.2920005822523695), ('Birman', 0.23727316795855244), ('Persian', 0.18046952798329313)]
+快思考结果: conflict (置信度: 0.3382)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_153.jpg
+图像检索结果: Ragdoll (置信度: 0.8829)
+文本检索结果: Ragdoll (置信度: 0.3213)
+融合结果: [('Ragdoll', 0.29547629598222797), ('Birman', 0.2616253288026901), ('Siamese', 0.163136775605426)]
+快思考结果: conflict (置信度: 0.3621)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/026.Ragdoll/026.Ragdoll_172.jpg
+图像检索结果: Ragdoll (置信度: 0.8952)
+文本检索结果: Ragdoll (置信度: 0.3189)
+融合结果: [('Ragdoll', 0.33034121934019156), ('Birman', 0.24062056890695768), ('Siamese', 0.18813322568460114)]
+快思考结果: Ragdoll (置信度: 0.6541)
+需要慢思考: False
+类别 Ragdoll: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_139.jpg
+图像检索结果: Havanese (置信度: 0.8787)
+文本检索结果: Havanese (置信度: 0.2906)
+融合结果: [('Havanese', 0.35282823238216465), ('English Cocker Spaniel', 0.21653781361244637), ('German Shorthaired', 0.1471600876204551)]
+快思考结果: Havanese (置信度: 0.7628)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_175.jpg
+图像检索结果: Havanese (置信度: 0.9011)
+文本检索结果: Havanese (置信度: 0.3187)
+融合结果: [('Havanese', 0.4018149623616797), ('Wheaten Terrier', 0.16826381846629102), ('English Cocker Spaniel', 0.153079170131311)]
+快思考结果: Havanese (置信度: 0.8945)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_135.jpg
+图像检索结果: Havanese (置信度: 0.8884)
+文本检索结果: Havanese (置信度: 0.3330)
+融合结果: [('Havanese', 0.2984867641671759), ('Yorkshire Terrier', 0.23279458363690683), ('Japanese Chin', 0.17430508602415104)]
+快思考结果: Havanese (置信度: 0.5499)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/016.Havanese/016.Havanese_133.jpg
+图像检索结果: Havanese (置信度: 0.8767)
+文本检索结果: Havanese (置信度: 0.3380)
+融合结果: [('Havanese', 0.30722487512670577), ('Yorkshire Terrier', 0.18583863158860514), ('Wheaten Terrier', 0.1767711669687302)]
+快思考结果: Havanese (置信度: 0.6165)
+需要慢思考: False
+类别 Havanese: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_165.jpg
+图像检索结果: Pug (置信度: 0.8448)
+文本检索结果: Pug (置信度: 0.2745)
+融合结果: [('Pug', 0.37909876200996456), ('Scottish Terrier', 0.17394399424233745), ('Chihuahua', 0.16140663489066082)]
+快思考结果: Pug (置信度: 0.8499)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_117.jpg
+图像检索结果: Pug (置信度: 0.8538)
+文本检索结果: Pug (置信度: 0.3044)
+融合结果: [('Pug', 0.34634878430210175), ('American Bulldog', 0.2024154634710403), ('Wheaten Terrier', 0.16171692181383152)]
+快思考结果: Pug (置信度: 0.7529)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_13.jpg
+图像检索结果: Pug (置信度: 0.8737)
+文本检索结果: Pug (置信度: 0.3300)
+融合结果: [('Pug', 0.3705842414840323), ('Boxer', 0.1959674896236511), ('Japanese Chin', 0.14757915074153552)]
+快思考结果: Pug (置信度: 0.8254)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/025.Pug/025.Pug_105.jpg
+图像检索结果: Pug (置信度: 0.8704)
+文本检索结果: Pug (置信度: 0.3413)
+融合结果: [('Pug', 0.45791080388866484), ('American Bulldog', 0.16855254327097247), ('German Shorthaired', 0.1265834414414943)]
+快思考结果: Pug (置信度: 0.9564)
+需要慢思考: False
+类别 Pug: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_106.jpg
+图像检索结果: Great Pyrenees (置信度: 0.8596)
+文本检索结果: Great Pyrenees (置信度: 0.3812)
+融合结果: [('Great Pyrenees', 0.36849897894702976), ('Samoyed', 0.18041954790392228), ('Wheaten Terrier', 0.15864481860919602)]
+快思考结果: Great Pyrenees (置信度: 0.8238)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg
+图像检索结果: Great Pyrenees (置信度: 0.8422)
+文本检索结果: Great Pyrenees (置信度: 0.3400)
+融合结果: [('Great Pyrenees', 0.4004467332705122), ('Samoyed', 0.21288814777808804), ('Newfoundland', 0.14352004388495096)]
+快思考结果: Great Pyrenees (置信度: 0.8766)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_134.jpg
+图像检索结果: Great Pyrenees (置信度: 0.8600)
+文本检索结果: Great Pyrenees (置信度: 0.3453)
+融合结果: [('Great Pyrenees', 0.3629868010028464), ('Samoyed', 0.27583452398257874), ('Keeshond', 0.16376012061086911)]
+快思考结果: Great Pyrenees (置信度: 0.7138)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/015.Great_Pyrenees/015.Great_Pyrenees_103.jpg
+图像检索结果: Great Pyrenees (置信度: 0.8642)
+文本检索结果: Great Pyrenees (置信度: 0.3550)
+融合结果: [('Great Pyrenees', 0.35329883489452424), ('Samoyed', 0.1814818860498019), ('Leonberger', 0.15359565029068598)]
+快思考结果: Great Pyrenees (置信度: 0.7845)
+需要慢思考: False
+类别 Great Pyrenees: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_165.jpg
+图像检索结果: English Cocker Spaniel (置信度: 0.8573)
+文本检索结果: Havanese (置信度: 0.2989)
+融合结果: [('Havanese', 0.26154715246518473), ('Scottish Terrier', 0.20336545859613725), ('German Shorthaired', 0.188964481838093)]
+快思考结果: conflict (置信度: 0.2860)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_101.jpg
+图像检索结果: English Cocker Spaniel (置信度: 0.8121)
+文本检索结果: English Setter (置信度: 0.3313)
+融合结果: [('English Setter', 0.4069726703222594), ('Havanese', 0.15020202924647638), ('Basset Hound', 0.14709124798102985)]
+快思考结果: English Setter (置信度: 0.9071)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_11.jpg
+图像检索结果: English Cocker Spaniel (置信度: 0.8679)
+文本检索结果: German Shorthaired (置信度: 0.3284)
+融合结果: [('German Shorthaired', 0.2526556400581709), ('Havanese', 0.24377725650706597), ('Wheaten Terrier', 0.19475172846876102)]
+快思考结果: conflict (置信度: 0.2709)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_140.jpg
+图像检索结果: English Cocker Spaniel (置信度: 0.8699)
+文本检索结果: English Setter (置信度: 0.3336)
+融合结果: [('English Setter', 0.324002549516373), ('English Cocker Spaniel', 0.1814320115372054), ('Basset Hound', 0.172885193771893)]
+快思考结果: English Setter (置信度: 0.6846)
+需要慢思考: False
+类别 English Cocker Spaniel: 2/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_121.jpg
+图像检索结果: Miniature Pinscher (置信度: 0.8887)
+文本检索结果: Miniature Pinscher (置信度: 0.3080)
+融合结果: [('Miniature Pinscher', 0.41775619629465166), ('Chihuahua', 0.16858050758319518), ('Staffordshire Bull Terrier', 0.1529637870393575)]
+快思考结果: Miniature Pinscher (置信度: 0.9174)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_160.jpg
+图像检索结果: Miniature Pinscher (置信度: 0.8900)
+文本检索结果: Miniature Pinscher (置信度: 0.2936)
+融合结果: [('Miniature Pinscher', 0.3985247204049689), ('Chihuahua', 0.21444957717619853), ('Staffordshire Bull Terrier', 0.13062191689243682)]
+快思考结果: Miniature Pinscher (置信度: 0.8742)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_106.jpg
+图像检索结果: Miniature Pinscher (置信度: 0.8980)
+文本检索结果: Miniature Pinscher (置信度: 0.3446)
+融合结果: [('Miniature Pinscher', 0.383650716577397), ('Chihuahua', 0.18909121165352483), ('Shiba Inu', 0.16695854449792513)]
+快思考结果: Miniature Pinscher (置信度: 0.8528)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/021.Miniature_Pinscher/021.Miniature_Pinscher_110.jpg
+图像检索结果: Miniature Pinscher (置信度: 0.8665)
+文本检索结果: Miniature Pinscher (置信度: 0.3560)
+融合结果: [('Miniature Pinscher', 0.3666473025425536), ('Chihuahua', 0.2857740112129719), ('Yorkshire Terrier', 0.11896813744826921)]
+快思考结果: Miniature Pinscher (置信度: 0.7083)
+需要慢思考: False
+类别 Miniature Pinscher: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_17.jpg
+图像检索结果: Pomeranian (置信度: 0.8464)
+文本检索结果: Japanese Chin (置信度: 0.3548)
+融合结果: [('Japanese Chin', 0.4359971319790683), ('Chihuahua', 0.16978670149117192), ('Havanese', 0.1546742440216125)]
+快思考结果: Japanese Chin (置信度: 0.9377)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_171.jpg
+图像检索结果: Japanese Chin (置信度: 0.8568)
+文本检索结果: Japanese Chin (置信度: 0.3671)
+融合结果: [('Japanese Chin', 0.4163729334219557), ('Saint Bernard', 0.14713758682051012), ('Boxer', 0.14423168534560807)]
+快思考结果: Japanese Chin (置信度: 0.9176)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_127.jpg
+图像检索结果: Japanese Chin (置信度: 0.7828)
+文本检索结果: Keeshond (置信度: 0.2631)
+融合结果: [('Keeshond', 0.22349601583402665), ('Pomeranian', 0.20713495775423962), ('Great Pyrenees', 0.1904051461723395)]
+快思考结果: conflict (置信度: 0.3113)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/017.Japanese_Chin/017.Japanese_Chin_150.jpg
+图像检索结果: Japanese Chin (置信度: 0.8322)
+文本检索结果: Japanese Chin (置信度: 0.3256)
+融合结果: [('Japanese Chin', 0.38821080866895735), ('Havanese', 0.158823860625899), ('Pomeranian', 0.15837876056471176)]
+快思考结果: Japanese Chin (置信度: 0.8705)
+需要慢思考: False
+类别 Japanese Chin: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_148.jpg
+图像检索结果: Scottish Terrier (置信度: 0.8254)
+文本检索结果: Scottish Terrier (置信度: 0.3991)
+融合结果: [('Scottish Terrier', 0.5976440900906187), ('Newfoundland', 0.10847247108183819), ('Bombay', 0.10618773182072946)]
+快思考结果: Scottish Terrier (置信度: 0.9962)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_173.jpg
+图像检索结果: Scottish Terrier (置信度: 0.8518)
+文本检索结果: Scottish Terrier (置信度: 0.3535)
+融合结果: [('Scottish Terrier', 0.42661700341545167), ('German Shorthaired', 0.16114790379367788), ('Miniature Pinscher', 0.13754809359236367)]
+快思考结果: Scottish Terrier (置信度: 0.9294)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_176.jpg
+图像检索结果: Scottish Terrier (置信度: 0.8787)
+文本检索结果: Scottish Terrier (置信度: 0.3648)
+融合结果: [('Scottish Terrier', 0.42321509364687027), ('Wheaten Terrier', 0.18378100409470516), ('Yorkshire Terrier', 0.18056416665354083)]
+快思考结果: Scottish Terrier (置信度: 0.9165)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/030.Scottish_Terrier/030.Scottish_Terrier_179.jpg
+图像检索结果: Scottish Terrier (置信度: 0.8383)
+文本检索结果: Scottish Terrier (置信度: 0.2917)
+融合结果: [('Scottish Terrier', 0.2627196261628729), ('Samoyed', 0.20070880665741878), ('Wheaten Terrier', 0.19418317615352587)]
+快思考结果: conflict (置信度: 0.3087)
+需要慢思考: True
+类别 Scottish Terrier: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_118.jpg
+图像检索结果: Newfoundland (置信度: 0.8374)
+文本检索结果: Newfoundland (置信度: 0.3606)
+融合结果: [('Newfoundland', 0.38131837639652316), ('Leonberger', 0.1814749420169861), ('Havanese', 0.15861858958526262)]
+快思考结果: Newfoundland (置信度: 0.8544)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_134.jpg
+图像检索结果: Newfoundland (置信度: 0.8029)
+文本检索结果: Newfoundland (置信度: 0.3212)
+融合结果: [('Newfoundland', 0.38451383653722826), ('Keeshond', 0.1808086694713684), ('Scottish Terrier', 0.1550907612793029)]
+快思考结果: Newfoundland (置信度: 0.8597)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_140.jpg
+图像检索结果: Newfoundland (置信度: 0.8219)
+文本检索结果: Newfoundland (置信度: 0.3467)
+融合结果: [('Newfoundland', 0.30521602276407306), ('Scottish Terrier', 0.26888003507929464), ('Leonberger', 0.16846946487351067)]
+快思考结果: conflict (置信度: 0.2960)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/022.Newfoundland/022.Newfoundland_16.jpg
+图像检索结果: Newfoundland (置信度: 0.8122)
+文本检索结果: Newfoundland (置信度: 0.3067)
+融合结果: [('Newfoundland', 0.3146316075667006), ('Leonberger', 0.18226850484648058), ('Scottish Terrier', 0.17009658450408585)]
+快思考结果: Newfoundland (置信度: 0.6502)
+需要慢思考: False
+类别 Newfoundland: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_137.jpg
+图像检索结果: Shiba Inu (置信度: 0.7717)
+文本检索结果: Shiba Inu (置信度: 0.3107)
+融合结果: [('Shiba Inu', 0.35498997661911075), ('Beagle', 0.20081721847095796), ('Chihuahua', 0.15673904130383143)]
+快思考结果: Shiba Inu (置信度: 0.7785)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_173.jpg
+图像检索结果: Shiba Inu (置信度: 0.7275)
+文本检索结果: Shiba Inu (置信度: 0.2550)
+融合结果: [('Shiba Inu', 0.2636606181009871), ('Siamese', 0.21341526895128207), ('Chihuahua', 0.19810553053541785)]
+快思考结果: conflict (置信度: 0.3033)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_108.jpg
+图像检索结果: Shiba Inu (置信度: 0.8210)
+文本检索结果: Shiba Inu (置信度: 0.3476)
+融合结果: [('Shiba Inu', 0.4516970680996043), ('Samoyed', 0.1726536833711209), ('Pomeranian', 0.15384281892334004)]
+快思考结果: Shiba Inu (置信度: 0.9518)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/031.Shiba_Inu/031.Shiba_Inu_157.jpg
+图像检索结果: Pomeranian (置信度: 0.8067)
+文本检索结果: Saint Bernard (置信度: 0.2972)
+融合结果: [('Saint Bernard', 0.24261196683796327), ('Japanese Chin', 0.22116167624631236), ('Pomeranian', 0.18515850286925953)]
+快思考结果: conflict (置信度: 0.2523)
+需要慢思考: True
+类别 Shiba Inu: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_153.jpg
+图像检索结果: Basset Hound (置信度: 0.9033)
+文本检索结果: Basset Hound (置信度: 0.3473)
+融合结果: [('Basset Hound', 0.42721309903703747), ('German Shorthaired', 0.15155118643313129), ('Beagle', 0.15133093232436784)]
+快思考结果: Basset Hound (置信度: 0.9312)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_135.jpg
+图像检索结果: Basset Hound (置信度: 0.8881)
+文本检索结果: Basset Hound (置信度: 0.3534)
+融合结果: [('Basset Hound', 0.37530944887243334), ('Beagle', 0.22131196046548504), ('German Shorthaired', 0.17745439801660792)]
+快思考结果: Basset Hound (置信度: 0.8160)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_155.jpg
+图像检索结果: Basset Hound (置信度: 0.8822)
+文本检索结果: Basset Hound (置信度: 0.3340)
+融合结果: [('Basset Hound', 0.40874725226007524), ('Beagle', 0.2142285258975573), ('Boxer', 0.13342960709853774)]
+快思考结果: Basset Hound (置信度: 0.8926)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/003.Basset_Hound/003.Basset_Hound_129.jpg
+图像检索结果: Basset Hound (置信度: 0.9068)
+文本检索结果: Basset Hound (置信度: 0.3508)
+融合结果: [('Basset Hound', 0.417711391483174), ('Beagle', 0.2417728435728819), ('Boxer', 0.13227737564889208)]
+快思考结果: Basset Hound (置信度: 0.8886)
+需要慢思考: False
+类别 Basset Hound: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_179.jpg
+图像检索结果: Chihuahua (置信度: 0.8627)
+文本检索结果: Chihuahua (置信度: 0.3038)
+融合结果: [('Chihuahua', 0.32838485333763184), ('Miniature Pinscher', 0.28833482126074456), ('Sphynx', 0.13661571601553568)]
+快思考结果: Chihuahua (置信度: 0.5674)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_132.jpg
+图像检索结果: Chihuahua (置信度: 0.8680)
+文本检索结果: Beagle (置信度: 0.2743)
+融合结果: [('Beagle', 0.23136958423997087), ('Chihuahua', 0.21415164303029696), ('Shiba Inu', 0.19797727768459628)]
+快思考结果: conflict (置信度: 0.3358)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_158.jpg
+图像检索结果: Chihuahua (置信度: 0.8120)
+文本检索结果: Chihuahua (置信度: 0.3068)
+融合结果: [('Chihuahua', 0.36682705823026723), ('Japanese Chin', 0.17226120163836786), ('Miniature Pinscher', 0.16838051090164788)]
+快思考结果: Chihuahua (置信度: 0.8191)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/010.Chihuahua/010.Chihuahua_116.jpg
+图像检索结果: Chihuahua (置信度: 0.8659)
+文本检索结果: Chihuahua (置信度: 0.3109)
+融合结果: [('Chihuahua', 0.36853959951244414), ('Miniature Pinscher', 0.19068569480739553), ('Shiba Inu', 0.18554681767859765)]
+快思考结果: Chihuahua (置信度: 0.8136)
+需要慢思考: False
+类别 Chihuahua: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_139.jpg
+图像检索结果: Samoyed (置信度: 0.9041)
+文本检索结果: Samoyed (置信度: 0.3592)
+融合结果: [('Samoyed', 0.32583754900537554), ('Pomeranian', 0.22073230454998632), ('Great Pyrenees', 0.18270686138716954)]
+快思考结果: Samoyed (置信度: 0.6550)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_11.jpg
+图像检索结果: Samoyed (置信度: 0.8752)
+文本检索结果: Samoyed (置信度: 0.3382)
+融合结果: [('Samoyed', 0.3690586516603095), ('Great Pyrenees', 0.19404155290692526), ('Pomeranian', 0.1789017358358951)]
+快思考结果: Samoyed (置信度: 0.8150)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_101.jpg
+图像检索结果: Samoyed (置信度: 0.8371)
+文本检索结果: Samoyed (置信度: 0.3175)
+融合结果: [('Samoyed', 0.37434769365631165), ('Great Pyrenees', 0.2416260579165073), ('Keeshond', 0.15147545575462298)]
+快思考结果: Samoyed (置信度: 0.7994)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/029.Samoyed/029.Samoyed_114.jpg
+图像检索结果: Samoyed (置信度: 0.9089)
+文本检索结果: Samoyed (置信度: 0.3500)
+融合结果: [('Samoyed', 0.34530931058965747), ('Great Pyrenees', 0.21244828147032568), ('Pomeranian', 0.1808998206194492)]
+快思考结果: Samoyed (置信度: 0.7388)
+需要慢思考: False
+类别 Samoyed: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_166.jpg
+图像检索结果: Sphynx (置信度: 0.8352)
+文本检索结果: Sphynx (置信度: 0.3407)
+融合结果: [('Sphynx', 0.40158465150438366), ('Egyptian Mau', 0.17466781297999043), ('Abyssinian', 0.1617668078295768)]
+快思考结果: Sphynx (置信度: 0.8889)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_110.jpg
+图像检索结果: Sphynx (置信度: 0.8523)
+文本检索结果: Sphynx (置信度: 0.3257)
+融合结果: [('Sphynx', 0.2720326879962546), ('Abyssinian', 0.22119542439618417), ('Siamese', 0.21808611387534746)]
+快思考结果: conflict (置信度: 0.3014)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_143.jpg
+图像检索结果: Sphynx (置信度: 0.7991)
+文本检索结果: Sphynx (置信度: 0.3010)
+融合结果: [('Sphynx', 0.26439671087704725), ('Siamese', 0.20785694946685143), ('Egyptian Mau', 0.1796935290578873)]
+快思考结果: conflict (置信度: 0.3849)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/033.Sphynx/033.Sphynx_160.jpg
+图像检索结果: Sphynx (置信度: 0.8409)
+文本检索结果: Sphynx (置信度: 0.3545)
+融合结果: [('Sphynx', 0.37939936611496033), ('Abyssinian', 0.20212415172725398), ('Egyptian Mau', 0.160984134071693)]
+快思考结果: Sphynx (置信度: 0.8409)
+需要慢思考: False
+类别 Sphynx: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_138.jpg
+图像检索结果: Leonberger (置信度: 0.8653)
+文本检索结果: Leonberger (置信度: 0.3652)
+融合结果: [('Leonberger', 0.4063566828116042), ('Newfoundland', 0.1670493768063136), ('Keeshond', 0.1624893983855607)]
+快思考结果: Leonberger (置信度: 0.9016)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_136.jpg
+图像检索结果: Leonberger (置信度: 0.8363)
+文本检索结果: Leonberger (置信度: 0.3785)
+融合结果: [('Leonberger', 0.4158461356505019), ('Newfoundland', 0.18075974327662298), ('Saint Bernard', 0.15000259066148408)]
+快思考结果: Leonberger (置信度: 0.9133)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_173.jpg
+图像检索结果: Leonberger (置信度: 0.8252)
+文本检索结果: Leonberger (置信度: 0.3399)
+融合结果: [('Leonberger', 0.4190312454446417), ('Newfoundland', 0.18142781267243047), ('Saint Bernard', 0.1535066099866988)]
+快思考结果: Leonberger (置信度: 0.9175)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/019.Leonberger/019.Leonberger_181.jpg
+图像检索结果: Leonberger (置信度: 0.8127)
+文本检索结果: Leonberger (置信度: 0.3747)
+融合结果: [('Leonberger', 0.4598094144805533), ('Saint Bernard', 0.18105467418509144), ('Newfoundland', 0.14326115409060128)]
+快思考结果: Leonberger (置信度: 0.9564)
+需要慢思考: False
+类别 Leonberger: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_133.jpg
+图像检索结果: Birman (置信度: 0.8263)
+文本检索结果: Siamese (置信度: 0.3052)
+融合结果: [('Siamese', 0.28158099032004696), ('Birman', 0.24658107957800252), ('Ragdoll', 0.21049640644346254)]
+快思考结果: conflict (置信度: 0.3739)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_156.jpg
+图像检索结果: Ragdoll (置信度: 0.8718)
+文本检索结果: Birman (置信度: 0.3270)
+融合结果: [('Birman', 0.28337093200529734), ('Ragdoll', 0.2731993605848156), ('Persian', 0.19563685595355945)]
+快思考结果: conflict (置信度: 0.2686)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_179.jpg
+图像检索结果: Birman (置信度: 0.8612)
+文本检索结果: Ragdoll (置信度: 0.3181)
+融合结果: [('Birman', 0.24473383552392344), ('Ragdoll', 0.2441479308064781), ('Siamese', 0.19777073879090565)]
+快思考结果: conflict (置信度: 0.3213)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/006.Birman/006.Birman_134.jpg
+图像检索结果: Birman (置信度: 0.8554)
+文本检索结果: Birman (置信度: 0.3772)
+融合结果: [('Birman', 0.2985582986816031), ('Ragdoll', 0.2730040521390976), ('Siamese', 0.20592378173319117)]
+快思考结果: conflict (置信度: 0.2970)
+需要慢思考: True
+类别 Birman: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_10.jpg
+图像检索结果: Bombay (置信度: 0.8349)
+文本检索结果: Bombay (置信度: 0.3242)
+融合结果: [('Bombay', 0.3155113184794051), ('Russian Blue', 0.2271425539191814), ('Siamese', 0.17935695508642802)]
+快思考结果: Bombay (置信度: 0.6195)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_151.jpg
+图像检索结果: Russian Blue (置信度: 0.8450)
+文本检索结果: Bombay (置信度: 0.2979)
+融合结果: [('Bombay', 0.2682009099050871), ('Russian Blue', 0.20965743414123875), ('Siamese', 0.19619034468494373)]
+快思考结果: conflict (置信度: 0.2759)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_148.jpg
+图像检索结果: Bombay (置信度: 0.7822)
+文本检索结果: Bombay (置信度: 0.2938)
+融合结果: [('Bombay', 0.3316820362552268), ('Abyssinian', 0.18970623104839998), ('Scottish Terrier', 0.17772501120491632)]
+快思考结果: Bombay (置信度: 0.7077)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/007.Bombay/007.Bombay_166.jpg
+图像检索结果: Bombay (置信度: 0.8030)
+文本检索结果: Bombay (置信度: 0.3351)
+融合结果: [('Bombay', 0.41365794483266893), ('Russian Blue', 0.1581958249691994), ('Egyptian Mau', 0.14501483817735025)]
+快思考结果: Bombay (置信度: 0.9127)
+需要慢思考: False
+类别 Bombay: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_171.jpg
+图像检索结果: Maine Coon (置信度: 0.8736)
+文本检索结果: Maine Coon (置信度: 0.3104)
+融合结果: [('Maine Coon', 0.32587732318483414), ('Persian', 0.2063499705430122), ('British Shorthair', 0.1833338298849643)]
+快思考结果: Maine Coon (置信度: 0.6782)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_104.jpg
+图像检索结果: Maine Coon (置信度: 0.8570)
+文本检索结果: Maine Coon (置信度: 0.3460)
+融合结果: [('Maine Coon', 0.3111608365520102), ('Persian', 0.20380507637896844), ('Birman', 0.1636586152963222)]
+快思考结果: Maine Coon (置信度: 0.6278)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_141.jpg
+图像检索结果: Maine Coon (置信度: 0.8623)
+文本检索结果: Maine Coon (置信度: 0.3018)
+融合结果: [('Maine Coon', 0.26943130138956134), ('Egyptian Mau', 0.20680206427651068), ('Bengal', 0.19113522712145822)]
+快思考结果: conflict (置信度: 0.2782)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/020.Maine_Coon/020.Maine_Coon_176.jpg
+图像检索结果: Maine Coon (置信度: 0.8129)
+文本检索结果: Maine Coon (置信度: 0.2473)
+融合结果: [('Maine Coon', 0.2860362553938491), ('Persian', 0.21304725422821957), ('Abyssinian', 0.19318745369239457)]
+快思考结果: conflict (置信度: 0.3440)
+需要慢思考: True
+类别 Maine Coon: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_157.jpg
+图像检索结果: Siamese (置信度: 0.8664)
+文本检索结果: Siamese (置信度: 0.3349)
+融合结果: [('Siamese', 0.32053180727802344), ('Ragdoll', 0.2266298369534554), ('Birman', 0.20044658500705737)]
+快思考结果: Siamese (置信度: 0.6313)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_119.jpg
+图像检索结果: Siamese (置信度: 0.8173)
+文本检索结果: Birman (置信度: 0.3124)
+融合结果: [('Siamese', 0.2724473868962131), ('Birman', 0.2655504924710594), ('Ragdoll', 0.25251643676606433)]
+快思考结果: conflict (置信度: 0.3533)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_143.jpg
+图像检索结果: Siamese (置信度: 0.8513)
+文本检索结果: Siamese (置信度: 0.3635)
+融合结果: [('Siamese', 0.3591007063134772), ('Birman', 0.2134036623902859), ('Ragdoll', 0.19916076828089968)]
+快思考结果: Siamese (置信度: 0.7679)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/032.Siamese/032.Siamese_164.jpg
+图像检索结果: Siamese (置信度: 0.8612)
+文本检索结果: Siamese (置信度: 0.3309)
+融合结果: [('Siamese', 0.3202775323732955), ('Abyssinian', 0.189130321938184), ('Sphynx', 0.1791894317619384)]
+快思考结果: Siamese (置信度: 0.6657)
+需要慢思考: False
+类别 Siamese: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_122.jpg
+图像检索结果: Egyptian Mau (置信度: 0.8727)
+文本检索结果: Bengal (置信度: 0.3254)
+融合结果: [('Bengal', 0.37373546413143494), ('Egyptian Mau', 0.24133861414154392), ('Abyssinian', 0.18587391758485444)]
+快思考结果: Bengal (置信度: 0.7870)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_190.jpg
+图像检索结果: Bengal (置信度: 0.8275)
+文本检索结果: Maine Coon (置信度: 0.2458)
+融合结果: [('Maine Coon', 0.2149875616188846), ('Bengal', 0.2071322468094161), ('Egyptian Mau', 0.20363640133587138)]
+快思考结果: conflict (置信度: 0.3359)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_119.jpg
+图像检索结果: Bengal (置信度: 0.8695)
+文本检索结果: Bengal (置信度: 0.3244)
+融合结果: [('Bengal', 0.34050978664003434), ('Egyptian Mau', 0.2524289862282814), ('Abyssinian', 0.17405155990568416)]
+快思考结果: Bengal (置信度: 0.6772)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/005.Bengal/005.Bengal_191.jpg
+图像检索结果: Bengal (置信度: 0.8640)
+文本检索结果: Bengal (置信度: 0.3499)
+融合结果: [('Bengal', 0.337304013405667), ('Egyptian Mau', 0.2351878234215321), ('Abyssinian', 0.20846372926755555)]
+快思考结果: Bengal (置信度: 0.6723)
+需要慢思考: False
+类别 Bengal: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_106.jpg
+图像检索结果: Abyssinian (置信度: 0.8279)
+文本检索结果: Abyssinian (置信度: 0.3755)
+融合结果: [('Abyssinian', 0.37499932441555084), ('Bengal', 0.17363800709286042), ('Siamese', 0.15953596169276843)]
+快思考结果: Abyssinian (置信度: 0.8427)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_136.jpg
+图像检索结果: Abyssinian (置信度: 0.8456)
+文本检索结果: Abyssinian (置信度: 0.3553)
+融合结果: [('Abyssinian', 0.3441447520598036), ('Siamese', 0.17959116418210286), ('British Shorthair', 0.1766967192772896)]
+快思考结果: Abyssinian (置信度: 0.7494)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_148.jpg
+图像检索结果: Abyssinian (置信度: 0.8083)
+文本检索结果: Abyssinian (置信度: 0.3294)
+融合结果: [('Abyssinian', 0.4252016926153761), ('Siamese', 0.15032101129331896), ('Maine Coon', 0.14603943382540055)]
+快思考结果: Abyssinian (置信度: 0.9279)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/000.Abyssinian/000.Abyssinian_146.jpg
+图像检索结果: Abyssinian (置信度: 0.8572)
+文本检索结果: Abyssinian (置信度: 0.3233)
+融合结果: [('Abyssinian', 0.25787934902750076), ('Siamese', 0.22152980570831607), ('Egyptian Mau', 0.18565420299135166)]
+快思考结果: conflict (置信度: 0.2649)
+需要慢思考: True
+类别 Abyssinian: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_102.jpg
+图像检索结果: Yorkshire Terrier (置信度: 0.8227)
+文本检索结果: Yorkshire Terrier (置信度: 0.2927)
+融合结果: [('Yorkshire Terrier', 0.3431633824452025), ('Havanese', 0.24257374788003583), ('Pomeranian', 0.1543905616752685)]
+快思考结果: Yorkshire Terrier (置信度: 0.7053)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_14.jpg
+图像检索结果: Yorkshire Terrier (置信度: 0.8339)
+文本检索结果: Yorkshire Terrier (置信度: 0.3220)
+融合结果: [('Yorkshire Terrier', 0.2951310494884116), ('Wheaten Terrier', 0.21808371474185295), ('Scottish Terrier', 0.17339007267876275)]
+快思考结果: Yorkshire Terrier (置信度: 0.5499)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_183.jpg
+图像检索结果: Yorkshire Terrier (置信度: 0.8434)
+文本检索结果: Yorkshire Terrier (置信度: 0.3088)
+融合结果: [('Yorkshire Terrier', 0.32862514946304383), ('Havanese', 0.22775522778111118), ('Scottish Terrier', 0.18772969553394922)]
+快思考结果: Yorkshire Terrier (置信度: 0.6589)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/036.Yorkshire_Terrier/036.Yorkshire_Terrier_161.jpg
+图像检索结果: Havanese (置信度: 0.8429)
+文本检索结果: Yorkshire Terrier (置信度: 0.3134)
+融合结果: [('Yorkshire Terrier', 0.35844897679050786), ('Havanese', 0.21124824932773928), ('Scottish Terrier', 0.16022702017946847)]
+快思考结果: Yorkshire Terrier (置信度: 0.7808)
+需要慢思考: False
+类别 Yorkshire Terrier: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_100.jpg
+图像检索结果: Russian Blue (置信度: 0.8820)
+文本检索结果: Russian Blue (置信度: 0.3492)
+融合结果: [('Russian Blue', 0.34878854695402206), ('British Shorthair', 0.24734213585334439), ('Siamese', 0.15950332600919023)]
+快思考结果: Russian Blue (置信度: 0.7183)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_151.jpg
+图像检索结果: Russian Blue (置信度: 0.8727)
+文本检索结果: Russian Blue (置信度: 0.2986)
+融合结果: [('Russian Blue', 0.2527137020572287), ('Siamese', 0.19627817724981614), ('British Shorthair', 0.1952286638319492)]
+快思考结果: conflict (置信度: 0.2881)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_137.jpg
+图像检索结果: Russian Blue (置信度: 0.8843)
+文本检索结果: Russian Blue (置信度: 0.3396)
+融合结果: [('Russian Blue', 0.2893503213270766), ('British Shorthair', 0.20626464272218364), ('Siamese', 0.18683801088777796)]
+快思考结果: conflict (置信度: 0.2980)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/027.Russian_Blue/027.Russian_Blue_103.jpg
+图像检索结果: Russian Blue (置信度: 0.8141)
+文本检索结果: Russian Blue (置信度: 0.2977)
+融合结果: [('Russian Blue', 0.3049998456581694), ('British Shorthair', 0.20729418708949765), ('Siamese', 0.1911802303992093)]
+快思考结果: Russian Blue (置信度: 0.5941)
+需要慢思考: False
+类别 Russian Blue: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_102.jpg
+图像检索结果: Persian (置信度: 0.9022)
+文本检索结果: Persian (置信度: 0.3142)
+融合结果: [('Persian', 0.32057168427549426), ('Birman', 0.20294304019778447), ('Ragdoll', 0.19488966926299053)]
+快思考结果: Persian (置信度: 0.6476)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_181.jpg
+图像检索结果: Persian (置信度: 0.9018)
+文本检索结果: Persian (置信度: 0.3252)
+融合结果: [('Persian', 0.3351701522215468), ('Birman', 0.21256109266839937), ('Ragdoll', 0.21224848493300394)]
+快思考结果: Persian (置信度: 0.6871)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_104.jpg
+图像检索结果: Persian (置信度: 0.9075)
+文本检索结果: Persian (置信度: 0.3285)
+融合结果: [('Persian', 0.35168224218927446), ('British Shorthair', 0.2000287176605316), ('Birman', 0.17952266903741965)]
+快思考结果: Persian (置信度: 0.7638)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/023.Persian/023.Persian_176.jpg
+图像检索结果: Persian (置信度: 0.8980)
+文本检索结果: Persian (置信度: 0.3054)
+融合结果: [('Persian', 0.2905216494544608), ('British Shorthair', 0.20771671543198247), ('Ragdoll', 0.18992495844288473)]
+快思考结果: conflict (置信度: 0.3977)
+需要慢思考: True
+类别 Persian: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_181.jpg
+图像检索结果: English Setter (置信度: 0.8652)
+文本检索结果: English Setter (置信度: 0.3279)
+融合结果: [('English Setter', 0.3444262349947554), ('German Shorthaired', 0.23264523828702588), ('English Cocker Spaniel', 0.17501388732639567)]
+快思考结果: English Setter (置信度: 0.7178)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_183.jpg
+图像检索结果: English Setter (置信度: 0.8039)
+文本检索结果: English Setter (置信度: 0.3491)
+融合结果: [('English Setter', 0.43010519835792604), ('German Shorthaired', 0.17265402828493426), ('English Cocker Spaniel', 0.1408919202193381)]
+快思考结果: English Setter (置信度: 0.9330)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_143.jpg
+图像检索结果: English Setter (置信度: 0.8556)
+文本检索结果: English Setter (置信度: 0.3344)
+融合结果: [('English Setter', 0.4037486115439993), ('German Shorthaired', 0.19399038786368986), ('English Cocker Spaniel', 0.1890310571543754)]
+快思考结果: English Setter (置信度: 0.8830)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/013.English_Setter/013.English_Setter_129.jpg
+图像检索结果: English Setter (置信度: 0.8402)
+文本检索结果: English Setter (置信度: 0.3406)
+融合结果: [('English Setter', 0.40142069998823227), ('German Shorthaired', 0.26158553897701226), ('Havanese', 0.11407754356189378)]
+快思考结果: English Setter (置信度: 0.8385)
+需要慢思考: False
+类别 English Setter: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_189.jpg
+图像检索结果: Boxer (置信度: 0.8308)
+文本检索结果: Chihuahua (置信度: 0.2925)
+融合结果: [('Boxer', 0.21568237449968974), ('Chihuahua', 0.208763631152325), ('Japanese Chin', 0.20692720865049669)]
+快思考结果: conflict (置信度: 0.2866)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_174.jpg
+图像检索结果: Boxer (置信度: 0.8368)
+文本检索结果: Boxer (置信度: 0.3122)
+融合结果: [('Boxer', 0.30438228491388386), ('Leonberger', 0.19280487825312922), ('Staffordshire Bull Terrier', 0.19195927018447526)]
+快思考结果: Boxer (置信度: 0.6001)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_183.jpg
+图像检索结果: Boxer (置信度: 0.8458)
+文本检索结果: Boxer (置信度: 0.3124)
+融合结果: [('Boxer', 0.31330219898067535), ('Staffordshire Bull Terrier', 0.24939247081356664), ('American Bulldog', 0.164951677809632)]
+快思考结果: Boxer (置信度: 0.5848)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/008.Boxer/008.Boxer_101.jpg
+图像检索结果: Boxer (置信度: 0.8675)
+文本检索结果: Boxer (置信度: 0.3453)
+融合结果: [('Boxer', 0.3283767977698905), ('American Bulldog', 0.22261438533030467), ('Staffordshire Bull Terrier', 0.17496677357707996)]
+快思考结果: Boxer (置信度: 0.6765)
+需要慢思考: False
+类别 Boxer: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_17.jpg
+图像检索结果: Pomeranian (置信度: 0.8879)
+文本检索结果: Pomeranian (置信度: 0.3195)
+融合结果: [('Pomeranian', 0.31672638598524155), ('Japanese Chin', 0.19260105211583392), ('Chihuahua', 0.19047489692607233)]
+快思考结果: Pomeranian (置信度: 0.6447)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_178.jpg
+图像检索结果: Pomeranian (置信度: 0.9093)
+文本检索结果: Pomeranian (置信度: 0.3590)
+融合结果: [('Pomeranian', 0.3249923104389769), ('Japanese Chin', 0.23702316070275922), ('Havanese', 0.159238412420428)]
+快思考结果: Pomeranian (置信度: 0.6492)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_100.jpg
+图像检索结果: Pomeranian (置信度: 0.8919)
+文本检索结果: Pomeranian (置信度: 0.3460)
+融合结果: [('Pomeranian', 0.40096574816547453), ('Japanese Chin', 0.17047089268603632), ('Yorkshire Terrier', 0.16602165717636125)]
+快思考结果: Pomeranian (置信度: 0.8916)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/024.Pomeranian/024.Pomeranian_130.jpg
+图像检索结果: Pomeranian (置信度: 0.9025)
+文本检索结果: Pomeranian (置信度: 0.3204)
+融合结果: [('Pomeranian', 0.3458925778015715), ('Chihuahua', 0.1736950548395278), ('Keeshond', 0.16951185991206477)]
+快思考结果: Pomeranian (置信度: 0.7603)
+需要慢思考: False
+类别 Pomeranian: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_18.jpg
+图像检索结果: American Pit Bull Terrier (置信度: 0.8130)
+文本检索结果: American Pit Bull Terrier (置信度: 0.2986)
+融合结果: [('American Pit Bull Terrier', 0.26463447604023044), ('Staffordshire Bull Terrier', 0.22064902712741205), ('Boxer', 0.2035776779536278)]
+快思考结果: conflict (置信度: 0.2692)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_142.jpg
+图像检索结果: American Pit Bull Terrier (置信度: 0.8135)
+文本检索结果: American Pit Bull Terrier (置信度: 0.2712)
+融合结果: [('American Pit Bull Terrier', 0.2666480759128195), ('Staffordshire Bull Terrier', 0.2414353662665935), ('American Bulldog', 0.18510544169698734)]
+快思考结果: conflict (置信度: 0.3499)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_108.jpg
+图像检索结果: American Pit Bull Terrier (置信度: 0.8311)
+文本检索结果: American Pit Bull Terrier (置信度: 0.3066)
+融合结果: [('American Pit Bull Terrier', 0.23953201565586152), ('Staffordshire Bull Terrier', 0.20852463632188756), ('Boxer', 0.20025621955433198)]
+快思考结果: conflict (置信度: 0.3002)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/002.American_Pit_Bull_Terrier/002.American_Pit_Bull_Terrier_136.jpg
+图像检索结果: American Pit Bull Terrier (置信度: 0.8595)
+文本检索结果: American Pit Bull Terrier (置信度: 0.2885)
+融合结果: [('American Pit Bull Terrier', 0.29656998756967606), ('Staffordshire Bull Terrier', 0.26455965950451815), ('Boxer', 0.17068100506587633)]
+快思考结果: conflict (置信度: 0.3560)
+需要慢思考: True
+类别 American Pit Bull Terrier: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_182.jpg
+图像检索结果: Wheaten Terrier (置信度: 0.8844)
+文本检索结果: Wheaten Terrier (置信度: 0.3504)
+融合结果: [('Wheaten Terrier', 0.3814859980686766), ('Havanese', 0.23141389726959186), ('English Setter', 0.13613961795492777)]
+快思考结果: Wheaten Terrier (置信度: 0.8260)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_13.jpg
+图像检索结果: Wheaten Terrier (置信度: 0.8608)
+文本检索结果: Wheaten Terrier (置信度: 0.3674)
+融合结果: [('Wheaten Terrier', 0.4124488333209616), ('Scottish Terrier', 0.1625781887706371), ('Havanese', 0.16017472683459003)]
+快思考结果: Wheaten Terrier (置信度: 0.9105)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_140.jpg
+图像检索结果: Wheaten Terrier (置信度: 0.8855)
+文本检索结果: Wheaten Terrier (置信度: 0.3429)
+融合结果: [('Wheaten Terrier', 0.3952412808283431), ('Scottish Terrier', 0.220521785414988), ('Yorkshire Terrier', 0.16621396178527484)]
+快思考结果: Wheaten Terrier (置信度: 0.8582)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/035.Wheaten_Terrier/035.Wheaten_Terrier_186.jpg
+图像检索结果: Wheaten Terrier (置信度: 0.8995)
+文本检索结果: Wheaten Terrier (置信度: 0.3701)
+融合结果: [('Wheaten Terrier', 0.3930021846636397), ('Havanese', 0.25176410684662476), ('Yorkshire Terrier', 0.14208106184526095)]
+快思考结果: Wheaten Terrier (置信度: 0.8304)
+需要慢思考: False
+类别 Wheaten Terrier: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_166.jpg
+图像检索结果: British Shorthair (置信度: 0.8705)
+文本检索结果: British Shorthair (置信度: 0.3488)
+融合结果: [('British Shorthair', 0.27964991274915757), ('Russian Blue', 0.2553656951073677), ('Siamese', 0.1579030127279342)]
+快思考结果: conflict (置信度: 0.3394)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_145.jpg
+图像检索结果: British Shorthair (置信度: 0.8701)
+文本检索结果: British Shorthair (置信度: 0.3347)
+融合结果: [('British Shorthair', 0.27254092637144156), ('Ragdoll', 0.1946362869843604), ('Persian', 0.19444698696174928)]
+快思考结果: conflict (置信度: 0.2645)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_108.jpg
+图像检索结果: British Shorthair (置信度: 0.8816)
+文本检索结果: British Shorthair (置信度: 0.3890)
+融合结果: [('British Shorthair', 0.37369492891870565), ('Russian Blue', 0.3053274826642128), ('Egyptian Mau', 0.13252145964656847)]
+快思考结果: British Shorthair (置信度: 0.6883)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/009.British_Shorthair/009.British_Shorthair_100.jpg
+图像检索结果: British Shorthair (置信度: 0.8623)
+文本检索结果: British Shorthair (置信度: 0.3409)
+融合结果: [('British Shorthair', 0.3691269064291579), ('Russian Blue', 0.27579380995600894), ('Persian', 0.12582044201119552)]
+快思考结果: British Shorthair (置信度: 0.7379)
+需要慢思考: False
+类别 British Shorthair: 4/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_13.jpg
+图像检索结果: Egyptian Mau (置信度: 0.9145)
+文本检索结果: Egyptian Mau (置信度: 0.3512)
+融合结果: [('Egyptian Mau', 0.3879383156045539), ('Bengal', 0.18876760606804202), ('British Shorthair', 0.1784613737400623)]
+快思考结果: Egyptian Mau (置信度: 0.8607)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_165.jpg
+图像检索结果: Egyptian Mau (置信度: 0.8932)
+文本检索结果: Bengal (置信度: 0.3144)
+融合结果: [('Bengal', 0.2996877310797087), ('Egyptian Mau', 0.26939090988596304), ('Abyssinian', 0.1779750005356849)]
+快思考结果: conflict (置信度: 0.3809)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_138.jpg
+图像检索结果: Egyptian Mau (置信度: 0.8803)
+文本检索结果: Egyptian Mau (置信度: 0.2897)
+融合结果: [('Egyptian Mau', 0.3553370127423865), ('Bengal', 0.27367059449034353), ('Maine Coon', 0.12930064052343368)]
+快思考结果: Egyptian Mau (置信度: 0.6965)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/011.Egyptian_Mau/011.Egyptian_Mau_14.jpg
+图像检索结果: Egyptian Mau (置信度: 0.8948)
+文本检索结果: Egyptian Mau (置信度: 0.3449)
+融合结果: [('Egyptian Mau', 0.3306655818565947), ('British Shorthair', 0.23290207321124692), ('Bengal', 0.14827783796649713)]
+快思考结果: Egyptian Mau (置信度: 0.6759)
+需要慢思考: False
+类别 Egyptian Mau: 3/4 正确
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_115.jpg
+图像检索结果: American Bulldog (置信度: 0.8763)
+文本检索结果: American Bulldog (置信度: 0.3092)
+融合结果: [('American Bulldog', 0.2640137659355265), ('Staffordshire Bull Terrier', 0.2195591345910103), ('Boxer', 0.18595126285515742)]
+快思考结果: conflict (置信度: 0.3775)
+需要慢思考: True
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_144.jpg
+图像检索结果: Boxer (置信度: 0.8235)
+文本检索结果: American Bulldog (置信度: 0.3211)
+融合结果: [('American Bulldog', 0.2992023555095993), ('Boxer', 0.2266959255095325), ('Staffordshire Bull Terrier', 0.171055249964434)]
+快思考结果: American Bulldog (置信度: 0.5610)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_135.jpg
+图像检索结果: American Bulldog (置信度: 0.8877)
+文本检索结果: American Bulldog (置信度: 0.3518)
+融合结果: [('American Bulldog', 0.32098729256235187), ('Staffordshire Bull Terrier', 0.23402201882570464), ('Boxer', 0.1716549867328258)]
+快思考结果: American Bulldog (置信度: 0.6310)
+需要慢思考: False
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_4/001.American_Bulldog/001.American_Bulldog_16.jpg
+图像检索结果: American Bulldog (置信度: 0.8790)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.3281)
+融合结果: [('American Bulldog', 0.2698156198020778), ('Staffordshire Bull Terrier', 0.26723257061089195), ('American Pit Bull Terrier', 0.16953859338684688)]
+快思考结果: conflict (置信度: 0.3935)
+需要慢思考: True
+类别 American Bulldog: 4/4 正确
+LCB统计参数初始化完成!
+总样本数: 148
+正确预测: 139
+初始化准确率: 0.9392
+总预测次数: 191
+初始化准确率: 0.9392
+知识库构建完成!
+类别图像路径已保存到: ./experiments/pet37/knowledge_base/category_image_paths.json
+保存了 37 个类别的图像路径
+知识库构建完成，保存到: ./experiments/pet37/knowledge_base
+总耗时: 00:00:45

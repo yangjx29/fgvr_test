@@ -59,6 +59,7 @@ class KnowledgeBaseBuilder:
         self.image_knowledge_base = {}  # {category: [image_features]}
         self.text_knowledge_base = {}   # {category: [text_features]}
         self.category_descriptions = {} # {category: description}
+        self.category_image_paths = {}  # {category: [image_paths]} - 新增：存储每个类别的图像路径
         
     def augment_image(self, image_path: str, augmentation_type: str = "all") -> List[str]:
         """
@@ -215,6 +216,9 @@ class KnowledgeBaseBuilder:
         for category, image_paths in tqdm(train_samples.items()):
             print(f"处理类别: {category}")
             category_features = []
+            
+            # 存储该类别的图像路径
+            self.category_image_paths[category] = image_paths.copy()
             
             for img_path in image_paths:
                 # 提取原始图像特征
@@ -418,6 +422,9 @@ class KnowledgeBaseBuilder:
         desc_path = os.path.join(save_dir, "category_descriptions.json")
         dump_json(desc_path, self.category_descriptions)
         
+        # 保存类别图像路径
+        self.save_category_image_paths(save_dir)
+        
         print(f"知识库已保存到: {save_dir}")
     
     def update_knowledge_base(self, save_dir: str):
@@ -442,6 +449,9 @@ class KnowledgeBaseBuilder:
         # 保存类别描述
         desc_path = os.path.join(save_dir, "category_descriptions.json")
         dump_json_override(desc_path, self.category_descriptions)
+        
+        # 保存类别图像路径
+        self.save_category_image_paths(save_dir)
 
         print(f"知识库已更新: {save_dir}")
     
@@ -481,7 +491,84 @@ class KnowledgeBaseBuilder:
         if os.path.exists(desc_path):
             self.category_descriptions = load_json(desc_path)
         
+        # 加载类别图像路径
+        self.load_category_image_paths(load_dir)
+        
         print(f"知识库已从 {load_dir} 加载")
+    
+    def save_category_image_paths(self, save_dir: str):
+        """
+        保存类别图像路径到JSON文件
+        
+        Args:
+            save_dir: 保存目录
+        """
+        # 直接保存到知识库目录，不创建子目录
+        os.makedirs(save_dir, exist_ok=True)
+        
+        # 保存类别图像路径
+        category_paths_file = os.path.join(save_dir, "category_image_paths.json")
+        
+        try:
+            dump_json_override(category_paths_file, self.category_image_paths)
+            print(f"类别图像路径已保存到: {category_paths_file}")
+            print(f"保存了 {len(self.category_image_paths)} 个类别的图像路径")
+        except Exception as e:
+            print(f"保存类别图像路径失败: {e}")
+            # 尝试创建目录并重新保存
+            try:
+                os.makedirs(os.path.dirname(category_paths_file), exist_ok=True)
+                dump_json_override(category_paths_file, self.category_image_paths)
+                print(f"重试成功，类别图像路径已保存到: {category_paths_file}")
+            except Exception as e2:
+                print(f"重试保存类别图像路径仍然失败: {e2}")
+    
+    def load_category_image_paths(self, load_dir: str):
+        """
+        从JSON文件加载类别图像路径
+        
+        Args:
+            load_dir: 加载目录
+        """
+        # 直接从知识库目录加载，兼容旧的子目录结构
+        category_paths_file = os.path.join(load_dir, "category_image_paths.json")
+        old_category_paths_file = os.path.join(load_dir, "category_images_path", "category_image_paths.json")
+        
+        if os.path.exists(category_paths_file):
+            try:
+                self.category_image_paths = load_json(category_paths_file)
+                print(f"类别图像路径已从 {category_paths_file} 加载")
+                print(f"加载了 {len(self.category_image_paths)} 个类别的图像路径")
+            except Exception as e:
+                print(f"加载类别图像路径失败: {e}")
+                self.category_image_paths = {}
+        elif os.path.exists(old_category_paths_file):
+            # 兼容旧的子目录结构
+            try:
+                self.category_image_paths = load_json(old_category_paths_file)
+                print(f"类别图像路径已从旧位置 {old_category_paths_file} 加载")
+                print(f"加载了 {len(self.category_image_paths)} 个类别的图像路径")
+            except Exception as e:
+                print(f"加载类别图像路径失败: {e}")
+                self.category_image_paths = {}
+        else:
+            print(f"类别图像路径文件不存在: {category_paths_file}")
+            self.category_image_paths = {}
+    
+    def get_category_image_paths(self, category: str = None) -> Dict[str, List[str]]:
+        """
+        获取类别图像路径
+        
+        Args:
+            category: 指定类别名称，如果为None则返回所有类别
+            
+        Returns:
+            Dict[str, List[str]]: 类别图像路径映射
+        """
+        if category is None:
+            return self.category_image_paths.copy()
+        else:
+            return {category: self.category_image_paths.get(category, [])}
     
     def image_retrieval(self, query_image_path: str, top_k: int = 5) -> List[Tuple[str, float]]:
         """

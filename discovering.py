@@ -7,7 +7,7 @@ from tqdm import tqdm
 from termcolor import colored  
 from collections import Counter 
 from utils.configuration import setup_config, seed_everything 
-from utils.fileios import dump_json, load_json, dump_txt  
+from utils.fileios import dump_json, load_json, dump_txt, dump_json_override  
 
 from data import DATA_STATS, PROMPTERS, DATA_DISCOVERY  
 from data.prompt_identify import prompts_howto  
@@ -399,6 +399,29 @@ if __name__ == "__main__":
             save_dir=args.knowledge_base_dir,
             augmentation=True
         )
+        
+        # 保存每个类别的图像路径到JSON文件
+        category_images_path_file = os.path.join(args.knowledge_base_dir, "category_image_paths.json")
+        
+        # 准备保存的数据：{category: [image_paths]}
+        category_paths_data = {}
+        for category, paths in train_samples.items():
+            category_paths_data[category] = paths
+        
+        # 使用dump_json_override确保文件保存成功
+        try:
+            dump_json_override(category_images_path_file, category_paths_data)
+            print(f"类别图像路径已保存到: {category_images_path_file}")
+            print(f"保存了 {len(category_paths_data)} 个类别的图像路径")
+        except Exception as e:
+            print(f"保存类别图像路径失败: {e}")
+            # 尝试创建知识库目录并重新保存
+            try:
+                os.makedirs(args.knowledge_base_dir, exist_ok=True)
+                dump_json_override(category_images_path_file, category_paths_data)
+                print(f"重试成功，类别图像路径已保存到: {category_images_path_file}")
+            except Exception as e2:
+                print(f"重试保存类别图像路径仍然失败: {e2}")
         
         print(f"知识库构建完成，保存到: {args.knowledge_base_dir}")
     
