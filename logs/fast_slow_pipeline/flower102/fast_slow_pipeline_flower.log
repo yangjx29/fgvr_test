@@ -1,54 +1,0 @@
-[0;34m[INFO][0m === 运行配置 ===
-GPU: 6
-数据集: flower102
-配置文件: flower102_all.yml
-流程模式: fast_slow_pipeline (推理 + 分类)
-知识库目录: ./experiments/flower102/knowledge_base
-测试数据: ./datasets/flowers_102/images_discovery_all_1
-推理结果目录: ./experiments/flower102/infer
-分类结果目录: ./experiments/flower102/classify
-虚拟环境: finer_dynamic
-[0;34m[INFO][0m ================
-[0;34m[INFO][0m === 阶段1: 快慢思考推理 ===
-[0;34m[INFO][0m 推理结果不存在，开始推理阶段...
-[0;34m[INFO][0m 启动推理阶段...
-[0;34m[INFO][0m 启动推理阶段...
-[0;34m[INFO][0m 统一日志: /home/hdl/project/fgvr_test/logs/fast_slow_pipeline/flower102/fast_slow_pipeline_flower.log
-[0;34m[INFO][0m 统一日志: /home/hdl/project/fgvr_test/logs/fast_slow_pipeline/flower102/fast_slow_pipeline_flower.log
-[INFO] 推理进程ID: 3731983
-[INFO] 等待推理阶段完成 (PID: 3731983, 超时: 7200秒)...
-/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
-  warn(
-[INFO] 推理阶段运行中... (已运行30秒)
-Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
-Namespace(mode='fast_slow_infer', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/flower102_all.yml', num_per_category='3', kshot=None, region_num=None, superclass=None, gallery_out=None, fusion_method='concat', knowledge_base_dir='./experiments/flower102/knowledge_base', query_image=None, test_data_dir='./datasets/flowers_102/images_discovery_all_1', results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/flower102/infer', classify_dir=None)
-{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'flower', 'num_classes': 102, 'num_base': 51, 'num_novel': 51, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/flowers_102', 'expt_dir': './experiments/flower102', 'expt_dir_describe': './experiments/flower102/describe', 'path_vqa_questions': './experiments/flower102/describe/flower_vqa_questions_ours', 'path_vqa_answers': './experiments/flower102/describe/flower_attributes_pairs', 'path_llm_prompts': './experiments/flower102/describe/flower_llm_prompts', 'path_identify_answers': './experiments/flower102/identify', 'expt_dir_guess': './experiments/flower102/guess', 'path_llm_replies_raw': './experiments/flower102/guess/flower_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/flower102/guess/flower_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/flower102/guess/flower_llm_gussed_names', 'expt_dir_gallery': './experiments/flower102/gallery', 'path_references': './experiments/flower102/gallery/flower_image_references', 'path_regions': './experiments/flower102/gallery/flower_image_regions', 'path_descriptions': './experiments/flower102/gallery/flower_image_descriptions_attn', 'expt_dir_grouping': './experiments/flower102/grouping'}
-推理结果将保存到: ./experiments/flower102/infer
-初始化知识库构建器...
-🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
-获取MLLM模型实例（单例模式）...
-🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
-📊 当前显存: 0.56GB / 47.40GB
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [04:12<16:50, 252.63s/it]Loading checkpoint shards:  40%|████      | 2/5 [06:40<09:33, 191.27s/it]Loading checkpoint shards:  60%|██████    | 3/5 [09:10<05:44, 172.13s/it]Loading checkpoint shards:  80%|████████  | 4/5 [11:48<02:46, 166.77s/it]Loading checkpoint shards:  80%|████████  | 4/5 [12:23<03:05, 185.81s/it]
-Traceback (most recent call last):
-  File "/home/hdl/project/fgvr_test/discovering.py", line 825, in <module>
-    system = FastSlowThinkingSystem(
-  File "/home/hdl/project/fgvr_test/fast_slow_thinking_system.py", line 69, in __init__
-    self.mllm_bot = get_mllm_bot(
-  File "/home/hdl/project/fgvr_test/utils/mllm_singleton.py", line 103, in get_mllm_bot
-    return _mllm_manager.get_mllm_bot(model_tag, device)
-  File "/home/hdl/project/fgvr_test/utils/mllm_singleton.py", line 50, in get_mllm_bot
-    self._mllm_bot = MLLMBot(
-  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 90, in __init__
-    self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(local_model_path,
-  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 262, in _wrapper
-    return func(*args, **kwargs)
-  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 4319, in from_pretrained
-    ) = cls._load_pretrained_model(
-  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 4897, in _load_pretrained_model
-    new_error_msgs, offload_index, state_dict_index = _load_state_dict_into_meta_model(
-  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 896, in _load_state_dict_into_meta_model
-    set_module_tensor_to_device(model, param_name, param_device, **set_module_kwargs)
-  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/accelerate/utils/modeling.py", line 343, in set_module_tensor_to_device
-    new_value = value.to(device, non_blocking=non_blocking)
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 636.88 MiB is free. Including non-PyTorch memory, this process has 30.19 GiB memory in use. Process 3731472 has 16.58 GiB memory in use. Of the allocated memory 29.56 GiB is allocated by PyTorch, and 378.05 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
