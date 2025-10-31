@@ -1,0 +1,268 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow_infer', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='3', knowledge_base_dir='./experiments/pet37/knowledge_base', query_image=None, test_data_dir='./datasets/pet_37/images_discovery_all_1', results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/pet37/infer', classify_dir=None)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
+推理结果将保存到: ./experiments/pet37/infer
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:05<00:22,  5.53s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:11<00:16,  5.58s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:16<00:11,  5.59s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:22<00:05,  5.67s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:24<00:00,  4.24s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:24<00:00,  4.85s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/pet37/knowledge_base 加载知识库...
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+[fast_slow_infer] 测试数据集包含 37 个类别
+
+🔄 推理类别 [1/37]: 014.German Shorthaired (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/014.German_Shorthaired/014.German_Shorthaired_190.jpg
+图像检索结果: German Shorthaired (置信度: 1.0000)
+文本检索结果: German Shorthaired (置信度: 0.3422)
+融合结果: [('German Shorthaired', 0.34067803565107413), ('English Setter', 0.24384191935100863), ('American Bulldog', 0.14328325474782594)]
+快思考结果: German Shorthaired (置信度: 0.6946)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: German Shorthaired | 置信度: 0.695 | 仅快思考
+     📊 图片进度: 1/37 | 已处理: 1 个样本
+✨ 类别 014.German Shorthaired 推理完成: 1 张图片
+📈 当前总体进度: 1/37 | 已处理: 1 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [2/37]: 004.Beagle (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/004.Beagle/004.Beagle_18.jpg
+图像检索结果: Beagle (置信度: 1.0000)
+文本检索结果: Beagle (置信度: 0.2946)
+融合结果: [('Beagle', 0.31642605904184407), ('Miniature Pinscher', 0.17685161586850878), ('Chihuahua', 0.1763879321996243)]
+快思考结果: Beagle (置信度: 0.6478)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Beagle | 置信度: 0.648 | 仅快思考
+     📊 图片进度: 2/37 | 已处理: 2 个样本
+✨ 类别 004.Beagle 推理完成: 1 张图片
+📈 当前总体进度: 2/37 | 已处理: 2 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [3/37]: 034.Staffordshire Bull Terrier (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/034.Staffordshire_Bull_Terrier/034.Staffordshire_Bull_Terrier_126.jpg
+图像检索结果: Staffordshire Bull Terrier (置信度: 1.0000)
+文本检索结果: Staffordshire Bull Terrier (置信度: 0.3107)
+融合结果: [('Staffordshire Bull Terrier', 0.3630112031444174), ('American Pit Bull Terrier', 0.2216827155120911), ('Miniature Pinscher', 0.146580664163071)]
+快思考结果: Staffordshire Bull Terrier (置信度: 0.7889)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Staffordshire Bull Terrier | 置信度: 0.789 | 仅快思考
+     📊 图片进度: 3/37 | 已处理: 3 个样本
+✨ 类别 034.Staffordshire Bull Terrier 推理完成: 1 张图片
+📈 当前总体进度: 3/37 | 已处理: 3 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [4/37]: 018.Keeshond (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/018.Keeshond/018.Keeshond_101.jpg
+图像检索结果: Keeshond (置信度: 1.0000)
+文本检索结果: Keeshond (置信度: 0.3566)
+融合结果: [('Keeshond', 0.4026447618349654), ('Great Pyrenees', 0.17582893674559907), ('Leonberger', 0.14852211708350785)]
+快思考结果: Keeshond (置信度: 0.8926)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Keeshond | 置信度: 0.893 | 仅快思考
+     📊 图片进度: 4/37 | 已处理: 4 个样本
+✨ 类别 018.Keeshond 推理完成: 1 张图片
+📈 当前总体进度: 4/37 | 已处理: 4 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [5/37]: 028.Saint Bernard (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/028.Saint_Bernard/028.Saint_Bernard_159.jpg
+图像检索结果: Saint Bernard (置信度: 1.0000)
+文本检索结果: Saint Bernard (置信度: 0.3430)
+融合结果: [('Saint Bernard', 0.3827266300066573), ('Japanese Chin', 0.17452174727955172), ('Leonberger', 0.16332276174946436)]
+快思考结果: Saint Bernard (置信度: 0.8511)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Saint Bernard | 置信度: 0.851 | 仅快思考
+     📊 图片进度: 5/37 | 已处理: 5 个样本
+✨ 类别 028.Saint Bernard 推理完成: 1 张图片
+📈 当前总体进度: 5/37 | 已处理: 5 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [6/37]: 026.Ragdoll (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/026.Ragdoll/026.Ragdoll_142.jpg
+图像检索结果: Ragdoll (置信度: 1.0000)
+文本检索结果: Ragdoll (置信度: 0.3275)
+融合结果: [('Ragdoll', 0.3323158541663748), ('Birman', 0.2212521424997718), ('Persian', 0.17366862232013353)]
+快思考结果: Ragdoll (置信度: 0.6895)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Ragdoll | 置信度: 0.689 | 仅快思考
+     📊 图片进度: 6/37 | 已处理: 6 个样本
+✨ 类别 026.Ragdoll 推理完成: 1 张图片
+📈 当前总体进度: 6/37 | 已处理: 6 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [7/37]: 016.Havanese (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/016.Havanese/016.Havanese_135.jpg
+图像检索结果: Havanese (置信度: 1.0000)
+文本检索结果: Havanese (置信度: 0.3329)
+融合结果: [('Havanese', 0.3145056748732192), ('Yorkshire Terrier', 0.229278928929195), ('Japanese Chin', 0.17168684536739)]
+快思考结果: Havanese (置信度: 0.6150)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Havanese | 置信度: 0.615 | 仅快思考
+     📊 图片进度: 7/37 | 已处理: 7 个样本
+✨ 类别 016.Havanese 推理完成: 1 张图片
+📈 当前总体进度: 7/37 | 已处理: 7 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [8/37]: 025.Pug (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/025.Pug/025.Pug_110.jpg
+图像检索结果: Pug (置信度: 1.0000)
+文本检索结果: Pug (置信度: 0.3405)
+融合结果: [('Pug', 0.4633894110067946), ('Boxer', 0.15982646648922275), ('American Bulldog', 0.13595168152971873)]
+快思考结果: Pug (置信度: 0.9597)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Pug | 置信度: 0.960 | 仅快思考
+     📊 图片进度: 8/37 | 已处理: 8 个样本
+✨ 类别 025.Pug 推理完成: 1 张图片
+📈 当前总体进度: 8/37 | 已处理: 8 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [9/37]: 015.Great Pyrenees (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/015.Great_Pyrenees/015.Great_Pyrenees_18.jpg
+图像检索结果: Great Pyrenees (置信度: 1.0000)
+文本检索结果: Great Pyrenees (置信度: 0.3399)
+融合结果: [('Great Pyrenees', 0.4192432129725081), ('Samoyed', 0.20458470960297892), ('Newfoundland', 0.14621947836135407)]
+快思考结果: Great Pyrenees (置信度: 0.9074)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Great Pyrenees | 置信度: 0.907 | 仅快思考
+     📊 图片进度: 9/37 | 已处理: 9 个样本
+✨ 类别 015.Great Pyrenees 推理完成: 1 张图片
+📈 当前总体进度: 9/37 | 已处理: 9 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [10/37]: 012.English Cocker Spaniel (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/012.English_Cocker_Spaniel/012.English_Cocker_Spaniel_107.jpg
+图像检索结果: English Cocker Spaniel (置信度: 1.0000)
+文本检索结果: English Cocker Spaniel (置信度: 0.3754)
+融合结果: [('English Cocker Spaniel', 0.46887277010522904), ('English Setter', 0.19701613490619965), ('Basset Hound', 0.12957775341494687)]
+快思考结果: English Cocker Spaniel (置信度: 0.9604)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: English Cocker Spaniel | 置信度: 0.960 | 仅快思考
+     📊 图片进度: 10/37 | 已处理: 10 个样本
+✨ 类别 012.English Cocker Spaniel 推理完成: 1 张图片
+📈 当前总体进度: 10/37 | 已处理: 10 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [11/37]: 021.Miniature Pinscher (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/021.Miniature_Pinscher/021.Miniature_Pinscher_105.jpg
+图像检索结果: Miniature Pinscher (置信度: 1.0000)
+文本检索结果: Miniature Pinscher (置信度: 0.3478)
+融合结果: [('Miniature Pinscher', 0.4839162314280135), ('Chihuahua', 0.1787775320467301), ('Abyssinian', 0.12201781505866655)]
+快思考结果: Miniature Pinscher (置信度: 0.9698)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Miniature Pinscher | 置信度: 0.970 | 仅快思考
+     📊 图片进度: 11/37 | 已处理: 11 个样本
+✨ 类别 021.Miniature Pinscher 推理完成: 1 张图片
+📈 当前总体进度: 11/37 | 已处理: 11 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [12/37]: 017.Japanese Chin (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/017.Japanese_Chin/017.Japanese_Chin_157.jpg
+图像检索结果: Japanese Chin (置信度: 1.0000)
+文本检索结果: Japanese Chin (置信度: 0.3080)
+融合结果: [('Japanese Chin', 0.333558764491902), ('Havanese', 0.17322906013873832), ('Pomeranian', 0.17303021778502772)]
+快思考结果: Japanese Chin (置信度: 0.7145)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Japanese Chin | 置信度: 0.714 | 仅快思考
+     📊 图片进度: 12/37 | 已处理: 12 个样本
+✨ 类别 017.Japanese Chin 推理完成: 1 张图片
+📈 当前总体进度: 12/37 | 已处理: 12 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [13/37]: 030.Scottish Terrier (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/030.Scottish_Terrier/030.Scottish_Terrier_139.jpg
+图像检索结果: Scottish Terrier (置信度: 1.0000)
+文本检索结果: Scottish Terrier (置信度: 0.3369)
+融合结果: [('Scottish Terrier', 0.5584950545772176), ('Wheaten Terrier', 0.13445496177601238), ('German Shorthaired', 0.11102059679253706)]
+快思考结果: Scottish Terrier (置信度: 0.9921)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Scottish Terrier | 置信度: 0.992 | 仅快思考
+     📊 图片进度: 13/37 | 已处理: 13 个样本
+✨ 类别 030.Scottish Terrier 推理完成: 1 张图片
+📈 当前总体进度: 13/37 | 已处理: 13 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [14/37]: 022.Newfoundland (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/022.Newfoundland/022.Newfoundland_156.jpg
+图像检索结果: Newfoundland (置信度: 1.0000)
+文本检索结果: Newfoundland (置信度: 0.3589)
+融合结果: [('Newfoundland', 0.4179672101482016), ('Havanese', 0.17767092813887903), ('Scottish Terrier', 0.16866041952891955)]
+快思考结果: Newfoundland (置信度: 0.9131)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Newfoundland | 置信度: 0.913 | 仅快思考
+     📊 图片进度: 14/37 | 已处理: 14 个样本
+✨ 类别 022.Newfoundland 推理完成: 1 张图片
+📈 当前总体进度: 14/37 | 已处理: 14 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [15/37]: 031.Shiba Inu (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/031.Shiba_Inu/031.Shiba_Inu_12.jpg
+图像检索结果: Shiba Inu (置信度: 1.0000)
+文本检索结果: Shiba Inu (置信度: 0.3225)
+融合结果: [('Shiba Inu', 0.4521208206161124), ('Pomeranian', 0.15863431026377986), ('Chihuahua', 0.12980432296319613)]
+快思考结果: Shiba Inu (置信度: 0.9510)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Shiba Inu | 置信度: 0.951 | 仅快思考
+     📊 图片进度: 15/37 | 已处理: 15 个样本
+✨ 类别 031.Shiba Inu 推理完成: 1 张图片
+📈 当前总体进度: 15/37 | 已处理: 15 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [16/37]: 003.Basset Hound (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/003.Basset_Hound/003.Basset_Hound_146.jpg
+图像检索结果: Basset Hound (置信度: 1.0000)
+文本检索结果: Basset Hound (置信度: 0.3320)
+融合结果: [('Basset Hound', 0.4480612391575438), ('Beagle', 0.19488623594084092), ('German Shorthaired', 0.13718215637204664)]
+快思考结果: Basset Hound (置信度: 0.9431)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Basset Hound | 置信度: 0.943 | 仅快思考
+     📊 图片进度: 16/37 | 已处理: 16 个样本
+✨ 类别 003.Basset Hound 推理完成: 1 张图片
+📈 当前总体进度: 16/37 | 已处理: 16 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [17/37]: 010.Chihuahua (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/010.Chihuahua/010.Chihuahua_179.jpg
+图像检索结果: Chihuahua (置信度: 1.0000)
+文本检索结果: Chihuahua (置信度: 0.3038)
+融合结果: [('Chihuahua', 0.3514658072932822), ('Miniature Pinscher', 0.27159241144695584), ('Sphynx', 0.13658150071426042)]
+快思考结果: Chihuahua (置信度: 0.6835)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Chihuahua | 置信度: 0.684 | 仅快思考
+     📊 图片进度: 17/37 | 已处理: 17 个样本
+✨ 类别 010.Chihuahua 推理完成: 1 张图片
+📈 当前总体进度: 17/37 | 已处理: 17 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [18/37]: 029.Samoyed (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/029.Samoyed/029.Samoyed_123.jpg
+图像检索结果: Samoyed (置信度: 1.0000)
+文本检索结果: Samoyed (置信度: 0.3197)
+融合结果: [('Samoyed', 0.367944186364041), ('Pomeranian', 0.17077387650647471), ('Shiba Inu', 0.16454580132999727)]
+快思考结果: Samoyed (置信度: 0.8177)
+需要慢思考: False
+  📸 [1/1] 推理完成 | 快思考预测: Samoyed | 置信度: 0.818 | 仅快思考
+     📊 图片进度: 18/37 | 已处理: 18 个样本
+✨ 类别 029.Samoyed 推理完成: 1 张图片
+📈 当前总体进度: 18/37 | 已处理: 18 个样本
+--------------------------------------------------------------------------------
+
+🔄 推理类别 [19/37]: 033.Sphynx (1 张图片)
+开始快思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg
+图像检索结果: Sphynx (置信度: 1.0000)
+文本检索结果: Abyssinian (置信度: 0.3318)
+融合结果: [('Sphynx', 0.271981546049913), ('Abyssinian', 0.2512426603584997), ('Egyptian Mau', 0.20171446735187182)]
+快思考结果: conflict (置信度: 0.5447)
+需要慢思考: True
+开始慢思考流程，查询图像: ./datasets/pet_37/images_discovery_all_1/033.Sphynx/033.Sphynx_156.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...

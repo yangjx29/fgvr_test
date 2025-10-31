@@ -1,54 +1,0 @@
-/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
-  warn(
-Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
-Namespace(mode='terminal_decision_enhanced', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='3', knowledge_base_dir='./knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/pet37/infer', classify_dir='./experiments/pet37/classify')
-{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
-🔧 终端决策增强模式
-📁 分类结果将保存到: ./experiments/pet37/classify
-🔍 检查快思考增强结果: ./experiments/pet37/classify/fast_classification_results_enhanced.json
-🔍 检查慢思考增强结果: ./experiments/pet37/classify/slow_classification_results_enhanced.json
-✅ 加载了 32 个增强快思考分类结果
-✅ 加载了 5 个增强慢思考分类结果
-🔍 发现 2 个需要终端决策的样本
-🚀 开始处理需要终端决策的样本...
-初始化知识库构建器...
-🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
-获取MLLM模型实例（单例模式）...
-🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
-📊 当前显存: 0.56GB / 47.40GB
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:07<00:31,  7.77s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:16<00:24,  8.21s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:24<00:16,  8.36s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:32<00:08,  8.06s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:34<00:00,  5.88s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:34<00:00,  6.89s/it]
-local_model_path: /home/Dataset/Models/Qwen/Qwen2.5-VL-7B-Instruct
-✅ MLLM模型初始化完成
-📊 加载后显存: 31.59GB / 47.40GB
-初始化快思考模块...
-已加载历史统计量: 935 次预测
-初始化慢思考模块...
-快慢思考系统初始化完成!
-从 ./experiments/pet37/knowledge_base 加载知识库...
-知识库已从 ./experiments/pet37/knowledge_base 加载
-知识库加载完成!
-已加载知识库: ./experiments/pet37/knowledge_base
-Processing terminal decisions:   0%|          | 0/2 [00:00<?, ?it/s]Processing terminal decisions:  50%|█████     | 1/2 [00:09<00:09,  9.30s/it]Processing terminal decisions: 100%|██████████| 2/2 [00:20<00:00, 10.48s/it]Processing terminal decisions: 100%|██████████| 2/2 [00:20<00:00, 10.31s/it]
-🎯 终端决策: 005.Bengal_14.jpg -> Bengal (置信度: 0.8500, 正确: True)
-🎯 终端决策: 011.Egyptian_Mau_112.jpg -> Egyptian Mau (置信度: 0.8500, 正确: True)
-✅ 总正确预测数: 36
-  - 其中仅快思考正确: 32
-  - 其中慢思考触发且正确: 2
-❌ 总错误预测数: 1
-📊 慢思考触发数量: 5
-[terminal_decision_enhanced] 总体准确率: 0.9730 (36/37)
-[terminal_decision_enhanced] 快思考准确率: 1.0000
-[terminal_decision_enhanced] 慢思考触发比例: 0.1351
-[terminal_decision_enhanced] 慢思考准确率: 0.4000
-
-============================================================
-✅ 终端决策增强完成
-📊 总样本数: 37
-🚀 总体准确率: 0.9730 (36/37)
-⚡ 快思考准确率: 1.0000
-🐌 慢思考触发比例: 0.1351
-🎯 慢思考准确率: 0.4000
-🔧 终端决策样本数: 2
-🎯 终端决策成功率: 1.0000
-============================================================
-💾 终端决策增强结果已保存到: ./experiments/pet37/classify/terminal_decision_results_enhanced.json

@@ -113,7 +113,7 @@ DISCOVERY_DATA_DIR="./datasets/${DATASET_DIR}/images_discovery_all_${KSHOT}"  # 
 INFER_DIR="./experiments/${DATASET}${DATASET_NUM}/infer"  # 推理结果目录
 CLASSIFY_DIR="./experiments/${DATASET}${DATASET_NUM}/classify"  # 分类结果目录
 RESULTS_OUT="./results/${DATASET}_${MODE}_results.json"
-LOG_DIR="${LOG_BASE_DIR}/discovery/${DATASET}${DATASET_NUM}"
+LOG_DIR="${LOG_BASE_DIR}/discovery/${DATASET}${DATASET_NUM}/${MODE}"
 
 # 生成递增编号的日志文件名函数
 generate_log_filename() {
