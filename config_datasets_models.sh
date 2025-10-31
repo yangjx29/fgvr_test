@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 脚本：配置数据集和模型软链接
-# 功能：读取config.yaml配置，创建软链接，更新scripts/config.yaml
+# 功能：读取config.yaml配置，创建模型和数据集的软链接，更新scripts/config.yaml
 
 set -e  # 遇到错误立即退出
 
