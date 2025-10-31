@@ -1700,7 +1700,7 @@ if __name__ == "__main__":
         if isinstance(text_kb, list) and len(text_kb) > 0:
             text_kb = text_kb[0]
         
-        # 加载类别图像路径
+        # 加载类别图像路径 - 快思考模式支持k张图像
         category_image_paths = load_category_image_paths(dataset_name)
         if not category_image_paths:
             print("❌ 无法加载类别图像路径，将使用传统搜索方式")
@@ -1708,6 +1708,19 @@ if __name__ == "__main__":
         else:
             use_category_paths = True
             print(f"✅ 成功加载类别图像路径，包含 {len(category_image_paths)} 个类别")
+            
+            # 统计k值分布
+            k_distribution = {}
+            total_images = 0
+            for cat, paths in category_image_paths.items():
+                k = len(paths)
+                k_distribution[k] = k_distribution.get(k, 0) + 1
+                total_images += k
+            
+            print("🔧 快思考模式：启用动态k张图像的AWC处理")
+            print(f"📊 k值分布统计: {dict(sorted(k_distribution.items()))}")
+            print(f"📊 平均每类别图像数: {total_images / len(category_image_paths):.1f}")
+            print(f"📊 总图像数: {total_images}")
         
         # 批量处理：先收集所有需要处理的样本
         fast_samples = []
@@ -1796,12 +1809,31 @@ if __name__ == "__main__":
                 
                 if use_category_paths:
                     # 使用新的category_image_paths.json方式
-                    image_paths = get_category_image_from_paths(category, category_image_paths, max_images=1)
+                    # 动态计算该类别的k值（实际图像数量）
+                    category_k = len(category_image_paths.get(category, []))
+                    print(f"🔍 类别 {category}: 检测到 {category_k} 张图像")
+                    image_paths = get_category_image_from_paths(category, category_image_paths, max_images=category_k)
                     if image_paths:
-                        src_img = image_paths[0]
-                        if not os.path.exists(src_img):
-                            print(f"⚠️  图像文件不存在: {src_img}")
-                            src_img = None
+                        # 处理多张图像 - 为每张图像创建单独的条目
+                        for img_idx, img_path in enumerate(image_paths):
+                            if os.path.exists(img_path):
+                                retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}_{img_idx}.jpg"
+                                retrieved_img_path = os.path.join(retrieved_class_dir, retrieved_img_name)
+                                shutil.copy2(img_path, retrieved_img_path)
+                                
+                                # 构造检索描述
+                                if category in text_kb:
+                                    retrieved_descriptions[retrieved_img_name] = text_kb[category]
+                                else:
+                                    retrieved_descriptions[retrieved_img_name] = f"a photo of a {category}"
+                                
+                                retrieved_idx += 1
+                            else:
+                                print(f"⚠️  图像文件不存在: {img_path}")
+                        continue  # 跳过后续的单图像处理逻辑
+                        
+                    # 如果没有找到图像路径，设置src_img为None以触发传统搜索
+                    src_img = None
                 else:
                     # 回退到传统搜索方式
                     dataset_name = cfg.get('dataset_name', 'pet')
@@ -2161,12 +2193,31 @@ if __name__ == "__main__":
                 
                 if use_category_paths:
                     # 使用新的category_image_paths.json方式
-                    image_paths = get_category_image_from_paths(category, category_image_paths, max_images=1)
+                    # 动态计算该类别的k值（实际图像数量）
+                    category_k = len(category_image_paths.get(category, []))
+                    print(f"🔍 类别 {category}: 检测到 {category_k} 张图像")
+                    image_paths = get_category_image_from_paths(category, category_image_paths, max_images=category_k)
                     if image_paths:
-                        src_img = image_paths[0]
-                        if not os.path.exists(src_img):
-                            print(f"⚠️  图像文件不存在: {src_img}")
-                            src_img = None
+                        # 处理多张图像 - 为每张图像创建单独的条目
+                        for img_idx, img_path in enumerate(image_paths):
+                            if os.path.exists(img_path):
+                                retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}_{img_idx}.jpg"
+                                retrieved_img_path = os.path.join(retrieved_class_dir, retrieved_img_name)
+                                shutil.copy2(img_path, retrieved_img_path)
+                                
+                                # 构造检索描述
+                                if category in text_kb:
+                                    retrieved_descriptions[retrieved_img_name] = text_kb[category]
+                                else:
+                                    retrieved_descriptions[retrieved_img_name] = f"a photo of a {category}"
+                                
+                                retrieved_idx += 1
+                            else:
+                                print(f"⚠️  图像文件不存在: {img_path}")
+                        continue  # 跳过后续的单图像处理逻辑
+                        
+                    # 如果没有找到图像路径，设置src_img为None以触发传统搜索
+                    src_img = None
                 else:
                     # 回退到传统搜索方式
                     dataset_name = cfg.get('dataset_name', 'pet')

@@ -4,14 +4,14 @@
 
 ## 背景与目标
 
-**核心思想**：实现**待测试[图-文]与检索到的[图-文]进行匹配**的分类策略。
+**核心思想**：实现**待测试[图-文]与检索到的k张[图-文]进行匹配**的分类策略。
 
-该框架使用CLIP提取图像和文本的多模态特征，通过特征拼接、基于熵的权重计算和加权相似度匹配来实现精准的细粒度视觉识别。与传统的图文匹配不同，本方法直接对比两个多模态样本（待测试样本和检索样本），每个样本都包含图像和对应的文本描述。
+该框架使用CLIP提取图像和文本的多模态特征，通过特征拼接、基于熵的权重计算和加权相似度匹配来实现精准的细粒度视觉识别。与传统的单图像匹配不同，本方法同时处理每个类别的k张图像，计算k个加权相似度并取平均，提高分类的稳定性和准确性。
 
-### 核心改进（基于AWT思想）
-- **A: Augmentation** 对两组图像分别进行多视图增强，提升稳健性；
-- **W: Weighting** 以不确定性（熵）自适应估计多模态特征的权重；
-- **T: Transportation** 将两组多模态特征进行加权相似度计算，实现多模态匹配。
+### 核心改进（基于AWT思想 + k图像增强）
+- **A: Augmentation** 对测试图像和每个类别的k张检索图像分别进行多视图增强，提升稳健性；
+- **W: Weighting** 以不确定性（熵）自适应估计每张图像的多模态特征权重；
+- **T: Transportation** 计算测试图像与每个类别k张图像的加权相似度，取平均后实现多模态匹配。
 
 ---
 
@@ -19,11 +19,13 @@
 
 ### 数据要求
 - 两组图像数据集：
-  - `{dataset}_retrieved`：检索到的图像（作为参考库）
+  - `{dataset}_retrieved`：检索到的图像（每个类别包含k张图像作为参考库）
   - `{dataset}_test`：待测试的图像（需要分类的图像）
 - 对应的文本描述文件：
-  - `./descriptions/{dataset}_retrieved_descriptions.json`：检索图像的描述
+  - `./descriptions/{dataset}_retrieved_descriptions.json`：检索图像的描述（支持多图像描述）
   - `./descriptions/{dataset}_test_descriptions.json`：测试图像的描述
+- 类别图像路径文件：
+  - `./experiments/{dataset}/knowledge_base/category_image_paths.json`：存储每个类别的k张图像路径
 
 ### 使用流程
 ```bash
@@ -40,12 +42,13 @@ python evaluate.py --test_set [dataset_name]
 
 ### 1) 预提取多模态特征（pre_extract.py）
 
-- 使用 CLIP 对两组图像分别生成 **n_views** 个增强视图特征，并结合对应的文本描述：
+- 使用 CLIP 对测试图像和每个类别的k张检索图像分别生成 **n_views** 个增强视图特征，并结合对应的文本描述：
   - 基础变换：Resize→CenterCrop；
   - 归一化：与 CLIP 预处理一致；
   - 增强器 `Augmenter(base_transform, preprocess, n_views)` 产出多视图；
   - 对每张图像编码其对应的文本描述；
   - 将文本特征和图像特征拼接：`[Ti, Ii]`（检索）和 `[T'j, I'j]`（测试）；
+  - **k图像处理**：每个类别的k张图像拼接成大的特征张量 `(k*n_views, 2*d)`；
   - 编码后对每个向量做 L2 归一化；
   - 分别保存到 `./pre_extracted_feat/{arch}/seed{seed}/{dataset}_retrieved.pth` 和 `{dataset}_test.pth`。
 
@@ -55,19 +58,23 @@ python evaluate.py --test_set [dataset_name]
 ### 2) 多模态增强分类评估（evaluate.py）
 
 - 加载两组预提取的多模态特征：
-  - `retrieved_data`: 检索图像的[图-文]特征 `[(multimodal_features, target), ...]`
+  - `retrieved_data`: 检索图像的[图-文]特征 `[(multimodal_features, target), ...]`（支持k张图像）
   - `test_data`: 待测试图像的[图-文]特征 `[(multimodal_features, target), ...]`
-- 对每个待测试样本，计算与所有检索样本的多模态相似度。
+- 对每个待测试样本，计算与所有检索样本的多模态相似度：
+  - **k图像处理**：对每个类别的k张图像分别计算加权相似度
+  - **平均聚合**：将k个相似度取平均作为最终类别相似度
 
 ### 3) 权重计算与多模态相似度匹配
 
-- 使用基于熵的权重计算：
-  - 对每组多模态特征计算熵：`entropy = calculate_batch_entropy(features)`
+- 使用基于熵的权重计算（支持k图像）：
+  - 对测试图像的多视图特征计算熵：`test_entropy = calculate_batch_entropy(test_features)`
+  - 对每张检索图像的多视图特征分别计算熵：`retrieved_entropy = calculate_batch_entropy(single_image_features)`
   - 权重计算：`weights = F.softmax(-entropy / temperature, dim=0)`
   - 加权平均：`weighted_features = (features * weights.unsqueeze(-1)).sum(dim=0)`
-- 计算加权相似度：
+- 计算k个加权相似度并取平均：
   - L2归一化：`weighted_features = weighted_features / weighted_features.norm()`
-  - 余弦相似度：`similarity = logit_scale.exp() * torch.dot(weighted_test, weighted_retrieved)`
+  - 余弦相似度：`similarity_k = torch.dot(weighted_test, weighted_retrieved_k)`
+  - 平均聚合：`avg_similarity = torch.stack(similarities).mean()`
 
 ---
 

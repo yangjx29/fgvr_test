@@ -1,0 +1,272 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/flower102_all.yml', num_per_category='3', knowledge_base_dir='./experiments/flower102/knowledge_base', query_image=None, test_data_dir='./datasets/flowers_102/images_discovery_all_1', results_out='./results/flower_fast_slow_results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir=None, classify_dir=None)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'flower', 'num_classes': 102, 'num_base': 51, 'num_novel': 51, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/flowers_102', 'expt_dir': './experiments/flower102', 'expt_dir_describe': './experiments/flower102/describe', 'path_vqa_questions': './experiments/flower102/describe/flower_vqa_questions_ours', 'path_vqa_answers': './experiments/flower102/describe/flower_attributes_pairs', 'path_llm_prompts': './experiments/flower102/describe/flower_llm_prompts', 'path_identify_answers': './experiments/flower102/identify', 'expt_dir_guess': './experiments/flower102/guess', 'path_llm_replies_raw': './experiments/flower102/guess/flower_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/flower102/guess/flower_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/flower102/guess/flower_llm_gussed_names', 'expt_dir_gallery': './experiments/flower102/gallery', 'path_references': './experiments/flower102/gallery/flower_image_references', 'path_regions': './experiments/flower102/gallery/flower_image_regions', 'path_descriptions': './experiments/flower102/gallery/flower_image_descriptions_attn', 'expt_dir_grouping': './experiments/flower102/grouping'}
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.12s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.10s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.11s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.11s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.59s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.82s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/flower102/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/flower102/knowledge_base/category_image_paths.json 加载
+加载了 100 个类别的图像路径
+知识库已从 ./experiments/flower102/knowledge_base 加载
+知识库加载完成!
+test sample:{'092.Ball Moss': ['./datasets/flowers_102/images_discovery_all_1/092.Ball_Moss/092.Ball_Moss_image_08113.jpg'], '069.Tree Poppy': ['./datasets/flowers_102/images_discovery_all_1/069.Tree_Poppy/069.Tree_Poppy_image_05303.jpg'], '028.Artichoke': ['./datasets/flowers_102/images_discovery_all_1/028.Artichoke/028.Artichoke_image_04105.jpg'], '080.Frangipani': ['./datasets/flowers_102/images_discovery_all_1/080.Frangipani/080.Frangipani_image_00888.jpg'], '012.King Protea': ['./datasets/flowers_102/images_discovery_all_1/012.King_Protea/012.King_Protea_image_05779.jpg'], '093.Foxglove': ['./datasets/flowers_102/images_discovery_all_1/093.Foxglove/093.Foxglove_image_07326.jpg'], '040.Barbeton Daisy': ['./datasets/flowers_102/images_discovery_all_1/040.Barbeton_Daisy/040.Barbeton_Daisy_image_02201.jpg'], '056.Gaura': ['./datasets/flowers_102/images_discovery_all_1/056.Gaura/056.Gaura_image_08126.jpg'], '020.Fire Lily': ['./datasets/flowers_102/images_discovery_all_1/020.Fire_Lily/020.Fire_Lily_image_06802.jpg'], '084.Desert Rose': ['./datasets/flowers_102/images_discovery_all_1/084.Desert_Rose/084.Desert_Rose_image_04776.jpg'], '095.Camellia': ['./datasets/flowers_102/images_discovery_all_1/095.Camellia/095.Camellia_image_07634.jpg'], '077.Lotus': ['./datasets/flowers_102/images_discovery_all_1/077.Lotus/077.Lotus_image_01923.jpg'], '015.Globe Flower': ['./datasets/flowers_102/images_discovery_all_1/015.Globe_Flower/015.Globe_Flower_image_06667.jpg'], '024.Grape Hyacinth': ['./datasets/flowers_102/images_discovery_all_1/024.Grape_Hyacinth/024.Grape_Hyacinth_image_06585.jpg'], '017.Peruvian Lily': ['./datasets/flowers_102/images_discovery_all_1/017.Peruvian_Lily/017.Peruvian_Lily_image_04289.jpg'], '041.Daffodil': ['./datasets/flowers_102/images_discovery_all_1/041.Daffodil/041.Daffodil_image_05721.jpg'], '096.Mallow': ['./datasets/flowers_102/images_discovery_all_1/096.Mallow/096.Mallow_image_07741.jpg'], '075.Morning Glory': ['./datasets/flowers_102/images_discovery_all_1/075.Morning_Glory/075.Morning_Glory_image_02543.jpg'], '066.Spring Crocus': ['./datasets/flowers_102/images_discovery_all_1/066.Spring_Crocus/066.Spring_Crocus_image_07080.jpg'], '026.Prince Of Wales Feathers': ['./datasets/flowers_102/images_discovery_all_1/026.Prince_Of_Wales_Feathers/026.Prince_Of_Wales_Feathers_image_06855.jpg'], '010.Snapdragon': ['./datasets/flowers_102/images_discovery_all_1/010.Snapdragon/010.Snapdragon_image_03166.jpg'], '008.Monkshood': ['./datasets/flowers_102/images_discovery_all_1/008.Monkshood/008.Monkshood_image_06424.jpg'], '089.Canna Lily': ['./datasets/flowers_102/images_discovery_all_1/089.Canna_Lily/089.Canna_Lily_image_04443.jpg'], '023.Red Ginger': ['./datasets/flowers_102/images_discovery_all_1/023.Red_Ginger/023.Red_Ginger_image_06841.jpg'], '003.Sweet Pea': ['./datasets/flowers_102/images_discovery_all_1/003.Sweet_Pea/003.Sweet_Pea_image_05684.jpg'], '055.Bishop of Llandaff': ['./datasets/flowers_102/images_discovery_all_1/055.Bishop_of_Llandaff/055.Bishop_of_Llandaff_image_02776.jpg'], '091.Bee Balm': ['./datasets/flowers_102/images_discovery_all_1/091.Bee_Balm/091.Bee_Balm_image_03072.jpg'], '044.Bolero Deep Blue': ['./datasets/flowers_102/images_discovery_all_1/044.Bolero_Deep_Blue/044.Bolero_Deep_Blue_image_07139.jpg'], '054.Pelargonium': ['./datasets/flowers_102/images_discovery_all_1/054.Pelargonium/054.Pelargonium_image_04720.jpg'], '006.Moon Orchid': ['./datasets/flowers_102/images_discovery_all_1/006.Moon_Orchid/006.Moon_Orchid_image_07218.jpg'], '039.Lenten Rose': ['./datasets/flowers_102/images_discovery_all_1/039.Lenten_Rose/039.Lenten_Rose_image_04566.jpg'], '068.Windflower': ['./datasets/flowers_102/images_discovery_all_1/068.Windflower/068.Windflower_image_05983.jpg'], '098.Bromelia': ['./datasets/flowers_102/images_discovery_all_1/098.Bromelia/098.Bromelia_image_07851.jpg'], '047.Buttercup': ['./datasets/flowers_102/images_discovery_all_1/047.Buttercup/047.Buttercup_image_04682.jpg'], '048.Oxeye Daisy': ['./datasets/flowers_102/images_discovery_all_1/048.Oxeye_Daisy/048.Oxeye_Daisy_image_06233.jpg'], '086.Magnolia': ['./datasets/flowers_102/images_discovery_all_1/086.Magnolia/086.Magnolia_image_05500.jpg'], '049.Common Dandelion': ['./datasets/flowers_102/images_discovery_all_1/049.Common_Dandelion/049.Common_Dandelion_image_06310.jpg'], '004.English Marigold': ['./datasets/flowers_102/images_discovery_all_1/004.English_Marigold/004.English_Marigold_image_05162.jpg'], '067.Bearded Iris': ['./datasets/flowers_102/images_discovery_all_1/067.Bearded_Iris/067.Bearded_Iris_image_05913.jpg'], '035.Ruby lipped Cattleya': ['./datasets/flowers_102/images_discovery_all_1/035.Ruby_lipped_Cattleya/035.Ruby_lipped_Cattleya_image_04369.jpg'], '064.Californian Poppy': ['./datasets/flowers_102/images_discovery_all_1/064.Californian_Poppy/064.Californian_Poppy_image_03183.jpg'], '087.Cyclamen ': ['./datasets/flowers_102/images_discovery_all_1/087.Cyclamen_/087.Cyclamen__image_00570.jpg'], '019.Giant White Arum Lily': ['./datasets/flowers_102/images_discovery_all_1/019.Giant_White_Arum_Lily/019.Giant_White_Arum_Lily_image_04916.jpg'], '013.Spear Thistle': ['./datasets/flowers_102/images_discovery_all_1/013.Spear_Thistle/013.Spear_Thistle_image_06059.jpg'], '034.Alpine Sea Holly': ['./datasets/flowers_102/images_discovery_all_1/034.Alpine_Sea_Holly/034.Alpine_Sea_Holly_image_07003.jpg'], '018.Balloon Flower': ['./datasets/flowers_102/images_discovery_all_1/018.Balloon_Flower/018.Balloon_Flower_image_06196.jpg'], '045.Wallflower': ['./datasets/flowers_102/images_discovery_all_1/045.Wallflower/045.Wallflower_image_01101.jpg'], '101.Blackberry Lily': ['./datasets/flowers_102/images_discovery_all_1/101.Blackberry_Lily/101.Blackberry_Lily_image_08028.jpg'], '016.Purple Coneflower': ['./datasets/flowers_102/images_discovery_all_1/016.Purple_Coneflower/016.Purple_Coneflower_image_03860.jpg'], '078.Toad Lily': ['./datasets/flowers_102/images_discovery_all_1/078.Toad_Lily/078.Toad_Lily_image_06716.jpg'], '007.Bird Of Paradise': ['./datasets/flowers_102/images_discovery_all_1/007.Bird_Of_Paradise/007.Bird_Of_Paradise_image_03315.jpg'], '060.Cautleya Spicata': ['./datasets/flowers_102/images_discovery_all_1/060.Cautleya_Spicata/060.Cautleya_Spicata_image_06252.jpg'], '002.Canterbury Bells': ['./datasets/flowers_102/images_discovery_all_1/002.Canterbury_Bells/002.Canterbury_Bells_image_06640.jpg'], '022.Fritillary': ['./datasets/flowers_102/images_discovery_all_1/022.Fritillary/022.Fritillary_image_03445.jpg'], '097.Mexican Petunia': ['./datasets/flowers_102/images_discovery_all_1/097.Mexican_Petunia/097.Mexican_Petunia_image_07817.jpg'], '082.Hibiscus': ['./datasets/flowers_102/images_discovery_all_1/082.Hibiscus/082.Hibiscus_image_01719.jpg'], '025.Corn Poppy': ['./datasets/flowers_102/images_discovery_all_1/025.Corn_Poppy/025.Corn_Poppy_image_06520.jpg'], '079.Anthurium': ['./datasets/flowers_102/images_discovery_all_1/079.Anthurium/079.Anthurium_image_01966.jpg'], '058.Orange Dahlia': ['./datasets/flowers_102/images_discovery_all_1/058.Orange_Dahlia/058.Orange_Dahlia_image_05069.jpg'], '065.Osteospermum': ['./datasets/flowers_102/images_discovery_all_1/065.Osteospermum/065.Osteospermum_image_05550.jpg'], '073.Rose': ['./datasets/flowers_102/images_discovery_all_1/073.Rose/073.Rose_image_01176.jpg'], '053.Sunflower': ['./datasets/flowers_102/images_discovery_all_1/053.Sunflower/053.Sunflower_image_05449.jpg'], '005.Tiger Lily': ['./datasets/flowers_102/images_discovery_all_1/005.Tiger_Lily/005.Tiger_Lily_image_07178.jpg'], '072.Water Lily': ['./datasets/flowers_102/images_discovery_all_1/072.Water_Lily/072.Water_Lily_image_00364.jpg'], '100.Trumpet Creeper': ['./datasets/flowers_102/images_discovery_all_1/100.Trumpet_Creeper/100.Trumpet_Creeper_image_07989.jpg'], '070.Gazania': ['./datasets/flowers_102/images_discovery_all_1/070.Gazania/070.Gazania_image_04529.jpg'], '037.Great Masterwort': ['./datasets/flowers_102/images_discovery_all_1/037.Great_Masterwort/037.Great_Masterwort_image_05832.jpg'], '021.Pincushion Flower': ['./datasets/flowers_102/images_discovery_all_1/021.Pincushion_Flower/021.Pincushion_Flower_image_05359.jpg'], '076.Passion Flower': ['./datasets/flowers_102/images_discovery_all_1/076.Passion_Flower/076.Passion_Flower_image_00216.jpg'], '088.Watercress': ['./datasets/flowers_102/images_discovery_all_1/088.Watercress/088.Watercress_image_00672.jpg'], '036.Cape Flower': ['./datasets/flowers_102/images_discovery_all_1/036.Cape_Flower/036.Cape_Flower_image_03822.jpg'], '032.Love In The Mist': ['./datasets/flowers_102/images_discovery_all_1/032.Love_In_The_Mist/032.Love_In_The_Mist_image_06459.jpg'], '063.Silverbush': ['./datasets/flowers_102/images_discovery_all_1/063.Silverbush/063.Silverbush_image_06142.jpg'], '061.Japanese Anemone': ['./datasets/flowers_102/images_discovery_all_1/061.Japanese_Anemone/061.Japanese_Anemone_image_08176.jpg'], '000.Pink Primrose': ['./datasets/flowers_102/images_discovery_all_1/000.Pink_Primrose/000.Pink_Primrose_image_06741.jpg'], '030.Carnation': ['./datasets/flowers_102/images_discovery_all_1/030.Carnation/030.Carnation_image_08065.jpg'], '051.Wild Pansy': ['./datasets/flowers_102/images_discovery_all_1/051.Wild_Pansy/051.Wild_Pansy_image_04215.jpg'], '094.Bougainvillea': ['./datasets/flowers_102/images_discovery_all_1/094.Bougainvillea/094.Bougainvillea_image_07560.jpg'], '050.Petunia': ['./datasets/flowers_102/images_discovery_all_1/050.Petunia/050.Petunia_image_01445.jpg'], '043.Poinsettia': ['./datasets/flowers_102/images_discovery_all_1/043.Poinsettia/043.Poinsettia_image_01566.jpg'], '014.Yellow Iris': ['./datasets/flowers_102/images_discovery_all_1/014.Yellow_Iris/014.Yellow_Iris_image_06356.jpg'], '029.Sweet William': ['./datasets/flowers_102/images_discovery_all_1/029.Sweet_William/029.Sweet_William_image_03524.jpg'], '027.Stemless Gentian': ['./datasets/flowers_102/images_discovery_all_1/027.Stemless_Gentian/027.Stemless_Gentian_image_05272.jpg'], '033.Mexican Aster': ['./datasets/flowers_102/images_discovery_all_1/033.Mexican_Aster/033.Mexican_Aster_image_06943.jpg'], '090.Hippeastrum ': ['./datasets/flowers_102/images_discovery_all_1/090.Hippeastrum_/090.Hippeastrum__image_04852.jpg'], '062.Black eyed Susan': ['./datasets/flowers_102/images_discovery_all_1/062.Black_eyed_Susan/062.Black_eyed_Susan_image_05860.jpg'], "011.Colt'S Foot": ["./datasets/flowers_102/images_discovery_all_1/011.Colt'S_Foot/011.Colt'S_Foot_image_04062.jpg"], '059.Pink yellow Dahlia': ['./datasets/flowers_102/images_discovery_all_1/059.Pink_yellow_Dahlia/059.Pink_yellow_Dahlia_image_02939.jpg'], '052.Primula': ['./datasets/flowers_102/images_discovery_all_1/052.Primula/052.Primula_image_03729.jpg'], '099.Blanket Flower': ['./datasets/flowers_102/images_discovery_all_1/099.Blanket_Flower/099.Blanket_Flower_image_07931.jpg'], '081.Clematis': ['./datasets/flowers_102/images_discovery_all_1/081.Clematis/081.Clematis_image_01627.jpg'], '042.Sword Lily': ['./datasets/flowers_102/images_discovery_all_1/042.Sword_Lily/042.Sword_Lily_image_02378.jpg'], '085.Tree Mallow': ['./datasets/flowers_102/images_discovery_all_1/085.Tree_Mallow/085.Tree_Mallow_image_02863.jpg'], '038.Siam Tulip': ['./datasets/flowers_102/images_discovery_all_1/038.Siam_Tulip/038.Siam_Tulip_image_07045.jpg'], '083.Columbine': ['./datasets/flowers_102/images_discovery_all_1/083.Columbine/083.Columbine_image_02630.jpg'], '057.Geranium': ['./datasets/flowers_102/images_discovery_all_1/057.Geranium/057.Geranium_image_02738.jpg'], '009.Globe Thistle': ['./datasets/flowers_102/images_discovery_all_1/009.Globe_Thistle/009.Globe_Thistle_image_07096.jpg'], '074.Thorn Apple': ['./datasets/flowers_102/images_discovery_all_1/074.Thorn_Apple/074.Thorn_Apple_image_02075.jpg'], '046.Marigold': ['./datasets/flowers_102/images_discovery_all_1/046.Marigold/046.Marigold_image_04969.jpg'], '001.Hard leaved Pocket Orchid': ['./datasets/flowers_102/images_discovery_all_1/001.Hard_leaved_Pocket_Orchid/001.Hard_leaved_Pocket_Orchid_image_05118.jpg'], '071.Azalea': ['./datasets/flowers_102/images_discovery_all_1/071.Azalea/071.Azalea_image_03609.jpg'], '031.Garden Phlox': ['./datasets/flowers_102/images_discovery_all_1/031.Garden_Phlox/031.Garden_Phlox_image_05608.jpg']}
+[fast and slow] 测试数据集包含 102 个类别
+
+🔄 处理类别 [1/102]: 092.Ball Moss (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/092.Ball_Moss/092.Ball_Moss_image_08113.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/092.Ball_Moss/092.Ball_Moss_image_08113.jpg
+图像检索结果: Ball Moss (置信度: 1.0000)
+文本检索结果: Bolero Deep Blue (置信度: 0.2623)
+融合结果: [('Bolero Deep Blue', 0.19515361385267288), ('Mallow', 0.19498599399962732), ('Bird Of Paradise', 0.1927092605285228)]
+快思考结果: conflict (置信度: 0.4661)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/092.Ball_Moss/092.Ball_Moss_image_08113.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ['The image contains multiple overlapping elements, making it hard to isolate the main subject.', 'The background is dense with foliage, which can obscure details and make it difficult to identify the plant species.', 'The lighting appears natural but uneven, affecting the visibility of certain features.'], 'key_regions': ['The central blue flower', 'The surrounding pinkish-red leaves', 'The green leaves in the foreground and background'], 'additional_info_needed': "A clearer view of the plant's overall structure, including its leaves, stems, and any distinctive markings or patterns that could help in identification."}
+步骤2: 提取关键区域特征...
+区域描述: ["The central blue flower in the image is a vibrant, deep purple-blue with a smooth, glossy texture. Its petals are slightly ruffled at the edges, giving it a delicate, almost velvety appearance. The flower's shape is somewhat star-like, with five distinct petals radiating outward from a central point. The size of the flower appears relatively small compared to the surrounding foliage, which includes long, slender green leaves and some pinkish-red bracts that frame the flower. The unique feature of this flower is its rich color and the subtle sheen on its surface, which sets it apart from other similar flowers that might be more uniformly colored or have a different texture.", 'The surrounding pinkish-red leaves in the image exhibit a vibrant color with a smooth texture. They have a slightly glossy appearance, which enhances their rich hue. The leaves are elongated and have a pointed tip, giving them a somewhat spear-like shape. Their size is larger compared to the central blue flower, providing a contrasting backdrop. The edges of these leaves appear slightly serrated, adding a subtle detail to their overall form. The pinkish-red coloration is consistent throughout, though there may be slight variations in shade depending on the light and angle. This distinct color and shape make the pinkish-red leaves stand out distinctly against the green foliage and the bright blue flower at the center.', "The green leaves in the foreground and background exhibit a vibrant, healthy appearance with a glossy texture. They have a rich, dark green color that contrasts sharply with the bright blue flower in the center. The leaves are elongated and narrow, with smooth edges and a slightly serrated appearance along the veins, which are prominent and visible. Some leaves show a slight sheen, indicating they might be wet or have a waxy coating.\n\nIn terms of size, the leaves vary, with some being larger and more prominent in the background, while others are smaller and more delicate in the foreground. This variation in size adds depth to the image and helps frame the central blue flower.\n\nUnique features include the distinct veins running through each leaf, which are darker and more pronounced than the rest of the leaf's surface. The leaves also have a slightly ruffled or fringed edge, particularly noticeable in the larger ones in the background. These characteristics make them stand out distinctly from other foliage types, such as broad-leaved plants or those with more rounded or lobed shapes."]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The image showcases a vibrant floral scene dominated by a central blue-purple flower with a star-like shape, surrounded by elongated pinkish-red leaves and lush green foliage. The composition highlights the contrast between the vivid colors and textures of the various plant parts, creating a visually striking image.
+
+#### Key Regions and Distinctive Features:
+
+1. **The Central Blue Flower:**
+   - **Color:** Deep purple-blue with a glossy, velvety texture.
+   - **Shape:** Star-like, with five distinct petals radiating outward.
+   - **Texture:** Smooth, slightly ruffled edges, giving it a delicate appearance.
+   - **Size:** Relatively small compared to the surrounding foliage.
+   - **Unique Characteristics:** The rich color and subtle sheen set it apart from other similar flowers.
+
+2. **The Surrounding Pinkish-Red Leaves:**
+   - **Color:** Vibrant pinkish-red with a smooth, glossy texture.
+   - **Shape:** Elongated with a pointed tip, resembling a spear.
+   - **Texture:** Slightly serrated edges, enhancing their spear-like appearance.
+   - **Size:** Larger compared to the central blue flower, providing a contrasting backdrop.
+
+步骤4: 执行多模态检索...
+多模态检索结果: [('Ball Moss', 0.39999970693262904), ('Clematis', 0.33913033152133676), ('Siam Tulip', 0.333906513392354), ('Bromelia', 0.33023372546328655), ('Tree Mallow', 0.32993730895329376)]
+步骤5: 最终推理...
+最终预测: Bromelia (置信度: 0.8500)
+推理过程: The image shows a vibrant blue-purple flower with a star-like shape, which is characteristic of bromeliads. The surrounding elongated pinkish-red leaves also align well with the typical leaf structure found in bromeliad plants. The similarity score for Bromelia (0.3302) is higher than the others, indicating a strong match. Additionally, the combination of the flower's color and shape, along with the leaf structure, supports the classification as a bromeliad. | Key Features: The star-like blue-purple flower with a glossy, velvety texture and the elongated pinkish-red leaves with serrated edges are key features supporting the classification as a bromeliad. | Uncertainty: While the similarity score for Bromelia is high, there could be slight overlaps with other categories like Clematis due to the star-like shape of the flower. However, the distinct leaf structure and overall coloration provide strong evidence for the Bromelia classification.
+统计更新: 类别=Bromelia, 置信度=0.850, LCB=0.500, 一致性=False, 更新m=True
+跳过增量更新：预测类别未知或为空
+快慢思考结果不一致，进行最终融合决策...
+分类完成: Bromelia (置信度: 0.8000)
+总耗时: 91.14秒
+  📸 [1/1] ❌ 错误 | 预测: Bromelia | 真值: 092.Ball Moss | 慢思考: 是 | 置信度: 0.800
+     📊 图片进度: 1/102 | 累积准确率: 0.000 (0/1) | 类别准确率: 0.000 (0/1)
+✨ 类别 092.Ball Moss 完成: 0/1 = 0.000
+📈 当前总体进度: 1/102 | 累积准确率: 0.000 (0/1)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [2/102]: 069.Tree Poppy (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/069.Tree_Poppy/069.Tree_Poppy_image_05303.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/069.Tree_Poppy/069.Tree_Poppy_image_05303.jpg
+图像检索结果: Tree Poppy (置信度: 1.0000)
+文本检索结果: Tree Poppy (置信度: 0.3709)
+融合结果: [('Tree Poppy', 0.335096237991677), ('Japanese Anemone', 0.2077477489147455), ('Corn Poppy', 0.1860811175808074)]
+快思考结果: Tree Poppy (置信度: 0.7068)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Tree Poppy (置信度: 0.7068)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: Tree Poppy | 真值: 069.Tree Poppy | 慢思考: 否 | 置信度: 0.707
+     📊 图片进度: 2/102 | 累积准确率: 0.500 (1/2) | 类别准确率: 1.000 (1/1)
+✨ 类别 069.Tree Poppy 完成: 1/1 = 1.000
+📈 当前总体进度: 2/102 | 累积准确率: 0.500 (1/2)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [3/102]: 028.Artichoke (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/028.Artichoke/028.Artichoke_image_04105.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/028.Artichoke/028.Artichoke_image_04105.jpg
+图像检索结果: Artichoke (置信度: 1.0000)
+文本检索结果: Artichoke (置信度: 0.3371)
+融合结果: [('Artichoke', 0.3380024695738417), ('Spear Thistle', 0.2738445975847783), ('Alpine Sea Holly', 0.1423078225009025)]
+快思考结果: Artichoke (置信度: 0.6346)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Artichoke (置信度: 0.6346)
+总耗时: 0.02秒
+  📸 [1/1] ✅ 正确 | 预测: Artichoke | 真值: 028.Artichoke | 慢思考: 否 | 置信度: 0.635
+     📊 图片进度: 3/102 | 累积准确率: 0.667 (2/3) | 类别准确率: 1.000 (1/1)
+✨ 类别 028.Artichoke 完成: 1/1 = 1.000
+📈 当前总体进度: 3/102 | 累积准确率: 0.667 (2/3)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [4/102]: 080.Frangipani (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/080.Frangipani/080.Frangipani_image_00888.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/080.Frangipani/080.Frangipani_image_00888.jpg
+图像检索结果: Frangipani (置信度: 1.0000)
+文本检索结果: Frangipani (置信度: 0.3673)
+融合结果: [('Frangipani', 0.50516655835949), ('Silverbush', 0.13929629526399095), ('Sword Lily', 0.13153644958658822)]
+快思考结果: Frangipani (置信度: 0.9806)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Frangipani (置信度: 0.9806)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: Frangipani | 真值: 080.Frangipani | 慢思考: 否 | 置信度: 0.981
+     📊 图片进度: 4/102 | 累积准确率: 0.750 (3/4) | 类别准确率: 1.000 (1/1)
+✨ 类别 080.Frangipani 完成: 1/1 = 1.000
+📈 当前总体进度: 4/102 | 累积准确率: 0.750 (3/4)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [5/102]: 012.King Protea (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/012.King_Protea/012.King_Protea_image_05779.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/012.King_Protea/012.King_Protea_image_05779.jpg
+图像检索结果: King Protea (置信度: 1.0000)
+文本检索结果: Spear Thistle (置信度: 0.3165)
+融合结果: [('Bee Balm', 0.20252601332329231), ('Spear Thistle', 0.2000768234006694), ('Cape Flower', 0.19224913055225024)]
+快思考结果: conflict (置信度: 0.4665)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/012.King_Protea/012.King_Protea_image_05779.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The flower's structure is complex, with overlapping petals and a central cluster that can be mistaken for other species.", 'The coloration and pattern of the petals can vary, which may lead to misclassification if not carefully analyzed.', 'The surrounding foliage and background can sometimes obscure key identifying features.'], 'key_regions': ['The central cluster of the flower, as it contains unique structures that are characteristic of King Protea.', 'The petal edges and their arrangement, as they are distinctive and can vary between species.', 'The overall symmetry and shape of the flower, which can differ slightly even within the same species.'], 'additional_info_needed': "A clearer view of the flower's underside or a comparison with known images of King Protea and Spear Thistle to confirm the identification."}
+步骤2: 提取关键区域特征...
+区域描述: ['The central cluster of the King Protea flower in the image is a striking feature, characterized by its dense, spiky appearance. It is predominantly white with hints of pink at the tips of the spines, creating a gradient effect. The texture appears soft and slightly fuzzy, with individual filaments radiating outward from a central core. These filaments are densely packed, giving the cluster a textured, almost feathery look.\n\nIn terms of shape, the central cluster is conical and somewhat flattened at the top, tapering down to a more rounded base. Its size is significant compared to the surrounding petals, making it the focal point of the flower. The unique features include the intricate arrangement of the filaments and the subtle color variations along their length. There are no visible variations or special characteristics other than the consistent pattern and coloration throughout the cluster. This structure is distinct and easily recognizable as a hallmark of the King Protea species.', "The flower in the image is a King Protea (Protea cynaroides), characterized by its distinctive and unique petal arrangement. Here's a detailed description:\n\n- **Color**: The petals are primarily a deep red or burgundy color with a gradient towards white at the tips. This coloration is consistent across the petals, creating a striking contrast.\n\n- **Texture and Patterns**: The petals have a slightly rough texture, especially noticeable near the base where they are more tightly packed. The tips of the petals are smooth and pointed, giving them a sharp appearance. There are no visible patterns on the petals themselves; the color variation is the primary visual feature.\n\n- **Shape and Size**: The petals are elongated and pointed, with the largest ones forming the outer ring and gradually becoming smaller towards the center. The central part of the flower consists of numerous small, spiky structures that resemble tiny flowers or bracts, which are densely packed and create a textured, almost fuzzy appearance.\n\n- **Unique Features**: The most distinctive feature of the King Protea is its large, circular head composed of numerous individual flowers or bracts. The arrangement of these bracts creates a layered effect, with the outermost layer being the most prominent and the inner layers gradually decreasing in size", "The flower in the image is a King Protea (Protea cynaroides), characterized by its large, symmetrical, and intricate structure. Here's a detailed description:\n\n- **Color**: The petals are primarily deep red with a gradient to lighter pink at the tips, creating a striking contrast. The center of the flower displays a dense cluster of small, white, spiky structures that resemble tiny flowers or bracts.\n\n- **Texture and Patterns**: The petals have a smooth, slightly glossy texture, especially noticeable near the tips where they are more pointed and sharp. The central part has a fuzzy, almost feathery texture due to the numerous white bracts.\n\n- **Shape and Size**: The flower is large and robust, with a diameter that can range from 10 to 25 cm. It is highly symmetrical, with each petal radiating outward from the central core, forming a circular pattern. The overall shape is conical, tapering towards the center.\n\n- **Unique Features**: The most distinctive feature is the combination of the large, pointed petals and the dense, white, spiky center. This unique arrangement sets it apart from other protea species and makes it easily recognizable.\n\n- **Variations and Special Characteristics**: While"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The flower in the image is a King Protea (Protea cynaroides), characterized by its large, symmetrical, and intricate structure. The flower is predominantly red with a gradient to lighter pink at the tips of the petals, creating a striking contrast. The central part of the flower is densely packed with small, white, spiky structures that resemble tiny flowers or bracts, giving it a fuzzy, almost feathery appearance.
+
+#### Central Cluster:
+- **Color**: The central cluster is predominantly white with hints of pink at the tips of the spines, creating a gradient effect.
+- **Texture**: The texture appears soft and slightly fuzzy, with individual filaments radiating outward from a central core.
+- **Shape**: The central cluster is conical and somewhat flattened at the top, tapering down to a more rounded base. It is densely packed, giving the cluster a textured, almost feathery look.
+- **Size**: The central cluster is significant in size compared to the surrounding petals, making it the focal point of the flower.
+
+#### Petal Edges and Arrangement:
+- **Color**: The petals are primarily deep red or burgundy with a gradient towards white at
+步骤4: 执行多模态检索...
+多模态检索结果: [('King Protea', 0.3999999337447495), ('Purple Coneflower', 0.3410122128572364), ('Bee Balm', 0.33195740969414456), ('Great Masterwort', 0.33131153099356303), ('Artichoke', 0.3310437496874113)]
+步骤5: 最终推理...
+最终预测: King Protea (Protea cynaroides) (置信度: 0.9500)
+推理过程: The image displays a flower with a large, symmetrical, and intricate structure, characterized by deep red or burgundy petals with a gradient towards white at the tips. The central part of the flower is densely packed with small, white, spiky structures resembling tiny flowers or bracts, which is a distinctive feature of the King Protea. The similarity scores also indicate a high correlation with the King Protea, with a score of 0.4000, significantly higher than other candidates. | Key Features: The large, symmetrical structure, deep red or burgundy petals with a white gradient, and the dense, spiky central cluster are key features that match the King Protea. | Uncertainty: There are no significant uncertainty factors affecting the classification. The visual evidence strongly supports the identification as a King Protea.
+统计更新: 类别=King Protea (Protea cynaroides), 置信度=0.950, LCB=0.500, 一致性=False, 更新m=True
+跳过增量更新：预测类别未知或为空
+快慢思考结果不一致，进行最终融合决策...
+分类完成: King Protea (置信度: 0.9500)
+总耗时: 109.44秒
+  📸 [1/1] ✅ 正确 | 预测: King Protea | 真值: 012.King Protea | 慢思考: 是 | 置信度: 0.950
+     📊 图片进度: 5/102 | 累积准确率: 0.800 (4/5) | 类别准确率: 1.000 (1/1)
+✨ 类别 012.King Protea 完成: 1/1 = 1.000
+📈 当前总体进度: 5/102 | 累积准确率: 0.800 (4/5)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [6/102]: 093.Foxglove (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/093.Foxglove/093.Foxglove_image_07326.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/093.Foxglove/093.Foxglove_image_07326.jpg
+图像检索结果: Foxglove (置信度: 1.0000)
+文本检索结果: Foxglove (置信度: 0.3325)
+融合结果: [('Foxglove', 0.3010381543978316), ('Lenten Rose', 0.19622243051567384), ('Clematis', 0.16633096197767863)]
+快思考结果: Foxglove (置信度: 0.5857)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Foxglove (置信度: 0.5857)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: Foxglove | 真值: 093.Foxglove | 慢思考: 否 | 置信度: 0.586
+     📊 图片进度: 6/102 | 累积准确率: 0.833 (5/6) | 类别准确率: 1.000 (1/1)
+✨ 类别 093.Foxglove 完成: 1/1 = 1.000
+📈 当前总体进度: 6/102 | 累积准确率: 0.833 (5/6)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [7/102]: 040.Barbeton Daisy (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/040.Barbeton_Daisy/040.Barbeton_Daisy_image_02201.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/040.Barbeton_Daisy/040.Barbeton_Daisy_image_02201.jpg
+图像检索结果: Barbeton Daisy (置信度: 1.0000)
+文本检索结果: Barbeton Daisy (置信度: 0.3179)
+融合结果: [('Barbeton Daisy', 0.2675476485832793), ('Bishop of Llandaff', 0.20299717341699908), ('Mexican Aster', 0.18679864863081583)]
+快思考结果: conflict (置信度: 0.3861)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/040.Barbeton_Daisy/040.Barbeton_Daisy_image_02201.jpg
+动态更新已禁用，跳过知识库更新
+步骤1: 调用模型去分析识别困难点...
+困难点分析: {'difficulty_reasons': ["The flower's petals have a gradient coloration, which can be misleading for classification.", "The image resolution and lighting conditions may affect the perception of the flower's features.", 'The background is not distinct enough to provide clear context or contrast.'], 'key_regions': ['The center of the flower, as it contains the most distinctive features that can aid in identification.', 'The petal edges, as they show the texture and color variation which can be crucial for differentiation.', 'The overall symmetry and arrangement of the petals, which can vary slightly between species.'], 'additional_info_needed': 'A clearer view of the flower with less background interference, higher resolution images, and more examples of similar flowers for comparison would help in distinguishing this from other categories.'}
+步骤2: 提取关键区域特征...
+区域描述: ["The center of the flower in the image is a vibrant yellow with a textured surface that appears slightly fuzzy or granular. It has a circular shape and is significantly smaller compared to the surrounding petals. The center's texture contrasts with the smooth, pointed edges of the red petals. There are no visible patterns within the center itself; it is uniformly colored. The yellow center stands out prominently against the bright red petals, making it a distinctive feature for identification.", "The petals of the flower in the image exhibit a vibrant red hue with subtle variations in shade, creating a gradient effect from deeper reds at the tips to lighter, almost pinkish tones near the center. The texture appears slightly ruffled and slightly serrated along the edges, giving them a delicate, almost feathery appearance. This texture is consistent across all petals, contributing to their intricate and detailed look.\n\nEach petal is elongated and slightly curved, radiating outward from the central disc. They vary in size, with some appearing larger and more prominent than others, creating a layered effect that enhances the flower's fullness and depth. The edges of the petals are not perfectly smooth; instead, they have a natural, slightly uneven texture that adds to the flower's organic beauty.\n\nThe central disc is a bright yellow-green, contrasting sharply with the red petals. It has a fuzzy texture with small, protruding structures that resemble tiny hairs or bristles, adding another layer of detail to the flower's appearance. This disc serves as a focal point, drawing the eye inward and emphasizing the flower's symmetry.\n\nOverall, the combination of the vibrant red petals, their textured edges, and the contrasting yellow-green disc makes this flower distinct and visually striking. These characteristics set it apart", "The image showcases a vibrant red gerbera daisy with a symmetrical arrangement of petals. Here's a detailed description:\n\n- **Color**: The petals are a bright, uniform red, with a slight gradient towards the center where they transition into a lighter shade. The center of the flower is a yellowish-green, densely packed with small, fuzzy structures.\n\n- **Texture**: The petals have a smooth, slightly glossy texture, giving them a vibrant appearance. The center is covered with fine, soft hairs, adding a tactile contrast to the smoothness of the petals.\n\n- **Shape and Size**: The petals are broad and flat, radiating outward from the central disc. They are elongated and slightly pointed at the tips, creating a full, rounded shape typical of gerbera daisies. The size of the petals is consistent across the flower, contributing to its symmetrical look.\n\n- **Unique Features**: The flower exhibits radial symmetry, meaning it looks the same when viewed from any angle along a central axis. This symmetry is evident in the even spacing and identical shape of the petals. The central disc is densely packed with tiny, fuzzy structures, which are characteristic of gerbera daisies and serve as a reproductive part of the flower.\n\n- **Variations"]
+步骤3: 生成结构化描述,去除冗余信息...
+结构化描述: ### Comprehensive Description for Fine-Grained Classification
+
+#### Overall Appearance:
+The image depicts a vibrant red gerbera daisy with a symmetrical arrangement of petals. The flower is characterized by its broad, flat petals that radiate outward from a dense, yellow-green central disc. The petals exhibit a smooth, slightly glossy texture and a gradient coloration, transitioning from deep red at the tips to lighter shades near the center. The flower's overall shape is rounded and full, showcasing radial symmetry.
+
+#### Key Regions and Distinctive Features:
+
+1. **Center of the Flower**:
+   - **Color and Texture**: The central disc is a bright yellow-green, densely packed with fine, soft hairs that give it a fuzzy appearance. This texture contrasts sharply with the smooth, pointed edges of the red petals.
+   - **Symmetry**: The central disc is symmetrical, with evenly spaced, small, protruding structures that add to the flower's intricate design.
+
+2. **Petal Edges**:
+   - **Color and Texture**: The petals are a vibrant red with subtle variations in shade, creating a gradient effect. The texture is slightly ruffled and serrated along the edges, giving them a delicate, feathery appearance.
+   - **Symmetry**: The
+步骤4: 执行多模态检索...
+多模态检索结果: [('Barbeton Daisy', 0.3999998663259329), ('Blanket Flower', 0.3646353180626004), ('Osteospermum', 0.3598875768122731), ('Gazania', 0.3559816611578345), ('Oxeye Daisy', 0.3533275528398103)]
+步骤5: 最终推理...
+最终预测: Barbeton Daisy (置信度: 0.8500)
+推理过程: The image shows a vibrant red flower with a symmetrical arrangement of broad, flat petals radiating outward from a dense, yellow-green central disc. The petals have a smooth texture with a slight gradient from deep red at the tips to lighter shades near the center, which is characteristic of a Barbeton Daisy. The central disc's fuzzy texture and the petal edges' serrated appearance further support this identification. The similarity score for Barbeton Daisy is the highest among the candidates, indicating a strong match. | Key Features: ['Vibrant red petals with a smooth texture and a gradient coloration', 'Symmetrical arrangement of petals radiating from a dense, yellow-green central disc', 'Fuzzy texture of the central disc', 'Serrated petal edges'] | Uncertainty: ['While the Barbeton Daisy is highly likely, the similarity scores for other daisies like Blanket Flower, Osteospermum, Gazania, and Oxeye Daisy are relatively close, making the distinction less certain.']
+统计更新: 类别=Barbeton Daisy, 置信度=0.850, LCB=0.000, 一致性=True, 更新m=True
+跳过增量更新：预测类别未知或为空
+分类完成: Barbeton Daisy (置信度: 0.8500)
+总耗时: 88.16秒
+  📸 [1/1] ✅ 正确 | 预测: Barbeton Daisy | 真值: 040.Barbeton Daisy | 慢思考: 是 | 置信度: 0.850
+     📊 图片进度: 7/102 | 累积准确率: 0.857 (6/7) | 类别准确率: 1.000 (1/1)
+✨ 类别 040.Barbeton Daisy 完成: 1/1 = 1.000
+📈 当前总体进度: 7/102 | 累积准确率: 0.857 (6/7)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [8/102]: 056.Gaura (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/056.Gaura/056.Gaura_image_08126.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/056.Gaura/056.Gaura_image_08126.jpg
+图像检索结果: Gaura (置信度: 1.0000)
+文本检索结果: Gaura (置信度: 0.3390)
+融合结果: [('Gaura', 0.3470694148882491), ('Love In The Mist', 0.21315586199202843), ('Silverbush', 0.15351176457627425)]
+快思考结果: Gaura (置信度: 0.7444)
+需要慢思考: False
+快思考结果确定，直接返回...
+分类完成: Gaura (置信度: 0.7444)
+总耗时: 0.03秒
+  📸 [1/1] ✅ 正确 | 预测: Gaura | 真值: 056.Gaura | 慢思考: 否 | 置信度: 0.744
+     📊 图片进度: 8/102 | 累积准确率: 0.875 (7/8) | 类别准确率: 1.000 (1/1)
+✨ 类别 056.Gaura 完成: 1/1 = 1.000
+📈 当前总体进度: 8/102 | 累积准确率: 0.875 (7/8)
+--------------------------------------------------------------------------------
+
+🔄 处理类别 [9/102]: 020.Fire Lily (1 张图片)
+开始分类图像: ./datasets/flowers_102/images_discovery_all_1/020.Fire_Lily/020.Fire_Lily_image_06802.jpg
+执行快思考...
+开始快思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/020.Fire_Lily/020.Fire_Lily_image_06802.jpg
+图像检索结果: Fire Lily (置信度: 1.0000)
+文本检索结果: Fire Lily (置信度: 0.2954)
+融合结果: [('Fire Lily', 0.2633616553588969), ('Canna Lily', 0.1982162610177071), ('Trumpet Creeper', 0.19456799631157226)]
+快思考结果: conflict (置信度: 0.4503)
+需要慢思考: True
+快思考结果不确定，执行慢思考...
+开始慢思考流程，查询图像: ./datasets/flowers_102/images_discovery_all_1/020.Fire_Lily/020.Fire_Lily_image_06802.jpg
