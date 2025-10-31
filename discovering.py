@@ -47,6 +47,69 @@ def extract_superidentify(cfg, individual_results):
         return [super_name for super_name, _ in word_counts.most_common(1)]  # 返回出现次数最多的1个超类
 
 
+def get_dataset_mapping():
+    """获取数据集名称映射和对应的实验目录名"""
+    return {
+        'pet': {'dataset_dir': 'pet_37', 'exp_dir': 'pet37'},
+        'dog': {'dataset_dir': 'dogs_120', 'exp_dir': 'dog120'}, 
+        'flower': {'dataset_dir': 'flowers_102', 'exp_dir': 'flower102'},
+        'car': {'dataset_dir': 'car_196', 'exp_dir': 'car196'},
+        'bird': {'dataset_dir': 'CUB_200_2011', 'exp_dir': 'bird200'}
+    }
+
+
+def load_category_image_paths(dataset_name):
+    """
+    从知识库加载类别图像路径
+    
+    Args:
+        dataset_name: 数据集名称 (pet, dog, flower, car, bird)
+        
+    Returns:
+        dict: {category: [image_paths]} 或 {} 如果文件不存在
+    """
+    dataset_mapping = get_dataset_mapping()
+    
+    if dataset_name not in dataset_mapping:
+        print(f"警告: 不支持的数据集 {dataset_name}")
+        return {}
+    
+    exp_dir = dataset_mapping[dataset_name]['exp_dir']
+    category_paths_file = f"./experiments/{exp_dir}/knowledge_base/category_image_paths.json"
+    
+    if os.path.exists(category_paths_file):
+        try:
+            category_paths = load_json(category_paths_file)
+            print(f"✅ 从知识库加载了 {len(category_paths)} 个类别的图像路径: {category_paths_file}")
+            return category_paths
+        except Exception as e:
+            print(f"❌ 加载类别图像路径失败 {category_paths_file}: {e}")
+            return {}
+    else:
+        print(f"⚠️  类别图像路径文件不存在: {category_paths_file}")
+        return {}
+
+
+def get_category_image_from_paths(category, category_paths, max_images=1):
+    """
+    从类别图像路径中获取指定数量的图像
+    
+    Args:
+        category: 类别名称
+        category_paths: 类别图像路径字典
+        max_images: 最大图像数量
+        
+    Returns:
+        list: 图像路径列表
+    """
+    if category not in category_paths:
+        return []
+    
+    paths = category_paths[category]
+    # 返回指定数量的图像，如果不够则返回所有
+    return paths[:max_images] if len(paths) >= max_images else paths
+
+
 
 def extract_python_list(text):
     """从文本中提取Python列表格式的内容"""
@@ -1637,6 +1700,15 @@ if __name__ == "__main__":
         if isinstance(text_kb, list) and len(text_kb) > 0:
             text_kb = text_kb[0]
         
+        # 加载类别图像路径
+        category_image_paths = load_category_image_paths(dataset_name)
+        if not category_image_paths:
+            print("❌ 无法加载类别图像路径，将使用传统搜索方式")
+            use_category_paths = False
+        else:
+            use_category_paths = True
+            print(f"✅ 成功加载类别图像路径，包含 {len(category_image_paths)} 个类别")
+        
         # 批量处理：先收集所有需要处理的样本
         fast_samples = []
         test_descriptions = {}
@@ -1720,58 +1792,58 @@ if __name__ == "__main__":
         
         for category in tqdm(retrieved_categories, desc="Preparing retrieved images"):
             if category in image_kb:
-                # 知识库格式是 {category: feature_vector}，需要找到对应的图像文件
-                category_safe = category.replace(' ', '_').replace('/', '_')
-                
-                # 构建可能的图像路径 - 支持多个数据集
-                dataset_name = cfg.get('dataset_name', 'pet')
-                
-                # 数据集名称映射
-                dataset_name_map = {
-                    'pet': 'pet_37',
-                    'dog': 'dogs_120', 
-                    'flower': 'flowers_102',
-                    'car': 'car_196',
-                    'bird': 'CUB_200_2011'
-                }
-                
-                actual_dataset_dir = dataset_name_map.get(dataset_name, f"{dataset_name}_37")
-                
-                # 相对路径构建多种可能的图像目录
-                possible_img_dirs = [
-                    f'./datasets/{actual_dataset_dir}/images_discovery_all_3',
-                    f'./datasets/{actual_dataset_dir}/images_discovery_all_1', 
-                    f'./datasets/{actual_dataset_dir}/images_discovery_all',
-                    f'./datasets/{actual_dataset_dir}/images',
-                    f'./datasets/{actual_dataset_dir}/Images',  # 某些数据集使用大写
-                ]
-                
-                # 特殊处理CUB数据集的嵌套结构
-                if actual_dataset_dir == 'CUB_200_2011':
-                    cub_nested_dirs = [
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_3',
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_1', 
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all',
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images',
-                    ]
-                    possible_img_dirs.extend(cub_nested_dirs)
-                
                 src_img = None
-                for img_dir in possible_img_dirs:
-                    if os.path.exists(img_dir):
-                        # 搜索包含类别名的目录（格式如：000.Abyssinian）
-                        matching_dirs = [d for d in os.listdir(img_dir) if category in d and os.path.isdir(os.path.join(img_dir, d))]
+                
+                if use_category_paths:
+                    # 使用新的category_image_paths.json方式
+                    image_paths = get_category_image_from_paths(category, category_image_paths, max_images=1)
+                    if image_paths:
+                        src_img = image_paths[0]
+                        if not os.path.exists(src_img):
+                            print(f"⚠️  图像文件不存在: {src_img}")
+                            src_img = None
+                else:
+                    # 回退到传统搜索方式
+                    dataset_name = cfg.get('dataset_name', 'pet')
+                    dataset_mapping = get_dataset_mapping()
+                    
+                    if dataset_name in dataset_mapping:
+                        actual_dataset_dir = dataset_mapping[dataset_name]['dataset_dir']
                         
-                        if matching_dirs:
-                            # 找到匹配的目录，从中选择第一张图像
-                            first_match_dir = os.path.join(img_dir, matching_dirs[0])
-                            img_files = [f for f in os.listdir(first_match_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
-                            if img_files:
-                                src_img = os.path.join(first_match_dir, img_files[0])
-                                break
+                        # 相对路径构建多种可能的图像目录
+                        possible_img_dirs = [
+                            f'./datasets/{actual_dataset_dir}/images_discovery_all_3',
+                            f'./datasets/{actual_dataset_dir}/images_discovery_all_1', 
+                            f'./datasets/{actual_dataset_dir}/images_discovery_all',
+                            f'./datasets/{actual_dataset_dir}/images',
+                            f'./datasets/{actual_dataset_dir}/Images',  # 某些数据集使用大写
+                        ]
                         
-                        if src_img:
-                            break
+                        # 特殊处理CUB数据集的嵌套结构
+                        if actual_dataset_dir == 'CUB_200_2011':
+                            cub_nested_dirs = [
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_3',
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_1', 
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all',
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images',
+                            ]
+                            possible_img_dirs.extend(cub_nested_dirs)
+                        
+                        for img_dir in possible_img_dirs:
+                            if os.path.exists(img_dir):
+                                # 搜索包含类别名的目录（格式如：000.Abyssinian）
+                                matching_dirs = [d for d in os.listdir(img_dir) if category in d and os.path.isdir(os.path.join(img_dir, d))]
+                                
+                                if matching_dirs:
+                                    # 找到匹配的目录，从中选择第一张图像
+                                    first_match_dir = os.path.join(img_dir, matching_dirs[0])
+                                    img_files = [f for f in os.listdir(first_match_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
+                                    if img_files:
+                                        src_img = os.path.join(first_match_dir, img_files[0])
+                                        break
+                                
+                                if src_img:
+                                    break
                 
                 if src_img and os.path.exists(src_img):
                     retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}.jpg"
@@ -1785,6 +1857,8 @@ if __name__ == "__main__":
                         retrieved_descriptions[retrieved_img_name] = f"a photo of a {category}"
                     
                     retrieved_idx += 1
+                else:
+                    print(f"⚠️  未找到类别 {category} 的图像文件")
         
         # 保存描述文件
         test_desc_file = os.path.join(mec_descriptions_dir, f"{mec_dataset_name}_test_descriptions.json")
@@ -1970,6 +2044,15 @@ if __name__ == "__main__":
         if isinstance(text_kb, list) and len(text_kb) > 0:
             text_kb = text_kb[0]
         
+        # 加载类别图像路径
+        category_image_paths = load_category_image_paths(dataset_name)
+        if not category_image_paths:
+            print("❌ 无法加载类别图像路径，将使用传统搜索方式")
+            use_category_paths = False
+        else:
+            use_category_paths = True
+            print(f"✅ 成功加载类别图像路径，包含 {len(category_image_paths)} 个类别")
+        
         # 批量收集慢思考样本
         slow_samples = []
         test_descriptions = {}
@@ -2074,58 +2157,58 @@ if __name__ == "__main__":
         
         for category in tqdm(retrieved_categories, desc="Preparing retrieved images"):
             if category in image_kb:
-                # 知识库格式是 {category: feature_vector}，需要找到对应的图像文件
-                category_safe = category.replace(' ', '_').replace('/', '_')
-                
-                # 构建可能的图像路径 - 支持多个数据集
-                dataset_name = cfg.get('dataset_name', 'pet')
-                
-                # 数据集名称映射
-                dataset_name_map = {
-                    'pet': 'pet_37',
-                    'dog': 'dogs_120', 
-                    'flower': 'flowers_102',
-                    'car': 'car_196',
-                    'bird': 'CUB_200_2011'
-                }
-                
-                actual_dataset_dir = dataset_name_map.get(dataset_name, f"{dataset_name}_37")
-                
-                # 相对路径构建多种可能的图像目录
-                possible_img_dirs = [
-                    f'./datasets/{actual_dataset_dir}/images_discovery_all_3',
-                    f'./datasets/{actual_dataset_dir}/images_discovery_all_1', 
-                    f'./datasets/{actual_dataset_dir}/images_discovery_all',
-                    f'./datasets/{actual_dataset_dir}/images',
-                    f'./datasets/{actual_dataset_dir}/Images',  # 某些数据集使用大写
-                ]
-                
-                # 特殊处理CUB数据集的嵌套结构
-                if actual_dataset_dir == 'CUB_200_2011':
-                    cub_nested_dirs = [
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_3',
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_1', 
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all',
-                        f'./datasets/{actual_dataset_dir}/CUB_200_2011/images',
-                    ]
-                    possible_img_dirs.extend(cub_nested_dirs)
-                
                 src_img = None
-                for img_dir in possible_img_dirs:
-                    if os.path.exists(img_dir):
-                        # 搜索包含类别名的目录（格式如：000.Abyssinian）
-                        matching_dirs = [d for d in os.listdir(img_dir) if category in d and os.path.isdir(os.path.join(img_dir, d))]
+                
+                if use_category_paths:
+                    # 使用新的category_image_paths.json方式
+                    image_paths = get_category_image_from_paths(category, category_image_paths, max_images=1)
+                    if image_paths:
+                        src_img = image_paths[0]
+                        if not os.path.exists(src_img):
+                            print(f"⚠️  图像文件不存在: {src_img}")
+                            src_img = None
+                else:
+                    # 回退到传统搜索方式
+                    dataset_name = cfg.get('dataset_name', 'pet')
+                    dataset_mapping = get_dataset_mapping()
+                    
+                    if dataset_name in dataset_mapping:
+                        actual_dataset_dir = dataset_mapping[dataset_name]['dataset_dir']
                         
-                        if matching_dirs:
-                            # 找到匹配的目录，从中选择第一张图像
-                            first_match_dir = os.path.join(img_dir, matching_dirs[0])
-                            img_files = [f for f in os.listdir(first_match_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
-                            if img_files:
-                                src_img = os.path.join(first_match_dir, img_files[0])
-                                break
+                        # 相对路径构建多种可能的图像目录
+                        possible_img_dirs = [
+                            f'./datasets/{actual_dataset_dir}/images_discovery_all_3',
+                            f'./datasets/{actual_dataset_dir}/images_discovery_all_1', 
+                            f'./datasets/{actual_dataset_dir}/images_discovery_all',
+                            f'./datasets/{actual_dataset_dir}/images',
+                            f'./datasets/{actual_dataset_dir}/Images',  # 某些数据集使用大写
+                        ]
                         
-                        if src_img:
-                            break
+                        # 特殊处理CUB数据集的嵌套结构
+                        if actual_dataset_dir == 'CUB_200_2011':
+                            cub_nested_dirs = [
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_3',
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all_1', 
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images_discovery_all',
+                                f'./datasets/{actual_dataset_dir}/CUB_200_2011/images',
+                            ]
+                            possible_img_dirs.extend(cub_nested_dirs)
+                        
+                        for img_dir in possible_img_dirs:
+                            if os.path.exists(img_dir):
+                                # 搜索包含类别名的目录（格式如：000.Abyssinian）
+                                matching_dirs = [d for d in os.listdir(img_dir) if category in d and os.path.isdir(os.path.join(img_dir, d))]
+                                
+                                if matching_dirs:
+                                    # 找到匹配的目录，从中选择第一张图像
+                                    first_match_dir = os.path.join(img_dir, matching_dirs[0])
+                                    img_files = [f for f in os.listdir(first_match_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
+                                    if img_files:
+                                        src_img = os.path.join(first_match_dir, img_files[0])
+                                        break
+                                
+                                if src_img:
+                                    break
                 
                 if src_img and os.path.exists(src_img):
                     retrieved_img_name = f"{retrieved_idx:04d}_{category.replace(' ', '_')}.jpg"
@@ -2139,6 +2222,8 @@ if __name__ == "__main__":
                         retrieved_descriptions[retrieved_img_name] = f"a photo of a {category}"
                     
                     retrieved_idx += 1
+                else:
+                    print(f"⚠️  未找到类别 {category} 的图像文件")
         
         # 保存描述文件
         test_desc_file = os.path.join(mec_descriptions_dir, f"{mec_dataset_name}_test_descriptions.json")

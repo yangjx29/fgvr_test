@@ -60,6 +60,11 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
     """
     简化的多模态特征提取函数
     专为与discovering.py快慢思考系统集成而设计
+    
+    修改支持：
+    - 每个类别处理k张图像（从category_image_paths.json获取）
+    - 构建所有k张图像的增强子图和描述
+    - 支持批量特征提取和加权相似度计算
     """
     # 创建保存目录
     save_dir = f"./pre_extracted_feat/{args.arch.replace('/', '')}/seed{args.seed}"
@@ -100,9 +105,12 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
     all_retrieved_data = []  # 检索到的[图-文]特征
     all_test_data = []       # 待测试的[图-文]特征
     
-    # 处理检索图像及其描述
-    print("🔄 处理检索图像-文本对...")
+    # 处理检索图像及其描述 - 支持每个类别k张图像
+    print("🔄 处理检索图像-文本对（支持每类别k张图像）...")
     try:
+        # 按类别分组处理检索数据
+        category_features = {}  # 存储每个类别的所有图像特征
+        
         for i, (images, target) in enumerate(tqdm(retrieved_loader, desc="Processing retrieved")):
             # 安全处理图像列表
             if isinstance(images, list):
@@ -117,6 +125,7 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
             
             # 将标签移到GPU
             target = target.cuda(non_blocking=True)
+            target_item = target.item()
 
             # 使用混合精度提取多模态特征
             with torch.cuda.amp.autocast():
@@ -140,12 +149,33 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
                 text_features_expanded = text_features.expand(image_features.size(0), -1)
                 multimodal_features = torch.cat([text_features_expanded, image_features], dim=-1)
 
-            # 保存特征和标签
-            all_retrieved_data.append((multimodal_features, target))
+            # 按类别存储特征（支持每个类别多张图像）
+            if target_item not in category_features:
+                category_features[target_item] = []
+            category_features[target_item].append((multimodal_features, target))
             
             # 每100个样本打印一次进度
             if (i + 1) % 100 == 0:
                 print(f"  已处理检索样本: {i + 1}")
+        
+        # 将按类别分组的特征转换为最终格式
+        # 每个类别的所有图像作为一个批次处理
+        for category, features_list in category_features.items():
+            if len(features_list) > 1:
+                # 多张图像：拼接所有图像的特征
+                all_features = []
+                targets = []
+                for feat, tgt in features_list:
+                    all_features.append(feat)
+                    targets.append(tgt)
+                # 拼接成一个大的特征张量 shape: (k*n_views, feature_dim)
+                combined_features = torch.cat(all_features, dim=0)
+                # 使用第一个目标作为代表（所有图像都是同一类别）
+                representative_target = targets[0]
+                all_retrieved_data.append((combined_features, representative_target))
+            else:
+                # 单张图像：直接使用
+                all_retrieved_data.append(features_list[0])
                 
     except Exception as e:
         print(f"❌ 处理检索图像失败: {e}")
