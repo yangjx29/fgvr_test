@@ -26,7 +26,7 @@ import base64
 from torch.nn import functional as F
 
 class MultimodalRetrieval:
-    def __init__(self, image_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", text_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", fusion_method="concat", device="cuda" if torch.cuda.is_available() else "cpu"):
+    def __init__(self, image_encoder_name="./models/Clip/clip-vit-base-patch32", text_encoder_name="./models/Clip/clip-vit-base-patch32", fusion_method="concat", device="cuda" if torch.cuda.is_available() else "cpu"):
         """
         Initialize the Multimodal Retrieval module.
         
@@ -74,7 +74,7 @@ class MultimodalRetrieval:
     def init_blip(self):
         # self._blip_processor = Blip2Processor.from_pretrained("/home/Dataset/Models/blip/blip2-opt-6.7b-coco")
         # self._blip_model = Blip2Model.from_pretrained("/home/Dataset/Models/blip/blip2-opt-6.7b-coco").to(self.device)
-        blip_load_path = '/home/Dataset/Models/blip/blip2-flan-t5-xxl'
+        blip_load_path = './models/Blip/blip2-flan-t5-xxl'
         if os.path.exists(blip_load_path):
             self.blip_processor = AutoProcessor.from_pretrained(blip_load_path, local_files_only=True)
             self.blip_model = Blip2ForConditionalGeneration.from_pretrained(blip_load_path, local_files_only=True)
@@ -496,7 +496,7 @@ if __name__ == "__main__":
     # Initialize modules
     fusion_method="concat"
     captioner = CDVCaptioner()
-    retrieval = MultimodalRetrieval(image_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", text_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", fusion_method=fusion_method, device="cuda" if torch.cuda.is_available() else "cpu")
+    retrieval = MultimodalRetrieval(image_encoder_name="./models/Clip/clip-vit-base-patch32", text_encoder_name="./models/Clip/clip-vit-base-patch32", fusion_method=fusion_method, device="cuda" if torch.cuda.is_available() else "cpu")
     mllm_bot = MLLMBot(model_tag="Qwen2.5-VL-7B", model_name="Qwen2.5-VL-7B", pai_enable_attn=False, device="cuda" if torch.cuda.is_available() else "cpu")
     
     # Dummy train_samples 

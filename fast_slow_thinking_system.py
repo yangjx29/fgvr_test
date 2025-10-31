@@ -33,8 +33,8 @@ class FastSlowThinkingSystem:
     def __init__(self, 
                  model_tag: str = "Qwen2.5-VL-7B",
                  model_name: str = "Qwen2.5-VL-7B",
-                 image_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
-                 text_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
+                 image_encoder_name: str = "./models/Clip/clip-vit-base-patch32",
+                 text_encoder_name: str = "./models/Clip/clip-vit-base-patch32",
                  device: str = "cuda" if torch.cuda.is_available() else "cpu",
                  cfg: Optional[Dict] = None,
                  enable_mllm_intermediate_judge: bool = True):
@@ -73,11 +73,13 @@ class FastSlowThinkingSystem:
         
         # 初始化快思考模块
         print("初始化快思考模块...")
+        # 设置一个默认的stats文件路径，后续会在load_knowledge_base中更新
+        default_stats_file = "./experiments/temp/stats.json"
         self.fast_thinking = FastThinking(
             knowledge_base_builder=self.kb_builder,
             confidence_threshold=self.cfg.get('confidence_threshold', 0.8),
             similarity_threshold=self.cfg.get('similarity_threshold', 0.7),
-            stats_file="./experiments/dog120/knowledge_base/stats.json"  # 使用相对路径
+            stats_file=default_stats_file  # 使用默认路径，避免None错误
         )
         
         # 初始化慢思考模块
@@ -85,7 +87,8 @@ class FastSlowThinkingSystem:
         self.slow_thinking = SlowThinking(
             mllm_bot=self.mllm_bot,
             knowledge_base_builder=self.kb_builder,
-            fast_thinking=self.fast_thinking
+            fast_thinking=self.fast_thinking,
+            knowledge_base_dir=getattr(self, 'knowledge_base_dir', None)
         )
         
         print("快慢思考系统初始化完成!")
@@ -148,7 +151,19 @@ class FastSlowThinkingSystem:
             load_dir: 知识库加载目录
         """
         print(f"从 {load_dir} 加载知识库...")
+        self.knowledge_base_dir = load_dir  # 存储知识库路径
         self.kb_builder.load_knowledge_base(load_dir)
+        
+        # 设置快思考模块的stats文件路径
+        import os
+        stats_file = os.path.join(load_dir, "stats.json")
+        if hasattr(self, 'fast_thinking') and self.fast_thinking:
+            self.fast_thinking.stats_file = stats_file
+        
+        # 更新慢思考模块的知识库路径
+        if hasattr(self, 'slow_thinking'):
+            self.slow_thinking.knowledge_base_dir = load_dir
+        
         print("知识库加载完成!")   
     
     def mllm_intermediate_judge(self, query_image_path: str, fast_result: Dict, top_k: int = 5) -> Tuple[bool, str, float]:

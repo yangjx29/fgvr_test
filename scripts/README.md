@@ -39,34 +39,6 @@
 - **用法**: `bash run_fast_slow.sh`
 - **说明**: 需要先运行知识库构建脚本
 
-### 4. run_full_pipeline.sh
-- **功能**: 完整流程脚本
-- **流程**: 先构建知识库 → 然后进行快慢思考评估
-- **用法**: `bash run_full_pipeline.sh`
-- **说明**: 自动执行完整的知识库构建和评估流程
-
-### 5. run_fast_slow_infer.sh ⭐ **新增**
-- **功能**: 快慢思考推理阶段
-- **模式**: 仅支持 `fast_slow_infer`
-- **用法**: `bash run_fast_slow_infer.sh`
-- **说明**: 执行快慢思考推理并保存中间结果，便于后续消融实验
-
-### 6. run_fast_slow_classify.sh ⭐ **新增**
-- **功能**: 快慢思考分类阶段
-- **模式**: 仅支持 `fast_slow_classify`
-- **用法**: `bash run_fast_slow_classify.sh`
-- **说明**: 基于推理结果执行分类逻辑，需要先运行推理脚本
-
-### 7. run_fast_slow_pipeline.sh ⭐ **新增**
-- **功能**: 快慢思考分离流程脚本
-- **流程**: 先执行推理 → 然后执行分类
-- **用法**: `bash run_fast_slow_pipeline.sh`
-- **说明**: 自动执行完整的推理和分类分离流程
-
-### 8. test_config.sh
-- **功能**: 配置文件测试脚本
-- **用法**: `bash test_config.sh`
-- **说明**: 测试 config.yaml 配置文件的读取是否正常
 
 ## 使用方法
 

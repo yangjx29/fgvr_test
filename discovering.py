@@ -365,6 +365,9 @@ if __name__ == "__main__":
 
     expt_id_suffix = f"_{args.num_per_category}"  # 创建实验ID后缀
 
+    import time
+    start_time = time.time()
+
     if args.mode == 'build_knowledge_base':
         """
         构建快慢思考系统的知识库
@@ -668,8 +671,23 @@ if __name__ == "__main__":
         
         # 逐类别遍历，显示进度条
         from tqdm import tqdm  # 引入进度条库
-        for true_cat, paths in tqdm(test_samples.items(), desc="Processing fast and slow thinking"):  # true_cat 为真值类别名
-            for path in paths:  # 遍历该类别下的每一张图片
+        
+        # 计算总图片数量用于进度显示
+        total_images = sum(len(paths) for paths in test_samples.values())
+        current_image = 0
+        current_category = 0
+        total_categories = len(test_samples)
+        
+        for true_cat, paths in test_samples.items():  # true_cat 为真值类别名
+            current_category += 1
+            category_correct = 0  # 当前类别正确数
+            category_total = 0    # 当前类别总数
+            
+            print(f"\n🔄 处理类别 [{current_category}/{total_categories}]: {true_cat} ({len(paths)} 张图片)")
+            
+            for img_idx, path in enumerate(paths, 1):  # 遍历该类别下的每一张图片
+                current_image += 1
+                
                 # 使用完整的快慢思考系统进行单张图片分类（自动判断是否进入慢思考）
                 result = system.classify_single_image(path, use_slow_thinking=None, top_k=5)
                 
@@ -679,23 +697,41 @@ if __name__ == "__main__":
                 
                 if ok:
                     # 预测正确：打印详情并累加计数
-                    print(f"succ. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
                     correct += 1  # 总正确数 +1
+                    category_correct += 1  # 类别正确数 +1
                     if not used_slow:
                         fast_only_correct += 1  # 仅快思考就正确的数量 +1
                     if used_slow:
                         slow_triggered_correct += 1  # 触发慢思考且正确的数量 +1
+                    
+                    status = "✅ 正确"
                 else:
-                    # 预测失败：打印详情
-                    print(f"failed. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
-                    # 如果需要也可以在此统计“触发慢思考但失败”的数量
-                    # if used_slow:
-                    #     slow_triggered_correct += 1  # 即使错误也统计（此处保持关闭）
+                    # 预测失败
+                    status = "❌ 错误"
                 
                 if used_slow:
                     slow_triggered += 1  # 样本进入过慢思考，累加触发数
                 
                 total += 1  # 样本总数 +1（不论成功与否）
+                category_total += 1
+                
+                # 计算累积准确率
+                current_acc = correct / total if total > 0 else 0.0
+                category_acc = category_correct / category_total if category_total > 0 else 0.0
+                
+                # 详细进度显示
+                print(f"  📸 [{img_idx}/{len(paths)}] {status} | "
+                      f"预测: {pred} | 真值: {true_cat} | "
+                      f"慢思考: {'是' if used_slow else '否'} | "
+                      f"置信度: {result.get('final_confidence', 0):.3f}")
+                print(f"     📊 图片进度: {current_image}/{total_images} | "
+                      f"累积准确率: {current_acc:.3f} ({correct}/{total}) | "
+                      f"类别准确率: {category_acc:.3f} ({category_correct}/{category_total})")
+            
+            # 类别处理完成总结
+            print(f"✨ 类别 {true_cat} 完成: {category_correct}/{category_total} = {category_acc:.3f}")
+            print(f"📈 当前总体进度: {current_image}/{total_images} | 累积准确率: {correct/total:.3f} ({correct}/{total})")
+            print("-" * 80)
         
         # 汇总评估指标
         acc = correct / total if total > 0 else 0.0  # 总体准确率
@@ -761,8 +797,18 @@ if __name__ == "__main__":
         # 执行推理并保存结果
         total_processed = 0
         from tqdm import tqdm
-        for true_cat, paths in tqdm(test_samples.items(), desc="Processing inference"):
-            for path in paths:
+        
+        # 计算总图片数量用于进度显示
+        total_images = sum(len(paths) for paths in test_samples.values())
+        current_image = 0
+        current_category = 0
+        total_categories = len(test_samples)
+        
+        for true_cat, paths in test_samples.items():
+            current_category += 1
+            print(f"\n🔄 推理类别 [{current_category}/{total_categories}]: {true_cat} ({len(paths)} 张图片)")
+            
+            for img_idx, path in enumerate(paths, 1):
                 try:
                     # 执行快思考
                     fast_result = system.fast_thinking.fast_thinking_pipeline(path, top_k=5)
@@ -811,13 +857,30 @@ if __name__ == "__main__":
                     from utils.fileios import dump_json_override
                     dump_json_override(infer_file, inference_data)
                     total_processed += 1
+                    current_image += 1
                     
-                    if total_processed % 100 == 0:
-                        print(f"已处理 {total_processed} 个样本")
+                    # 详细进度显示
+                    slow_status = "需要慢思考" if need_slow_thinking else "仅快思考"
+                    fast_pred = fast_result.get("predicted_category", "unknown")
+                    fast_conf = fast_result.get("confidence", 0.0)
+                    
+                    print(f"  📸 [{img_idx}/{len(paths)}] 推理完成 | "
+                          f"快思考预测: {fast_pred} | 置信度: {fast_conf:.3f} | {slow_status}")
+                    print(f"     📊 图片进度: {current_image}/{total_images} | "
+                          f"已处理: {total_processed} 个样本")
+                    
+                    if total_processed % 50 == 0:
+                        print(f"📈 阶段性进度: 已完成 {total_processed}/{total_images} 个样本")
                         
                 except Exception as e:
-                    print(f"处理失败 {path}: {e}")
+                    print(f"❌ 处理失败 {path}: {e}")
                     continue
+            
+            # 类别推理完成总结
+            category_processed = len(paths)
+            print(f"✨ 类别 {true_cat} 推理完成: {category_processed} 张图片")
+            print(f"📈 当前总体进度: {current_image}/{total_images} | 已处理: {total_processed} 个样本")
+            print("-" * 80)
         
         print(f"推理完成！共处理 {total_processed} 个样本")
         print(f"推理结果已保存到: {args.infer_dir}")
@@ -2490,3 +2553,7 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError 
 
+    end_time = time.time()
+    total_time = end_time - start_time
+    formatted_time = time.strftime("%H:%M:%S", time.gmtime(total_time))
+    print(f"总耗时: {formatted_time}")

@@ -22,12 +22,13 @@ from knowledge_base_builder import KnowledgeBaseBuilder
 from fast_thinking import FastThinking
 from utils.util import is_similar
 
+Dynamic_Update = False
 
 class SlowThinking:
     """慢思考模块"""
     
     def __init__(self, mllm_bot: MLLMBot, knowledge_base_builder: KnowledgeBaseBuilder,
-                 fast_thinking: FastThinking):
+                 fast_thinking: FastThinking, knowledge_base_dir: str = None):
         """
         初始化慢思考模块
         
@@ -35,10 +36,12 @@ class SlowThinking:
             mllm_bot: MLLM模型
             knowledge_base_builder: 知识库构建器
             fast_thinking: 快思考模块
+            knowledge_base_dir: 知识库目录路径
         """
         self.mllm_bot = mllm_bot
         self.kb_builder = knowledge_base_builder
         self.fast_thinking = fast_thinking
+        self.knowledge_base_dir = knowledge_base_dir
         
     def analyze_difficulty(self, query_image_path: str, fast_result: Dict) -> Dict:
         """
@@ -538,7 +541,7 @@ class SlowThinking:
         
         return result
     
-    def slow_thinking_pipeline_update(self, query_image_path: str, fast_result: Dict, top_k: int = 5, save_dir = './experiments/dog120/knowledge_base') -> Dict:
+    def slow_thinking_pipeline_update(self, query_image_path: str, fast_result: Dict, top_k: int = 5, save_dir = None) -> Dict:
         """
         慢思考完整流程
         
@@ -546,11 +549,21 @@ class SlowThinking:
             query_image_path: 查询图像路径
             fast_result: 快思考结果
             top_k: 检索top-k结果
+            save_dir: 知识库保存目录，如果为None则使用self.knowledge_base_dir
             
         Returns:
             Dict: 包含最终预测结果和详细分析
         """
         print(f"开始慢思考流程，查询图像: {query_image_path}")
+        
+        # 确定知识库保存目录
+        if save_dir is None:
+            save_dir = self.knowledge_base_dir
+        
+        # 检查动态更新开关
+        global Dynamic_Update
+        if not Dynamic_Update:
+            print("动态更新已禁用，跳过知识库更新")
         
         # 1. 分析困难点
         print("步骤1: 调用模型去分析识别困难点...")
@@ -620,8 +633,9 @@ class SlowThinking:
         
         print(f"统计更新: 类别={predicted_category}, 置信度={confidence:.3f}, LCB={lcb_value:.3f}, " f"一致性={fast_slow_consistent}, 更新m={is_confident_for_stats}")
 
-        # 仅当预测到具体类别名时进行更新
-        if isinstance(predicted_category, str) and len(predicted_category) > 0 and predicted_category.lower() != 'unknown':
+        # 仅当预测到具体类别名时且动态更新开启时进行更新
+        if (Dynamic_Update and save_dir is not None and 
+            isinstance(predicted_category, str) and len(predicted_category) > 0 and predicted_category.lower() != 'unknown'):
             # 组装持续学习的辅助信号（用于自适应权重）
             fast = fast_result
             fused_prob = float(fast.get('fused_top1_prob', 0.5))

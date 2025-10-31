@@ -67,7 +67,7 @@ class MLLMBot:
         self.model_tag = model_tag
         self.model_name = model_name
         self.max_answer_tokens = max_answer_tokens
-        local_model_path_abs = "/home/Dataset/Models/Qwen"
+        local_model_path_abs = "./models/Qwen"
         local_model_path = path.join(local_model_path_abs, "Qwen2.5-VL-7B-Instruct")
         self.qwen2_5_processor = AutoProcessor.from_pretrained(local_model_path)
         # self.qwen2_5_processor = AutoProcessor.from_pretrained(

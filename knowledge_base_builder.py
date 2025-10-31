@@ -31,8 +31,8 @@ class KnowledgeBaseBuilder:
     """知识库构建器"""
     
     def __init__(self, 
-                 image_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32",
-                 text_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", 
+                 image_encoder_name="./models/Clip/clip-vit-base-patch32",
+                 text_encoder_name="./models/Clip/clip-vit-base-patch32", 
                  device="cuda" if torch.cuda.is_available() else "cpu",
                  cfg=None):
         """

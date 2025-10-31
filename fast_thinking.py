@@ -80,7 +80,7 @@ class FastThinking:
 
     def load_stats(self):
         """加载历史统计量"""
-        if os.path.exists(self.stats_file):
+        if self.stats_file and os.path.exists(self.stats_file):
             with open(self.stats_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 self.category_stats = defaultdict(lambda: {"n": 0, "m": 0}, data.get("category_stats", {}))
@@ -401,10 +401,18 @@ class FastThinking:
     
     def save_stats(self):
         """保存统计量到文件"""
+        if not self.stats_file:
+            return  # 如果没有设置stats_file，跳过保存
+        
         data = {
             "category_stats": dict(self.category_stats),
             "total_predictions": self.total_predictions
         }
+        
+        # 确保目录存在
+        import os
+        os.makedirs(os.path.dirname(self.stats_file), exist_ok=True)
+        
         with open(self.stats_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
     
