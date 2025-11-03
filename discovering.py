@@ -428,8 +428,59 @@ if __name__ == "__main__":
 
     expt_id_suffix = f"_{args.num_per_category}"  # 创建实验ID后缀
 
+    # --------------------- 输出参数及说明 ---------------------
+    print(colored("\n当前运行模式: ", 'blue') + f"{args.mode}")
+    print(colored("当前参数设置:", 'yellow'))
+
+    param_descriptions = {
+        'config_file_env': '环境配置文件路径',
+        'config_file_expt': '实验配置文件路径',
+        'num_per_category': '每个类别抽样数量',
+        'knowledge_base_dir': '知识库目录',
+        'query_image': '查询图片路径（分类用）',
+        'test_data_dir': '测试数据目录',
+        'results_out': '结果输出路径',
+        'use_slow_thinking': '是否强制使用慢思考（None表示自动）',
+        'confidence_threshold': '快思考置信度阈值',
+        'similarity_threshold': '触发慢思考的相似度阈值',
+        'enable_mllm_intermediate_judge': '启用快慢思考间的中间判定（消融实验用）',
+        'infer_dir': '推理结果保存目录（fast_slow_infer模式）',
+        'classify_dir': '分类结果保存目录（fast_slow_classify模式）',
+    }
+
+    # 获取参数值字符串长度，找出最长值长度
+    param_values = [str(getattr(args, p)) for p in param_descriptions.keys()]
+    max_value_len = max(len(v) for v in param_values)
+
+    # 打印时统一对齐
+    for param, desc in param_descriptions.items():
+        value = str(getattr(args, param))
+        # value后填充空格到 max_value_len，再加3个空格，保证注释列对齐
+        print(f"  {param:<30} = {value:<{max_value_len}}   # {desc}")
+
+    print(colored("\n参数输出完毕。\n", 'green'))
+
+    # 读取 CUDA_VISIBLE_DEVICES 环境变量
+    cuda_dev = os.environ.get("CUDA_VISIBLE_DEVICES")
+    # 获取 GPU 型号，如果 PyTorch 和 CUDA 正常可用
+    if torch.cuda.is_available():
+        gpu_count = torch.cuda.device_count()
+        gpu_names = [torch.cuda.get_device_name(i) for i in range(gpu_count)]
+    else:
+        gpu_names = ["未检测到可用 CUDA 设备"]
+    # 打印 GPU 信息
+    cuda_dev_colored = colored(cuda_dev, 'red') if cuda_dev else colored("未设置", "red")
+    print(f"当前所用的 GPU 为：{cuda_dev_colored}")
+    print("当前可用 GPU 型号列表：")
+    for i, name in enumerate(gpu_names):
+        print(f"  - GPU {i}: {name}")
+    print()
+
     import time
     start_time = time.time()
+    from datetime import datetime
+    print("当前时间为：", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print()
 
     if args.mode == 'build_knowledge_base':
         """
@@ -1029,10 +1080,19 @@ if __name__ == "__main__":
         slow_triggered = 0
         slow_triggered_correct = 0
         
+        # 按类别统计
+        category_stats = {}  # {category: {"total": 0, "correct": 0}}
+        current_category = None
+        category_image_count = 0
+        
         classification_results = []
         
         from tqdm import tqdm
-        for infer_file in tqdm(infer_files, desc="Processing classification"):
+        print("\n" + "="*80)
+        print("开始处理分类任务...")
+        print("="*80 + "\n")
+        
+        for idx, infer_file in enumerate(tqdm(infer_files, desc="Processing classification"), 1):
             try:
                 infer_path = os.path.join(args.infer_dir, infer_file)
                 loaded_data = load_json(infer_path)
@@ -1121,6 +1181,47 @@ if __name__ == "__main__":
                 
                 total += 1
                 
+                # 更新类别统计
+                if true_cat not in category_stats:
+                    category_stats[true_cat] = {"total": 0, "correct": 0}
+                category_stats[true_cat]["total"] += 1
+                if is_correct:
+                    category_stats[true_cat]["correct"] += 1
+                
+                # 检测类别切换
+                if current_category != true_cat:
+                    if current_category is not None:
+                        # 打印上一个类别的统计信息
+                        cat_acc = category_stats[current_category]["correct"] / category_stats[current_category]["total"]
+                        print(f"\n{'='*80}")
+                        print(f"📁 类别 [{current_category}] 完成: {category_stats[current_category]['correct']}/{category_stats[current_category]['total']} (准确率: {cat_acc:.4f})")
+                        print(f"{'='*80}\n")
+                    
+                    current_category = true_cat
+                    category_image_count = 0
+                
+                category_image_count += 1
+                
+                # 打印详细的处理信息（每个样本）
+                status_icon = "✅" if is_correct else "❌"
+                slow_icon = "🐢" if used_slow_thinking else "⚡"
+                
+                # 计算当前累积准确率
+                current_acc = correct / total if total > 0 else 0.0
+                
+                # 计算当前类别准确率
+                cat_correct = category_stats[true_cat]["correct"]
+                cat_total = category_stats[true_cat]["total"]
+                cat_acc = cat_correct / cat_total if cat_total > 0 else 0.0
+                
+                print(f"  {slow_icon} [{category_image_count}/{cat_total}] {status_icon} {'正确' if is_correct else '错误'} | "
+                      f"预测: {final_prediction} | 真值: {true_cat} | "
+                      f"慢思考: {'是' if used_slow_thinking else '否'} | "
+                      f"置信度: {final_confidence:.3f}")
+                print(f"     📊 图片进度: {total}/{len(infer_files)} | "
+                      f"累积准确率: {current_acc:.3f} ({correct}/{total}) | "
+                      f"类别准确率: {cat_acc:.3f} ({cat_correct}/{cat_total})")
+                
                 # 保存分类结果
                 result = {
                     "query_image": query_image,
@@ -1142,6 +1243,13 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"处理分类失败 {infer_file}: {e}")
                 continue
+        
+        # 打印最后一个类别的统计信息
+        if current_category is not None:
+            cat_acc = category_stats[current_category]["correct"] / category_stats[current_category]["total"]
+            print(f"\n{'='*80}")
+            print(f"📁 类别 [{current_category}] 完成: {category_stats[current_category]['correct']}/{category_stats[current_category]['total']} (准确率: {cat_acc:.4f})")
+            print(f"{'='*80}\n")
         
         # 计算并打印指标
         acc = correct / total if total > 0 else 0.0
@@ -1904,10 +2012,10 @@ if __name__ == "__main__":
             # 导入MEC辅助函数
             import sys
             sys.path.append(os.path.join(mec_path, 'utils'))
-            from mec_helper import run_mec_pipeline
+            from mec_helper import run_mec_pipeline_with_details
             
-            print("🚀 调用MEC完整流水线...")
-            mec_result = run_mec_pipeline(
+            print("🚀 调用MEC完整流水线（返回详细AWC信息）...")
+            mec_result = run_mec_pipeline_with_details(
                 mec_path=mec_path,
                 mec_data_dir=mec_data_dir,
                 dataset_name=mec_dataset_name,
@@ -1918,15 +2026,20 @@ if __name__ == "__main__":
             
             enhancement_success = mec_result["success"]
             mec_accuracy = mec_result["accuracy"]
+            mec_detailed_results = mec_result.get("detailed_results", [])
             
             if enhancement_success:
                 print(f"✅ MEC流水线成功，准确率: {mec_accuracy:.4f}")
+                print(f"📊 获取到详细AWC信息: {len(mec_detailed_results)} 个样本")
             else:
                 print(f"❌ MEC流水线失败: {mec_result['error_message']}")
                 
         except Exception as e:
             print(f"❌ MEC调用异常: {e}")
+            import traceback
+            traceback.print_exc()
             enhancement_success = False
+            mec_detailed_results = []
         
         # 处理结果并计算统计指标
         enhanced_results = []
@@ -1934,7 +2047,15 @@ if __name__ == "__main__":
         enhanced_correct = 0
         
         print("处理增强结果...")
-        for sample in tqdm(fast_samples, desc="Processing enhanced results"):
+        # 创建AWC结果索引映射
+        awc_results_map = {}
+        if mec_detailed_results:
+            for awc_result in mec_detailed_results:
+                sample_idx = awc_result.get("sample_index", -1)
+                if sample_idx >= 0:
+                    awc_results_map[sample_idx] = awc_result
+        
+        for idx, sample in enumerate(tqdm(fast_samples, desc="Processing enhanced results")):
             inference_data = sample["inference_data"]
             fast_pred = sample["fast_pred"]
             
@@ -1947,22 +2068,32 @@ if __name__ == "__main__":
             if original_correct:
                 fast_correct += 1
             
-            # 增强结果（如果MEC成功，可以在这里解析具体的匹配结果）
-            if enhancement_success:
-                # 简化处理：假设MEC提升了一些样本的置信度
-                enhanced_prediction = fast_pred
-                enhanced_confidence = min(fast_result.get("confidence", 0.0) * 1.05, 1.0)
+            # 获取对应的AWC详细信息
+            awc_info = awc_results_map.get(idx, {})
+            
+            # 增强结果（使用AWC的预测结果）
+            if enhancement_success and awc_info:
+                # 使用AWC的预测结果
+                enhanced_prediction_label = awc_info.get("final_prediction", -1)
+                enhanced_confidence = awc_info.get("final_confidence", 0.0)
+                
+                # 将标签转换为类别名称
+                if enhanced_prediction_label >= 0 and enhanced_prediction_label < len(DATA_STATS[dataset_name]['class_names']):
+                    enhanced_prediction = DATA_STATS[dataset_name]['class_names'][enhanced_prediction_label]
+                else:
+                    enhanced_prediction = fast_pred
             else:
                 # 回退到原始结果
                 enhanced_prediction = fast_pred
                 enhanced_confidence = fast_result.get("confidence", 0.0)
+                awc_info = {}
             
             # 增强结果评估
             is_correct = is_similar(enhanced_prediction, true_cat, threshold=0.5)
             if is_correct:
                 enhanced_correct += 1
             
-            # 保存结果
+            # 保存结果（包含完整的AWC增强信息）
             result = {
                 "query_image": query_image,
                 "true_category": true_cat,
@@ -1975,7 +2106,10 @@ if __name__ == "__main__":
                 "original_correct": original_correct,
                 "decision_path": "fast_enhanced",
                 "used_slow_thinking": False,
-                "fast_slow_consistent": True
+                "fast_slow_consistent": True,
+                
+                # 添加完整的AWC增强信息
+                "awc_enhancement_info": awc_info if awc_info else None
             }
             
             enhanced_results.append(result)
@@ -2284,10 +2418,10 @@ if __name__ == "__main__":
             # 导入MEC辅助函数
             import sys
             sys.path.append(os.path.join(mec_path, 'utils'))
-            from mec_helper import run_mec_pipeline
+            from mec_helper import run_mec_pipeline_with_details
             
-            print("🚀 调用MEC完整流水线...")
-            mec_result = run_mec_pipeline(
+            print("🚀 调用MEC完整流水线（返回详细AWC信息）...")
+            mec_result = run_mec_pipeline_with_details(
                 mec_path=mec_path,
                 mec_data_dir=mec_data_dir,
                 dataset_name=mec_dataset_name,
@@ -2298,15 +2432,20 @@ if __name__ == "__main__":
             
             enhancement_success = mec_result["success"]
             mec_accuracy = mec_result["accuracy"]
+            mec_detailed_results = mec_result.get("detailed_results", [])
             
             if enhancement_success:
                 print(f"✅ MEC流水线成功，准确率: {mec_accuracy:.4f}")
+                print(f"📊 获取到详细AWC信息: {len(mec_detailed_results)} 个样本")
             else:
                 print(f"❌ MEC流水线失败: {mec_result['error_message']}")
                 
         except Exception as e:
             print(f"❌ MEC调用异常: {e}")
+            import traceback
+            traceback.print_exc()
             enhancement_success = False
+            mec_detailed_results = []
         
         # 处理结果并计算统计指标
         enhanced_results = []
@@ -2314,7 +2453,15 @@ if __name__ == "__main__":
         enhanced_correct = 0
         
         print("处理增强结果...")
-        for sample in tqdm(slow_samples, desc="Processing enhanced results"):
+        # 创建AWC结果索引映射
+        awc_results_map = {}
+        if mec_detailed_results:
+            for awc_result in mec_detailed_results:
+                sample_idx = awc_result.get("sample_index", -1)
+                if sample_idx >= 0:
+                    awc_results_map[sample_idx] = awc_result
+        
+        for idx, sample in enumerate(tqdm(slow_samples, desc="Processing enhanced results")):
             inference_data = sample["inference_data"]
             slow_pred = sample["slow_pred"]
             slow_reasoning = sample["slow_reasoning"]
@@ -2329,14 +2476,25 @@ if __name__ == "__main__":
             if original_correct:
                 slow_correct += 1
             
-            # 增强结果
-            if enhancement_success:
-                enhanced_prediction = slow_pred
-                enhanced_confidence = min(slow_result.get("confidence", 0.0) * 1.05, 1.0)
+            # 获取对应的AWC详细信息
+            awc_info = awc_results_map.get(idx, {})
+            
+            # 增强结果（使用AWC的预测结果）
+            if enhancement_success and awc_info:
+                # 使用AWC的预测结果
+                enhanced_prediction_label = awc_info.get("final_prediction", -1)
+                enhanced_confidence = awc_info.get("final_confidence", 0.0)
+                
+                # 将标签转换为类别名称
+                if enhanced_prediction_label >= 0 and enhanced_prediction_label < len(DATA_STATS[dataset_name]['class_names']):
+                    enhanced_prediction = DATA_STATS[dataset_name]['class_names'][enhanced_prediction_label]
+                else:
+                    enhanced_prediction = slow_pred
             else:
                 # 回退到原始结果
                 enhanced_prediction = slow_pred
                 enhanced_confidence = slow_result.get("confidence", 0.0)
+                awc_info = {}
             
             # 增强结果评估
             is_correct = is_similar(enhanced_prediction, true_cat, threshold=0.5)
@@ -2360,7 +2518,10 @@ if __name__ == "__main__":
                 "decision_path": "need_terminal_decision" if not fast_slow_consistent else "slow_enhanced_consistent",
                 "used_slow_thinking": True,
                 "fast_slow_consistent": fast_slow_consistent,
-                "slow_reasoning": slow_reasoning
+                "slow_reasoning": slow_reasoning,
+                
+                # 添加完整的AWC增强信息
+                "awc_enhancement_info": awc_info if awc_info else None
             }
             
             enhanced_results.append(result)
@@ -2403,9 +2564,125 @@ if __name__ == "__main__":
     elif args.mode == 'terminal_decision_enhanced':
         """
         终端决策增强模式：处理增强后的快慢思考结果，执行最终决策
+        基于AWC增强信息的智能决策，充分利用多模态增强信息
         CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=terminal_decision_enhanced --infer_dir=./experiments/pet37/infer --classify_dir=./experiments/pet37/classify
         """
         from utils.fileios import load_json, dump_json
+        import math
+        
+        # AWC增强信息处理函数
+        def extract_awc_enhancement_indicators(result):
+            """从结果中提取AWC增强指标"""
+            awc_info = result.get("awc_enhancement_info", {})
+            if not awc_info:
+                # 如果没有AWC信息，返回默认值
+                return {
+                    "enhancement_strength": 0.0,
+                    "topk_stability": 0.5,
+                    "multimodal_consistency": 0.5,
+                    "retrieval_quality": 0.5,
+                    "confidence_entropy": 1.0
+                }
+            
+            indicators = {
+                # 指标1：增强效果强度（基于置信度变化）
+                "enhancement_strength": abs(result.get("enhanced_confidence", 0.0) - result.get("original_confidence", 0.0)),
+                
+                # 指标2：Top-K稳定性
+                "topk_stability": awc_info.get("topk_stability", 0.5),
+                
+                # 指标3：多模态一致性（简化计算）
+                "multimodal_consistency": min(awc_info.get("final_confidence", 0.0) * 2, 1.0),
+                
+                # 指标4：检索证据质量
+                "retrieval_quality": awc_info.get("retrieval_evidence", {}).get("avg_similarity", 0.5),
+                
+                # 指标5：置信度分布熵
+                "confidence_entropy": awc_info.get("confidence_entropy", 1.0)
+            }
+            
+            return indicators
+        
+        def calculate_comprehensive_score(base_confidence, indicators, thinking_type):
+            """计算综合决策分数"""
+            # 基础分数
+            score = base_confidence * 0.4
+            
+            # AWC增强效果分数
+            enhancement_score = indicators["enhancement_strength"] * 0.2
+            score += enhancement_score
+            
+            # 稳定性分数
+            stability_score = indicators["topk_stability"] * 0.15
+            score += stability_score
+            
+            # 多模态一致性分数
+            consistency_score = indicators["multimodal_consistency"] * 0.15
+            score += consistency_score
+            
+            # 检索质量分数
+            retrieval_score = indicators["retrieval_quality"] * 0.1
+            score += retrieval_score
+            
+            # 思考类型特定调整
+            if thinking_type == "slow":
+                # 慢思考在高不确定性时更有优势
+                uncertainty_bonus = (1 - indicators["confidence_entropy"]) * 0.1
+                score += uncertainty_bonus
+            else:
+                # 快思考在高确定性时更有优势
+                certainty_bonus = indicators["confidence_entropy"] * 0.1
+                score += certainty_bonus
+            
+            return min(score, 1.0)
+        
+        def intelligent_terminal_decision(fast_result, slow_result):
+            """基于AWC增强信息的智能终端决策"""
+            # 提取AWC增强指标
+            fast_indicators = extract_awc_enhancement_indicators(fast_result)
+            slow_indicators = extract_awc_enhancement_indicators(slow_result)
+            
+            # 基础置信度
+            fast_conf = fast_result.get("enhanced_confidence", 0.0)
+            slow_conf = slow_result.get("enhanced_confidence", 0.0)
+            
+            # 计算综合决策分数
+            fast_score = calculate_comprehensive_score(fast_conf, fast_indicators, "fast")
+            slow_score = calculate_comprehensive_score(slow_conf, slow_indicators, "slow")
+            
+            # 智能决策
+            if slow_score > fast_score:
+                final_prediction = slow_result.get("enhanced_prediction", slow_result.get("original_prediction", "unknown"))
+                final_confidence = slow_conf
+                decision_source = "intelligent_slow_winner"
+                winning_indicators = slow_indicators
+            else:
+                final_prediction = fast_result.get("enhanced_prediction", fast_result.get("original_prediction", "unknown"))
+                final_confidence = fast_conf
+                decision_source = "intelligent_fast_winner"
+                winning_indicators = fast_indicators
+            
+            # 生成决策解释
+            decision_explanation = {
+                "decision_scores": {"fast": fast_score, "slow": slow_score},
+                "winning_factors": {
+                    "enhancement_strength": winning_indicators["enhancement_strength"],
+                    "topk_stability": winning_indicators["topk_stability"],
+                    "multimodal_consistency": winning_indicators["multimodal_consistency"],
+                    "retrieval_quality": winning_indicators["retrieval_quality"],
+                    "confidence_entropy": winning_indicators["confidence_entropy"]
+                },
+                "decision_reasoning": f"选择{'慢思考' if slow_score > fast_score else '快思考'}，综合分数: {max(fast_score, slow_score):.3f}"
+            }
+            
+            return {
+                "final_prediction": final_prediction,
+                "final_confidence": final_confidence,
+                "decision_source": decision_source,
+                "decision_explanation": decision_explanation,
+                "fast_score": fast_score,
+                "slow_score": slow_score
+            }
         
         # 自动生成目录
         if args.infer_dir is None:
@@ -2541,62 +2818,95 @@ if __name__ == "__main__":
                         else:
                             inference_data = loaded_data
                         
-                        if inference_data:
+                        if inference_data and fast_match:
                             fast_result = inference_data["fast_result"]
                             slow_result = inference_data["slow_result"]
                             
-                            # 调用系统的最终决策函数（与terminal_decision模式保持一致）
-                            if system and hasattr(system, '_final_decision'):
-                                final_prediction, final_confidence, _ = system._final_decision(
-                                    query_image, fast_result, slow_result, 5
-                                )
+                            # 使用基于AWC增强信息的智能决策
+                            try:
+                                decision_result = intelligent_terminal_decision(fast_match, result)
                                 
-                                # 获取增强结果用于决策质量评估
-                                fast_enhanced_conf = fast_match.get("enhanced_confidence", 0.0) if fast_match else 0.0
-                                slow_enhanced_conf = result.get("enhanced_confidence", 0.0)
-                                fast_enhanced_pred = fast_match.get("enhanced_prediction", "unknown") if fast_match else "unknown"
-                                slow_enhanced_pred = result.get("enhanced_prediction", "unknown")
+                                final_prediction = decision_result["final_prediction"]
+                                final_confidence = decision_result["final_confidence"]
+                                decision_source = decision_result["decision_source"]
+                                decision_explanation = decision_result["decision_explanation"]
+                                fast_score = decision_result["fast_score"]
+                                slow_score = decision_result["slow_score"]
                                 
-                                # 确定决策来源和质量
-                                if fast_match and fast_match.get("enhanced", False) and result.get("enhanced", False):
-                                    decision_quality = "both_enhanced"
-                                elif fast_match and fast_match.get("enhanced", False):
-                                    decision_quality = "fast_enhanced_only"
+                                # 确定决策质量
+                                if fast_match.get("enhanced", False) and result.get("enhanced", False):
+                                    decision_quality = "both_enhanced_intelligent"
+                                elif fast_match.get("enhanced", False):
+                                    decision_quality = "fast_enhanced_intelligent"
                                 elif result.get("enhanced", False):
-                                    decision_quality = "slow_enhanced_only"
+                                    decision_quality = "slow_enhanced_intelligent"
                                 else:
-                                    decision_quality = "neither_enhanced"
+                                    decision_quality = "neither_enhanced_intelligent"
                                 
                                 # 更新need_terminal_samples中的结果
                                 result["final_prediction"] = final_prediction
                                 result["final_confidence"] = final_confidence
-                                result["decision_path"] = "enhanced_arbitration"
-                                result["decision_source"] = "mllm_final_decision"
+                                result["decision_path"] = "intelligent_awc_arbitration"
+                                result["decision_source"] = decision_source
                                 result["decision_quality"] = decision_quality
                                 result["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
-                                result["fast_enhanced_pred"] = fast_enhanced_pred
-                                result["fast_enhanced_conf"] = fast_enhanced_conf
+                                result["fast_enhanced_pred"] = fast_match.get("enhanced_prediction", "unknown")
+                                result["fast_enhanced_conf"] = fast_match.get("enhanced_confidence", 0.0)
+                                result["decision_explanation"] = decision_explanation
+                                result["awc_decision_scores"] = {"fast": fast_score, "slow": slow_score}
                                 
-                                # 重要：同步更新slow_results中对应的结果
-                                for j, slow_result_item in enumerate(slow_results):
-                                    if slow_result_item["query_image"] == query_image:
-                                        slow_results[j]["final_prediction"] = final_prediction
-                                        slow_results[j]["final_confidence"] = final_confidence
-                                        slow_results[j]["decision_path"] = "enhanced_arbitration"
-                                        slow_results[j]["decision_source"] = "mllm_final_decision"
-                                        slow_results[j]["decision_quality"] = decision_quality
-                                        slow_results[j]["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
-                                        slow_results[j]["fast_enhanced_pred"] = fast_enhanced_pred
-                                        slow_results[j]["fast_enhanced_conf"] = fast_enhanced_conf
-                                        break
+                                print(f"🧠 智能决策: {os.path.basename(query_image)} -> {final_prediction}")
+                                print(f"   📊 决策分数: 快思考={fast_score:.3f}, 慢思考={slow_score:.3f}")
+                                print(f"   🎯 选择: {decision_explanation['decision_reasoning']}")
                                 
-                                terminal_decisions += 1
-                                if result["is_correct"]:
-                                    successful_decisions += 1
+                            except Exception as e:
+                                print(f"⚠️  智能决策失败，回退到传统决策: {e}")
+                                # 回退到传统的MLLM决策
+                                if system and hasattr(system, '_final_decision'):
+                                    final_prediction, final_confidence, _ = system._final_decision(
+                                        query_image, fast_result, slow_result, 5
+                                    )
+                                    decision_source = "mllm_fallback_decision"
+                                    decision_quality = "fallback_decision"
+                                else:
+                                    # 最后的回退：使用慢思考结果
+                                    final_prediction = result.get("enhanced_prediction", result.get("original_prediction", "unknown"))
+                                    final_confidence = result.get("enhanced_confidence", 0.0)
+                                    decision_source = "slow_fallback"
+                                    decision_quality = "fallback_slow"
                                 
-                                print(f"🎯 终端决策: {os.path.basename(query_image)} -> {final_prediction} (置信度: {final_confidence:.4f}, 正确: {result['is_correct']})")
-                            else:
-                                print(f"⚠️  系统未初始化或缺少_final_decision方法")
+                                # 更新结果
+                                result["final_prediction"] = final_prediction
+                                result["final_confidence"] = final_confidence
+                                result["decision_path"] = "fallback_arbitration"
+                                result["decision_source"] = decision_source
+                                result["decision_quality"] = decision_quality
+                                result["is_correct"] = is_similar(final_prediction, true_category, threshold=0.5)
+                                result["fast_enhanced_pred"] = fast_match.get("enhanced_prediction", "unknown") if fast_match else "unknown"
+                                result["fast_enhanced_conf"] = fast_match.get("enhanced_confidence", 0.0) if fast_match else 0.0
+                                
+                            # 重要：同步更新slow_results中对应的结果
+                            for j, slow_result_item in enumerate(slow_results):
+                                if slow_result_item["query_image"] == query_image:
+                                    slow_results[j]["final_prediction"] = result["final_prediction"]
+                                    slow_results[j]["final_confidence"] = result["final_confidence"]
+                                    slow_results[j]["decision_path"] = result["decision_path"]
+                                    slow_results[j]["decision_source"] = result["decision_source"]
+                                    slow_results[j]["decision_quality"] = result["decision_quality"]
+                                    slow_results[j]["is_correct"] = result["is_correct"]
+                                    slow_results[j]["fast_enhanced_pred"] = result["fast_enhanced_pred"]
+                                    slow_results[j]["fast_enhanced_conf"] = result["fast_enhanced_conf"]
+                                    
+                                    # 传递智能决策的详细信息
+                                    if "decision_explanation" in result:
+                                        slow_results[j]["decision_explanation"] = result["decision_explanation"]
+                                    if "awc_decision_scores" in result:
+                                        slow_results[j]["awc_decision_scores"] = result["awc_decision_scores"]
+                                    break
+                            
+                            terminal_decisions += 1
+                            if result["is_correct"]:
+                                successful_decisions += 1
                     else:
                         print(f"⚠️  未找到推理结果文件: {query_image}")
                         # 使用慢思考增强结果作为最终结果
@@ -2712,4 +3022,6 @@ if __name__ == "__main__":
     end_time = time.time()
     total_time = end_time - start_time
     formatted_time = time.strftime("%H:%M:%S", time.gmtime(total_time))
+    print()
+    print("当前时间为：", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print(f"总耗时: {formatted_time}")

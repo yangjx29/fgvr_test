@@ -1,0 +1,633 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow_classify', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/dog120_all.yml', num_per_category='3', knowledge_base_dir='./knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/dog120/infer', classify_dir='./experiments/dog120/classify')
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'dog', 'num_classes': 120, 'num_base': 60, 'num_novel': 60, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'OPT6.7B-COCO', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/dogs_120', 'expt_dir': './experiments/dog120', 'expt_dir_describe': './experiments/dog120/describe', 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours', 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs', 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts', 'path_identify_answers': './experiments/dog120/identify', 'expt_dir_guess': './experiments/dog120/guess', 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names', 'expt_dir_gallery': './experiments/dog120/gallery', 'path_references': './experiments/dog120/gallery/dog_image_references', 'path_regions': './experiments/dog120/gallery/dog_image_regions', 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn', 'expt_dir_grouping': './experiments/dog120/grouping'}
+
+当前运行模式: fast_slow_classify
+当前参数设置:
+  config_file_env                = ./configs/env_machine.yml        # 环境配置文件路径
+  config_file_expt               = ./configs/expts/dog120_all.yml   # 实验配置文件路径
+  num_per_category               = 3                                # 每个类别抽样数量
+  knowledge_base_dir             = ./knowledge_base                 # 知识库目录
+  query_image                    = None                             # 查询图片路径（分类用）
+  test_data_dir                  = None                             # 测试数据目录
+  results_out                    = ./results.json                   # 结果输出路径
+  use_slow_thinking              = None                             # 是否强制使用慢思考（None表示自动）
+  confidence_threshold           = 0.8                              # 快思考置信度阈值
+  similarity_threshold           = 0.7                              # 触发慢思考的相似度阈值
+  enable_mllm_intermediate_judge = False                            # 启用快慢思考间的中间判定（消融实验用）
+  infer_dir                      = ./experiments/dog120/infer       # 推理结果保存目录（fast_slow_infer模式）
+  classify_dir                   = ./experiments/dog120/classify    # 分类结果保存目录（fast_slow_classify模式）
+
+参数输出完毕。
+
+当前所用的 GPU 为：1
+当前可用 GPU 型号列表：
+  - GPU 0: NVIDIA A800 80GB PCIe
+
+当前时间为： 2025-11-01 11:57:30
+
+从目录加载推理结果: ./experiments/dog120/infer
+分类结果将保存到: ./experiments/dog120/classify
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.31s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.33s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.31s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.28s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.71s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.98s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/dog120/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/dog120/knowledge_base/category_image_paths.json 加载
+加载了 119 个类别的图像路径
+知识库已从 ./experiments/dog120/knowledge_base 加载
+知识库加载完成!
+已加载知识库: ./experiments/dog120/knowledge_base
+找到 1291 个推理结果文件
+Processing classification:   0%|          | 0/1291 [00:00<?, ?it/s]Processing classification:   0%|          | 4/1291 [00:12<1:06:01,  3.08s/it]Processing classification:   0%|          | 5/1291 [00:21<1:40:39,  4.70s/it]Processing classification:   0%|          | 6/1291 [00:33<2:25:26,  6.79s/it]Processing classification:   1%|          | 7/1291 [00:45<2:53:34,  8.11s/it]Processing classification:   1%|          | 8/1291 [00:53<2:51:42,  8.03s/it]Processing classification:   1%|          | 10/1291 [01:07<2:43:43,  7.67s/it]Processing classification:   1%|          | 11/1291 [01:18<2:59:57,  8.44s/it]Processing classification:   1%|          | 12/1291 [01:29<3:13:46,  9.09s/it]Processing classification:   1%|          | 14/1291 [01:40<2:41:13,  7.58s/it]Processing classification:   1%|▏         | 19/1291 [01:49<1:26:13,  4.07s/it]Processing classification:   2%|▏         | 22/1291 [02:03<1:30:48,  4.29s/it]Processing classification:   2%|▏         | 26/1291 [02:16<1:21:00,  3.84s/it]Processing classification:   2%|▏         | 28/1291 [02:25<1:23:50,  3.98s/it]Processing classification:   2%|▏         | 29/1291 [02:38<1:51:05,  5.28s/it]Processing classification:   3%|▎         | 33/1291 [02:52<1:33:14,  4.45s/it]Processing classification:   3%|▎         | 34/1291 [03:03<1:51:37,  5.33s/it]Processing classification:   3%|▎         | 35/1291 [03:13<2:10:27,  6.23s/it]Processing classification:   3%|▎         | 36/1291 [03:27<2:40:09,  7.66s/it]Processing classification:   3%|▎         | 38/1291 [03:38<2:22:53,  6.84s/it]Processing classification:   3%|▎         | 39/1291 [03:50<2:43:53,  7.85s/it]Processing classification:   3%|▎         | 42/1291 [04:01<2:05:10,  6.01s/it]Processing classification:   3%|▎         | 44/1291 [04:13<2:02:21,  5.89s/it]Processing classification:   4%|▎         | 46/1291 [04:26<2:06:54,  6.12s/it]Processing classification:   4%|▎         | 47/1291 [04:36<2:20:29,  6.78s/it]Processing classification:   4%|▎         | 48/1291 [04:48<2:45:05,  7.97s/it]Processing classification:   4%|▍         | 49/1291 [05:02<3:10:22,  9.20s/it]Processing classification:   4%|▍         | 50/1291 [05:15<3:27:42, 10.04s/it]Processing classification:   4%|▍         | 53/1291 [05:27<2:26:45,  7.11s/it]Processing classification:   4%|▍         | 54/1291 [05:39<2:45:58,  8.05s/it]Processing classification:   4%|▍         | 55/1291 [05:52<3:06:29,  9.05s/it]Processing classification:   5%|▍         | 60/1291 [06:05<1:44:12,  5.08s/it]Processing classification:   5%|▍         | 61/1291 [06:16<2:03:17,  6.01s/it]Processing classification:   5%|▍         | 63/1291 [06:28<2:04:29,  6.08s/it]Processing classification:   5%|▍         | 64/1291 [06:41<2:28:54,  7.28s/it]Processing classification:   5%|▌         | 65/1291 [06:52<2:41:41,  7.91s/it]Processing classification:   5%|▌         | 66/1291 [07:04<2:59:26,  8.79s/it]Processing classification:   5%|▌         | 70/1291 [07:21<2:07:44,  6.28s/it]Processing classification:   5%|▌         | 71/1291 [07:33<2:28:07,  7.28s/it]Processing classification:   6%|▌         | 75/1291 [07:46<1:47:14,  5.29s/it]Processing classification:   6%|▌         | 78/1291 [08:01<1:43:58,  5.14s/it]Processing classification:   6%|▌         | 79/1291 [08:13<2:05:18,  6.20s/it]Processing classification:   6%|▋         | 81/1291 [08:25<2:03:07,  6.11s/it]Processing classification:   7%|▋         | 88/1291 [08:36<1:09:40,  3.48s/it]Processing classification:   7%|▋         | 92/1291 [08:48<1:06:20,  3.32s/it]Processing classification:   8%|▊         | 98/1291 [08:59<53:53,  2.71s/it]  Processing classification:   8%|▊         | 105/1291 [09:11<45:12,  2.29s/it]Processing classification:   8%|▊         | 106/1291 [09:28<1:06:27,  3.37s/it]Processing classification:   9%|▊         | 110/1291 [09:40<1:04:05,  3.26s/it]Processing classification:   9%|▉         | 113/1291 [09:52<1:08:45,  3.50s/it]Processing classification:   9%|▉         | 115/1291 [10:03<1:15:10,  3.84s/it]Processing classification:   9%|▉         | 116/1291 [10:16<1:37:29,  4.98s/it]Processing classification:   9%|▉         | 118/1291 [10:30<1:46:16,  5.44s/it]Processing classification:   9%|▉         | 122/1291 [10:42<1:26:50,  4.46s/it]Processing classification:  10%|▉         | 123/1291 [10:56<1:50:01,  5.65s/it]Processing classification:  10%|▉         | 125/1291 [11:10<1:56:37,  6.00s/it]Processing classification:  10%|▉         | 127/1291 [11:21<1:54:55,  5.92s/it]Processing classification:  10%|▉         | 129/1291 [11:34<1:58:04,  6.10s/it]Processing classification:  10%|█         | 130/1291 [11:47<2:20:48,  7.28s/it]Processing classification:  10%|█         | 132/1291 [11:59<2:11:34,  6.81s/it]Processing classification:  11%|█         | 137/1291 [12:12<1:26:50,  4.52s/it]Processing classification:  11%|█         | 139/1291 [12:26<1:38:35,  5.13s/it]Processing classification:  11%|█         | 144/1291 [12:37<1:11:57,  3.76s/it]Processing classification:  11%|█▏        | 147/1291 [12:50<1:15:47,  3.98s/it]Processing classification:  11%|█▏        | 148/1291 [13:02<1:33:33,  4.91s/it]Processing classification:  12%|█▏        | 151/1291 [13:15<1:28:28,  4.66s/it]Processing classification:  12%|█▏        | 152/1291 [13:26<1:45:13,  5.54s/it]Processing classification:  12%|█▏        | 154/1291 [13:37<1:45:50,  5.59s/it]Processing classification:  12%|█▏        | 159/1291 [13:52<1:21:03,  4.30s/it]Processing classification:  13%|█▎        | 163/1291 [14:04<1:11:36,  3.81s/it]Processing classification:  13%|█▎        | 164/1291 [14:16<1:29:46,  4.78s/it]Processing classification:  13%|█▎        | 165/1291 [14:27<1:46:09,  5.66s/it]Processing classification:  13%|█▎        | 166/1291 [14:39<2:05:45,  6.71s/it]Processing classification:  13%|█▎        | 169/1291 [14:51<1:43:45,  5.55s/it]Processing classification:  13%|█▎        | 173/1291 [15:08<1:33:45,  5.03s/it]Processing classification:  13%|█▎        | 174/1291 [15:20<1:49:50,  5.90s/it]Processing classification:  14%|█▎        | 175/1291 [15:34<2:15:41,  7.29s/it]Processing classification:  14%|█▎        | 176/1291 [15:47<2:36:25,  8.42s/it]Processing classification:  14%|█▎        | 177/1291 [16:02<2:59:37,  9.67s/it]Processing classification:  14%|█▍        | 178/1291 [16:10<2:53:07,  9.33s/it]Processing classification:  14%|█▍        | 180/1291 [16:23<2:31:42,  8.19s/it]Processing classification:  14%|█▍        | 181/1291 [16:37<2:54:32,  9.43s/it]Processing classification:  14%|█▍        | 182/1291 [16:48<3:00:48,  9.78s/it]Processing classification:  14%|█▍        | 184/1291 [16:59<2:29:12,  8.09s/it]Processing classification:  15%|█▍        | 189/1291 [17:11<1:26:45,  4.72s/it]Processing classification:  15%|█▍        | 191/1291 [17:21<1:28:24,  4.82s/it]Processing classification:  15%|█▍        | 192/1291 [17:34<1:51:02,  6.06s/it]Processing classification:  15%|█▌        | 196/1291 [17:46<1:24:23,  4.62s/it]Processing classification:  15%|█▌        | 197/1291 [18:01<1:50:42,  6.07s/it]Processing classification:  15%|█▌        | 199/1291 [18:14<1:51:59,  6.15s/it]Processing classification:  15%|█▌        | 200/1291 [18:25<2:09:03,  7.10s/it]Processing classification:  16%|█▌        | 201/1291 [18:38<2:29:10,  8.21s/it]Processing classification:  16%|█▌        | 204/1291 [18:53<2:02:20,  6.75s/it]Processing classification:  16%|█▌        | 207/1291 [19:06<1:43:58,  5.75s/it]Processing classification:  16%|█▌        | 209/1291 [19:16<1:41:26,  5.63s/it]快慢不一致: fast=Briard, slow=Soft-coated Wheaten Terrier, 裁决结果=Komondor
+快慢不一致: fast=Standard Poodle, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Collie, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Pomeranian, slow=Yorkshire Terrier, 裁决结果=Pomeranian
+快慢不一致: fast=Brittany, slow=Welsh Springer Spaniel, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Maltese Dog, slow=Old English Sheepdog, 裁决结果=Old English Sheepdog
+快慢不一致: fast=Lhasa, slow=Blenheim Spaniel, 裁决结果=Pekingese
+快慢不一致: fast=Flat-coated Retriever, slow=Newfoundland, 裁决结果=Flat-coated Retriever
+快慢不一致: fast=Vizsla, slow=Rhodesian Ridgeback, 裁决结果=Rhodesian Ridgeback
+快慢不一致: fast=Irish Setter, slow=Otterhound, 裁决结果=Irish Setter
+快慢不一致: fast=Shih-Tzu, slow=Yorkshire Terrier, 裁决结果=Shih-Tzu
+快慢不一致: fast=Brittany, slow=Silky Terrier, 裁决结果=Clumber Spaniel
+快慢不一致: fast=Walker Hound, slow=Redbone Coonhound, 裁决结果=Walker Hound
+快慢不一致: fast=Shih-Tzu, slow=Dandi Dinmont, 裁决结果=Affenpinscher
+快慢不一致: fast=English Foxhound, slow=Redbone Coonhound, 裁决结果=Redbone
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Kuvasz
+快慢不一致: fast=Chow, slow=Miniature Schnauzer, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Affenpinscher, slow=Norwich Terrier, 裁决结果=Brabancon Griffon
+快慢不一致: fast=Otterhound, slow=Norwich Terrier, 裁决结果=Otterhound
+快慢不一致: fast=Whippet, slow=Italian Greyhound, 裁决结果=Italian Greyhound
+快慢不一致: fast=Mexican Hairless, slow=Bull Mastiff, 裁决结果=Mexican Hairless
+快慢不一致: fast=Shih-Tzu, slow=Maltese Dog, 裁决结果=Maltese Dog
+快慢不一致: fast=Walker Hound, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=Malinois, slow=American Staffordshire Terrier, 裁决结果=Great Dane
+快慢不一致: fast=Old English Sheepdog, slow=Otterhound, 裁决结果=Old English Sheepdog
+快慢不一致: fast=English Foxhound, slow=Redbone Coonhound, 裁决结果=Brittany
+快慢不一致: fast=Vizsla, slow=Weimaraner, 裁决结果=Weimaraner
+快慢不一致: fast=Walker Hound, slow=EntleBucher, 裁决结果=English Foxhound
+快慢不一致: fast=Clumber, slow=Cavalier King Charles Spaniel, 裁决结果=Cavalier King Charles Spaniel
+快慢不一致: fast=Gordon Setter, slow=Airedale Terrier, 裁决结果=Airedale
+快慢不一致: fast=Kerry Blue Terrier, slow=Bouvier des Flandres, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Miniature Pinscher, slow=Toy Terrier, 裁决结果=Chihuahua
+快慢不一致: fast=Kelpie, slow=American Staffordshire Terrier, 裁决结果=American Staffordshire Terrier
+快慢不一致: fast=Old English Sheepdog, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Chow, slow=Briard, 裁决结果=Briard
+快慢不一致: fast=Keeshond, slow=Papillon, 裁决结果=Papillon
+快慢不一致: fast=Walker Hound, slow=Beagle, 裁决结果=English Foxhound
+快慢不一致: fast=Blenheim Spaniel, slow=Maltese Dog, 裁决结果=Cavalier King Charles Spaniel
+快慢不一致: fast=Dandi Dinmont, slow=Silky Terrier, 裁决结果=Silky Terrier
+快慢不一致: fast=Miniature Pinscher, slow=Kelpie, 裁决结果=Kelpie
+快慢不一致: fast=Toy Poodle, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Otterhound, slow=Lakeland Terrier, 裁决结果=Norfolk Terrier
+快慢不一致: fast=Miniature Pinscher, slow=Italian Greyhound, 裁决结果=Italian Greyhound
+快慢不一致: fast=Irish Wolfhound, slow=Alaskan Malamute, 裁决结果=Alaskan Malamute
+快慢不一致: fast=Kerry Blue Terrier, slow=Bouvier des Flandres, 裁决结果=Kerry Blue Terrier
+快慢不一致: fast=EntleBucher, slow=Greater Swiss Mountain Dog, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Cocker Spaniel, slow=Otterhound, 裁决结果=Sussex Spaniel
+快慢不一致: fast=Saint Bernard, slow=Greater Swiss Mountain Dog, 裁决结果=Saint Bernard
+快慢不一致: fast=English Setter, slow=Kuvasz, 裁决结果=Great Pyrenees
+快慢不一致: fast=Welsh Springer Spaniel, slow=Basset Hound, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Ibizian Hound, slow=Beagle, 裁决结果=Ibizian Hound
+快慢不一致: fast=Briard, slow=Leonberg, 裁决结果=Leonberg
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Kuvasz
+快慢不一致: fast=Schipperke, slow=German Shepherd, 裁决结果=Newfoundland
+快慢不一致: fast=Toy Poodle, slow=Silky Terrier, 裁决结果=Shih-Tzu
+快慢不一致: fast=Miniature Pinscher, slow=Chihuahua, 裁决结果=Chihuahua
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Schipperke
+快慢不一致: fast=Chow, slow=Samoyed, 裁决结果=Samoyed
+快慢不一致: fast=Miniature Poodle, slow=West Highland White Terrier (Westie), 裁决结果=West Highland White Terrier (Westie)
+快慢不一致: fast=Welsh Springer Spaniel, slow=Basenji, 裁决结果=Basenji
+快慢不一致: fast=Malamute, slow=Chesapeake Bay Retriever, 裁决结果=Siberian Husky
+快慢不一致: fast=Collie, slow=Papillon, 裁决结果=Papillon
+快慢不一致: fast=Eskimo Dog, slow=Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Cardigan, slow=Shetland Sheepdog (Sheltie), 裁决结果=Shetland Sheepdog
+快慢不一致: fast=Kerry Blue Terrier, slow=Komondor, 裁决结果=Giant Schnauzer
+快慢不一致: fast=Chow, slow=Afghan Hound, 裁决结果=Afghan Hound
+快慢不一致: fast=Malinois, slow=Norwegian Elkhound, 裁决结果=Norwegian Elkhound
+快慢不一致: fast=German Short-haired Pointer, slow=Bluetick Coonhound, 裁决结果=Bluetick Coonhound
+快慢不一致: fast=Bluetick, slow=Entlebucher Sennenhund, 裁决结果=Bluetick Coonhound
+快慢不一致: fast=Malamute, slow=Keeshond, 裁决结果=Malamute
+快慢不一致: fast=Irish Terrier, slow=Irish Wolfhound, 裁决结果=Otterhound
+快慢不一致: fast=Malinois, slow=Brabancon Griffon, 裁决结果=Brabancon Griffon
+快慢不一致: fast=Basenji, slow=Italian Greyhound, 裁决结果=Ibizian Hound
+快慢不一致: fast=Tibetan Terrier, slow=Clumber Spaniel, 裁决结果=Clumber Spaniel
+快慢不一致: fast=Clumber, slow=Afghan Hound, 裁决结果=Afghan Hound
+快慢不一致: fast=Chesapeake Bay Retriever, slow=Leonberger, 裁决结果=Leonberger
+快慢不一致: fast=Black-and-tan Coonhound, slow=Dachshund, 裁决结果=Black-and-tan Coonhound
+快慢不一致: fast=Soft-coated Wheaten Terrier, slow=Leonberger, 裁决结果=Leonberger
+快慢不一致: fast=Shetland Sheepdog, slow=Yorkshire Terrier, 裁决结果=Yorkshire Terrier
+快慢不一致: fast=Miniature Pinscher, slow=Toy Fox Terrier, 裁决结果=Toy Fox Terrier
+快慢不一致: fast=Bouvier des Flandres, slow=Maltese Dog, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Eskimo Dog, slow=Samoyed, 裁决结果=Samoyed
+快慢不一致: fast=Borzoi, slow=Vizsla, 裁决结果=Labrador Retriever
+快慢不一致: fast=Eskimo Dog, slow=Keeshond, 裁决结果=Siberian Husky
+快慢不一致: fast=Greater Swiss Mountain Dog, slow=Collie, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Clumber, slow=Bluetick Coonhound, 裁决结果=Bluetick
+快慢不一致: fast=Chesapeake Bay Retriever, slow=Vizsla, 裁决结果=Vizsla
+快慢不一致: fast=Eskimo Dog, slow=Keeshond, 裁决结果=Siberian Husky
+快慢不一致: fast=Sussex Spaniel, slow=Golden Retriever, 裁决结果=Cocker Spaniel
+快慢不一致: fast=Clumber, slow=Vizsla, 裁决结果=German Short-haired Pointer
+快慢不一致: fast=Irish Water Spaniel, slow=Portuguese Water Dog, 裁决结果=Curly-coated Retriever
+快慢不一致: fast=Great Dane, slow=Saluki, 裁决结果=Borzoi
+快慢不一致: fast=Kerry Blue Terrier, slow=Bouvier des Flandres, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=English Foxhound, slow=Basset Hound, 裁决结果=English Foxhound
+Processing classification:  16%|█▋        | 210/1291 [19:29<2:02:52,  6.82s/it]Processing classification:  16%|█▋        | 213/1291 [19:46<1:53:34,  6.32s/it]Processing classification:  17%|█▋        | 217/1291 [19:57<1:25:48,  4.79s/it]Processing classification:  17%|█▋        | 219/1291 [20:09<1:30:13,  5.05s/it]Processing classification:  17%|█▋        | 220/1291 [20:22<1:51:23,  6.24s/it]Processing classification:  17%|█▋        | 223/1291 [20:34<1:34:01,  5.28s/it]Processing classification:  17%|█▋        | 225/1291 [20:45<1:34:48,  5.34s/it]Processing classification:  18%|█▊        | 231/1291 [20:56<1:01:22,  3.47s/it]Processing classification:  18%|█▊        | 233/1291 [21:08<1:10:43,  4.01s/it]Processing classification:  18%|█▊        | 234/1291 [21:20<1:28:08,  5.00s/it]Processing classification:  18%|█▊        | 236/1291 [21:31<1:30:20,  5.14s/it]Processing classification:  19%|█▊        | 240/1291 [21:43<1:13:29,  4.20s/it]Processing classification:  19%|█▊        | 241/1291 [21:57<1:36:19,  5.50s/it]Processing classification:  19%|█▊        | 242/1291 [22:08<1:53:21,  6.48s/it]Processing classification:  19%|█▉        | 244/1291 [22:20<1:50:43,  6.35s/it]Processing classification:  19%|█▉        | 246/1291 [22:31<1:46:15,  6.10s/it]Processing classification:  19%|█▉        | 247/1291 [22:34<1:33:40,  5.38s/it]Processing classification:  19%|█▉        | 249/1291 [22:46<1:39:51,  5.75s/it]Processing classification:  20%|█▉        | 254/1291 [23:03<1:15:56,  4.39s/it]Processing classification:  20%|█▉        | 255/1291 [23:13<1:28:56,  5.15s/it]Processing classification:  20%|█▉        | 256/1291 [23:25<1:49:13,  6.33s/it]Processing classification:  20%|██        | 262/1291 [23:40<1:09:42,  4.06s/it]Processing classification:  20%|██        | 263/1291 [23:52<1:25:47,  5.01s/it]Processing classification:  21%|██        | 265/1291 [24:02<1:26:07,  5.04s/it]Processing classification:  21%|██        | 267/1291 [24:14<1:31:39,  5.37s/it]Processing classification:  21%|██        | 268/1291 [24:30<1:58:51,  6.97s/it]Processing classification:  21%|██        | 271/1291 [24:41<1:36:31,  5.68s/it]Processing classification:  21%|██        | 274/1291 [24:52<1:23:14,  4.91s/it]Processing classification:  21%|██▏       | 275/1291 [25:05<1:44:43,  6.18s/it]Processing classification:  22%|██▏       | 278/1291 [25:19<1:34:08,  5.58s/it]Processing classification:  22%|██▏       | 284/1291 [25:31<1:00:59,  3.63s/it]Processing classification:  22%|██▏       | 290/1291 [25:42<48:33,  2.91s/it]  Processing classification:  23%|██▎       | 292/1291 [25:53<54:58,  3.30s/it]Processing classification:  23%|██▎       | 295/1291 [26:06<59:24,  3.58s/it]Processing classification:  23%|██▎       | 296/1291 [26:20<1:18:24,  4.73s/it]Processing classification:  23%|██▎       | 300/1291 [26:31<1:05:47,  3.98s/it]Processing classification:  23%|██▎       | 303/1291 [26:44<1:07:43,  4.11s/it]Processing classification:  24%|██▎       | 305/1291 [26:56<1:14:49,  4.55s/it]Processing classification:  24%|██▍       | 308/1291 [27:08<1:10:44,  4.32s/it]Processing classification:  24%|██▍       | 309/1291 [27:18<1:24:02,  5.13s/it]Processing classification:  24%|██▍       | 311/1291 [27:30<1:26:34,  5.30s/it]Processing classification:  24%|██▍       | 313/1291 [27:40<1:26:31,  5.31s/it]Processing classification:  24%|██▍       | 314/1291 [27:53<1:46:38,  6.55s/it]Processing classification:  24%|██▍       | 315/1291 [28:01<1:51:24,  6.85s/it]Processing classification:  24%|██▍       | 316/1291 [28:14<2:10:06,  8.01s/it]Processing classification:  25%|██▍       | 319/1291 [28:26<1:39:25,  6.14s/it]Processing classification:  25%|██▍       | 320/1291 [28:38<1:56:33,  7.20s/it]Processing classification:  25%|██▍       | 321/1291 [28:51<2:18:06,  8.54s/it]Processing classification:  25%|██▌       | 325/1291 [29:03<1:28:06,  5.47s/it]Processing classification:  25%|██▌       | 326/1291 [29:15<1:45:36,  6.57s/it]Processing classification:  25%|██▌       | 327/1291 [29:26<1:58:28,  7.37s/it]Processing classification:  25%|██▌       | 328/1291 [29:38<2:13:54,  8.34s/it]Processing classification:  26%|██▌       | 331/1291 [29:50<1:39:45,  6.23s/it]Processing classification:  26%|██▌       | 335/1291 [30:02<1:15:54,  4.76s/it]Processing classification:  26%|██▌       | 336/1291 [30:15<1:33:45,  5.89s/it]Processing classification:  26%|██▌       | 338/1291 [30:27<1:34:07,  5.93s/it]Processing classification:  26%|██▋       | 342/1291 [30:39<1:12:48,  4.60s/it]Processing classification:  27%|██▋       | 344/1291 [30:51<1:19:12,  5.02s/it]Processing classification:  27%|██▋       | 345/1291 [31:04<1:36:23,  6.11s/it]Processing classification:  27%|██▋       | 350/1291 [31:20<1:12:18,  4.61s/it]Processing classification:  27%|██▋       | 351/1291 [31:34<1:30:39,  5.79s/it]Processing classification:  27%|██▋       | 352/1291 [31:46<1:47:48,  6.89s/it]Processing classification:  27%|██▋       | 353/1291 [32:00<2:05:09,  8.01s/it]Processing classification:  27%|██▋       | 354/1291 [32:11<2:14:52,  8.64s/it]Processing classification:  28%|██▊       | 356/1291 [32:25<2:06:55,  8.15s/it]Processing classification:  28%|██▊       | 358/1291 [32:39<1:58:58,  7.65s/it]Processing classification:  28%|██▊       | 359/1291 [32:50<2:11:17,  8.45s/it]Processing classification:  28%|██▊       | 360/1291 [33:03<2:25:53,  9.40s/it]Processing classification:  28%|██▊       | 362/1291 [33:20<2:18:47,  8.96s/it]Processing classification:  28%|██▊       | 364/1291 [33:31<1:59:20,  7.72s/it]Processing classification:  28%|██▊       | 365/1291 [33:44<2:16:45,  8.86s/it]Processing classification:  28%|██▊       | 366/1291 [33:57<2:32:34,  9.90s/it]Processing classification:  28%|██▊       | 367/1291 [34:13<2:53:00, 11.23s/it]Processing classification:  29%|██▊       | 370/1291 [34:26<1:57:36,  7.66s/it]Processing classification:  29%|██▊       | 371/1291 [34:37<2:07:31,  8.32s/it]Processing classification:  29%|██▉       | 372/1291 [34:48<2:17:50,  9.00s/it]Processing classification:  29%|██▉       | 375/1291 [35:01<1:43:55,  6.81s/it]Processing classification:  29%|██▉       | 377/1291 [35:14<1:41:01,  6.63s/it]Processing classification:  29%|██▉       | 378/1291 [35:26<1:55:16,  7.58s/it]Processing classification:  30%|██▉       | 381/1291 [35:39<1:33:32,  6.17s/it]Processing classification:  30%|██▉       | 385/1291 [35:50<1:10:26,  4.67s/it]Processing classification:  30%|██▉       | 386/1291 [36:02<1:25:52,  5.69s/it]Processing classification:  30%|██▉       | 387/1291 [36:14<1:41:30,  6.74s/it]Processing classification:  30%|███       | 388/1291 [36:27<1:58:07,  7.85s/it]Processing classification:  30%|███       | 390/1291 [36:40<1:52:09,  7.47s/it]Processing classification:  30%|███       | 392/1291 [36:52<1:44:30,  6.97s/it]Processing classification:  30%|███       | 393/1291 [37:05<2:00:30,  8.05s/it]快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Spaniel
+快慢不一致: fast=Miniature Poodle, slow=Silky Terrier, 裁决结果=Miniature Poodle
+快慢不一致: fast=Irish Wolfhound, slow=Bedlington Terrier, 裁决结果=Scottish Deerhound
+快慢不一致: fast=Briard, slow=Tibetan Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Clumber, slow=Gordon Setter, 裁决结果=Gordon Setter
+快慢不一致: fast=Curly-coater Retriever, slow=Irish Water Spaniel, 裁决结果=Kerry Blue Terrier
+快慢不一致: fast=Cairn, slow=Australian Terrier, 裁决结果=Australian Terrier
+快慢不一致: fast=English Springer Spaniel, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Irish Wolfhound, slow=Saluki, 裁决结果=Saluki
+快慢不一致: fast=Affenpinscher, slow=Norwich Terrier, 裁决结果=Affenpinscher
+快慢不一致: fast=Tibetan Terrier, slow=Old English Sheepdog, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Welsh Springer Spaniel, slow=Brittany, 裁决结果=Brittany
+快慢不一致: fast=Golden Retriever, slow=Cocker Spaniel, 裁决结果=Cocker Spaniel
+快慢不一致: fast=Briard, slow=Tibetan Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Otterhound, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=English Foxhound, slow=Redbone Coonhound, 裁决结果=English Foxhound
+最终决策失败: CUDA out of memory. Tried to allocate 8.93 GiB. GPU 0 has a total capacity of 79.25 GiB of which 2.72 GiB is free. Process 3679297 has 33.81 GiB memory in use. Including non-PyTorch memory, this process has 42.70 GiB memory in use. Of the allocated memory 41.81 GiB is allocated by PyTorch, and 402.93 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+快慢不一致: fast=Saint Bernard, slow=Greater Swiss Mountain Dog, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Komondor, slow=Soft-coated Wheaten Terrier, 裁决结果=Komondor
+快慢不一致: fast=Cairn, slow=Pekinese, 裁决结果=Pekinese
+快慢不一致: fast=Malamute, slow=Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Miniature Schnauzer, slow=Cairn Terrier, 裁决结果=Cairn
+快慢不一致: fast=Doberman, slow=Redbone, 裁决结果=Doberman Pinscher
+快慢不一致: fast=Clumber, slow=Soft Coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Cardigan, slow=Pembroke Welsh Corgi, 裁决结果=Pembroke Welsh Corgi
+快慢不一致: fast=Clumber, slow=Cocker Spaniel, 裁决结果=Cocker Spaniel
+快慢不一致: fast=Clumber, slow=Brittany, 裁决结果=Brittany
+快慢不一致: fast=Old English Sheepdog, slow=Lakeland Terrier, 裁决结果=Dandi Dinmont
+快慢不一致: fast=Boston Bull, slow=Basset Hound, 裁决结果=Toy Terrier
+快慢不一致: fast=Brabancon Griffon, slow=Boxer, 裁决结果=Brabancon Griffon
+快慢不一致: fast=Doberman, slow=Rottweiler, 裁决结果=Rottweiler
+快慢不一致: fast=Pembroke, slow=Chihuahua, 裁决结果=Chihuahua
+快慢不一致: fast=Otterhound, slow=Norfolk Terrier, 裁决结果=Otterhound
+快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Spaniel
+快慢不一致: fast=Walker Hound, slow=Greyhound, 裁决结果=Greyhound
+快慢不一致: fast=Irish Wolfhound, slow=Briard, 裁决结果=Afghan Hound
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Groenendael
+快慢不一致: fast=Tibetan Terrier, slow=Bouvier des Flandres, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Siberian Husky, slow=Keeshond, 裁决结果=Norwegian Elkhound
+快慢不一致: fast=Shih-Tzu, slow=Silky Terrier, 裁决结果=Shih-Tzu
+快慢不一致: fast=Saint Bernard, slow=Bernese Mountain Dog, 裁决结果=Bernese Mountain Dog
+快慢不一致: fast=Schipperke, slow=Norwegian Elkhound, 裁决结果=Schipperke
+快慢不一致: fast=Golden Retriever, slow=Otterhound, 裁决结果=Vizsla
+快慢不一致: fast=Flat-coated Retriever, slow=Groenendael, 裁决结果=Groenendael
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepard
+快慢不一致: fast=Shih-Tzu, slow=Silky Terrier, 裁决结果=Shih-Tzu
+快慢不一致: fast=Airedale, slow=Dandi Dinmont, 裁决结果=Otterhound
+快慢不一致: fast=Staffordshire Bullterrier, slow=Bull Mastiff, 裁决结果=American Staffordshire Terrier
+快慢不一致: fast=Kerry Blue Terrier, slow=Bouvier des Flandres, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Tibetan Terrier, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Clumber, slow=English Springer Spaniel, 裁决结果=English Springer Spaniel
+快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Cavalier King Charles Spaniel
+快慢不一致: fast=Norwegian Elkhound, slow=Malinois, 裁决结果=Malinois
+快慢不一致: fast=Great Dane, slow=Redbone Coonhound, 裁决结果=English Foxhound
+快慢不一致: fast=Bluetick, slow=Standard Poodle, 裁决结果=Beagle and Foxhound
+快慢不一致: fast=Bluetick, slow=Redbone Coonhound, 裁决结果=Bluetick
+快慢不一致: fast=Airedale, slow=Irish Terrier, 裁决结果=Irish Terrier
+快慢不一致: fast=Airedale, slow=American Cocker Spaniel, 裁决结果=American Cocker Spaniel
+快慢不一致: fast=Shih-Tzu, slow=Yorkshire Terrier, 裁决结果=Yorkshire Terrier
+快慢不一致: fast=Collie, slow=Bernese Mountain Dog, 裁决结果=Border Collie
+快慢不一致: fast=Borzoi, slow=Saluki, 裁决结果=Saluki
+快慢不一致: fast=Malamute, slow=Keeshond, 裁决结果=Norwegian Elkhound
+快慢不一致: fast=Boston Bull, slow=French Bulldog, 裁决结果=French Bulldog
+快慢不一致: fast=Rhodesian Ridgeback, slow=Great Dane, 裁决结果=Great Dane
+快慢不一致: fast=Old English Sheepdog, slow=Maltese Dog, 裁决结果=Old English Sheepdog
+快慢不一致: fast=Curly-coater Retriever, slow=Great Dane, 裁决结果=Curly-Coated Retriever
+快慢不一致: fast=Miniature Poodle, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Gordon Setter, slow=Newfoundland, 裁决结果=Newfoundland
+快慢不一致: fast=Chow, slow=Shetland Sheepdog, 裁决结果=Shetland Sheepdog
+快慢不一致: fast=Clumber, slow=Scottish Terrier and Labrador Retriever, 裁决结果=Scottish Terrier and Labrador Retriever
+快慢不一致: fast=Affenpinscher, slow=Australian Terrier, 裁决结果=Affenpinscher
+快慢不一致: fast=Vizsla, slow=Rhodesian Ridgeback, 裁决结果=Rhodesian Ridgeback
+快慢不一致: fast=Toy Terrier, slow=Chihuahua, 裁决结果=Chihuahua
+快慢不一致: fast=Kerry Blue Terrier, slow=Komondor, 裁决结果=Komondor
+快慢不一致: fast=Irish Water Spaniel, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=West Highland White Terrier, slow=Maltese Dog, 裁决结果=Maltese Dog
+快慢不一致: fast=Shih-Tzu, slow=Lhasa, 裁决结果=Lhasa
+快慢不一致: fast=Black-and-tan Coonhound, slow=Dachshund, 裁决结果=Dachshund
+快慢不一致: fast=Basenji, slow=Podenco Canario, 裁决结果=Podenco Canario
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=Boxer and German Shepherd
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Collie, slow=Pembroke, 裁决结果=Pembroke
+快慢不一致: fast=Japanese Spaniel, slow=Pembroke, 裁决结果=Cardigan
+快慢不一致: fast=Clumber, slow=Giant Schnauzer, 裁决结果=Giant Schnauzer
+快慢不一致: fast=Clumber, slow=Kerry Blue Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Clumber, slow=Airedale, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Staffordshire Bullterrier, slow=French Bulldog, 裁决结果=French Bulldog
+快慢不一致: fast=Cocker Spaniel, slow=Gordon Setter, 裁决结果=Gordon Setter
+Processing classification:  31%|███       | 394/1291 [37:19<2:20:14,  9.38s/it]Processing classification:  31%|███       | 396/1291 [37:29<1:55:25,  7.74s/it]Processing classification:  31%|███       | 398/1291 [37:39<1:40:54,  6.78s/it]Processing classification:  31%|███       | 400/1291 [37:50<1:33:28,  6.29s/it]Processing classification:  31%|███       | 401/1291 [38:03<1:53:39,  7.66s/it]Processing classification:  31%|███       | 402/1291 [38:15<2:06:13,  8.52s/it]Processing classification:  31%|███▏      | 404/1291 [38:29<1:58:51,  8.04s/it]Processing classification:  31%|███▏      | 405/1291 [38:42<2:11:56,  8.93s/it]Processing classification:  32%|███▏      | 408/1291 [38:52<1:32:04,  6.26s/it]Processing classification:  32%|███▏      | 409/1291 [39:04<1:49:54,  7.48s/it]Processing classification:  32%|███▏      | 410/1291 [39:17<2:04:28,  8.48s/it]Processing classification:  32%|███▏      | 412/1291 [39:27<1:44:36,  7.14s/it]Processing classification:  32%|███▏      | 415/1291 [39:41<1:29:09,  6.11s/it]Processing classification:  32%|███▏      | 418/1291 [39:52<1:14:42,  5.13s/it]Processing classification:  32%|███▏      | 419/1291 [40:04<1:29:41,  6.17s/it]Processing classification:  33%|███▎      | 420/1291 [40:17<1:47:40,  7.42s/it]Processing classification:  33%|███▎      | 421/1291 [40:29<2:01:03,  8.35s/it]Processing classification:  33%|███▎      | 424/1291 [40:42<1:34:13,  6.52s/it]Processing classification:  33%|███▎      | 426/1291 [40:53<1:30:08,  6.25s/it]Processing classification:  33%|███▎      | 427/1291 [41:06<1:46:10,  7.37s/it]Processing classification:  33%|███▎      | 428/1291 [41:19<2:04:56,  8.69s/it]Processing classification:  33%|███▎      | 430/1291 [41:33<1:53:52,  7.94s/it]Processing classification:  33%|███▎      | 431/1291 [41:46<2:10:56,  9.14s/it]Processing classification:  34%|███▎      | 433/1291 [42:00<1:58:50,  8.31s/it]Processing classification:  34%|███▎      | 434/1291 [42:10<2:03:26,  8.64s/it]Processing classification:  34%|███▍      | 438/1291 [42:20<1:15:42,  5.33s/it]Processing classification:  34%|███▍      | 439/1291 [42:34<1:34:35,  6.66s/it]Processing classification:  35%|███▍      | 449/1291 [42:46<40:19,  2.87s/it]  Processing classification:  35%|███▍      | 451/1291 [42:59<48:14,  3.45s/it]Processing classification:  35%|███▌      | 452/1291 [43:11<1:01:20,  4.39s/it]Processing classification:  35%|███▌      | 456/1291 [43:24<55:08,  3.96s/it]  Processing classification:  36%|███▌      | 462/1291 [43:35<41:39,  3.02s/it]Processing classification:  36%|███▌      | 463/1291 [43:50<56:38,  4.10s/it]Processing classification:  36%|███▌      | 465/1291 [44:00<59:33,  4.33s/it]Processing classification:  36%|███▌      | 467/1291 [44:12<1:04:44,  4.71s/it]Processing classification:  36%|███▋      | 468/1291 [44:26<1:22:34,  6.02s/it]Processing classification:  36%|███▋      | 469/1291 [44:39<1:38:10,  7.17s/it]Processing classification:  36%|███▋      | 471/1291 [45:04<2:03:31,  9.04s/it]Processing classification:  37%|███▋      | 472/1291 [45:16<2:10:49,  9.58s/it]Processing classification:  37%|███▋      | 474/1291 [45:29<1:55:26,  8.48s/it]Processing classification:  37%|███▋      | 475/1291 [45:32<1:39:28,  7.31s/it]Processing classification:  37%|███▋      | 477/1291 [45:44<1:34:05,  6.94s/it]Processing classification:  37%|███▋      | 480/1291 [45:57<1:18:37,  5.82s/it]Processing classification:  37%|███▋      | 481/1291 [46:11<1:37:38,  7.23s/it]Processing classification:  37%|███▋      | 482/1291 [46:24<1:52:05,  8.31s/it]Processing classification:  37%|███▋      | 483/1291 [46:35<2:00:48,  8.97s/it]Processing classification:  37%|███▋      | 484/1291 [46:47<2:10:23,  9.70s/it]Processing classification:  38%|███▊      | 485/1291 [46:59<2:17:43, 10.25s/it]Processing classification:  38%|███▊      | 487/1291 [47:12<1:56:30,  8.69s/it]Processing classification:  38%|███▊      | 488/1291 [47:26<2:10:28,  9.75s/it]Processing classification:  38%|███▊      | 492/1291 [47:39<1:20:45,  6.06s/it]Processing classification:  38%|███▊      | 493/1291 [47:52<1:37:34,  7.34s/it]Processing classification:  38%|███▊      | 496/1291 [48:05<1:19:54,  6.03s/it]Processing classification:  39%|███▊      | 498/1291 [48:15<1:16:16,  5.77s/it]Processing classification:  39%|███▊      | 499/1291 [48:29<1:34:52,  7.19s/it]Processing classification:  39%|███▊      | 500/1291 [48:43<1:51:00,  8.42s/it]Processing classification:  39%|███▉      | 506/1291 [48:55<57:13,  4.37s/it]  Processing classification:  39%|███▉      | 507/1291 [49:06<1:09:29,  5.32s/it]Processing classification:  40%|███▉      | 511/1291 [49:20<58:04,  4.47s/it]  Processing classification:  40%|███▉      | 512/1291 [49:27<1:02:46,  4.84s/it]Processing classification:  40%|███▉      | 515/1291 [49:37<56:28,  4.37s/it]  Processing classification:  40%|███▉      | 516/1291 [49:48<1:08:13,  5.28s/it]Processing classification:  40%|████      | 517/1291 [50:01<1:24:05,  6.52s/it]Processing classification:  40%|████      | 518/1291 [50:10<1:30:44,  7.04s/it]Processing classification:  40%|████      | 521/1291 [50:26<1:20:06,  6.24s/it]Processing classification:  40%|████      | 522/1291 [50:36<1:29:59,  7.02s/it]Processing classification:  41%|████      | 524/1291 [50:50<1:28:54,  6.95s/it]Processing classification:  41%|████      | 526/1291 [50:59<1:18:09,  6.13s/it]Processing classification:  41%|████      | 531/1291 [51:23<1:08:46,  5.43s/it]Processing classification:  41%|████▏     | 533/1291 [51:36<1:12:34,  5.75s/it]Processing classification:  41%|████▏     | 535/1291 [51:48<1:12:31,  5.76s/it]Processing classification:  42%|████▏     | 536/1291 [51:59<1:22:53,  6.59s/it]Processing classification:  42%|████▏     | 537/1291 [52:10<1:31:25,  7.28s/it]Processing classification:  42%|████▏     | 538/1291 [52:11<1:17:16,  6.16s/it]Processing classification:  42%|████▏     | 541/1291 [52:24<1:06:07,  5.29s/it]Processing classification:  42%|████▏     | 542/1291 [52:37<1:22:40,  6.62s/it]Processing classification:  43%|████▎     | 549/1291 [52:48<42:03,  3.40s/it]  Processing classification:  43%|████▎     | 550/1291 [53:01<55:42,  4.51s/it]Processing classification:  43%|████▎     | 553/1291 [53:15<55:26,  4.51s/it]Processing classification:  44%|████▎     | 563/1291 [53:26<29:38,  2.44s/it]快慢不一致: fast=Miniature Schnauzer, slow=Sealyham Terrier, 裁决结果=Wire Fox Terrier
+快慢不一致: fast=Irish Wolfhound, slow=Borzoi, 裁决结果=Borzoi
+快慢不一致: fast=Miniature Pinscher, slow=Toy Terrier, 裁决结果=Chihuahua
+快慢不一致: fast=Brittany, slow=English Springer Spaniel, 裁决结果=English Springer Spaniel
+快慢不一致: fast=Irish Water Spaniel, slow=Standard Poodle, 裁决结果=Irish Water Spaniel
+快慢不一致: fast=Standard Schnauzer, slow=Affenpinscher, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Brittany, slow=Welsh Springer Spaniel, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Chesapeake Bay Retriever, slow=Giant Schnauzer, 裁决结果=Chesapeake Bay Retriever
+快慢不一致: fast=Tibetan Mastiff, slow=Chow Chow, 裁决结果=Chow
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Great Pyrenees
+快慢不一致: fast=Chesapeake Bay Retriever, slow=Giant Schnauzer, 裁决结果=Labrador Retriever
+快慢不一致: fast=Cairn, slow=Lhasa, 裁决结果=Affenpinscher
+快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Cavalier King Charles Spaniel
+快慢不一致: fast=Redbone, slow=Vizsla, 裁决结果=Redbone
+快慢不一致: fast=Pug, slow=Brussels Griffon, 裁决结果=Brabancon Griffon
+快慢不一致: fast=Curly-coater Retriever, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Old English Sheepdog, slow=Maltese Dog, 裁决结果=Old English Sheepdog
+快慢不一致: fast=Irish Setter, slow=Golden Retriever, 裁决结果=Cocker Spaniel
+快慢不一致: fast=Saluki, slow=Greyhound, 裁决结果=Whippet
+快慢不一致: fast=Whippet, slow=Giant Schnauzer, 裁决结果=Greyhound
+快慢不一致: fast=Miniature Poodle, slow=Bichon Frise, 裁决结果=Bichon Frise
+快慢不一致: fast=Walker Hound, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=Flat-coated Retriever, slow=Kuvasz, 裁决结果=Kuvasz
+快慢不一致: fast=Greater Swiss Mountain Dog, slow=Entlebucher Sennenhund, 裁决结果=EntleBucher
+快慢不一致: fast=Clumber, slow=Irish Wolfhound, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Basenji, slow=Rat Terrier, 裁决结果=Rat Terrier
+快慢不一致: fast=Basenji, slow=Ibizan Hound, 裁决结果=Ibizan Hound
+快慢不一致: fast=Flat-coated Retriever, slow=Newfoundland, 裁决结果=Newfoundland
+快慢不一致: fast=Eskimo Dog, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Saluki, slow=Italian Greyhound, 裁决结果=Saluki
+快慢不一致: fast=Rhodesian Ridgeback, slow=Saluki, 裁决结果=Saluki
+快慢不一致: fast=Italian Greyhound, slow=Weimaraner, 裁决结果=Weimaraner
+快慢不一致: fast=Walker Hound, slow=Redbone Coonhound, 裁决结果=Redbone Coonhound
+快慢不一致: fast=Clumber, slow=Black Labrador Retriever, 裁决结果=Labrador Retriever
+快慢不一致: fast=Chihuaha, slow=Miniature Pinscher, 裁决结果=Miniature Pinscher
+快慢不一致: fast=Chesapeake Bay Retriever, slow=Toy Poodle, 裁决结果=Miniature Poodle
+快慢不一致: fast=Cardigan, slow=Australian Shepherd, 裁决结果=Australian Shepherd
+快慢不一致: fast=Pembroke, slow=Cardigan Welsh Corgi, 裁决结果=Cardigan
+快慢不一致: fast=Toy Poodle, slow=Silky Terrier, 裁决结果=Silky Terrier
+快慢不一致: fast=Whippet, slow=Italian Greyhound, 裁决结果=Italian Greyhound
+最终决策失败: CUDA out of memory. Tried to allocate 15.38 GiB. GPU 0 has a total capacity of 79.25 GiB of which 10.46 GiB is free. Process 3679297 has 34.21 GiB memory in use. Including non-PyTorch memory, this process has 34.57 GiB memory in use. Of the allocated memory 33.64 GiB is allocated by PyTorch, and 444.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+快慢不一致: fast=Greater Swiss Mountain Dog, slow=EntleBucher, 裁决结果=EntleBucher
+快慢不一致: fast=Brittany, slow=Bichon Frise, 裁决结果=West Highland White Terrier
+快慢不一致: fast=Great Dane, slow=Redbone Coonhound, 裁决结果=Bluetick
+快慢不一致: fast=Kerry Blue Terrier, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Flat-coated Retriever, slow=Schipperke, 裁决结果=Schipperke
+快慢不一致: fast=Old English Sheepdog, slow=Tibetan Mastiff, 裁决结果=Komondor
+快慢不一致: fast=Borzoi, slow=Golden Retriever, 裁决结果=Golden Retriever
+快慢不一致: fast=German Shepard, slow=Norwegian Elkhound, 裁决结果=Golden Retriever
+快慢不一致: fast=Eskimo Dog, slow=Samoyed, 裁决结果=Samoyed
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Beagle, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Irish Wolfhound, slow=Afghan Hound, 裁决结果=Afghan Hound
+快慢不一致: fast=Gordon Setter, slow=Newfoundland, 裁决结果=Briard
+快慢不一致: fast=Kelpie, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Staffordshire Bullterrier, slow=Boxer, 裁决结果=American Staffordshire Terrier
+快慢不一致: fast=Maltese Dog, slow=West Highland White Terrier (Westie), 裁决结果=West Highland White Terrier
+快慢不一致: fast=Cardigan, slow=Border Collie, 裁决结果=Border Collie
+快慢不一致: fast=Welsh Springer Spaniel, slow=Otterhound, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Dhole, slow=Kelpie, 裁决结果=Dhole
+快慢不一致: fast=Italian Greyhound, slow=Silky Terrier, 裁决结果=Italian Greyhound
+快慢不一致: fast=Labrador Retriever, slow=Weimaraner, 裁决结果=Weimaraner
+快慢不一致: fast=Papillon, slow=Japanese Chin, 裁决结果=Japanese Chin
+快慢不一致: fast=Staffordshire Bullterrier, slow=Bull Mastiff, 裁决结果=American Staffordshire Terrier
+快慢不一致: fast=Lhasa, slow=Maltese Dog, 裁决结果=Maltese Dog
+快慢不一致: fast=Beagle, slow=Redbone Coonhound, 裁决结果=Redbone
+快慢不一致: fast=Collie, slow=Greater Swiss Mountain Dog, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Great Pyrenees, slow=Labrador Retriever, 裁决结果=Newfoundland
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Great Pyrenees
+快慢不一致: fast=Staffordshire Bullterrier, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Belgian Shepherd Tervuren
+快慢不一致: fast=Miniature Pinscher, slow=Boxer, 裁决结果=Staffordshire Bullterrier
+快慢不一致: fast=Basenji, slow=Walker Hound, 裁决结果=Jack Russell Terrier
+快慢不一致: fast=Mexican Hairless, slow=Black-and-tan Coonhound, 裁决结果=Doberman
+最终决策失败: CUDA out of memory. Tried to allocate 5.73 GiB. GPU 0 has a total capacity of 79.25 GiB of which 5.62 GiB is free. Process 3679297 has 34.46 GiB memory in use. Including non-PyTorch memory, this process has 39.15 GiB memory in use. Of the allocated memory 38.25 GiB is allocated by PyTorch, and 423.72 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+快慢不一致: fast=Border Terrier, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Tibetan Mastiff, slow=Groenendael, 裁决结果=Tibetan Mastiff
+快慢不一致: fast=Miniature Poodle, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Affenpinscher, slow=Norwich Terrier, 裁决结果=Affenpinscher
+快慢不一致: fast=Basenji, slow=Ibizan Hound, 裁决结果=Ibizan Hound
+快慢不一致: fast=Whippet, slow=Great Dane, 裁决结果=Whippet
+快慢不一致: fast=Newfoundland, slow=Afghan Hound, 裁决结果=Afghan Hound
+Processing classification:  44%|████▍     | 569/1291 [53:40<28:36,  2.38s/it]Processing classification:  45%|████▍     | 576/1291 [53:52<25:38,  2.15s/it]Processing classification:  45%|████▍     | 578/1291 [54:03<30:40,  2.58s/it]Processing classification:  45%|████▍     | 579/1291 [54:15<40:43,  3.43s/it]Processing classification:  45%|████▌     | 583/1291 [54:30<41:23,  3.51s/it]Processing classification:  45%|████▌     | 584/1291 [54:42<51:17,  4.35s/it]Processing classification:  46%|████▌     | 588/1291 [54:53<44:29,  3.80s/it]Processing classification:  46%|████▋     | 599/1291 [55:06<25:53,  2.25s/it]Processing classification:  47%|████▋     | 601/1291 [55:19<32:30,  2.83s/it]Processing classification:  47%|████▋     | 602/1291 [55:35<44:55,  3.91s/it]Processing classification:  47%|████▋     | 603/1291 [55:48<57:11,  4.99s/it]Processing classification:  47%|████▋     | 604/1291 [56:00<1:08:21,  5.97s/it]Processing classification:  47%|████▋     | 607/1291 [56:09<55:18,  4.85s/it]  Processing classification:  47%|████▋     | 611/1291 [56:23<47:46,  4.22s/it]Processing classification:  47%|████▋     | 613/1291 [56:33<50:51,  4.50s/it]Processing classification:  48%|████▊     | 614/1291 [56:46<1:03:01,  5.59s/it]Processing classification:  48%|████▊     | 615/1291 [56:58<1:15:35,  6.71s/it]Processing classification:  48%|████▊     | 616/1291 [57:08<1:21:25,  7.24s/it]Processing classification:  48%|████▊     | 618/1291 [57:20<1:17:47,  6.94s/it]Processing classification:  48%|████▊     | 620/1291 [57:30<1:09:41,  6.23s/it]Processing classification:  48%|████▊     | 621/1291 [57:44<1:26:52,  7.78s/it]Processing classification:  49%|████▊     | 629/1291 [57:54<35:41,  3.23s/it]  Processing classification:  49%|████▉     | 635/1291 [58:07<30:35,  2.80s/it]Processing classification:  49%|████▉     | 636/1291 [58:18<39:08,  3.58s/it]Processing classification:  50%|████▉     | 642/1291 [58:30<31:09,  2.88s/it]Processing classification:  50%|████▉     | 643/1291 [58:41<39:24,  3.65s/it]Processing classification:  50%|████▉     | 644/1291 [58:54<51:06,  4.74s/it]Processing classification:  50%|█████     | 647/1291 [59:06<48:02,  4.48s/it]Processing classification:  50%|█████     | 650/1291 [59:19<47:28,  4.44s/it]Processing classification:  51%|█████     | 652/1291 [59:31<51:06,  4.80s/it]Processing classification:  51%|█████     | 656/1291 [59:46<46:07,  4.36s/it]Processing classification:  51%|█████     | 660/1291 [59:58<40:48,  3.88s/it]Processing classification:  51%|█████     | 661/1291 [1:00:09<49:26,  4.71s/it]Processing classification:  52%|█████▏    | 665/1291 [1:00:21<42:34,  4.08s/it]Processing classification:  52%|█████▏    | 666/1291 [1:00:33<51:39,  4.96s/it]Processing classification:  52%|█████▏    | 667/1291 [1:00:43<1:00:33,  5.82s/it]Processing classification:  52%|█████▏    | 668/1291 [1:00:55<1:12:03,  6.94s/it]Processing classification:  52%|█████▏    | 671/1291 [1:01:06<56:39,  5.48s/it]  Processing classification:  52%|█████▏    | 672/1291 [1:01:21<1:12:23,  7.02s/it]Processing classification:  52%|█████▏    | 674/1291 [1:01:34<1:11:22,  6.94s/it]Processing classification:  52%|█████▏    | 677/1291 [1:01:46<58:05,  5.68s/it]  Processing classification:  53%|█████▎    | 679/1291 [1:01:58<58:57,  5.78s/it]Processing classification:  53%|█████▎    | 680/1291 [1:02:10<1:09:12,  6.80s/it]Processing classification:  53%|█████▎    | 684/1291 [1:02:21<49:38,  4.91s/it]  Processing classification:  53%|█████▎    | 685/1291 [1:02:35<1:01:53,  6.13s/it]Processing classification:  53%|█████▎    | 687/1291 [1:02:46<1:01:08,  6.07s/it]Processing classification:  53%|█████▎    | 688/1291 [1:02:57<1:09:14,  6.89s/it]Processing classification:  53%|█████▎    | 690/1291 [1:03:10<1:07:53,  6.78s/it]Processing classification:  54%|█████▎    | 692/1291 [1:03:24<1:07:58,  6.81s/it]Processing classification:  54%|█████▎    | 693/1291 [1:03:33<1:12:15,  7.25s/it]Processing classification:  54%|█████▍    | 694/1291 [1:03:47<1:26:12,  8.66s/it]Processing classification:  54%|█████▍    | 695/1291 [1:03:58<1:31:40,  9.23s/it]Processing classification:  54%|█████▍    | 696/1291 [1:04:12<1:42:11, 10.31s/it]Processing classification:  54%|█████▍    | 699/1291 [1:04:23<1:08:26,  6.94s/it]Processing classification:  54%|█████▍    | 701/1291 [1:04:36<1:05:52,  6.70s/it]Processing classification:  54%|█████▍    | 702/1291 [1:04:46<1:12:18,  7.37s/it]Processing classification:  54%|█████▍    | 703/1291 [1:04:57<1:20:21,  8.20s/it]Processing classification:  55%|█████▍    | 708/1291 [1:05:08<44:17,  4.56s/it]  Processing classification:  55%|█████▌    | 711/1291 [1:05:20<42:33,  4.40s/it]Processing classification:  55%|█████▌    | 714/1291 [1:05:35<44:21,  4.61s/it]Processing classification:  56%|█████▌    | 719/1291 [1:05:49<35:52,  3.76s/it]Processing classification:  56%|█████▌    | 723/1291 [1:06:03<35:22,  3.74s/it]Processing classification:  56%|█████▌    | 725/1291 [1:06:15<38:44,  4.11s/it]Processing classification:  56%|█████▌    | 726/1291 [1:06:27<47:49,  5.08s/it]Processing classification:  56%|█████▋    | 727/1291 [1:06:42<1:01:14,  6.52s/it]Processing classification:  56%|█████▋    | 728/1291 [1:06:58<1:17:42,  8.28s/it]Processing classification:  57%|█████▋    | 731/1291 [1:07:14<1:04:51,  6.95s/it]Processing classification:  57%|█████▋    | 732/1291 [1:07:26<1:12:28,  7.78s/it]Processing classification:  57%|█████▋    | 739/1291 [1:07:44<41:25,  4.50s/it]  Processing classification:  57%|█████▋    | 740/1291 [1:07:58<51:14,  5.58s/it]Processing classification:  57%|█████▋    | 741/1291 [1:08:09<58:12,  6.35s/it]Processing classification:  58%|█████▊    | 744/1291 [1:08:22<50:44,  5.57s/it]Processing classification:  58%|█████▊    | 748/1291 [1:08:40<46:54,  5.18s/it]Processing classification:  58%|█████▊    | 750/1291 [1:08:53<48:56,  5.43s/it]Processing classification:  58%|█████▊    | 751/1291 [1:09:06<58:54,  6.55s/it]Processing classification:  58%|█████▊    | 753/1291 [1:09:16<55:06,  6.15s/it]Processing classification:  58%|█████▊    | 754/1291 [1:09:28<1:02:49,  7.02s/it]Processing classification:  58%|█████▊    | 755/1291 [1:09:41<1:13:36,  8.24s/it]Processing classification:  59%|█████▊    | 756/1291 [1:09:54<1:22:40,  9.27s/it]Processing classification:  59%|█████▊    | 758/1291 [1:10:07<1:12:41,  8.18s/it]Processing classification:  59%|█████▉    | 759/1291 [1:10:20<1:21:41,  9.21s/it]Processing classification:  59%|█████▉    | 762/1291 [1:10:33<1:00:34,  6.87s/it]Processing classification:  59%|█████▉    | 763/1291 [1:10:46<1:11:38,  8.14s/it]Processing classification:  59%|█████▉    | 767/1291 [1:10:59<48:38,  5.57s/it]  Processing classification:  60%|█████▉    | 771/1291 [1:11:11<38:57,  4.49s/it]Processing classification:  60%|█████▉    | 772/1291 [1:11:24<48:33,  5.61s/it]Processing classification:  60%|█████▉    | 773/1291 [1:11:38<59:32,  6.90s/it]Processing classification:  60%|█████▉    | 774/1291 [1:11:50<1:07:20,  7.82s/it]Processing classification:  60%|██████    | 775/1291 [1:12:01<1:13:12,  8.51s/it]Processing classification:  60%|██████    | 776/1291 [1:12:14<1:21:17,  9.47s/it]Processing classification:  60%|██████    | 777/1291 [1:12:25<1:25:44, 10.01s/it]Processing classification:  60%|██████    | 778/1291 [1:12:37<1:29:40, 10.49s/it]Processing classification:  60%|██████    | 780/1291 [1:12:50<1:14:10,  8.71s/it]Processing classification:  60%|██████    | 781/1291 [1:13:00<1:16:19,  8.98s/it]Processing classification:  61%|██████    | 782/1291 [1:13:12<1:24:30,  9.96s/it]快慢不一致: fast=Toy Terrier, slow=Miniature Pinscher, 裁决结果=Miniature Pinscher
+快慢不一致: fast=Irish Terrier, slow=Miniature Poodle, 裁决结果=Irish Terrier
+快慢不一致: fast=Flat-coated Retriever, slow=Gordon Setter, 裁决结果=Gordon Setter
+快慢不一致: fast=Collie, slow=Old English Sheepdog, 裁决结果=Old English Sheepdog
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Lakeland Terrier, slow=Pekinese, 裁决结果=Norfolk Terrier
+快慢不一致: fast=Irish Wolfhound, slow=Komondor, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Miniature Schnauzer, slow=Fox Terrier, 裁决结果=Sealyham Terrier
+快慢不一致: fast=Clumber, slow=Silky Terrier, 裁决结果=Silky Terrier
+快慢不一致: fast=Clumber, slow=English Setter, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Scottish Deerhound, slow=Dandi Dinmont, 裁决结果=Scottish Deerhound
+快慢不一致: fast=Shih-Tzu, slow=Yorkshire Terrier, 裁决结果=Shih-Tzu
+快慢不一致: fast=Pembroke, slow=Cardigan, 裁决结果=Pembroke Welsh Corgi
+快慢不一致: fast=Italian Greyhound, slow=Whippet, 裁决结果=Whippet
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Kuvasz
+快慢不一致: fast=Miniature Schnauzer, slow=Silky Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Tibetan Terrier, slow=Old English Sheepdog, 裁决结果=Old English Sheepdog
+快慢不一致: fast=Shetland Sheepdog, slow=Otterhound, 裁决结果=Otterhound
+快慢不一致: fast=Basenji, slow=Collie, 裁决结果=Collie
+快慢不一致: fast=Airedale, slow=Wire Fox Terrier, 裁决结果=Wirehaired Fox Terrier
+快慢不一致: fast=Vizsla, slow=Redbone Coonhound, 裁决结果=Vizsla
+快慢不一致: fast=EntleBucher, slow=Mixed Breed (Hound-like), 裁决结果=EntleBucher
+快慢不一致: fast=Bernese Mountain Dog, slow=Boxer, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Labrador Retriever, slow=German Short-haired Pointer, 裁决结果=German Short-haired Pointer
+快慢不一致: fast=Schipperke, slow=Belgian Sheepdog, 裁决结果=Schipperke
+快慢不一致: fast=Cardigan, slow=Pembroke Welsh Corgi, 裁决结果=Pembroke Welsh Corgi
+快慢不一致: fast=Malamute, slow=Keeshond, 裁决结果=Norwegian Elkhound
+快慢不一致: fast=Cocker Spaniel, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Vizsla, slow=Redbone Coonhound, 裁决结果=Redbone Coonhound
+快慢不一致: fast=Schipperke, slow=Yorkshire Terrier, 裁决结果=Schipperke
+快慢不一致: fast=Curly-coater Retriever, slow=Tibetan Mastiff, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Irish Setter, slow=Afghan Hound, 裁决结果=Irish Setter
+快慢不一致: fast=Miniature Poodle, slow=Silky Terrier, 裁决结果=Miniature Poodle
+快慢不一致: fast=Irish Water Spaniel, slow=Standard Poodle, 裁决结果=Miniature Poodle
+快慢不一致: fast=Malinois, slow=Irish Wolfhound, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Clumber, slow=Bernese Mountain Dog, 裁决结果=Bernese Mountain Dog
+快慢不一致: fast=Tibetan Mastiff, slow=Leonberger, 裁决结果=Leonberger
+快慢不一致: fast=Kerry Blue Terrier, slow=Poodle, 裁决结果=Poodle
+快慢不一致: fast=Briard, slow=Miniature Schnauzer, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Giant Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Rhodesian Ridgeback, slow=Bloodhound, 裁决结果=Bloodhound
+快慢不一致: fast=Irish Wolfhound, slow=Leonberger, 裁决结果=Leonberger
+快慢不一致: fast=Papillon, slow=Japanese Chin, 裁决结果=Japanese Chin
+快慢不一致: fast=Miniature Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Cardigan, slow=Greyhound, 裁决结果=EntleBucher
+快慢不一致: fast=Clumber, slow=Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Black-and-tan Coonhound, slow=Doberman, 裁决结果=Doberman
+快慢不一致: fast=Irish Water Spaniel, slow=Poodle, 裁决结果=Toy Poodle
+快慢不一致: fast=Dhole, slow=Dhole (Cuon alpinus), 裁决结果=Dhole (Cuon alpinus)
+快慢不一致: fast=EntleBucher, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=Walker Hound, slow=Basenji and Corgi, 裁决结果=Basenji and Corgi
+快慢不一致: fast=Appenzeller, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Gordon Setter, slow=Kerry Blue Terrier, 裁决结果=Kerry Blue Terrier
+快慢不一致: fast=Walker Hound, slow=Foxhound, 裁决结果=English Foxhound
+快慢不一致: fast=Keeshond, slow=Belgian Shepherd Tervuren, 裁决结果=Belgian Shepherd Tervuren
+快慢不一致: fast=Mexican Hairless, slow=Weimaraner, 裁决结果=Weimaraner
+快慢不一致: fast=Bloodhound, slow=Vizsla, 裁决结果=Bloodhound
+快慢不一致: fast=Basenji, slow=American Staffordshire Terrier, 裁决结果=Staffordshire Bullterrier
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Tibetan Mastiff, slow=Leonberger, 裁决结果=Leonberger
+快慢不一致: fast=Toy Poodle, slow=Japanese Spaniel, 裁决结果=Pomeranian
+快慢不一致: fast=Black-and-tan Coonhound, slow=Rottweiler, 裁决结果=Rottweiler
+快慢不一致: fast=Bluetick, slow=Saluki, 裁决结果=Saluki
+快慢不一致: fast=Dandi Dinmont, slow=Coton de Tulear, 裁决结果=Coton de Tulear
+快慢不一致: fast=Tibetan Terrier, slow=Maltese Dog, 裁决结果=Maltese Dog
+快慢不一致: fast=Bernese Mountain Dog, slow=Gordon Setter, 裁决结果=Gordon Setter
+快慢不一致: fast=Mexican Hairless, slow=Staffordshire Bullterrier, 裁决结果=Mexican Hairless
+快慢不一致: fast=Eskimo Dog, slow=Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Eskimo Dog, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Otterhound, slow=Silky Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Walker Hound, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=Affenpinscher, slow=Brabancon Griffon, 裁决结果=Affenpinscher
+快慢不一致: fast=Eskimo Dog, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Groenendael
+快慢不一致: fast=Mexican Hairless, slow=Rat Terrier, 裁决结果=Toy Terrier
+快慢不一致: fast=Redbone, slow=Rhodesian Ridgeback, 裁决结果=Redbone
+快慢不一致: fast=Clumber, slow=Tibetan Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Great Dane, slow=Greyhound, 裁决结果=Greyhound
+快慢不一致: fast=Miniature Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Toy Terrier, slow=Miniature Pinscher, 裁决结果=Miniature Pinscher
+快慢不一致: fast=Bluetick, slow=Doberman Pinscher, 裁决结果=Doberman
+快慢不一致: fast=Curly-coater Retriever, slow=Kerry Blue Terrier, 裁决结果=Curly-Coated Retriever
+快慢不一致: fast=Miniature Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Malamute, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Irish Wolfhound, slow=Wirehaired Terrier, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Chesapeake Bay Retriever, slow=Schipperke, 裁决结果=Schipperke
+快慢不一致: fast=Great Pyrenees, slow=Border Collie, 裁决结果=Border Collie
+快慢不一致: fast=Great Pyrenees, slow=Border Collie, 裁决结果=Border Collie
+快慢不一致: fast=Cairn, slow=Silky Terrier, 裁决结果=Norwich Terrier
+快慢不一致: fast=Great Pyrenees, slow=Golden Retriever, 裁决结果=Great Pyrenees
+快慢不一致: fast=Toy Poodle, slow=Yorkshire Terrier, 裁决结果=Silky Terrier
+快慢不一致: fast=Affenpinscher, slow=Australian Terrier, 裁决结果=Cairn
+快慢不一致: fast=Japanese Spaniel, slow=Golden Retriever, 裁决结果=Golden Retriever
+快慢不一致: fast=Kelpie, slow=Kangaroo Dog (Australian Kelpie), 裁决结果=Kelpie
+快慢不一致: fast=Flat-coated Retriever, slow=Groenendael, 裁决结果=Newfoundland
+Processing classification:  61%|██████    | 787/1291 [1:13:24<42:51,  5.10s/it]  Processing classification:  61%|██████    | 788/1291 [1:13:38<53:40,  6.40s/it]Processing classification:  61%|██████    | 790/1291 [1:13:51<53:18,  6.38s/it]Processing classification:  62%|██████▏   | 796/1291 [1:14:00<30:09,  3.65s/it]Processing classification:  62%|██████▏   | 797/1291 [1:14:12<38:35,  4.69s/it]Processing classification:  62%|██████▏   | 798/1291 [1:14:24<46:11,  5.62s/it]Processing classification:  62%|██████▏   | 803/1291 [1:14:37<34:00,  4.18s/it]Processing classification:  62%|██████▏   | 806/1291 [1:14:48<31:59,  3.96s/it]Processing classification:  63%|██████▎   | 807/1291 [1:15:01<41:46,  5.18s/it]Processing classification:  63%|██████▎   | 811/1291 [1:15:12<33:15,  4.16s/it]Processing classification:  63%|██████▎   | 812/1291 [1:15:24<40:28,  5.07s/it]Processing classification:  63%|██████▎   | 816/1291 [1:15:37<34:02,  4.30s/it]Processing classification:  63%|██████▎   | 819/1291 [1:15:49<33:27,  4.25s/it]Processing classification:  64%|██████▎   | 820/1291 [1:16:02<41:58,  5.35s/it]Processing classification:  64%|██████▎   | 822/1291 [1:16:14<43:52,  5.61s/it]Processing classification:  64%|██████▎   | 823/1291 [1:16:31<57:20,  7.35s/it]Processing classification:  64%|██████▍   | 825/1291 [1:16:44<55:10,  7.10s/it]Processing classification:  64%|██████▍   | 826/1291 [1:16:56<1:02:30,  8.07s/it]Processing classification:  64%|██████▍   | 828/1291 [1:17:09<57:58,  7.51s/it]  Processing classification:  65%|██████▍   | 833/1291 [1:17:25<38:53,  5.10s/it]Processing classification:  65%|██████▌   | 844/1291 [1:17:41<20:40,  2.77s/it]Processing classification:  66%|██████▌   | 848/1291 [1:17:51<20:15,  2.74s/it]Processing classification:  66%|██████▌   | 850/1291 [1:18:02<23:01,  3.13s/it]Processing classification:  66%|██████▌   | 853/1291 [1:18:11<22:48,  3.12s/it]Processing classification:  66%|██████▋   | 856/1291 [1:18:21<22:55,  3.16s/it]Processing classification:  67%|██████▋   | 861/1291 [1:18:34<20:52,  2.91s/it]Processing classification:  67%|██████▋   | 863/1291 [1:18:44<23:59,  3.36s/it]Processing classification:  67%|██████▋   | 864/1291 [1:18:58<32:32,  4.57s/it]Processing classification:  67%|██████▋   | 866/1291 [1:19:12<36:12,  5.11s/it]Processing classification:  67%|██████▋   | 867/1291 [1:19:26<45:55,  6.50s/it]Processing classification:  67%|██████▋   | 869/1291 [1:19:38<44:02,  6.26s/it]Processing classification:  68%|██████▊   | 872/1291 [1:19:53<40:45,  5.84s/it]Processing classification:  68%|██████▊   | 873/1291 [1:20:03<44:38,  6.41s/it]Processing classification:  68%|██████▊   | 874/1291 [1:20:15<51:27,  7.40s/it]Processing classification:  68%|██████▊   | 877/1291 [1:20:26<39:39,  5.75s/it]Processing classification:  68%|██████▊   | 881/1291 [1:20:36<29:14,  4.28s/it]Processing classification:  68%|██████▊   | 882/1291 [1:20:51<39:50,  5.85s/it]Processing classification:  68%|██████▊   | 883/1291 [1:21:00<43:13,  6.36s/it]Processing classification:  69%|██████▊   | 885/1291 [1:21:14<44:50,  6.63s/it]Processing classification:  69%|██████▉   | 891/1291 [1:21:24<24:40,  3.70s/it]Processing classification:  69%|██████▉   | 892/1291 [1:21:39<33:49,  5.09s/it]Processing classification:  69%|██████▉   | 897/1291 [1:21:49<24:01,  3.66s/it]Processing classification:  70%|██████▉   | 899/1291 [1:22:04<29:08,  4.46s/it]Processing classification:  70%|██████▉   | 900/1291 [1:22:16<35:42,  5.48s/it]Processing classification:  70%|███████   | 904/1291 [1:22:30<29:36,  4.59s/it]Processing classification:  70%|███████   | 905/1291 [1:22:44<37:14,  5.79s/it]Processing classification:  70%|███████   | 907/1291 [1:22:57<38:14,  5.98s/it]Processing classification:  70%|███████   | 909/1291 [1:23:10<38:57,  6.12s/it]Processing classification:  71%|███████   | 912/1291 [1:23:22<33:42,  5.34s/it]Processing classification:  71%|███████   | 916/1291 [1:23:33<27:03,  4.33s/it]Processing classification:  71%|███████   | 918/1291 [1:23:48<30:54,  4.97s/it]Processing classification:  71%|███████   | 919/1291 [1:23:58<35:54,  5.79s/it]Processing classification:  71%|███████▏  | 922/1291 [1:24:12<32:46,  5.33s/it]Processing classification:  72%|███████▏  | 927/1291 [1:24:25<24:27,  4.03s/it]Processing classification:  72%|███████▏  | 930/1291 [1:24:39<25:16,  4.20s/it]Processing classification:  72%|███████▏  | 931/1291 [1:24:51<31:10,  5.20s/it]Processing classification:  73%|███████▎  | 937/1291 [1:25:05<21:51,  3.70s/it]Processing classification:  73%|███████▎  | 940/1291 [1:25:18<22:34,  3.86s/it]Processing classification:  73%|███████▎  | 943/1291 [1:25:31<23:13,  4.01s/it]Processing classification:  74%|███████▍  | 954/1291 [1:25:45<13:20,  2.38s/it]Processing classification:  74%|███████▍  | 956/1291 [1:25:58<16:17,  2.92s/it]Processing classification:  74%|███████▍  | 959/1291 [1:26:08<16:59,  3.07s/it]Processing classification:  74%|███████▍  | 960/1291 [1:26:20<21:13,  3.85s/it]Processing classification:  74%|███████▍  | 961/1291 [1:26:31<26:09,  4.76s/it]Processing classification:  75%|███████▍  | 963/1291 [1:26:44<28:09,  5.15s/it]Processing classification:  75%|███████▍  | 968/1291 [1:26:56<21:03,  3.91s/it]Processing classification:  75%|███████▌  | 969/1291 [1:27:10<26:56,  5.02s/it]Processing classification:  75%|███████▌  | 971/1291 [1:27:21<27:48,  5.22s/it]Processing classification:  75%|███████▌  | 972/1291 [1:27:31<31:32,  5.93s/it]Processing classification:  76%|███████▌  | 977/1291 [1:27:46<22:48,  4.36s/it]Processing classification:  76%|███████▌  | 978/1291 [1:27:54<25:30,  4.89s/it]Processing classification:  76%|███████▌  | 979/1291 [1:28:10<34:26,  6.62s/it]Processing classification:  76%|███████▌  | 982/1291 [1:28:20<27:09,  5.27s/it]Processing classification:  76%|███████▌  | 984/1291 [1:28:38<32:39,  6.38s/it]Processing classification:  76%|███████▋  | 985/1291 [1:28:48<35:06,  6.89s/it]Processing classification:  77%|███████▋  | 988/1291 [1:29:03<31:03,  6.15s/it]Processing classification:  77%|███████▋  | 990/1291 [1:29:16<31:03,  6.19s/it]Processing classification:  77%|███████▋  | 996/1291 [1:29:29<19:38,  4.00s/it]Processing classification:  77%|███████▋  | 998/1291 [1:29:41<21:25,  4.39s/it]Processing classification:  77%|███████▋  | 999/1291 [1:29:52<25:55,  5.33s/it]Processing classification:  78%|███████▊  | 1001/1291 [1:30:06<27:43,  5.73s/it]Processing classification:  78%|███████▊  | 1002/1291 [1:30:21<34:31,  7.17s/it]Processing classification:  78%|███████▊  | 1003/1291 [1:30:33<38:53,  8.10s/it]Processing classification:  78%|███████▊  | 1005/1291 [1:30:44<34:07,  7.16s/it]Processing classification:  78%|███████▊  | 1006/1291 [1:30:56<39:27,  8.31s/it]Processing classification:  78%|███████▊  | 1009/1291 [1:31:08<29:13,  6.22s/it]Processing classification:  78%|███████▊  | 1010/1291 [1:31:19<33:40,  7.19s/it]Processing classification:  78%|███████▊  | 1012/1291 [1:31:31<31:04,  6.68s/it]Processing classification:  78%|███████▊  | 1013/1291 [1:31:43<36:08,  7.80s/it]Processing classification:  79%|███████▊  | 1016/1291 [1:31:57<29:11,  6.37s/it]Processing classification:  79%|███████▉  | 1017/1291 [1:32:07<32:08,  7.04s/it]Processing classification:  79%|███████▉  | 1019/1291 [1:32:21<32:00,  7.06s/it]Processing classification:  79%|███████▉  | 1020/1291 [1:32:33<35:53,  7.95s/it]快慢不一致: fast=Norwegian Elkhound, slow=Keeshond, 裁决结果=Norwegian Elkhound
+快慢不一致: fast=Bull Mastiff, slow=Shar-Pei, 裁决结果=Shar-Pei
+快慢不一致: fast=Standard Schnauzer, slow=Dandi Dinmont, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Bluetick, slow=Basset Hound, 裁决结果=Basset Hound
+快慢不一致: fast=Kelpie, slow=German Shepherd, 裁决结果=Kelpie
+快慢不一致: fast=EntleBucher, slow=Boston Bull, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Cairn, slow=Australian Terrier, 裁决结果=Norfolk Terrier
+快慢不一致: fast=Affenpinscher, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Norwegian Elkhound, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Soft-coated Wheaten Terrier, slow=Silky Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Clumber, slow=Newfoundland, 裁决结果=Newfoundland and Saint Bernard
+快慢不一致: fast=Welsh Springer Spaniel, slow=English Setter, 裁决结果=English Setter
+快慢不一致: fast=Tibetan Terrier, slow=Otterhound, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Malamute, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Old English Sheepdog, slow=Great Pyrenees, 裁决结果=Great Pyrenees
+快慢不一致: fast=Shetland Sheepdog, slow=Rough Collie, 裁决结果=Rough Collie
+快慢不一致: fast=Leonberg, slow=French Bulldog, 裁决结果=Bull Mastiff
+快慢不一致: fast=Clumber, slow=Spinone Italiano, 裁决结果=Spinone Italiano
+快慢不一致: fast=Old English Sheepdog, slow=Soft-coated Wheaten Terrier, 裁决结果=English Springer Spaniel
+快慢不一致: fast=Groenendael, slow=Belgian Shepherd Tervuren, 裁决结果=Belgian Shepherd Tervuren
+快慢不一致: fast=Chow, slow=Pekinese, 裁决结果=Kuvasz
+快慢不一致: fast=Clumber, slow=Lhasa Apso, 裁决结果=Silky Terrier
+快慢不一致: fast=Lhasa, slow=Shih Tzu, 裁决结果=Shih-Tzu
+快慢不一致: fast=Chow, slow=Chihuahua, 裁决结果=Chow
+快慢不一致: fast=Flat-coated Retriever, slow=Giant Schnauzer, 裁决结果=Flat-coated Retriever
+快慢不一致: fast=Rottweiler, slow=Doberman Pinscher, 裁决结果=Doberman
+快慢不一致: fast=Pekinese, slow=Silky Terrier, 裁决结果=Pekingese
+快慢不一致: fast=Miniature Schnauzer, slow=Sealyham Terrier, 裁决结果=Sealyham Terrier
+快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Spaniel
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Irish Wolfhound, slow=Otterhound, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Irish Wolfhound, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Whippet, slow=Italian Greyhound, 裁决结果=Italian Greyhound
+快慢不一致: fast=Chow, slow=Soft Coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Kelpie, slow=Redbone Coonhound, 裁决结果=Italian Greyhound
+快慢不一致: fast=Bedlington Terrier, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Chow, slow=Komondor, 裁决结果=Komondor
+快慢不一致: fast=Standard Schnauzer, slow=Silky Terrier, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Clumber, slow=Shetland Sheepdog, 裁决结果=Border Terrier
+快慢不一致: fast=Black-and-tan Coonhound, slow=Rottweiler, 裁决结果=Rottweiler
+快慢不一致: fast=Kelpie, slow=German Shepherd, 裁决结果=Kelpie
+快慢不一致: fast=Soft-coated Wheaten Terrier, slow=Silky Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Standard Schnauzer, slow=Border Terrier, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Otterhound, slow=Soft-coated Wheaten Terrier, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Shetland Sheepdog, slow=Pomeranian, 裁决结果=Pomeranian
+快慢不一致: fast=Miniature Pinscher, slow=Australian Terrier, 裁决结果=Miniature Pinscher
+快慢不一致: fast=Appenzeller, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Staffordshire Bullterrier, slow=Boston Bull, 裁决结果=American Staffordshire Terrier
+快慢不一致: fast=Shetland Sheepdog, slow=Papillon, 裁决结果=Papillon
+快慢不一致: fast=Cairn, slow=Border Terrier, 裁决结果=Border Terrier
+快慢不一致: fast=Shetland Sheepdog, slow=Afghan Hound, 裁决结果=Rough Collie
+快慢不一致: fast=Curly-coater Retriever, slow=Irish Water Spaniel, 裁决结果=Irish Water Spaniel
+快慢不一致: fast=Shetland Sheepdog, slow=Borzoi, 裁决结果=Borzoi
+快慢不一致: fast=Bluetick, slow=Dalmatian, 裁决结果=Basset Hound
+快慢不一致: fast=Bull Mastiff, slow=Bluetick Coonhound, 裁决结果=Irish Setter
+快慢不一致: fast=Brittany, slow=Clumber Spaniel, 裁决结果=Clumber Spaniel
+快慢不一致: fast=Brittany, slow=Welsh Springer Spaniel, 裁决结果=Welsh Springer Spaniel
+快慢不一致: fast=Otterhound, slow=Airedale Terrier, 裁决结果=Airedale Terrier
+快慢不一致: fast=Japanese Spaniel, slow=Shih Tzu, 裁决结果=Shih-Tzu
+快慢不一致: fast=Chesapeake Bay Retriever, slow=German Short-haired Pointer, 裁决结果=Chesapeake Bay Retriever
+快慢不一致: fast=Standard Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Brittany, slow=Dachshund, 裁决结果=Dachshund
+快慢不一致: fast=Bull Mastiff, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Black-and-tan Coonhound, slow=Basset Hound, 裁决结果=Redbone
+快慢不一致: fast=Labrador Retriever, slow=Weimaraner puppy, 裁决结果=Weimaraner
+快慢不一致: fast=Giant Schnauzer, slow=Bouvier des Flandres, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Saluki, slow=Ibizan Hound, 裁决结果=Ibizian Hound
+快慢不一致: fast=Great Pyrenees, slow=Maltese Dog, 裁决结果=Maltese Dog
+快慢不一致: fast=Chihuaha, slow=Rat Terrier, 裁决结果=Toy Terrier
+快慢不一致: fast=EntleBucher, slow=Greater Swiss Mountain Dog, 裁决结果=EntleBucher
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Kuvasz
+快慢不一致: fast=Briard, slow=Otterhound, 裁决结果=Otterhound
+快慢不一致: fast=Labrador Retriever, slow=German Short-haired Pointer, 裁决结果=Labrador Retriever
+快慢不一致: fast=Rhodesian Ridgeback, slow=Redbone, 裁决结果=Rhodesian Ridgeback
+快慢不一致: fast=Dandi Dinmont, slow=Kuvasz, 裁决结果=Soft-coated Wheaten Terrier
+快慢不一致: fast=Cairn, slow=Australian Terrier, 裁决结果=Australian Terrier
+快慢不一致: fast=Blenheim Spaniel, slow=Pembroke, 裁决结果=Blenheim Spaniel
+快慢不一致: fast=Chihuaha, slow=Papillon, 裁决结果=Papillon
+快慢不一致: fast=Clumber, slow=Welsh Springer Spaniel, 裁决结果=Basset Hound
+快慢不一致: fast=Basenji, slow=Chihuahua, 裁决结果=Chihuahua
+快慢不一致: fast=Collie, slow=Black-and-tan Coonhound, 裁决结果=Black-and-tan Coonhound
+快慢不一致: fast=Irish Wolfhound, slow=Afghan Hound, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Dandi Dinmont, slow=Australian Terrier, 裁决结果=Dandi Dinmont
+快慢不一致: fast=EntleBucher, slow=Greater Swiss Mountain Dog, 裁决结果=Greater Swiss Mountain Dog
+快慢不一致: fast=Black-and-tan Coonhound, slow=German Short-haired Pointer, 裁决结果=German Short-haired Pointer
+快慢不一致: fast=Rhodesian Ridgeback, slow=Redbone Coonhound, 裁决结果=Redbone
+快慢不一致: fast=English Springer Spaniel, slow=Scotch Terrier, 裁决结果=Great Pyrenees
+快慢不一致: fast=Clumber, slow=Cardigan Welsh Corgi, 裁决结果=Cardigan Welsh Corgi
+快慢不一致: fast=Malamute, slow=Keeshond, 裁决结果=Siberian Husky
+快慢不一致: fast=Chow, slow=Irish Wolfhound, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Flat-coated Retriever, slow=Newfoundland, 裁决结果=Newfoundland
+快慢不一致: fast=Curly-coater Retriever, slow=Airedale Terrier, 裁决结果=Airedale
+快慢不一致: fast=Toy Terrier, slow=Miniature Pinscher, 裁决结果=Chihuahua
+Processing classification:  79%|███████▉  | 1022/1291 [1:32:45<32:20,  7.21s/it]Processing classification:  79%|███████▉  | 1023/1291 [1:32:55<35:13,  7.89s/it]Processing classification:  79%|███████▉  | 1025/1291 [1:33:08<32:15,  7.28s/it]Processing classification:  79%|███████▉  | 1026/1291 [1:33:20<36:46,  8.33s/it]Processing classification:  80%|███████▉  | 1031/1291 [1:33:34<21:39,  5.00s/it]Processing classification:  80%|███████▉  | 1032/1291 [1:33:47<26:35,  6.16s/it]Processing classification:  80%|████████  | 1035/1291 [1:34:00<23:14,  5.45s/it]Processing classification:  80%|████████  | 1036/1291 [1:34:15<29:36,  6.97s/it]Processing classification:  80%|████████  | 1039/1291 [1:34:29<25:18,  6.03s/it]Processing classification:  81%|████████  | 1041/1291 [1:34:43<26:22,  6.33s/it]Processing classification:  81%|████████  | 1043/1291 [1:34:55<25:47,  6.24s/it]Processing classification:  81%|████████  | 1044/1291 [1:35:11<32:26,  7.88s/it]Processing classification:  81%|████████  | 1045/1291 [1:35:32<42:19, 10.32s/it]Processing classification:  81%|████████  | 1046/1291 [1:35:44<44:12, 10.83s/it]Processing classification:  81%|████████  | 1047/1291 [1:35:58<46:32, 11.44s/it]Processing classification:  81%|████████▏ | 1050/1291 [1:36:10<31:21,  7.81s/it]Processing classification:  81%|████████▏ | 1051/1291 [1:36:22<34:00,  8.50s/it]Processing classification:  82%|████████▏ | 1055/1291 [1:36:33<21:39,  5.51s/it]Processing classification:  82%|████████▏ | 1056/1291 [1:36:46<26:15,  6.71s/it]Processing classification:  82%|████████▏ | 1060/1291 [1:36:57<18:20,  4.76s/it]Processing classification:  82%|████████▏ | 1065/1291 [1:37:11<14:38,  3.89s/it]Processing classification:  83%|████████▎ | 1067/1291 [1:37:25<16:53,  4.53s/it]Processing classification:  83%|████████▎ | 1069/1291 [1:37:38<18:38,  5.04s/it]Processing classification:  83%|████████▎ | 1072/1291 [1:37:50<16:57,  4.64s/it]Processing classification:  83%|████████▎ | 1076/1291 [1:38:02<14:19,  4.00s/it]Processing classification:  84%|████████▎ | 1080/1291 [1:38:13<12:39,  3.60s/it]Processing classification:  84%|████████▎ | 1081/1291 [1:38:23<15:03,  4.30s/it]Processing classification:  84%|████████▍ | 1082/1291 [1:38:35<18:29,  5.31s/it]Processing classification:  84%|████████▍ | 1083/1291 [1:38:49<23:46,  6.86s/it]Processing classification:  84%|████████▍ | 1087/1291 [1:39:03<17:28,  5.14s/it]Processing classification:  84%|████████▍ | 1089/1291 [1:39:13<17:17,  5.13s/it]Processing classification:  85%|████████▍ | 1095/1291 [1:39:23<10:53,  3.33s/it]Processing classification:  85%|████████▍ | 1097/1291 [1:39:35<12:19,  3.81s/it]Processing classification:  85%|████████▌ | 1098/1291 [1:39:47<15:44,  4.89s/it]Processing classification:  85%|████████▌ | 1102/1291 [1:39:59<12:46,  4.06s/it]Processing classification:  86%|████████▌ | 1104/1291 [1:40:12<14:31,  4.66s/it]Processing classification:  86%|████████▌ | 1108/1291 [1:40:24<12:20,  4.05s/it]Processing classification:  86%|████████▌ | 1110/1291 [1:40:36<13:29,  4.47s/it]Processing classification:  86%|████████▌ | 1111/1291 [1:40:48<16:27,  5.49s/it]Processing classification:  86%|████████▌ | 1112/1291 [1:41:01<19:59,  6.70s/it]Processing classification:  87%|████████▋ | 1118/1291 [1:41:14<11:38,  4.04s/it]Processing classification:  87%|████████▋ | 1121/1291 [1:41:25<11:07,  3.92s/it]Processing classification:  87%|████████▋ | 1127/1291 [1:41:37<08:23,  3.07s/it]Processing classification:  87%|████████▋ | 1128/1291 [1:41:50<11:01,  4.06s/it]Processing classification:  87%|████████▋ | 1129/1291 [1:42:02<13:31,  5.01s/it]Processing classification:  88%|████████▊ | 1131/1291 [1:42:15<14:22,  5.39s/it]Processing classification:  88%|████████▊ | 1132/1291 [1:42:27<16:52,  6.37s/it]Processing classification:  89%|████████▊ | 1144/1291 [1:42:39<06:06,  2.49s/it]Processing classification:  89%|████████▉ | 1146/1291 [1:42:52<07:27,  3.09s/it]Processing classification:  89%|████████▉ | 1149/1291 [1:43:04<07:49,  3.31s/it]Processing classification:  89%|████████▉ | 1150/1291 [1:43:17<10:05,  4.29s/it]Processing classification:  89%|████████▉ | 1151/1291 [1:43:30<12:31,  5.37s/it]Processing classification:  89%|████████▉ | 1153/1291 [1:43:43<13:12,  5.74s/it]Processing classification:  89%|████████▉ | 1154/1291 [1:43:56<15:39,  6.85s/it]Processing classification:  89%|████████▉ | 1155/1291 [1:44:08<17:30,  7.73s/it]Processing classification:  90%|████████▉ | 1158/1291 [1:44:20<13:40,  6.17s/it]Processing classification:  90%|████████▉ | 1159/1291 [1:44:31<15:29,  7.04s/it]Processing classification:  90%|█████████ | 1162/1291 [1:44:46<13:10,  6.13s/it]Processing classification:  90%|█████████ | 1168/1291 [1:44:57<07:43,  3.77s/it]Processing classification:  91%|█████████ | 1169/1291 [1:45:11<09:59,  4.91s/it]Processing classification:  91%|█████████ | 1170/1291 [1:45:24<12:17,  6.10s/it]Processing classification:  91%|█████████ | 1173/1291 [1:45:36<10:20,  5.26s/it]Processing classification:  91%|█████████ | 1174/1291 [1:45:47<11:58,  6.14s/it]Processing classification:  91%|█████████ | 1176/1291 [1:45:58<11:27,  5.98s/it]Processing classification:  91%|█████████ | 1177/1291 [1:46:10<13:14,  6.97s/it]Processing classification:  91%|█████████▏| 1180/1291 [1:46:25<11:22,  6.15s/it]Processing classification:  91%|█████████▏| 1181/1291 [1:46:37<13:19,  7.26s/it]Processing classification:  92%|█████████▏| 1182/1291 [1:46:51<15:26,  8.50s/it]Processing classification:  92%|█████████▏| 1184/1291 [1:47:01<13:02,  7.32s/it]Processing classification:  92%|█████████▏| 1186/1291 [1:47:13<11:47,  6.74s/it]Processing classification:  92%|█████████▏| 1187/1291 [1:47:27<14:14,  8.22s/it]Processing classification:  92%|█████████▏| 1189/1291 [1:47:38<12:19,  7.25s/it]Processing classification:  92%|█████████▏| 1190/1291 [1:47:51<14:06,  8.39s/it]Processing classification:  92%|█████████▏| 1191/1291 [1:48:03<15:27,  9.27s/it]Processing classification:  92%|█████████▏| 1192/1291 [1:48:16<16:40, 10.10s/it]Processing classification:  92%|█████████▏| 1194/1291 [1:48:27<13:27,  8.33s/it]Processing classification:  93%|█████████▎| 1195/1291 [1:48:40<14:44,  9.21s/it]Processing classification:  93%|█████████▎| 1196/1291 [1:48:50<15:10,  9.59s/it]Processing classification:  93%|█████████▎| 1202/1291 [1:49:04<06:48,  4.59s/it]Processing classification:  93%|█████████▎| 1204/1291 [1:49:17<07:25,  5.12s/it]Processing classification:  93%|█████████▎| 1205/1291 [1:49:27<08:26,  5.89s/it]Processing classification:  93%|█████████▎| 1207/1291 [1:49:39<08:11,  5.85s/it]Processing classification:  94%|█████████▍| 1211/1291 [1:49:50<05:58,  4.48s/it]Processing classification:  94%|█████████▍| 1213/1291 [1:50:05<06:39,  5.12s/it]Processing classification:  94%|█████████▍| 1214/1291 [1:50:17<08:02,  6.26s/it]Processing classification:  94%|█████████▍| 1216/1291 [1:50:30<07:48,  6.24s/it]Processing classification:  95%|█████████▍| 1220/1291 [1:50:42<05:41,  4.81s/it]Processing classification:  95%|█████████▍| 1226/1291 [1:50:54<03:38,  3.36s/it]Processing classification:  95%|█████████▌| 1227/1291 [1:51:07<04:45,  4.46s/it]Processing classification:  95%|█████████▌| 1228/1291 [1:51:21<05:57,  5.67s/it]Processing classification:  95%|█████████▌| 1230/1291 [1:51:32<05:42,  5.62s/it]Processing classification:  96%|█████████▌| 1234/1291 [1:51:43<04:10,  4.40s/it]Processing classification:  96%|█████████▌| 1238/1291 [1:51:56<03:29,  3.95s/it]Processing classification:  96%|█████████▌| 1239/1291 [1:52:07<04:08,  4.78s/it]Processing classification:  96%|█████████▌| 1240/1291 [1:52:21<05:13,  6.14s/it]快慢不一致: fast=Miniature Poodle, slow=Silky Terrier, 裁决结果=Miniature Poodle
+快慢不一致: fast=Norwegian Elkhound, slow=Poodle, 裁决结果=Poodle
+快慢不一致: fast=Clumber, slow=Otterhound, 裁决结果=Norfolk Terrier
+快慢不一致: fast=Malamute, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Soft-coated Wheaten Terrier, slow=Old English Sheepdog, 裁决结果=Otterhound
+快慢不一致: fast=Airedale, slow=Wire Fox Terrier, 裁决结果=Wire Fox Terrier
+快慢不一致: fast=English Setter, slow=Silky Terrier, 裁决结果=English Setter
+快慢不一致: fast=Eskimo Dog, slow=Siberian Husky, 裁决结果=Siberian Husky
+快慢不一致: fast=Giant Schnauzer, slow=Great Dane, 裁决结果=Giant Schnauzer
+快慢不一致: fast=English Foxhound, slow=Staffordshire Bullterrier, 裁决结果=English Foxhound
+快慢不一致: fast=Shih-Tzu, slow=Yorkshire Terrier, 裁决结果=Yorkshire Terrier
+快慢不一致: fast=African Hunting Dog, slow=Dhole, 裁决结果=African Hunting Dog
+快慢不一致: fast=Clumber, slow=Black and Tan Dachshund, 裁决结果=Black-and-Tan Coonhound
+快慢不一致: fast=Irish Wolfhound, slow=Otterhound, 裁决结果=Irish Wolfhound
+快慢不一致: fast=Rhodesian Ridgeback, slow=Vizsla, 裁决结果=Vizsla
+快慢不一致: fast=Miniature Poodle, slow=Dandi Dinmont, 裁决结果=Toy Poodle
+快慢不一致: fast=English Foxhound, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=English Setter, slow=Great Pyrenees, 裁决结果=Great Pyrenees
+快慢不一致: fast=Shih-Tzu, slow=Maltese Dog, 裁决结果=Maltese Dog
+快慢不一致: fast=English Foxhound, slow=Golden Retriever, 裁决结果=Labrador Retriever
+快慢不一致: fast=Shetland Sheepdog, slow=Australian Terrier, 裁决结果=Shetland Sheepdog
+快慢不一致: fast=Affenpinscher, slow=Tibetan Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Welsh Springer Spaniel, slow=Brittany, 裁决结果=Brittany
+快慢不一致: fast=Toy Poodle, slow=Yorkshire Terrier, 裁决结果=Yorkshire Terrier
+快慢不一致: fast=Beagle, slow=Basset Hound, 裁决结果=Basset Hound
+快慢不一致: fast=English Setter, slow=Borzoi, 裁决结果=Borzoi
+快慢不一致: fast=Miniature Poodle, slow=Silky Terrier, 裁决结果=Bedlington Terrier
+快慢不一致: fast=Pekinese, slow=Pug, 裁决结果=Pekinese
+快慢不一致: fast=Bull Mastiff, slow=Rhodesian Ridgeback, 裁决结果=Rhodesian Ridgeback
+快慢不一致: fast=Lhasa, slow=Pekinese, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Walker Hound, slow=Foxhound, 裁决结果=English Foxhound
+快慢不一致: fast=Walker Hound, slow=EntleBucher, 裁决结果=English Foxhound
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Schipperke
+快慢不一致: fast=Tibetan Terrier, slow=Lhasa Apso, 裁决结果=Lhasa
+快慢不一致: fast=Borzoi, slow=Brittany Spaniel, 裁决结果=Brittany Spaniel
+快慢不一致: fast=Miniature Pinscher, slow=Doberman, 裁决结果=Doberman
+快慢不一致: fast=Labrador Retriever, slow=Weimaraner, 裁决结果=Weimaraner
+快慢不一致: fast=Kerry Blue Terrier, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Chihuaha, slow=Toy Terrier, 裁决结果=Toy Terrier
+快慢不一致: fast=Miniature Pinscher, slow=Gordon Setter, 裁决结果=Gordon Setter
+快慢不一致: fast=English Springer Spaniel, slow=Staffordshire Bull Terrier, 裁决结果=Staffordshire Bull Terrier
+快慢不一致: fast=Standard Schnauzer, slow=Scottish Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Basenji, slow=Ibizan Hound, 裁决结果=Ibizian Hound
+快慢不一致: fast=Great Dane, slow=Bloodhound, 裁决结果=Bloodhound
+快慢不一致: fast=Black-and-tan Coonhound, slow=Irish Setter, 裁决结果=Irish Setter
+快慢不一致: fast=Blenheim Spaniel, slow=Bernese Mountain Dog, 裁决结果=Bernese Mountain Dog
+快慢不一致: fast=EntleBucher, slow=Cardigan, 裁决结果=EntleBucher
+快慢不一致: fast=Briard, slow=Tibetan Terrier, 裁决结果=Tibetan Terrier
+快慢不一致: fast=Dandi Dinmont, slow=Old English Sheepdog, 裁决结果=Dandie Dinmont
+快慢不一致: fast=Schipperke, slow=Toy Poodle, 裁决结果=Collie
+快慢不一致: fast=Standard Poodle, slow=Irish Water Spaniel, 裁决结果=Irish Water Spaniel
+快慢不一致: fast=Clumber, slow=Irish Setter, 裁决结果=Irish Setter
+快慢不一致: fast=Bluetick, slow=Walker Hound, 裁决结果=Bluetick Coonhound
+快慢不一致: fast=West Highland White Terrier, slow=Border Terrier, 裁决结果=West Highland White Terrier
+快慢不一致: fast=Clumber, slow=Collie, 裁决结果=Collie
+快慢不一致: fast=African Hunting Dog, slow=Fawn, 裁决结果=Fawn
+快慢不一致: fast=Whippet, slow=Greyhound, 裁决结果=Whippet
+快慢不一致: fast=Blenheim Spaniel, slow=Shetland Sheepdog (Sheltie), 裁决结果=Shetland Sheepdog
+快慢不一致: fast=Staffordshire Bullterrier, slow=Italian Greyhound, 裁决结果=Italian Greyhound
+快慢不一致: fast=Affenpinscher, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Soft-coated Wheaten Terrier, slow=Otterhound, 裁决结果=Airedale
+快慢不一致: fast=Beagle, slow=Basset Hound, 裁决结果=Beagle
+快慢不一致: fast=Walker Hound, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=Irish Setter, slow=Great Dane, 裁决结果=Great Dane
+快慢不一致: fast=Kerry Blue Terrier, slow=Afghan Hound, 裁决结果=Afghan Hound
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Soft-coated Wheaten Terrier, slow=Border Terrier, 裁决结果=Border Terrier
+快慢不一致: fast=Basenji, slow=Ibizan Hound, 裁决结果=Ibizian Hound
+快慢不一致: fast=Dingo, slow=Kelpie, 裁决结果=Kelpie
+快慢不一致: fast=Dingo, slow=White Wolf, 裁决结果=Dhole
+快慢不一致: fast=Irish Wolfhound, slow=Leonberger, 裁决结果=Leonberger
+快慢不一致: fast=Airedale, slow=Soft-coated Wheaten Terrier, 裁决结果=Airedale
+快慢不一致: fast=Schipperke, slow=Scottish Terrier, 裁决结果=Scotch Terrier
+快慢不一致: fast=Great Pyrenees, slow=Otterhound, 裁决结果=Great Pyrenees
+快慢不一致: fast=Norwich Terrier, slow=Briard, 裁决结果=Briard
+快慢不一致: fast=EntleBucher, slow=Greater Swiss Mountain Dog, 裁决结果=EntleBucher
+快慢不一致: fast=Wirehaired Fox Terrier, slow=Bluetick Coonhound, 裁决结果=Bluetick Coonhound
+快慢不一致: fast=Schipperke, slow=Groenendael, 裁决结果=Schipperke
+快慢不一致: fast=Great Pyrenees, slow=Old English Sheepdog, 裁决结果=Great Pyrenees
+快慢不一致: fast=Miniature Poodle, slow=Lhasa, 裁决结果=Pekingese
+快慢不一致: fast=Miniature Poodle, slow=Maltese Dog, 裁决结果=Silky Terrier
+快慢不一致: fast=Miniature Schnauzer, slow=Maltese Dog, 裁决结果=Miniature Schnauzer
+快慢不一致: fast=Bedlington Terrier, slow=Clumber Spaniel, 裁决结果=Clumber Spaniel
+快慢不一致: fast=Irish Terrier, slow=Standard Poodle, 裁决结果=Standard Poodle
+快慢不一致: fast=Brabancon Griffon, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Newfoundland, slow=Afghan Hound, 裁决结果=Afghan Hound
+快慢不一致: fast=Mexican Hairless, slow=Xoloitzcuintli, 裁决结果=Mexican Hairless
+快慢不一致: fast=Airedale, slow=Wire Fox Terrier, 裁决结果=Wirehaired Fox Terrier
+快慢不一致: fast=Briard, slow=Black Russian Terrier, 裁决结果=Black Russian Terrier
+快慢不一致: fast=Flat-coated Retriever, slow=Otterhound, 裁决结果=Tibetan Mastiff
+快慢不一致: fast=Brittany, slow=Flat-coated Retriever, 裁决结果=English Springer Spaniel
+快慢不一致: fast=Cardigan, slow=Great Pyrenees, 裁决结果=Great Pyrenees
+快慢不一致: fast=Chow, slow=Samoyed, 裁决结果=Samoyed
+快慢不一致: fast=Mexican Hairless, slow=Italian Greyhound, 裁决结果=Mexican Hairless
+快慢不一致: fast=Miniature Poodle, slow=Bichon Frise, 裁决结果=Bichon Frise
+快慢不一致: fast=Kerry Blue Terrier, slow=Bouvier des Flandres, 裁决结果=Scottish Terrier (Scottie) and Bouvier des FlandresProcessing classification:  96%|█████████▌| 1241/1291 [1:52:37<06:31,  7.83s/it]Processing classification:  96%|█████████▌| 1242/1291 [1:52:40<05:36,  6.87s/it]Processing classification:  97%|█████████▋| 1247/1291 [1:52:52<03:06,  4.23s/it]Processing classification:  97%|█████████▋| 1251/1291 [1:53:03<02:26,  3.67s/it]Processing classification:  97%|█████████▋| 1255/1291 [1:53:14<01:58,  3.30s/it]Processing classification:  97%|█████████▋| 1256/1291 [1:53:27<02:35,  4.43s/it]Processing classification:  97%|█████████▋| 1257/1291 [1:53:39<03:05,  5.46s/it]Processing classification:  97%|█████████▋| 1258/1291 [1:53:52<03:43,  6.79s/it]Processing classification:  98%|█████████▊| 1260/1291 [1:54:06<03:31,  6.83s/it]Processing classification:  98%|█████████▊| 1264/1291 [1:54:18<02:15,  5.02s/it]Processing classification:  98%|█████████▊| 1268/1291 [1:54:31<01:38,  4.27s/it]Processing classification:  98%|█████████▊| 1269/1291 [1:54:34<01:30,  4.11s/it]Processing classification:  98%|█████████▊| 1270/1291 [1:54:45<01:50,  5.26s/it]Processing classification:  99%|█████████▊| 1274/1291 [1:54:59<01:14,  4.40s/it]Processing classification:  99%|█████████▉| 1275/1291 [1:55:12<01:29,  5.57s/it]Processing classification:  99%|█████████▉| 1284/1291 [1:55:25<00:20,  2.89s/it]Processing classification: 100%|█████████▉| 1286/1291 [1:55:37<00:17,  3.46s/it]Processing classification: 100%|█████████▉| 1287/1291 [1:55:49<00:17,  4.39s/it]Processing classification: 100%|██████████| 1291/1291 [1:55:49<00:00,  5.38s/it]
+
+最终决策失败: CUDA out of memory. Tried to allocate 20.50 GiB. GPU 0 has a total capacity of 79.25 GiB of which 10.41 GiB is free. Process 3679297 has 33.74 GiB memory in use. Including non-PyTorch memory, this process has 35.08 GiB memory in use. Of the allocated memory 34.17 GiB is allocated by PyTorch, and 432.01 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+快慢不一致: fast=Irish Water Spaniel, slow=Kerry Blue Terrier, 裁决结果=Kerry Blue Terrier
+快慢不一致: fast=Dhole, slow=Dhole (Cuon alpinus), 裁决结果=Dhole (Cuon alpinus)
+快慢不一致: fast=Bernese Mountain Dog, slow=Gordon Setter, 裁决结果=Gordon Setter
+快慢不一致: fast=Bedlington Terrier, slow=Borzoi, 裁决结果=Borzoi
+快慢不一致: fast=Malinois, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Lhasa, slow=Pekinese, 裁决结果=Pekinese
+快慢不一致: fast=Gordon Setter, slow=Newfoundland, 裁决结果=Curly-coated Retriever
+快慢不一致: fast=Rhodesian Ridgeback, slow=Weimaraner, 裁决结果=Weimaraner
+快慢不一致: fast=Miniature Poodle, slow=Cocker Spaniel, 裁决结果=Cocker Spaniel
+快慢不一致: fast=Great Pyrenees, slow=Kuvasz, 裁决结果=Kuvasz
+最终决策失败: CUDA out of memory. Tried to allocate 17.15 GiB. GPU 0 has a total capacity of 79.25 GiB of which 10.75 GiB is free. Process 3679297 has 33.74 GiB memory in use. Including non-PyTorch memory, this process has 34.74 GiB memory in use. Of the allocated memory 33.83 GiB is allocated by PyTorch, and 428.80 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+快慢不一致: fast=Giant Schnauzer, slow=Bouvier des Flandres, 裁决结果=Bouvier des Flandres
+快慢不一致: fast=Affenpinscher, slow=Brussels Griffon, 裁决结果=Brussels Griffon
+快慢不一致: fast=Eskimo Dog, slow=Norwich Terrier, 裁决结果=Siberian Husky
+快慢不一致: fast=Saint Bernard, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Blenheim Spaniel, slow=Cavalier King Charles Spaniel, 裁决结果=Blenheim Cavalier King Charles Spaniel
+快慢不一致: fast=Collie, slow=Papillon, 裁决结果=Papillon
+快慢不一致: fast=English Setter, slow=Greater Swiss Mountain Dog, 裁决结果=English Setter
+✅ 正确预测总数: 960
+  - 其中仅快思考正确: 190
+  - 其中慢思考触发且正确: 770
+❌ 错误预测总数: 331
+📊 慢思考触发数量: 1078
+[fast_slow_classify] 总体准确率: 0.7436 (960/1291)
+[fast_slow_classify] 快思考准确率: 0.8920
+[fast_slow_classify] 慢思考触发比例: 0.8350
+[fast_slow_classify] 慢思考准确率: 0.7143
+分类结果已保存到: ./experiments/dog120/classify/classification_results.json
+
+当前时间为： 2025-11-01 13:53:32
+总耗时: 01:56:01

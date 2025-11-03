@@ -1,0 +1,366 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow_classify', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/flower102_all.yml', num_per_category='3', knowledge_base_dir='./knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/flower102/infer', classify_dir='./experiments/flower102/classify')
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'flower', 'num_classes': 102, 'num_base': 51, 'num_novel': 51, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/flowers_102', 'expt_dir': './experiments/flower102', 'expt_dir_describe': './experiments/flower102/describe', 'path_vqa_questions': './experiments/flower102/describe/flower_vqa_questions_ours', 'path_vqa_answers': './experiments/flower102/describe/flower_attributes_pairs', 'path_llm_prompts': './experiments/flower102/describe/flower_llm_prompts', 'path_identify_answers': './experiments/flower102/identify', 'expt_dir_guess': './experiments/flower102/guess', 'path_llm_replies_raw': './experiments/flower102/guess/flower_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/flower102/guess/flower_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/flower102/guess/flower_llm_gussed_names', 'expt_dir_gallery': './experiments/flower102/gallery', 'path_references': './experiments/flower102/gallery/flower_image_references', 'path_regions': './experiments/flower102/gallery/flower_image_regions', 'path_descriptions': './experiments/flower102/gallery/flower_image_descriptions_attn', 'expt_dir_grouping': './experiments/flower102/grouping'}
+当前时间为： 2025-11-01 10:30:06
+从目录加载推理结果: ./experiments/flower102/infer
+分类结果将保存到: ./experiments/flower102/classify
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 79.25GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  2.00s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.14s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.19s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.26s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.71s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.92s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 79.25GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/flower102/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/flower102/knowledge_base/category_image_paths.json 加载
+加载了 100 个类别的图像路径
+知识库已从 ./experiments/flower102/knowledge_base 加载
+知识库加载完成!
+已加载知识库: ./experiments/flower102/knowledge_base
+找到 1074 个推理结果文件
+Processing classification:   0%|          | 0/1074 [00:00<?, ?it/s]Processing classification:   0%|          | 3/1074 [00:07<45:38,  2.56s/it]Processing classification:   0%|          | 5/1074 [00:13<49:48,  2.80s/it]Processing classification:   1%|          | 7/1074 [00:21<56:24,  3.17s/it]Processing classification:   1%|          | 10/1074 [00:27<46:01,  2.59s/it]Processing classification:   1%|          | 11/1074 [00:33<58:13,  3.29s/it]Processing classification:   1%|          | 12/1074 [00:39<1:07:13,  3.80s/it]Processing classification:   1%|▏         | 14/1074 [00:45<1:02:51,  3.56s/it]Processing classification:   1%|▏         | 15/1074 [00:52<1:15:37,  4.28s/it]Processing classification:   2%|▏         | 20/1074 [00:58<42:41,  2.43s/it]  Processing classification:   2%|▏         | 25/1074 [01:05<33:36,  1.92s/it]Processing classification:   2%|▏         | 26/1074 [01:12<45:33,  2.61s/it]Processing classification:   3%|▎         | 31/1074 [01:19<35:22,  2.03s/it]Processing classification:   3%|▎         | 34/1074 [01:26<36:38,  2.11s/it]Processing classification:   4%|▍         | 41/1074 [01:32<25:44,  1.50s/it]Processing classification:   4%|▍         | 45/1074 [01:38<25:29,  1.49s/it]Processing classification:   4%|▍         | 46/1074 [01:44<33:12,  1.94s/it]Processing classification:   5%|▌         | 56/1074 [01:51<20:36,  1.21s/it]Processing classification:   6%|▌         | 61/1074 [01:57<20:26,  1.21s/it]Processing classification:   6%|▌         | 62/1074 [02:02<26:04,  1.55s/it]Processing classification:   6%|▌         | 65/1074 [02:09<28:51,  1.72s/it]Processing classification:   7%|▋         | 76/1074 [02:15<17:51,  1.07s/it]Processing classification:   7%|▋         | 78/1074 [02:22<22:24,  1.35s/it]Processing classification:   8%|▊         | 82/1074 [02:28<22:36,  1.37s/it]Processing classification:   8%|▊         | 84/1074 [02:34<27:13,  1.65s/it]Processing classification:   8%|▊         | 85/1074 [02:40<34:26,  2.09s/it]Processing classification:   8%|▊         | 89/1074 [02:46<31:25,  1.91s/it]Processing classification:   8%|▊         | 91/1074 [02:53<35:59,  2.20s/it]Processing classification:   9%|▉         | 95/1074 [03:00<33:06,  2.03s/it]Processing classification:   9%|▉         | 98/1074 [03:06<32:34,  2.00s/it]Processing classification:   9%|▉         | 101/1074 [03:11<32:13,  1.99s/it]Processing classification:   9%|▉         | 102/1074 [03:17<39:49,  2.46s/it]Processing classification:  10%|▉         | 105/1074 [03:23<36:44,  2.27s/it]Processing classification:  10%|█         | 110/1074 [03:30<30:18,  1.89s/it]Processing classification:  11%|█         | 114/1074 [03:36<28:32,  1.78s/it]Processing classification:  11%|█         | 115/1074 [03:43<37:14,  2.33s/it]Processing classification:  11%|█         | 116/1074 [03:50<46:55,  2.94s/it]Processing classification:  11%|█         | 118/1074 [03:56<47:05,  2.96s/it]Processing classification:  12%|█▏        | 124/1074 [04:03<30:28,  1.92s/it]Processing classification:  12%|█▏        | 131/1074 [04:09<22:25,  1.43s/it]Processing classification:  12%|█▏        | 133/1074 [04:15<27:03,  1.73s/it]Processing classification:  13%|█▎        | 137/1074 [04:22<26:33,  1.70s/it]Processing classification:  13%|█▎        | 138/1074 [04:28<34:18,  2.20s/it]Processing classification:  13%|█▎        | 140/1074 [04:36<39:01,  2.51s/it]Processing classification:  13%|█▎        | 142/1074 [04:42<41:21,  2.66s/it]Processing classification:  13%|█▎        | 143/1074 [04:48<48:28,  3.12s/it]Processing classification:  13%|█▎        | 144/1074 [04:54<57:40,  3.72s/it]Processing classification:  14%|█▎        | 145/1074 [05:00<1:04:56,  4.19s/it]Processing classification:  14%|█▎        | 146/1074 [05:07<1:12:16,  4.67s/it]Processing classification:  14%|█▎        | 147/1074 [05:12<1:16:09,  4.93s/it]Processing classification:  14%|█▍        | 153/1074 [05:18<33:45,  2.20s/it]  Processing classification:  14%|█▍        | 154/1074 [05:23<40:34,  2.65s/it]Processing classification:  14%|█▍        | 155/1074 [05:29<49:23,  3.22s/it]Processing classification:  15%|█▍        | 157/1074 [05:35<47:57,  3.14s/it]Processing classification:  15%|█▌        | 164/1074 [05:42<28:02,  1.85s/it]Processing classification:  16%|█▌        | 167/1074 [05:49<28:56,  1.91s/it]Processing classification:  16%|█▌        | 168/1074 [05:55<36:05,  2.39s/it]Processing classification:  16%|█▌        | 170/1074 [06:02<40:15,  2.67s/it]Processing classification:  16%|█▌        | 171/1074 [06:08<48:52,  3.25s/it]Processing classification:  16%|█▋        | 176/1074 [06:14<32:05,  2.14s/it]Processing classification:  16%|█▋        | 177/1074 [06:20<40:25,  2.70s/it]Processing classification:  17%|█▋        | 180/1074 [06:27<38:14,  2.57s/it]Processing classification:  17%|█▋        | 186/1074 [06:34<26:52,  1.82s/it]Processing classification:  17%|█▋        | 187/1074 [06:40<33:48,  2.29s/it]Processing classification:  18%|█▊        | 188/1074 [06:47<43:07,  2.92s/it]Processing classification:  18%|█▊        | 191/1074 [06:53<37:56,  2.58s/it]Processing classification:  18%|█▊        | 196/1074 [06:59<29:04,  1.99s/it]Processing classification:  18%|█▊        | 197/1074 [07:05<34:53,  2.39s/it]Processing classification:  18%|█▊        | 198/1074 [07:11<42:07,  2.89s/it]Processing classification:  19%|█▉        | 203/1074 [07:18<31:16,  2.15s/it]Processing classification:  19%|█▉        | 209/1074 [07:25<24:00,  1.67s/it]Processing classification:  20%|█▉        | 213/1074 [07:31<23:23,  1.63s/it]Processing classification:  20%|██        | 215/1074 [07:38<28:01,  1.96s/it]Processing classification:  20%|██        | 218/1074 [07:45<29:49,  2.09s/it]Processing classification:  20%|██        | 219/1074 [07:51<36:09,  2.54s/it]Processing classification:  21%|██        | 223/1074 [07:57<30:23,  2.14s/it]Processing classification:  21%|██        | 225/1074 [08:04<34:19,  2.43s/it]Processing classification:  21%|██        | 227/1074 [08:09<35:31,  2.52s/it]Processing classification:  21%|██        | 228/1074 [08:16<43:10,  3.06s/it]Processing classification:  21%|██▏       | 230/1074 [08:22<44:23,  3.16s/it]Processing classification:  22%|██▏       | 235/1074 [08:28<29:53,  2.14s/it]Processing classification:  23%|██▎       | 242/1074 [08:35<21:11,  1.53s/it]Processing classification:  23%|██▎       | 245/1074 [08:42<23:45,  1.72s/it]Processing classification:  23%|██▎       | 248/1074 [08:48<24:44,  1.80s/it]Processing classification:  23%|██▎       | 249/1074 [08:54<31:29,  2.29s/it]Processing classification:  24%|██▎       | 253/1074 [09:01<28:29,  2.08s/it]Processing classification:  24%|██▎       | 255/1074 [09:07<30:53,  2.26s/it]Processing classification:  25%|██▍       | 266/1074 [09:13<15:59,  1.19s/it]Processing classification:  25%|██▍       | 268/1074 [09:19<19:18,  1.44s/it]Processing classification:  25%|██▌       | 269/1074 [09:27<27:06,  2.02s/it]Processing classification:  26%|██▌       | 274/1074 [09:33<22:15,  1.67s/it]Processing classification:  26%|██▌       | 276/1074 [09:39<26:11,  1.97s/it]Processing classification:  26%|██▌       | 279/1074 [09:46<26:46,  2.02s/it]Processing classification:  26%|██▌       | 280/1074 [09:52<33:12,  2.51s/it]Processing classification:  26%|██▋       | 283/1074 [09:58<31:46,  2.41s/it]Processing classification:  26%|██▋       | 284/1074 [10:06<40:44,  3.09s/it]Processing classification:  27%|██▋       | 288/1074 [10:12<31:08,  2.38s/it]Processing classification:  27%|██▋       | 292/1074 [10:19<27:38,  2.12s/it]Processing classification:  27%|██▋       | 293/1074 [10:25<34:08,  2.62s/it]快慢不一致: fast=Wild Pansy, slow=Pelargonium, 裁决结果=Petunia
+快慢不一致: fast=Globe Thistle, slow=Alpine Sea Holly, 裁决结果=Alpine Sea Holly
+快慢不一致: fast=Thorn Apple, slow=Love In The Mist, 裁决结果=Love In The Mist
+快慢不一致: fast=Trumpet Creeper, slow=Bromeliad, 裁决结果=Bromeliad
+快慢不一致: fast=Thorn Apple, slow=Datura, 裁决结果=Giant White Arum Lily
+快慢不一致: fast=Canna Lily, slow=Hippeastrum, 裁决结果=Hippeastrum
+快慢不一致: fast=Tiger Lily, slow=Gladiolus, 裁决结果=Gladiolus
+快慢不一致: fast=Bearded Iris, slow=Canna Lily, 裁决结果=Canna Lily
+快慢不一致: fast=Magnolia, slow=Siam Tulip, 裁决结果=Cyclamen
+快慢不一致: fast=Petunia, slow=Morning Glory, 裁决结果=Morning Glory
+快慢不一致: fast=Petunia, slow=Geranium, 裁决结果=Petunia
+快慢不一致: fast=Mexican Aster, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Thorn Apple, slow=Datura, 裁决结果=Thorn Apple
+快慢不一致: fast=Stemless Gentian, slow=Bolero Deep Blue, 裁决结果=Stemless Gentian
+快慢不一致: fast=Lenten Rose, slow=Japanese Anemone, 裁决结果=Lenten Rose
+快慢不一致: fast=Sweet Pea, slow=Gladiolus, 裁决结果=Gladiolus
+快慢不一致: fast=Tree Mallow, slow=Hibiscus, 裁决结果=Hibiscus
+快慢不一致: fast=Mexican Aster, slow=Cosmos bipinnatus, 裁决结果=Mexican Aster
+快慢不一致: fast=Garden Phlox, slow=Snapdragon, 裁决结果=Snapdragon
+快慢不一致: fast=Petunia, slow=Clematis, 裁决结果=Clematis
+快慢不一致: fast=Columbine, slow=Peruvian Lily, 裁决结果=Peruvian Lily
+快慢不一致: fast=Morning Glory, slow=Bolero Deep Blue, 裁决结果=Bolero Deep Blue
+快慢不一致: fast=Japanese Anemone, slow=Wood Anemone (Anemone nemorosa), 裁决结果=Windflower
+快慢不一致: fast=Bishop of Llandaff, slow=Adenium obesum (Desert Rose), 裁决结果=Adenium obesum (Desert Rose)
+快慢不一致: fast=Morning Glory, slow=Gentiana acaulis (alpine gentian), 裁决结果=Stemless Gentian
+快慢不一致: fast=Hibiscus, slow=Peruvian Lily, 裁决结果=Mallow
+快慢不一致: fast=Pincushion Flower, slow=Great Masterwort (Astrantia major), 裁决结果=Great Masterwort (Astrantia major)
+快慢不一致: fast=Tree Mallow, slow=Mexican Aster, 裁决结果=Mexican Aster
+快慢不一致: fast=Orange Dahlia, slow=Gazania, 裁决结果=English Marigold
+快慢不一致: fast=Wild Pansy, slow=Viola cornuta, 裁决结果=Wild Pansy
+快慢不一致: fast=Bearded Iris, slow=Gladiolus, 裁决结果=Gladiolus
+快慢不一致: fast=Common Dandelion, slow=Colt'S Foot, 裁决结果=Colt's Foot
+快慢不一致: fast=Lotus, slow=Water Lily, 裁决结果=Water Lily
+快慢不一致: fast=Gaura, slow=Cape Flower, 裁决结果=Cape Flower
+快慢不一致: fast=Siam Tulip, slow=Cyclamen , 裁决结果=Siam Tulip
+快慢不一致: fast=Petunia, slow=Sweet Pea, 裁决结果=Sweet Pea
+快慢不一致: fast=Mallow, slow=Nasturtium, 裁决结果=Nasturtium
+快慢不一致: fast=Morning Glory, slow=Balloon Flower, 裁决结果=Pelargonium
+快慢不一致: fast=Marigold, slow=Blanket Flower, 裁决结果=Marigold
+快慢不一致: fast=Buttercup, slow=Petunia, 裁决结果=Petunia
+快慢不一致: fast=Sunflower, slow=Osteospermum, 裁决结果=Gazania
+快慢不一致: fast=Oxeye Daisy, slow=White Cosmos (Cosmos bipinnatus), 裁决结果=Oxeye Daisy
+快慢不一致: fast=Spring Crocus, slow=Cyclamen persicum, 裁决结果=Cyclamen persicum
+快慢不一致: fast=Sword Lily, slow=Magnolia, 裁决结果=Magnolia
+快慢不一致: fast=Wallflower, slow=Trumpet Vine (Campsis radicans), 裁决结果=Snapdragon
+快慢不一致: fast=Love In The Mist, slow=Bougainvillea, 裁决结果=Bougainvillea
+快慢不一致: fast=Sweet William, slow=Garden Phlox, 裁决结果=Sweet William
+快慢不一致: fast=Stemless Gentian, slow=Gentiana acaulis (alpine gentian), 裁决结果=Stemless Gentian
+快慢不一致: fast=Pincushion Flower, slow=Garden Phlox, 裁决结果=Carnation
+快慢不一致: fast=Magnolia, slow=Cyclamen, 裁决结果=Cyclamen
+快慢不一致: fast=Blackberry Lily, slow=Tiger Lily (Lilium lancifolium), 裁决结果=Tiger Lily (Lilium lancifolium)
+快慢不一致: fast=Sword Lily, slow=Giant White Arum Lily, 裁决结果=Hippeastrum
+快慢不一致: fast=Wallflower, slow=Nasturtium, 裁决结果=Nasturtium
+快慢不一致: fast=Clematis, slow=Bougainvillea, 裁决结果=Bougainvillea
+快慢不一致: fast=Red Ginger, slow=Trumpet Creeper, 裁决结果=Trumpet Creeper
+快慢不一致: fast=Mexican Aster, slow=Cosmos bipinnatus, 裁决结果=Mexican Aster
+快慢不一致: fast=Anthurium, slow=Sweet William, 裁决结果=Anthurium
+快慢不一致: fast=Alpine Sea Holly, slow=Love In The Mist, 裁决结果=Love In The Mist
+快慢不一致: fast=Morning Glory, slow=Pelargonium, 裁决结果=Tree Mallow
+快慢不一致: fast=Morning Glory, slow=Hard-leaved Pocket Orchid, 裁决结果=Siam Tulip
+快慢不一致: fast=Colt'S Foot, slow=Common Dandelion, 裁决结果=Common Dandelion
+快慢不一致: fast=Tiger Lily, slow=Blackberry Lily (Lilium lancifolium), 裁决结果=Blackberry Lily (Lilium lancifolium)
+快慢不一致: fast=Love In The Mist, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Bee Balm, slow=King Protea (Protea cynaroides), 裁决结果=King Protea
+快慢不一致: fast=Carnation, slow=Marigold, 裁决结果=Marigold
+快慢不一致: fast=Morning Glory, slow=Balloon Flower, 裁决结果=Morning Glory
+快慢不一致: fast=Silverbush, slow=Windflower, 裁决结果=Windflower
+快慢不一致: fast=Prince Of Wales Feathers, slow=Caulicopia, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Buttercup, slow=Globe-Flower, 裁决结果=Globe-Flower
+快慢不一致: fast=Hibiscus, slow=Trumpet Creeper, 裁决结果=Azalea
+快慢不一致: fast=Monkshood, slow=Bearded Iris, 裁决结果=Bearded Iris
+快慢不一致: fast=Petunia, slow=Balloon Flower, 裁决结果=Petunia
+快慢不一致: fast=Spring Crocus, slow=Siam Tulip, 裁决结果=Siam Tulip
+快慢不一致: fast=Tree Mallow, slow=Pelargonium, 裁决结果=Tree Mallow
+快慢不一致: fast=Cyclamen , slow=Garden Phlox, 裁决结果=Garden Phlox
+快慢不一致: fast=Hibiscus, slow=Watercress, 裁决结果=Nasturtium
+快慢不一致: fast=Black-eyed Susan, slow=Gazania, 裁决结果=Gazania
+快慢不一致: fast=Japanese Anemone, slow=Wood Anemone (Anemone nemorosa), 裁决结果=Windflower
+快慢不一致: fast=Canna Lily, slow=Hibiscus, 裁决结果=Canna Lily
+快慢不一致: fast=Buttercup, slow=Globe-Flower, 裁决结果=Globe-Flower
+快慢不一致: fast=Bishop of Llandaff, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Siam Tulip, slow=Bolero Deep Blue, 裁决结果=Bolero Deep Blue
+快慢不一致: fast=Siam Tulip, slow=Bromelia, 裁决结果=Bromelia
+快慢不一致: fast=Tree Poppy, slow=Matilija Poppy (Romneya coulteri), 裁决结果=Tree Poppy
+快慢不一致: fast=Orange Dahlia, slow=Gazania, 裁决结果=Gazania
+快慢不一致: fast=Wallflower, slow=Nasturtium, 裁决结果=Wallflower
+快慢不一致: fast=Fire Lily, slow=Trumpet Vine, 裁决结果=Peruvian Lily
+快慢不一致: fast=Barbeton Daisy, slow=Blanket Flower (Gaillardia), 裁决结果=Blanket Flower
+快慢不一致: fast=Geranium, slow=Nasturtium, 裁决结果=Nasturtium
+快慢不一致: fast=Red Ginger, slow=Trumpet Creeper, 裁决结果=Trumpet Creeper
+快慢不一致: fast=Cape Flower, slow=Tree Mallow, 裁决结果=Thorn Apple
+快慢不一致: fast=Azalea, slow=Cape Flower, 裁决结果=Fire Lily
+快慢不一致: fast=Hard-leaved Pocket Orchid, slow=Ruby-lipped Cattleya, 裁决结果=Hard-leaved Pocket Orchid
+快慢不一致: fast=Tree Mallow, slow=Balloon Flower, 裁决结果=Balloon Flower
+快慢不一致: fast=Orange Dahlia, slow=Black-eyed Susan, 裁决结果=Blanket Flower
+快慢不一致: fast=Morning Glory, slow=Balloon Flower, 裁决结果=Morning Glory
+快慢不一致: fast=Wild Pansy, slow=Primula, 裁决结果=Wild Pansy
+快慢不一致: fast=Petunia, slow=Phlox, 裁决结果=Garden Phlox
+Processing classification:  27%|██▋       | 295/1074 [10:31<35:19,  2.72s/it]Processing classification:  28%|██▊       | 297/1074 [10:37<37:15,  2.88s/it]Processing classification:  28%|██▊       | 298/1074 [10:44<44:05,  3.41s/it]Processing classification:  28%|██▊       | 301/1074 [10:50<37:14,  2.89s/it]Processing classification:  28%|██▊       | 302/1074 [10:56<44:36,  3.47s/it]Processing classification:  29%|██▉       | 310/1074 [11:03<22:36,  1.78s/it]Processing classification:  29%|██▉       | 312/1074 [11:11<27:36,  2.17s/it]Processing classification:  30%|██▉       | 320/1074 [11:20<20:33,  1.64s/it]Processing classification:  30%|███       | 324/1074 [11:33<25:33,  2.04s/it]Processing classification:  30%|███       | 325/1074 [11:45<36:36,  2.93s/it]Processing classification:  30%|███       | 326/1074 [11:53<43:26,  3.48s/it]Processing classification:  30%|███       | 327/1074 [12:00<49:44,  4.00s/it]Processing classification:  31%|███       | 330/1074 [12:07<42:08,  3.40s/it]Processing classification:  31%|███       | 332/1074 [12:14<41:44,  3.37s/it]Processing classification:  31%|███▏      | 337/1074 [12:21<29:22,  2.39s/it]Processing classification:  32%|███▏      | 339/1074 [12:26<30:45,  2.51s/it]Processing classification:  32%|███▏      | 342/1074 [12:33<29:10,  2.39s/it]Processing classification:  32%|███▏      | 345/1074 [12:39<28:12,  2.32s/it]Processing classification:  32%|███▏      | 346/1074 [12:46<34:37,  2.85s/it]Processing classification:  32%|███▏      | 348/1074 [12:52<35:00,  2.89s/it]Processing classification:  33%|███▎      | 350/1074 [12:58<35:47,  2.97s/it]Processing classification:  33%|███▎      | 356/1074 [13:04<22:52,  1.91s/it]Processing classification:  33%|███▎      | 358/1074 [13:10<24:59,  2.09s/it]Processing classification:  34%|███▍      | 366/1074 [13:16<16:30,  1.40s/it]Processing classification:  35%|███▍      | 375/1074 [13:22<12:11,  1.05s/it]Processing classification:  35%|███▌      | 379/1074 [13:29<14:09,  1.22s/it]Processing classification:  35%|███▌      | 380/1074 [13:36<18:40,  1.61s/it]Processing classification:  35%|███▌      | 381/1074 [13:42<24:14,  2.10s/it]Processing classification:  36%|███▌      | 382/1074 [13:49<30:23,  2.63s/it]Processing classification:  36%|███▌      | 383/1074 [13:55<35:27,  3.08s/it]Processing classification:  36%|███▌      | 384/1074 [14:02<43:16,  3.76s/it]Processing classification:  36%|███▌      | 386/1074 [14:07<40:06,  3.50s/it]Processing classification:  36%|███▋      | 390/1074 [14:14<29:56,  2.63s/it]Processing classification:  37%|███▋      | 396/1074 [14:21<20:31,  1.82s/it]Processing classification:  38%|███▊      | 406/1074 [14:27<13:14,  1.19s/it]Processing classification:  38%|███▊      | 411/1074 [14:34<13:51,  1.25s/it]Processing classification:  39%|███▊      | 415/1074 [14:41<14:48,  1.35s/it]Processing classification:  39%|███▊      | 416/1074 [14:48<19:45,  1.80s/it]Processing classification:  40%|███▉      | 428/1074 [14:55<11:38,  1.08s/it]Processing classification:  40%|████      | 431/1074 [15:01<13:41,  1.28s/it]Processing classification:  41%|████      | 438/1074 [15:08<12:12,  1.15s/it]Processing classification:  41%|████      | 443/1074 [15:14<12:36,  1.20s/it]Processing classification:  42%|████▏     | 446/1074 [15:25<17:09,  1.64s/it]Processing classification:  42%|████▏     | 450/1074 [15:39<22:16,  2.14s/it]Processing classification:  42%|████▏     | 452/1074 [15:53<29:42,  2.87s/it]Processing classification:  42%|████▏     | 456/1074 [16:06<31:05,  3.02s/it]Processing classification:  43%|████▎     | 459/1074 [16:20<34:58,  3.41s/it]Processing classification:  43%|████▎     | 464/1074 [16:35<32:59,  3.25s/it]Processing classification:  44%|████▍     | 476/1074 [16:49<20:54,  2.10s/it]Processing classification:  45%|████▍     | 481/1074 [17:02<22:09,  2.24s/it]Processing classification:  45%|████▍     | 482/1074 [17:13<27:51,  2.82s/it]Processing classification:  46%|████▌     | 489/1074 [17:27<24:20,  2.50s/it]Processing classification:  46%|████▌     | 492/1074 [17:41<28:08,  2.90s/it]Processing classification:  46%|████▌     | 495/1074 [17:55<31:45,  3.29s/it]Processing classification:  46%|████▋     | 498/1074 [18:10<35:32,  3.70s/it]Processing classification:  46%|████▋     | 499/1074 [18:23<44:43,  4.67s/it]Processing classification:  47%|████▋     | 503/1074 [18:38<41:18,  4.34s/it]Processing classification:  47%|████▋     | 506/1074 [18:52<41:51,  4.42s/it]Processing classification:  48%|████▊     | 513/1074 [19:08<31:23,  3.36s/it]Processing classification:  48%|████▊     | 516/1074 [19:21<33:01,  3.55s/it]Processing classification:  48%|████▊     | 519/1074 [19:34<34:45,  3.76s/it]Processing classification:  49%|████▉     | 526/1074 [19:48<27:22,  3.00s/it]Processing classification:  49%|████▉     | 529/1074 [20:05<32:01,  3.53s/it]Processing classification:  49%|████▉     | 531/1074 [20:18<36:52,  4.07s/it]Processing classification:  50%|████▉     | 535/1074 [20:31<33:53,  3.77s/it]Processing classification:  50%|█████     | 537/1074 [20:45<39:31,  4.42s/it]Processing classification:  50%|█████     | 541/1074 [20:59<36:16,  4.08s/it]Processing classification:  51%|█████     | 543/1074 [21:14<42:03,  4.75s/it]Processing classification:  51%|█████     | 545/1074 [21:27<45:25,  5.15s/it]Processing classification:  52%|█████▏    | 559/1074 [21:41<19:50,  2.31s/it]Processing classification:  53%|█████▎    | 568/1074 [21:55<16:55,  2.01s/it]Processing classification:  53%|█████▎    | 569/1074 [22:09<22:43,  2.70s/it]Processing classification:  53%|█████▎    | 572/1074 [22:23<25:39,  3.07s/it]Processing classification:  53%|█████▎    | 573/1074 [22:36<33:24,  4.00s/it]Processing classification:  54%|█████▍    | 582/1074 [22:52<22:59,  2.80s/it]Processing classification:  54%|█████▍    | 585/1074 [23:08<26:58,  3.31s/it]Processing classification:  55%|█████▌    | 592/1074 [23:21<22:07,  2.75s/it]Processing classification:  55%|█████▌    | 594/1074 [23:35<26:50,  3.35s/it]Processing classification:  55%|█████▌    | 596/1074 [23:50<32:06,  4.03s/it]Processing classification:  56%|█████▌    | 597/1074 [24:03<39:41,  4.99s/it]Processing classification:  57%|█████▋    | 611/1074 [24:17<17:21,  2.25s/it]Processing classification:  57%|█████▋    | 614/1074 [24:29<19:48,  2.58s/it]Processing classification:  57%|█████▋    | 615/1074 [24:46<27:46,  3.63s/it]Processing classification:  57%|█████▋    | 617/1074 [24:59<31:26,  4.13s/it]Processing classification:  58%|█████▊    | 620/1074 [25:13<32:34,  4.31s/it]Processing classification:  58%|█████▊    | 623/1074 [25:26<32:23,  4.31s/it]Processing classification:  58%|█████▊    | 625/1074 [25:38<34:47,  4.65s/it]Processing classification:  59%|█████▊    | 629/1074 [25:51<30:50,  4.16s/it]Processing classification:  59%|█████▊    | 630/1074 [26:05<39:26,  5.33s/it]Processing classification:  59%|█████▉    | 631/1074 [26:20<49:28,  6.70s/it]Processing classification:  59%|█████▉    | 637/1074 [26:36<32:24,  4.45s/it]Processing classification:  60%|█████▉    | 640/1074 [26:49<31:55,  4.41s/it]Processing classification:  60%|█████▉    | 641/1074 [27:03<40:11,  5.57s/it]Processing classification:  60%|██████    | 647/1074 [27:18<28:53,  4.06s/it]Processing classification:  61%|██████    | 651/1074 [27:33<27:42,  3.93s/it]快慢不一致: fast=Red Ginger, slow=Prince Of Wales Feathers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Lenten Rose, slow=Carnation, 裁决结果=Lenten Rose
+快慢不一致: fast=Mallow, slow=Snapdragon, 裁决结果=Snapdragon
+快慢不一致: fast=Clematis, slow=Passion Flower, 裁决结果=Passion Flower
+快慢不一致: fast=Wallflower, slow=Primula vulgaris (Common Primrose), 裁决结果=Primula
+快慢不一致: fast=Giant White Arum Lily, slow=Calla Lily, 裁决结果=Giant White Arum Lily
+快慢不一致: fast=Silverbush, slow=Windflower, 裁决结果=Windflower
+快慢不一致: fast=Pincushion Flower, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Sword Lily, slow=Sweet Pea, 裁决结果=Sweet Pea
+快慢不一致: fast=Bromelia, slow=Alpinia purpurata, 裁决结果=Alpinia purpurata
+快慢不一致: fast=Mexican Aster, slow=Cosmos bipinnatus, 裁决结果=Mexican Aster
+快慢不一致: fast=Morning Glory, slow=Thorn Apple, 裁决结果=Thorn Apple
+快慢不一致: fast=Morning Glory, slow=Gentiana acaulis (Alpine Gentian), 裁决结果=Stemless Gentian
+快慢不一致: fast=Spring Crocus, slow=Giant White Arum Lily, 裁决结果=Giant White Arum Lily
+快慢不一致: fast=Tree Poppy, slow=Matilija Poppy (Romneya coulteri), 裁决结果=Matilija poppy (Romneya coulteri)
+快慢不一致: fast=Morning Glory, slow=Datura, 裁决结果=Morning Glory
+快慢不一致: fast=Bee Balm, slow=Mexican Aster, 裁决结果=Bishop of Llandaff
+快慢不一致: fast=Alpine Sea Holly, slow=Globe Thistle, 裁决结果=Alpine Sea Holly
+快慢不一致: fast=Morning Glory, slow=Stemless Gentian, 裁决结果=Stemless Gentian
+快慢不一致: fast=Bearded Iris, slow=Ruby-lipped Cattleya, 裁决结果=Canna Lily
+快慢不一致: fast=Siam Tulip, slow=Bromelia, 裁决结果=Bromelia
+快慢不一致: fast=Daffodil, slow=Gladiolus, 裁决结果=Gladiolus
+快慢不一致: fast=Garden Phlox, slow=Oenothera lindheimeri, 裁决结果=Tree Mallow
+快慢不一致: fast=Wild Pansy, slow=Convolvulus, 裁决结果=Silverbush
+快慢不一致: fast=Moon Orchid, slow=Phalaenopsis amabilis, 裁决结果=Moon Orchid
+快慢不一致: fast=Red Ginger, slow=Prince Of Wales Feathers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Petunia, slow=Tree Mallow, 裁决结果=Tree Mallow
+快慢不一致: fast=Corn Poppy, slow=Peruvian Lily, 裁决结果=Peruvian Lily
+快慢不一致: fast=Canna Lily, slow=Trumpet Vine, 裁决结果=Trumpet Vine
+快慢不一致: fast=Morning Glory, slow=Clematis, 裁决结果=Clematis
+快慢不一致: fast=Wild Pansy, slow=Lisianthus (Eustoma grandiflorum), 裁决结果=Lisianthus (Eustoma grandiflorum)
+快慢不一致: fast=Wallflower, slow=Primula, 裁决结果=Primula
+快慢不一致: fast=Pincushion Flower, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Sweet Pea, slow=Canterbury Bells, 裁决结果=Canterbury Bells
+快慢不一致: fast=Azalea, slow=Cape Flower, 裁决结果=Sword Lily
+快慢不一致: fast=Tree Mallow, slow=Balloon Flower, 裁决结果=Tree Mallow
+快慢不一致: fast=Trumpet Creeper, slow=Cautleya Spicata, 裁决结果=Cautleya Spicata
+快慢不一致: fast=Orange Dahlia, slow=Gazania, 裁决结果=Orange Dahlia
+快慢不一致: fast=Hard-leaved Pocket Orchid, slow=Lady's Slipper orchid (Cypripedium), 裁决结果=Hard-leaved Pocket Orchid
+快慢不一致: fast=Pincushion Flower, slow=Love In The Mist (Nigella damascena), 裁决结果=Love In The Mist
+快慢不一致: fast=Columbine, slow=Balloon Flower, 裁决结果=Columbine
+快慢不一致: fast=Buttercup, slow=Globe-Flower, 裁决结果=Globe-Flower
+快慢不一致: fast=Orange Dahlia, slow=Barbeton Daisy, 裁决结果=Gazania
+快慢不一致: fast=Orange Dahlia, slow=Mexican Sunflower (Tithonia rotundifolia), 裁决结果=Mexican Sunflower (Tithonia rotundifolia)
+快慢不一致: fast=Cape Flower, slow=King Protea, 裁决结果=King Protea
+快慢不一致: fast=Frangipani, slow=Adenium obesum, 裁决结果=Frangipani
+快慢不一致: fast=Wild Pansy, slow=Balloon Flower, 裁决结果=Bolero Deep Blue
+快慢不一致: fast=Pincushion Flower, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Corn Poppy, slow=Nasturtium, 裁决结果=Nasturtium
+快慢不一致: fast=Tree Mallow, slow=Hibiscus, 裁决结果=Hibiscus
+快慢不一致: fast=Bougainvillea, slow=Garden Phlox, 裁决结果=Garden Phlox
+快慢不一致: fast=Colt'S Foot, slow=Common Dandelion, 裁决结果=Oxeye Daisy
+快慢不一致: fast=Sunflower, slow=Barbeton Daisy, 裁决结果=Barbeton Daisy
+快慢不一致: fast=English Marigold, slow=Barbeton Daisy, 裁决结果=Calendula officinalis
+快慢不一致: fast=Japanese Anemone, slow=Californian Poppy, 裁决结果=Tree Poppy
+快慢不一致: fast=Wild Pansy, slow=Mexican Aster, 裁决结果=Balloon Flower
+快慢不一致: fast=Mallow, slow=Flowering Maple (Abutilon), 裁决结果=Flowering Maple (Abutilon)
+快慢不一致: fast=Canna Lily, slow=Yellow Iris, 裁决结果=Yellow Iris
+快慢不一致: fast=Mexican Aster, slow=Barbeton Daisy, 裁决结果=Barbeton Daisy
+快慢不一致: fast=Pink-yellow Dahlia, slow=Barbeton Daisy, 裁决结果=Barbeton Daisy
+快慢不一致: fast=Azalea, slow=Sweet William, 裁决结果=Tree Mallow
+快慢不一致: fast=Geranium, slow=Wallflower, 裁决结果=Wallflower
+快慢不一致: fast=Canna Lily, slow=Trumpet Creeper, 裁决结果=Trumpet Creeper
+快慢不一致: fast=Bearded Iris, slow=Hard-leaved Pocket Orchid, 裁决结果=Hard-leaved Pocket Orchid
+快慢不一致: fast=Gaura, slow=Cape Flower, 裁决结果=Cape Flower
+快慢不一致: fast=Garden Phlox, slow=Foxglove, 裁决结果=Foxglove
+快慢不一致: fast=Japanese Anemone, slow=Windflower, 裁决结果=Windflower
+快慢不一致: fast=Siam Tulip, slow=Peruvian Lily, 裁决结果=Peruvian Lily
+快慢不一致: fast=Tree Mallow, slow=Morning Glory, 裁决结果=Morning Glory
+快慢不一致: fast=Carnation, slow=Rose, 裁决结果=Rose
+快慢不一致: fast=Tiger Lily, slow=Gazania, 裁决结果=Orange Dahlia
+快慢不一致: fast=Gaura, slow=Cape Flower, 裁决结果=Gaura
+快慢不一致: fast=Mexican Aster, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Mallow, slow=Siam Tulip, 裁决结果=Siam Tulip
+快慢不一致: fast=Orange Dahlia, slow=Gazania, 裁决结果=Gazania
+快慢不一致: fast=Mexican Aster, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Japanese Anemone, slow=Primula vulgaris (Common Primrose), 裁决结果=Primula
+快慢不一致: fast=Monkshood, slow=Love In The Mist, 裁决结果=Love In The Mist
+快慢不一致: fast=Balloon Flower, slow=Tree Mallow, 裁决结果=Balloon Flower
+快慢不一致: fast=Bougainvillea, slow=Trumpet Creeper, 裁决结果=Trumpet Creeper
+快慢不一致: fast=Clematis, slow=Toad Lily, 裁决结果=Toad Lily
+快慢不一致: fast=Lenten Rose, slow=Bishop of Llandaff, 裁决结果=Bishop of Llandaff
+快慢不一致: fast=Mexican Aster, slow=Cosmos bipinnatus, 裁决结果=Mexican Aster
+快慢不一致: fast=Morning Glory, slow=Tree Mallow, 裁决结果=Petunia
+快慢不一致: fast=Monkshood, slow=Love In The Mist, 裁决结果=Tree Mallow
+快慢不一致: fast=Gaura, slow=Cape Flower, 裁决结果=Cape Flower
+快慢不一致: fast=Cape Flower, slow=Pelargonium, 裁决结果=Tree Mallow
+快慢不一致: fast=Japanese Anemone, slow=Windflower, 裁决结果=Japanese Anemone
+快慢不一致: fast=Tree Mallow, slow=Pink Primrose, 裁决结果=Pink Primrose
+快慢不一致: fast=Canna Lily, slow=Ruby-lipped Cattleya, 裁决结果=Canna Lily
+快慢不一致: fast=Tree Mallow, slow=Mexican Aster, 裁决结果=Mexican Aster
+快慢不一致: fast=Tree Mallow, slow=Pink Primrose (Oenothera lindheimeri), 裁决结果=Pink Evening Primrose (Oenothera lindheimeri)
+快慢不一致: fast=Prince Of Wales Feathers, slow=Cauliflowers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Pincushion Flower, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Red Ginger, slow=Ruby-lipped Cattleya, 裁决结果=Ruby-lipped Cattleya
+Processing classification:  61%|██████    | 653/1074 [27:46<30:49,  4.39s/it]Processing classification:  62%|██████▏   | 663/1074 [27:59<17:54,  2.61s/it]Processing classification:  62%|██████▏   | 665/1074 [28:14<22:43,  3.33s/it]Processing classification:  62%|██████▏   | 668/1074 [28:26<23:47,  3.52s/it]Processing classification:  62%|██████▏   | 671/1074 [28:41<26:05,  3.89s/it]Processing classification:  63%|██████▎   | 675/1074 [28:56<25:04,  3.77s/it]Processing classification:  63%|██████▎   | 676/1074 [29:08<30:46,  4.64s/it]Processing classification:  63%|██████▎   | 680/1074 [29:21<27:30,  4.19s/it]Processing classification:  64%|██████▎   | 682/1074 [29:36<31:20,  4.80s/it]Processing classification:  64%|██████▎   | 683/1074 [29:50<39:14,  6.02s/it]Processing classification:  64%|██████▍   | 685/1074 [30:04<41:16,  6.37s/it]Processing classification:  65%|██████▍   | 693/1074 [30:17<21:49,  3.44s/it]Processing classification:  65%|██████▍   | 697/1074 [30:29<20:47,  3.31s/it]Processing classification:  66%|██████▌   | 704/1074 [30:41<16:10,  2.62s/it]Processing classification:  66%|██████▌   | 706/1074 [30:55<20:04,  3.27s/it]Processing classification:  66%|██████▌   | 709/1074 [31:10<22:36,  3.72s/it]Processing classification:  67%|██████▋   | 715/1074 [31:24<18:43,  3.13s/it]Processing classification:  67%|██████▋   | 717/1074 [31:37<21:51,  3.67s/it]Processing classification:  68%|██████▊   | 732/1074 [31:50<10:49,  1.90s/it]Processing classification:  68%|██████▊   | 733/1074 [32:05<15:03,  2.65s/it]Processing classification:  69%|██████▊   | 738/1074 [32:19<15:12,  2.72s/it]Processing classification:  69%|██████▉   | 741/1074 [32:33<17:08,  3.09s/it]Processing classification:  69%|██████▉   | 743/1074 [32:47<20:22,  3.69s/it]Processing classification:  69%|██████▉   | 744/1074 [32:59<25:07,  4.57s/it]Processing classification:  69%|██████▉   | 745/1074 [33:14<32:22,  5.90s/it]Processing classification:  70%|██████▉   | 747/1074 [33:29<34:30,  6.33s/it]Processing classification:  70%|██████▉   | 751/1074 [33:42<26:36,  4.94s/it]Processing classification:  70%|███████   | 755/1074 [33:58<24:29,  4.61s/it]Processing classification:  70%|███████   | 757/1074 [34:11<26:33,  5.03s/it]Processing classification:  71%|███████   | 759/1074 [34:24<28:16,  5.39s/it]Processing classification:  71%|███████   | 761/1074 [34:36<28:45,  5.51s/it]Processing classification:  71%|███████   | 765/1074 [34:50<24:07,  4.69s/it]Processing classification:  71%|███████▏  | 766/1074 [35:04<30:14,  5.89s/it]Processing classification:  72%|███████▏  | 768/1074 [35:20<32:36,  6.39s/it]Processing classification:  72%|███████▏  | 769/1074 [35:35<39:53,  7.85s/it]Processing classification:  72%|███████▏  | 770/1074 [35:48<44:47,  8.84s/it]Processing classification:  72%|███████▏  | 772/1074 [36:00<39:46,  7.90s/it]Processing classification:  72%|███████▏  | 774/1074 [36:14<37:25,  7.49s/it]Processing classification:  72%|███████▏  | 777/1074 [36:28<31:40,  6.40s/it]Processing classification:  73%|███████▎  | 786/1074 [36:43<15:59,  3.33s/it]Processing classification:  73%|███████▎  | 788/1074 [36:56<18:16,  3.84s/it]Processing classification:  74%|███████▎  | 790/1074 [37:09<20:36,  4.35s/it]Processing classification:  74%|███████▎  | 792/1074 [37:22<22:40,  4.82s/it]Processing classification:  74%|███████▍  | 794/1074 [37:34<24:05,  5.16s/it]Processing classification:  74%|███████▍  | 795/1074 [37:50<31:06,  6.69s/it]Processing classification:  74%|███████▍  | 797/1074 [38:04<31:39,  6.86s/it]Processing classification:  74%|███████▍  | 800/1074 [38:22<29:29,  6.46s/it]Processing classification:  75%|███████▍  | 803/1074 [38:37<26:41,  5.91s/it]Processing classification:  75%|███████▌  | 806/1074 [38:50<24:00,  5.38s/it]Processing classification:  75%|███████▌  | 810/1074 [39:03<20:10,  4.58s/it]Processing classification:  76%|███████▌  | 814/1074 [39:18<18:37,  4.30s/it]Processing classification:  76%|███████▋  | 819/1074 [39:33<16:10,  3.80s/it]Processing classification:  77%|███████▋  | 822/1074 [39:45<16:12,  3.86s/it]Processing classification:  77%|███████▋  | 825/1074 [39:59<16:51,  4.06s/it]Processing classification:  77%|███████▋  | 832/1074 [40:13<12:26,  3.08s/it]Processing classification:  78%|███████▊  | 833/1074 [40:27<16:16,  4.05s/it]Processing classification:  78%|███████▊  | 834/1074 [40:41<20:35,  5.15s/it]Processing classification:  78%|███████▊  | 835/1074 [40:55<25:01,  6.28s/it]Processing classification:  78%|███████▊  | 843/1074 [41:07<13:09,  3.42s/it]Processing classification:  79%|███████▊  | 844/1074 [41:19<16:05,  4.20s/it]Processing classification:  79%|███████▉  | 846/1074 [41:33<18:35,  4.89s/it]Processing classification:  79%|███████▉  | 847/1074 [41:48<23:40,  6.26s/it]Processing classification:  80%|███████▉  | 857/1074 [42:02<11:02,  3.05s/it]Processing classification:  80%|████████  | 860/1074 [42:17<12:23,  3.47s/it]Processing classification:  80%|████████  | 864/1074 [42:32<12:16,  3.51s/it]Processing classification:  81%|████████  | 869/1074 [42:46<11:09,  3.27s/it]Processing classification:  81%|████████  | 872/1074 [43:00<12:12,  3.63s/it]Processing classification:  81%|████████▏ | 874/1074 [43:13<13:40,  4.10s/it]Processing classification:  81%|████████▏ | 875/1074 [43:26<17:09,  5.17s/it]Processing classification:  82%|████████▏ | 876/1074 [43:43<22:26,  6.80s/it]Processing classification:  82%|████████▏ | 881/1074 [43:58<15:40,  4.87s/it]Processing classification:  84%|████████▎ | 897/1074 [44:10<05:58,  2.03s/it]Processing classification:  84%|████████▍ | 900/1074 [44:21<06:40,  2.30s/it]Processing classification:  84%|████████▍ | 901/1074 [44:34<08:35,  2.98s/it]Processing classification:  84%|████████▍ | 902/1074 [44:47<11:14,  3.92s/it]Processing classification:  85%|████████▍ | 911/1074 [45:02<07:22,  2.72s/it]Processing classification:  86%|████████▌ | 920/1074 [45:16<05:40,  2.21s/it]Processing classification:  86%|████████▌ | 921/1074 [45:30<07:30,  2.94s/it]Processing classification:  86%|████████▌ | 926/1074 [45:42<06:51,  2.78s/it]Processing classification:  86%|████████▋ | 927/1074 [45:58<09:29,  3.88s/it]Processing classification:  87%|████████▋ | 932/1074 [46:15<08:51,  3.74s/it]Processing classification:  87%|████████▋ | 933/1074 [46:29<11:05,  4.72s/it]Processing classification:  87%|████████▋ | 936/1074 [46:43<10:43,  4.66s/it]Processing classification:  88%|████████▊ | 940/1074 [46:55<09:08,  4.09s/it]Processing classification:  88%|████████▊ | 942/1074 [47:08<10:02,  4.57s/it]Processing classification:  88%|████████▊ | 943/1074 [47:21<12:13,  5.60s/it]Processing classification:  88%|████████▊ | 945/1074 [47:35<13:04,  6.08s/it]Processing classification:  88%|████████▊ | 947/1074 [47:48<12:49,  6.06s/it]Processing classification:  88%|████████▊ | 950/1074 [48:00<11:06,  5.37s/it]Processing classification:  89%|████████▊ | 953/1074 [48:15<10:34,  5.24s/it]Processing classification:  89%|████████▉ | 955/1074 [48:28<11:00,  5.55s/it]Processing classification:  89%|████████▉ | 957/1074 [48:42<11:26,  5.87s/it]Processing classification:  89%|████████▉ | 961/1074 [48:57<09:29,  5.04s/it]Processing classification:  90%|████████▉ | 964/1074 [49:11<09:00,  4.91s/it]Processing classification:  90%|█████████ | 969/1074 [49:25<06:56,  3.97s/it]Processing classification:  91%|█████████ | 978/1074 [49:40<04:27,  2.79s/it]Processing classification:  92%|█████████▏| 983/1074 [49:55<04:20,  2.86s/it]快慢不一致: fast=Petunia, slow=Tree Mallow, 裁决结果=Tree Mallow
+快慢不一致: fast=Lotus, slow=King Protea, 裁决结果=King Protea
+快慢不一致: fast=Azalea, slow=Adenium obesum (Desert Rose), 裁决结果=Adenium obesum (Desert Rose)
+快慢不一致: fast=Cape Flower, slow=King Protea, 裁决结果=King Protea
+快慢不一致: fast=Red Ginger, slow=Prince Of Wales Feathers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Silverbush, slow=Convolvulus, 裁决结果=Windflower
+快慢不一致: fast=Azalea, slow=Cape Flower, 裁决结果=Cape Flower
+快慢不一致: fast=Morning Glory, slow=Hibiscus, 裁决结果=Tree Mallow
+快慢不一致: fast=Canna Lily, slow=Cautleya Spicata, 裁决结果=Cautleya Spicata
+快慢不一致: fast=Siam Tulip, slow=Lotus, 裁决结果=Lotus
+快慢不一致: fast=Tiger Lily, slow=Blackberry Lily (Lilium pensylvanicum), 裁决结果=Blackberry Lily (Lilium pensylvanicum)
+快慢不一致: fast=Monkshood, slow=Balloon Flower (Platycodon grandiflorus), 裁决结果=Balloon Flower
+快慢不一致: fast=Clematis, slow=Abutilon, 裁决结果=Mallow
+快慢不一致: fast=Magnolia, slow=Lotus, 裁决结果=Lotus
+快慢不一致: fast=Clematis, slow=Azalea, 裁决结果=Clematis
+快慢不一致: fast=Japanese Anemone, slow=Windflower, 裁决结果=Windflower
+快慢不一致: fast=Sunflower, slow=Gazania, 裁决结果=Gazania
+快慢不一致: fast=Monkshood, slow=Ball Moss, 裁决结果=Bromelia
+快慢不一致: fast=Snapdragon, slow=Sword Lily, 裁决结果=Sword Lily
+快慢不一致: fast=Morning Glory, slow=Watercress, 裁决结果=Nasturtium
+快慢不一致: fast=Mexican Aster, slow=Cosmos bipinnatus, 裁决结果=Mexican Aster
+快慢不一致: fast=Gaura, slow=Tree Mallow, 裁决结果=Gaura
+快慢不一致: fast=Tree Poppy, slow=Primula, 裁决结果=Hibiscus
+快慢不一致: fast=Artichoke, slow=Globe Thistle, 裁决结果=Globe Thistle
+快慢不一致: fast=Bishop of Llandaff, slow=Peruvian Lily, 裁决结果=Peruvian Lily
+快慢不一致: fast=Columbine, slow=Peruvian Lily, 裁决结果=Peruvian Lily
+快慢不一致: fast=Wallflower, slow=Nasturtium, 裁决结果=Californian Poppy
+快慢不一致: fast=Tree Mallow, slow=Foxglove, 裁决结果=Foxglove
+快慢不一致: fast=Hibiscus, slow=Wallflower, 裁决结果=Wallflower
+快慢不一致: fast=Bolero Deep Blue, slow=Bromelia, 裁决结果=Bromelia
+快慢不一致: fast=Cape Flower, slow=Campsis radicans (Trumpet Vine), 裁决结果=Campsis radicans (Trumpet Vine)
+快慢不一致: fast=Bee Balm, slow=Monarda, 裁决结果=Bee Balm
+快慢不一致: fast=Marigold, slow=Calendula officinalis, 裁决结果=Calendula officinalis
+快慢不一致: fast=Cape Flower, slow=Clematis, 裁决结果=Clematis
+快慢不一致: fast=Stemless Gentian, slow=Gentiana acaulis (alpine gentian), 裁决结果=Stemless Gentian
+快慢不一致: fast=Hippeastrum , slow=Gladiolus, 裁决结果=Gladiolus
+快慢不一致: fast=Sweet Pea, slow=Pink Primrose, 裁决结果=Sweet Pea
+快慢不一致: fast=Buttercup, slow=Globe-Flower, 裁决结果=Globe-Flower
+快慢不一致: fast=Petunia, slow=Ruellia, 裁决结果=Petunia
+快慢不一致: fast=Sword Lily, slow=Cautleya Spicata, 裁决结果=Cape Flower
+快慢不一致: fast=Sword Lily, slow=Gaura lindheimeri (Whirling Butterflies), 裁决结果=Gaura
+快慢不一致: fast=Hard-leaved Pocket Orchid, slow=Phalaenopsis, 裁决结果=Moon Orchid
+快慢不一致: fast=Red Ginger, slow=Prince Of Wales Feathers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Rose, slow=Clematis, 裁决结果=Lenten Rose
+快慢不一致: fast=Watercress, slow=Nasturtium, 裁决结果=Nasturtium
+快慢不一致: fast=Pink Primrose, slow=Hard-leaved Pocket Orchid, 裁决结果=Hard-leaved Pocket Orchid
+快慢不一致: fast=Thorn Apple, slow=Datura (Angel's Trumpet), 裁决结果=Datura (Angel's Trumpet)
+快慢不一致: fast=Colt'S Foot, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Canna Lily, slow=Bromelia, 裁决结果=Bromelia
+快慢不一致: fast=Japanese Anemone, slow=Windflower, 裁决结果=Japanese Anemone
+快慢不一致: fast=Wallflower, slow=Nasturtium, 裁决结果=Nasturtium
+快慢不一致: fast=Mexican Aster, slow=Gerbera daisy, 裁决结果=Osteospermum
+快慢不一致: fast=Azalea, slow=Cape Flower, 裁决结果=Cape Flower
+快慢不一致: fast=Wild Pansy, slow=Balloon Flower, 裁决结果=Bolero Deep Blue
+快慢不一致: fast=Mallow, slow=Abutilon, 裁决结果=Abutilon
+快慢不一致: fast=Bishop of Llandaff, slow=Dahlia, 裁决结果=Dahlia
+快慢不一致: fast=Lenten Rose, slow=Camellia, 裁决结果=Lenten Rose (Helleborus orientalis)
+快慢不一致: fast=Gaura, slow=Crinum, 裁决结果=Cape Flower
+快慢不一致: fast=Mexican Aster, slow=Barbeton Daisy, 裁决结果=Barbeton Daisy
+快慢不一致: fast=Sweet Pea, slow=Snapdragon, 裁决结果=Snapdragon
+快慢不一致: fast=Cape Flower, slow=Tree Mallow, 裁决结果=Tree Mallow
+快慢不一致: fast=Silverbush, slow=Windflower, 裁决结果=Japanese Anemone
+快慢不一致: fast=Love In The Mist, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Red Ginger, slow=Cautleya Spicata, 裁决结果=Cautleya Spicata
+快慢不一致: fast=Tree Mallow, slow=Pink Primrose (Oenothera speciosa), 裁决结果=Pink Primrose (Oenothera speciosa)
+快慢不一致: fast=Orange Dahlia, slow=Tithonia rotundifolia, 裁决结果=Orange Dahlia
+快慢不一致: fast=Moon Orchid, slow=Ruby-lipped Cattleya, 裁决结果=Ruby-lipped Cattleya
+快慢不一致: fast=Silverbush, slow=Tree Mallow, 裁决结果=Silverbush
+快慢不一致: fast=Trumpet Creeper, slow=Wallflower, 裁决结果=Wallflower
+快慢不一致: fast=Monkshood, slow=Love In The Mist, 裁决结果=Love In The Mist
+快慢不一致: fast=Japanese Anemone, slow=Windflower, 裁决结果=Japanese Anemone
+快慢不一致: fast=Sunflower, slow=Gazania, 裁决结果=Blanket Flower
+快慢不一致: fast=Morning Glory, slow=Datura, 裁决结果=Morning Glory
+快慢不一致: fast=Petunia, slow=Hibiscus, 裁决结果=Hibiscus
+快慢不一致: fast=Red Ginger, slow=Prince Of Wales Feathers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Colt'S Foot, slow=Common Dandelion, 裁决结果=Common Dandelion
+快慢不一致: fast=Frangipani, slow=Adenium obesum, 裁决结果=Azalea
+快慢不一致: fast=Orange Dahlia, slow=Mexican Sunflower (Tithonia rotundifolia), 裁决结果=Mexican Sunflower (Tithonia rotundifolia)
+快慢不一致: fast=Garden Phlox, slow=Canterbury Bells, 裁决结果=Canterbury Bells
+快慢不一致: fast=Cape Flower, slow=Giant White Arum Lily, 裁决结果=Giant White Arum Lily
+快慢不一致: fast=Bishop of Llandaff, slow=Dahlia, 裁决结果=Columbine
+快慢不一致: fast=Cape Flower, slow=Tree Mallow, 裁决结果=Tree Mallow
+快慢不一致: fast=Love In The Mist, slow=Bougainvillea, 裁决结果=Bougainvillea
+快慢不一致: fast=Colt'S Foot, slow=Common Dandelion, 裁决结果=Common Dandelion
+快慢不一致: fast=Monkshood, slow=Grape Hyacinth, 裁决结果=Grape Hyacinth
+快慢不一致: fast=Moon Orchid, slow=Sword Lily, 裁决结果=Moon Orchid
+快慢不一致: fast=Canna Lily, slow=Cautleya Spicata, 裁决结果=Cautleya Spicata
+快慢不一致: fast=Monkshood, slow=Canterbury Bells, 裁决结果=Canterbury Bells
+快慢不一致: fast=Siam Tulip, slow=Cyclamen, 裁决结果=Cyclamen
+快慢不一致: fast=Trumpet Creeper, slow=Fire Lily, 裁决结果=Fire Lily
+快慢不一致: fast=Monkshood, slow=Bolero Deep Blue, 裁决结果=Canterbury Bells
+快慢不一致: fast=Geranium, slow=Petunia, 裁决结果=Petunia
+快慢不一致: fast=Bolero Deep Blue, slow=Love In The Mist, 裁决结果=Love In The Mist
+快慢不一致: fast=Japanese Anemone, slow=Cosmos bipinnatus, 裁决结果=Osteospermum
+快慢不一致: fast=Mexican Aster, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Cape Flower, slow=King Protea (Protea cynaroides), 裁决结果=King Protea
+快慢不一致: fast=Blanket Flower, slow=Calendula officinalis, 裁决结果=Calendula officinalis
+Processing classification:  92%|█████████▏| 984/1074 [50:10<05:35,  3.73s/it]Processing classification:  92%|█████████▏| 986/1074 [50:23<06:15,  4.27s/it]Processing classification:  92%|█████████▏| 992/1074 [50:36<04:33,  3.33s/it]Processing classification:  92%|█████████▏| 993/1074 [50:49<05:44,  4.25s/it]Processing classification:  93%|█████████▎| 996/1074 [51:04<05:48,  4.47s/it]Processing classification:  93%|█████████▎| 1000/1074 [51:16<04:53,  3.96s/it]Processing classification:  94%|█████████▎| 1005/1074 [51:33<04:18,  3.74s/it]Processing classification:  94%|█████████▎| 1006/1074 [51:47<05:26,  4.80s/it]Processing classification:  94%|█████████▍| 1011/1074 [52:01<04:07,  3.93s/it]Processing classification:  95%|█████████▍| 1016/1074 [52:14<03:21,  3.47s/it]Processing classification:  95%|█████████▍| 1017/1074 [52:28<04:16,  4.50s/it]Processing classification:  95%|█████████▍| 1019/1074 [52:42<04:33,  4.97s/it]Processing classification:  95%|█████████▌| 1021/1074 [52:59<05:06,  5.78s/it]Processing classification:  95%|█████████▌| 1022/1074 [53:14<06:13,  7.19s/it]Processing classification:  95%|█████████▌| 1024/1074 [53:29<06:00,  7.21s/it]Processing classification:  95%|█████████▌| 1025/1074 [53:42<06:41,  8.20s/it]Processing classification:  96%|█████████▌| 1028/1074 [53:57<05:14,  6.83s/it]Processing classification:  96%|█████████▌| 1029/1074 [54:12<06:11,  8.25s/it]Processing classification:  96%|█████████▋| 1034/1074 [54:25<03:28,  5.20s/it]Processing classification:  96%|█████████▋| 1035/1074 [54:39<04:08,  6.38s/it]Processing classification:  97%|█████████▋| 1039/1074 [54:53<02:58,  5.09s/it]Processing classification:  97%|█████████▋| 1041/1074 [55:09<03:12,  5.83s/it]Processing classification:  97%|█████████▋| 1043/1074 [55:23<03:10,  6.14s/it]Processing classification:  98%|█████████▊| 1048/1074 [55:36<01:54,  4.42s/it]Processing classification:  98%|█████████▊| 1049/1074 [55:49<02:16,  5.47s/it]Processing classification:  98%|█████████▊| 1055/1074 [56:02<01:12,  3.83s/it]Processing classification:  98%|█████████▊| 1056/1074 [56:15<01:26,  4.79s/it]Processing classification:  99%|█████████▊| 1058/1074 [56:29<01:24,  5.28s/it]Processing classification:  99%|█████████▊| 1059/1074 [56:42<01:35,  6.36s/it]Processing classification:  99%|█████████▉| 1062/1074 [56:57<01:11,  5.93s/it]Processing classification:  99%|█████████▉| 1065/1074 [57:10<00:47,  5.26s/it]Processing classification:  99%|█████████▉| 1067/1074 [57:23<00:39,  5.68s/it]Processing classification:  99%|█████████▉| 1068/1074 [57:37<00:41,  6.85s/it]Processing classification: 100%|█████████▉| 1069/1074 [57:52<00:41,  8.31s/it]Processing classification: 100%|█████████▉| 1070/1074 [58:05<00:37,  9.33s/it]Processing classification: 100%|██████████| 1074/1074 [58:05<00:00,  3.25s/it]
+快慢不一致: fast=Petunia, slow=Adenium obesum (Desert Rose), 裁决结果=Adenium obesum (Desert Rose)
+快慢不一致: fast=Columbine, slow=Fire Lily (Gloriosa superba), 裁决结果=Fire Lily
+快慢不一致: fast=Blanket Flower, slow=Gazania, 裁决结果=Blanket Flower
+快慢不一致: fast=Azalea, slow=Adenium obesum (Desert Rose), 裁决结果=Adenium obesum (Desert Rose)
+快慢不一致: fast=Hippeastrum , slow=Peruvian Lily, 裁决结果=Peruvian Lily
+快慢不一致: fast=Hippeastrum , slow=Amaryllis, 裁决结果=Hippeastrum
+快慢不一致: fast=Bougainvillea, slow=Garden Phlox, 裁决结果=Garden Phlox
+快慢不一致: fast=Magnolia, slow=King Protea, 裁决结果=King Protea
+快慢不一致: fast=Monkshood, slow=Canterbury Bells, 裁决结果=Canterbury Bells
+快慢不一致: fast=Buttercup, slow=Globe-Flower, 裁决结果=Globe-Flower
+快慢不一致: fast=Windflower, slow=Primula, 裁决结果=Primula
+快慢不一致: fast=Sweet Pea, slow=Snapdragon, 裁决结果=Snapdragon
+快慢不一致: fast=Wallflower, slow=Prince Of Wales Feathers, 裁决结果=Prince Of Wales Feathers
+快慢不一致: fast=Pincushion Flower, slow=Great Masterwort, 裁决结果=Great Masterwort
+快慢不一致: fast=Cape Flower, slow=Helleborus, 裁决结果=Lenten Rose
+快慢不一致: fast=English Marigold, slow=Calendula officinalis, 裁决结果=Gazania
+快慢不一致: fast=Camellia, slow=Rose, 裁决结果=Rose
+快慢不一致: fast=Moon Orchid, slow=Ruby-lipped Cattleya, 裁决结果=Ruby-lipped Cattleya
+快慢不一致: fast=Petunia, slow=Ruellia tuberosa (Jewelweed), 裁决结果=Petunia
+快慢不一致: fast=Hard-leaved Pocket Orchid, slow=Ruby-lipped Cattleya, 裁决结果=Ruby-lipped Cattleya
+快慢不一致: fast=Monkshood, slow=Balloon Flower, 裁决结果=Balloon Flower
+快慢不一致: fast=Cape Flower, slow=Pink Primrose, 裁决结果=Pink Primrose
+快慢不一致: fast=Cape Flower, slow=Pink Primrose, 裁决结果=Pink Primrose
+快慢不一致: fast=Mexican Aster, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Tree Poppy, slow=Yellow Buttercup (Ranunculus sp.), 裁决结果=Buttercup
+快慢不一致: fast=Azalea, slow=Trumpet Creeper, 裁决结果=Trumpet Creeper
+快慢不一致: fast=Mexican Aster, slow=Osteospermum, 裁决结果=Osteospermum
+快慢不一致: fast=Japanese Anemone, slow=Windflower, 裁决结果=Windflower
+快慢不一致: fast=Tree Mallow, slow=Dianthus, 裁决结果=Tree Mallow
+快慢不一致: fast=Tree Mallow, slow=Pelargonium, 裁决结果=Tree Mallow
+快慢不一致: fast=Bromelia, slow=Tillandsia cyanea, 裁决结果=Tillandsia cyanea
+快慢不一致: fast=Cape Flower, slow=Windflower, 裁决结果=Windflower
+快慢不一致: fast=Barbeton Daisy, slow=King Protea, 裁决结果=King Protea
+快慢不一致: fast=Columbine, slow=Fire Lily, 裁决结果=Fire Lily
+快慢不一致: fast=Snapdragon, slow=Foxglove, 裁决结果=Foxglove
+✅ 正确预测总数: 915
+  - 其中仅快思考正确: 449
+  - 其中慢思考触发且正确: 466
+❌ 错误预测总数: 159
+📊 慢思考触发数量: 604
+[fast_slow_classify] 总体准确率: 0.8520 (915/1074)
+[fast_slow_classify] 快思考准确率: 0.9553
+[fast_slow_classify] 慢思考触发比例: 0.5624
+[fast_slow_classify] 慢思考准确率: 0.7715
+分类结果已保存到: ./experiments/flower102/classify/classification_results.json
+当前时间为： 2025-11-01 11:28:22
+总耗时: 00:58:16

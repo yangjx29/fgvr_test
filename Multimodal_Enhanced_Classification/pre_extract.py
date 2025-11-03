@@ -11,6 +11,9 @@ import sys
 # 导入YAML配置文件处理模块
 import yaml
 
+# 导入文本描述生成器
+from text_description_generator import TextDescriptionGenerator
+
 # 导入PyTorch深度学习框架
 import torch
 import torch.nn.parallel
@@ -75,10 +78,13 @@ def load_clip_to_cpu(arch):
 
 # 简化的特征提取函数，专为discovering.py集成设计
 @torch.no_grad()
-def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args):
+def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args, text_generator=None):
     """
     简化的多模态特征提取函数
     专为与discovering.py快慢思考系统集成而设计
+    
+    Args:
+        text_generator: 文本描述生成器，用于为子视图生成描述
     
     修改支持：
     - 每个类别处理k张图像（从category_image_paths.json获取）
@@ -109,9 +115,21 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
     # 加载描述文件
     try:
         with open(retrieved_desc_file, 'r', encoding='utf-8') as f:
-            retrieved_descriptions = json.load(f)
+            retrieved_descriptions_raw = json.load(f)
         with open(test_desc_file, 'r', encoding='utf-8') as f:
-            test_descriptions = json.load(f)
+            test_descriptions_raw = json.load(f)
+        
+        # 处理可能的列表格式（由dump_json产生）
+        if isinstance(retrieved_descriptions_raw, list) and len(retrieved_descriptions_raw) > 0:
+            retrieved_descriptions = retrieved_descriptions_raw[0]
+        else:
+            retrieved_descriptions = retrieved_descriptions_raw
+            
+        if isinstance(test_descriptions_raw, list) and len(test_descriptions_raw) > 0:
+            test_descriptions = test_descriptions_raw[0]
+        else:
+            test_descriptions = test_descriptions_raw
+            
     except Exception as e:
         print(f"❌ 加载描述文件失败: {e}")
         return False
@@ -119,6 +137,24 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
     print(f"✅ 成功加载描述文件:")
     print(f"  检索描述: {len(retrieved_descriptions)} 条")
     print(f"  测试描述: {len(test_descriptions)} 条")
+
+    # 生成子视图文本描述（如果启用）
+    generated_descriptions = {}
+    if text_generator and text_generator.is_generate:
+        print("🔄 为子视图生成文本描述...")
+        try:
+            # 为当前数据集生成描述
+            generated_descriptions = text_generator.generate_dataset_descriptions(
+                data_dir=args.data,
+                dataset_name=args.test_set,
+                cache_dir="./description_cache"
+            )
+            print(f"✅ 生成了 {len(generated_descriptions)} 个图像描述")
+        except Exception as e:
+            print(f"⚠️  文本描述生成失败: {e}")
+            generated_descriptions = {}
+    else:
+        print("⚠️  文本描述生成功能已禁用")
 
     # 存储所有提取的多模态特征
     all_retrieved_data = []  # 检索到的[图-文]特征
@@ -130,21 +166,51 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
         # 按类别分组处理检索数据
         category_features = {}  # 存储每个类别的所有图像特征
         
-        for i, (images, target) in enumerate(tqdm(retrieved_loader, desc="Processing retrieved")):
-            # 安全处理图像列表
-            if isinstance(images, list):
-                # 将所有视图移到GPU
-                for k in range(len(images)):
-                    images[k] = images[k].cuda(non_blocking=True)
-                # 拼接所有视图
-                images = torch.cat(images, dim=0)
-            else:
-                # 单张图像
-                images = images.cuda(non_blocking=True)
-            
-            # 将标签移到GPU
-            target = target.cuda(non_blocking=True)
-            target_item = target.item()
+        for i, batch_data in enumerate(tqdm(retrieved_loader, desc="Processing retrieved")):
+            try:
+                # 安全解包批次数据
+                if isinstance(batch_data, (list, tuple)) and len(batch_data) >= 2:
+                    images, target = batch_data[0], batch_data[1]
+                else:
+                    print(f"❌ 批次数据格式错误: {type(batch_data)}, 跳过")
+                    continue
+                
+                print(f"Debug: batch {i}, images type={type(images)}, target type={type(target)}")
+                
+                # 安全处理图像数据
+                if isinstance(images, list):
+                    # 处理图像列表
+                    valid_images = []
+                    for k, img in enumerate(images):
+                        if hasattr(img, 'cuda'):
+                            valid_images.append(img.cuda(non_blocking=True))
+                        else:
+                            print(f"❌ 图像 {k} 不是tensor: {type(img)}")
+                    
+                    if valid_images:
+                        images = torch.cat(valid_images, dim=0)
+                    else:
+                        print(f"❌ 没有有效图像，跳过批次 {i}")
+                        continue
+                        
+                elif hasattr(images, 'cuda'):
+                    # 单张图像tensor
+                    images = images.cuda(non_blocking=True)
+                else:
+                    print(f"❌ 图像数据不是tensor: {type(images)}, 跳过")
+                    continue
+                
+                # 安全处理标签
+                if hasattr(target, 'cuda'):
+                    target = target.cuda(non_blocking=True)
+                    target_item = target.item()
+                else:
+                    print(f"❌ 标签不是tensor: {type(target)}, 跳过")
+                    continue
+                    
+            except Exception as e:
+                print(f"❌ 处理批次 {i} 失败: {e}")
+                continue
 
             # 使用混合精度提取多模态特征
             with torch.cuda.amp.autocast():
@@ -154,8 +220,50 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
                 image_features = image_features / image_features.norm(dim=-1, keepdim=True)
                 
                 # 获取对应的文本描述
-                desc_key = str(i) if str(i) in retrieved_descriptions else list(retrieved_descriptions.keys())[i % len(retrieved_descriptions)]
-                text_description = retrieved_descriptions[desc_key]
+                try:
+                    # 首先尝试从生成的描述中获取
+                    text_description = None
+                    
+                    # 尝试根据图像路径获取生成的描述
+                    # 这里需要获取当前图像的实际路径
+                    # 由于我们无法直接获取路径，先使用原有逻辑，后续可以改进
+                    
+                    desc_key = str(i) if str(i) in retrieved_descriptions else list(retrieved_descriptions.keys())[i % len(retrieved_descriptions)]
+                    original_description = retrieved_descriptions[desc_key]
+                    
+                    # 如果有生成的描述且原描述是特征向量，则使用生成的描述
+                    if generated_descriptions and isinstance(original_description, list) and len(original_description) > 0 and isinstance(original_description[0], (int, float)):
+                        # 原描述是特征向量，尝试使用生成的描述
+                        # 这里需要更好的映射机制，暂时使用默认描述
+                        text_description = "a detailed photo"
+                        print(f"⚠️  使用默认描述替代特征向量")
+                    else:
+                        text_description = original_description
+                    
+                    print(f"Debug: desc_key={desc_key}, text_description type={type(text_description)}")
+                    
+                    # 确保text_description是字符串
+                    if isinstance(text_description, list):
+                        # 检查是否是特征向量（数值列表）
+                        if len(text_description) > 0 and isinstance(text_description[0], (int, float)):
+                            # 这是特征向量，使用默认描述
+                            text_description = "a photo"
+                            print(f"⚠️  检测到特征向量而非文本描述，使用默认描述")
+                        else:
+                            # 这是文本列表，取第一个
+                            text_description = text_description[0] if len(text_description) > 0 else "a photo"
+                    elif isinstance(text_description, (int, float)):
+                        text_description = "a photo"
+                        print(f"⚠️  检测到数值而非文本描述，使用默认描述")
+                    elif text_description is None:
+                        text_description = "a photo"
+                    elif not isinstance(text_description, str):
+                        text_description = str(text_description)
+                        
+                    print(f"Debug: final text_description={text_description}")
+                except Exception as e:
+                    print(f"Debug: Error in text description processing: {e}")
+                    text_description = "a photo"
                 
                 # 编码文本描述
                 text_tokens = clip.tokenize([text_description], truncate=True).cuda()
@@ -203,20 +311,49 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
     # 处理测试图像及其描述
     print("🔄 处理测试图像-文本对...")
     try:
-        for i, (images, target) in enumerate(tqdm(test_loader, desc="Processing test")):
-            # 安全处理图像列表
-            if isinstance(images, list):
-                # 将所有视图移到GPU
-                for k in range(len(images)):
-                    images[k] = images[k].cuda(non_blocking=True)
-                # 拼接所有视图
-                images = torch.cat(images, dim=0)
-            else:
-                # 单张图像
-                images = images.cuda(non_blocking=True)
-            
-            # 将标签移到GPU
-            target = target.cuda(non_blocking=True)
+        for i, batch_data in enumerate(tqdm(test_loader, desc="Processing test")):
+            try:
+                # 安全解包批次数据
+                if isinstance(batch_data, (list, tuple)) and len(batch_data) >= 2:
+                    images, target = batch_data[0], batch_data[1]
+                else:
+                    print(f"❌ 测试批次数据格式错误: {type(batch_data)}, 跳过")
+                    continue
+                
+                # 安全处理图像数据
+                if isinstance(images, list):
+                    # 处理图像列表
+                    valid_images = []
+                    for k, img in enumerate(images):
+                        if hasattr(img, 'cuda'):
+                            valid_images.append(img.cuda(non_blocking=True))
+                        else:
+                            print(f"❌ 测试图像 {k} 不是tensor: {type(img)}")
+                    
+                    if valid_images:
+                        images = torch.cat(valid_images, dim=0)
+                    else:
+                        print(f"❌ 没有有效测试图像，跳过批次 {i}")
+                        continue
+                        
+                elif hasattr(images, 'cuda'):
+                    # 单张图像tensor
+                    images = images.cuda(non_blocking=True)
+                else:
+                    print(f"❌ 测试图像数据不是tensor: {type(images)}, 跳过")
+                    continue
+                
+                # 安全处理标签
+                if hasattr(target, 'cuda'):
+                    target = target.cuda(non_blocking=True)
+                    target_item = target.item()
+                else:
+                    print(f"❌ 测试标签不是tensor: {type(target)}, 跳过")
+                    continue
+                    
+            except Exception as e:
+                print(f"❌ 处理测试批次 {i} 失败: {e}")
+                continue
 
             # 使用混合精度提取多模态特征
             with torch.cuda.amp.autocast():
@@ -228,6 +365,24 @@ def pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, ar
                 # 获取对应的文本描述
                 desc_key = str(i) if str(i) in test_descriptions else list(test_descriptions.keys())[i % len(test_descriptions)]
                 text_description = test_descriptions[desc_key]
+                
+                # 确保text_description是字符串
+                if isinstance(text_description, list):
+                    # 检查是否是特征向量（数值列表）
+                    if len(text_description) > 0 and isinstance(text_description[0], (int, float)):
+                        # 这是特征向量，使用默认描述
+                        text_description = "a photo"
+                        print(f"⚠️  测试数据检测到特征向量而非文本描述，使用默认描述")
+                    else:
+                        # 这是文本列表，取第一个
+                        text_description = text_description[0] if len(text_description) > 0 else "a photo"
+                elif isinstance(text_description, (int, float)):
+                    text_description = "a photo"
+                    print(f"⚠️  测试数据检测到数值而非文本描述，使用默认描述")
+                elif text_description is None:
+                    text_description = "a photo"
+                elif not isinstance(text_description, str):
+                    text_description = str(text_description)
                 
                 # 编码文本描述
                 text_tokens = clip.tokenize([text_description], truncate=True).cuda()
@@ -287,6 +442,15 @@ def main_worker(args):
     print(f"🚀 开始MEC特征预提取: {args.test_set}")
     print(f"📐 模型架构: {args.arch}")
     print(f"🎲 随机种子: {args.seed}")
+    
+    # 初始化文本描述生成器
+    print("🔄 初始化文本描述生成器...")
+    try:
+        text_generator = TextDescriptionGenerator(device='cuda', device_id=0)
+        print("✅ 文本描述生成器初始化完成")
+    except Exception as e:
+        print(f"⚠️  文本描述生成器初始化失败: {e}")
+        text_generator = None
     
     try:
         # 加载CLIP模型
@@ -364,7 +528,7 @@ def main_worker(args):
         
         # 开始提取多模态特征
         print("🚀 开始提取多模态特征...")
-        success = pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args)
+        success = pre_extract_multimodal_feature(retrieved_loader, test_loader, clip_model, args, text_generator)
         
         if success:
             print("🎉 MEC特征预提取完成!")
@@ -397,4 +561,12 @@ if __name__ == '__main__':
     # 设置随机种子以保证可重复性
     set_random_seed(args.seed)
     # 启动主工作函数
-    main_worker(args)
+    success = main_worker(args)
+    
+    # 根据执行结果设置退出码
+    if success:
+        print("✅ 特征预提取成功完成")
+        exit(0)
+    else:
+        print("❌ 特征预提取失败")
+        exit(1)

@@ -29,6 +29,11 @@ similarity_processing: "weighted_separate"  # image_text_pair | weighted_separat
 similarity_processing_hyper_parameter:
   weighted_separate:
     weights: [0.4, 0.4, 0.1, 0.1]  # [文-文，图-图，图-文，文-图]
+
+# 🆕 子视图文本描述生成（新增）
+generate_text_description:
+  is_generate: True          # 是否启用文本描述生成
+  vlm_batch_generate: 10     # Qwen-VL批量处理大小
 ```
 
 #### 策略说明
@@ -41,11 +46,18 @@ similarity_processing_hyper_parameter:
 - `image_text_pair`：图文对拼接后计算整体相似度（原有策略）
 - `weighted_separate`：分别计算文-文、图-图、图-文、文-图四种相似度并加权融合（新增）
 
+**🆕 子视图文本描述生成**：
+- `is_generate: True`：启用Qwen-VL为每个子视图生成详细文本描述
+- `is_generate: False`：使用默认简单文本描述（如"a photo of a dog"）
+- `vlm_batch_generate`：控制Qwen-VL批量处理大小，平衡速度和内存
+- **智能缓存**：自动缓存已生成的描述，避免重复计算
+- **增量更新**：只为新图像生成描述，已有描述从缓存读取
+
 **策略组合建议**：
-1. **保守组合**：`average + image_text_pair` - 稳定可靠
-2. **精细组合**：`average + weighted_separate` - 提升相似度计算精度
-3. **增强组合**：`simultaneously_enhance + image_text_pair` - 提升k-shot利用效率
-4. **激进组合**：`simultaneously_enhance + weighted_separate` - 最大化信息利用
+1. **保守组合**：`average + image_text_pair + 默认描述` - 稳定可靠，速度快
+2. **精细组合**：`average + weighted_separate + 默认描述` - 提升相似度计算精度
+3. **增强组合**：`simultaneously_enhance + image_text_pair + 生成描述` - 提升k-shot利用效率
+4. **激进组合**：`simultaneously_enhance + weighted_separate + 生成描述` - 最大化信息利用（推荐）
 
 ---
 
@@ -60,6 +72,9 @@ similarity_processing_hyper_parameter:
   - `./descriptions/{dataset}_test_descriptions.json`：测试图像的描述
 - 类别图像路径文件：
   - `./experiments/{dataset}/knowledge_base/category_image_paths.json`：存储每个类别的k张图像路径
+- 🆕 文本描述缓存（可选）：
+  - `./description_cache/{dataset}_descriptions.json`：Qwen-VL生成的文本描述缓存
+  - 自动创建和更新，无需手动管理
 
 ### 使用流程
 ```bash

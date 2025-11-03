@@ -1,0 +1,91 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/oldhome/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='fast_slow_classify', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='3', knowledge_base_dir='./knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7, enable_mllm_intermediate_judge=False, infer_dir='./experiments/pet37/infer', classify_dir='./experiments/pet37/classify')
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'FlanT5-XXL', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
+当前时间为： 2025-11-01 10:26:37
+从目录加载推理结果: ./experiments/pet37/infer
+分类结果将保存到: ./experiments/pet37/classify
+初始化知识库构建器...
+🚀 融合方法为 'weighted'，跳过BLIP模型加载以节省显存
+获取MLLM模型实例（单例模式）...
+🚀 初始化MLLM模型: Qwen2.5-VL-7B on cuda
+📊 当前显存: 0.56GB / 47.40GB
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.66s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.94s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.99s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:02,  2.02s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.57s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.74s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+✅ MLLM模型初始化完成
+📊 加载后显存: 31.59GB / 47.40GB
+初始化快思考模块...
+未找到历史统计量文件，将从头开始
+初始化慢思考模块...
+快慢思考系统初始化完成!
+从 ./experiments/pet37/knowledge_base 加载知识库...
+类别图像路径已从 ./experiments/pet37/knowledge_base/category_image_paths.json 加载
+加载了 37 个类别的图像路径
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+已加载知识库: ./experiments/pet37/knowledge_base
+找到 399 个推理结果文件
+Processing classification:   0%|          | 0/399 [00:00<?, ?it/s]Processing classification:   2%|▏         | 6/399 [00:10<11:18,  1.73s/it]Processing classification:   3%|▎         | 11/399 [00:20<12:14,  1.89s/it]Processing classification:   5%|▍         | 18/399 [00:30<10:22,  1.64s/it]Processing classification:   6%|▌         | 22/399 [00:40<12:03,  1.92s/it]Processing classification:   7%|▋         | 28/399 [00:51<11:39,  1.89s/it]Processing classification:   7%|▋         | 29/399 [00:59<14:53,  2.42s/it]Processing classification:  10%|▉         | 39/399 [01:08<09:19,  1.55s/it]Processing classification:  13%|█▎        | 52/399 [01:17<06:28,  1.12s/it]Processing classification:  13%|█▎        | 53/399 [01:25<08:36,  1.49s/it]Processing classification:  14%|█▍        | 55/399 [01:35<11:03,  1.93s/it]Processing classification:  17%|█▋        | 69/399 [01:45<06:54,  1.25s/it]Processing classification:  18%|█▊        | 72/399 [01:55<08:29,  1.56s/it]Processing classification:  20%|█▉        | 79/399 [02:04<07:45,  1.45s/it]Processing classification:  22%|██▏       | 88/399 [02:14<06:52,  1.32s/it]Processing classification:  23%|██▎       | 90/399 [02:22<08:26,  1.64s/it]Processing classification:  28%|██▊       | 113/399 [02:36<04:38,  1.03it/s]Processing classification:  35%|███▍      | 138/399 [02:46<03:00,  1.44it/s]Processing classification:  35%|███▍      | 139/399 [02:56<04:04,  1.06it/s]Processing classification:  36%|███▌      | 144/399 [03:06<04:49,  1.14s/it]Processing classification:  37%|███▋      | 146/399 [03:15<05:55,  1.41s/it]Processing classification:  38%|███▊      | 150/399 [03:19<05:26,  1.31s/it]Processing classification:  45%|████▍     | 179/399 [03:27<02:16,  1.62it/s]Processing classification:  48%|████▊     | 193/399 [03:35<02:05,  1.64it/s]Processing classification:  53%|█████▎    | 213/399 [03:46<01:47,  1.72it/s]Processing classification:  57%|█████▋    | 229/399 [03:55<01:40,  1.70it/s]Processing classification:  59%|█████▉    | 236/399 [04:04<01:54,  1.42it/s]Processing classification:  62%|██████▏   | 246/399 [04:14<01:56,  1.32it/s]Processing classification:  63%|██████▎   | 253/399 [04:24<02:10,  1.12it/s]Processing classification:  66%|██████▌   | 262/399 [04:31<02:01,  1.13it/s]Processing classification:  67%|██████▋   | 266/399 [04:40<02:22,  1.07s/it]Processing classification:  68%|██████▊   | 270/399 [04:50<02:47,  1.30s/it]Processing classification:  68%|██████▊   | 272/399 [04:59<03:33,  1.68s/it]Processing classification:  69%|██████▉   | 275/399 [05:10<04:11,  2.03s/it]Processing classification:  70%|███████   | 280/399 [05:19<03:56,  1.98s/it]Processing classification:  71%|███████   | 282/399 [05:31<04:57,  2.54s/it]Processing classification:  72%|███████▏  | 286/399 [05:40<04:37,  2.46s/it]Processing classification:  76%|███████▌  | 304/399 [05:48<01:48,  1.15s/it]Processing classification:  77%|███████▋  | 308/399 [05:57<02:00,  1.33s/it]Processing classification:  78%|███████▊  | 313/399 [06:05<02:00,  1.41s/it]Processing classification:  82%|████████▏ | 328/399 [06:14<01:10,  1.00it/s]Processing classification:  84%|████████▎ | 334/399 [06:24<01:13,  1.13s/it]Processing classification:  84%|████████▍ | 336/399 [06:34<01:36,  1.54s/it]Processing classification:  85%|████████▍ | 338/399 [06:44<01:58,  1.94s/it]Processing classification:  85%|████████▍ | 339/399 [06:55<02:38,  2.64s/it]Processing classification:  88%|████████▊ | 351/399 [07:05<01:17,  1.61s/it]Processing classification:  96%|█████████▌| 382/399 [07:15<00:12,  1.35it/s]Processing classification:  97%|█████████▋| 386/399 [07:24<00:11,  1.11it/s]Processing classification:  98%|█████████▊| 391/399 [07:34<00:08,  1.09s/it]Processing classification:  99%|█████████▉| 395/399 [07:45<00:05,  1.33s/it]Processing classification: 100%|██████████| 399/399 [07:45<00:00,  1.17s/it]
+快慢不一致: fast=Birman, slow=Siamese, 裁决结果=Siamese
+快慢不一致: fast=Bombay, slow=Maine Coon, 裁决结果=Siamese
+快慢不一致: fast=Boxer, slow=Saint Bernard, 裁决结果=Saint Bernard
+快慢不一致: fast=Wheaten Terrier, slow=Havanese, 裁决结果=Lhasa Apso
+快慢不一致: fast=Bengal, slow=Maine Coon, 裁决结果=Maine Coon
+快慢不一致: fast=Ragdoll, slow=Maine Coon, 裁决结果=Ragdoll
+快慢不一致: fast=British Shorthair, slow=Scottish Fold, 裁决结果=Scottish Fold
+快慢不一致: fast=Abyssinian, slow=Sphynx, 裁决结果=Sphynx
+快慢不一致: fast=Basset Hound, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=Birman, slow=Ragdoll, 裁决结果=Ragdoll
+快慢不一致: fast=Keeshond, slow=Great Pyrenees, 裁决结果=Great Pyrenees
+快慢不一致: fast=Ragdoll, slow=Birman, 裁决结果=Birman
+快慢不一致: fast=Abyssinian, slow=Bengal, 裁决结果=Bengal
+快慢不一致: fast=German Shorthaired, slow=Poodle or Poodle Mix, 裁决结果=English Cocker Spaniel
+快慢不一致: fast=Keeshond, slow=Pomeranian, 裁决结果=Pomeranian
+快慢不一致: fast=Ragdoll, slow=Siamese or Siamese Mix, 裁决结果=Siamese or Siamese Mix
+快慢不一致: fast=Havanese, slow=Shih Tzu, 裁决结果=Havanese
+快慢不一致: fast=Havanese, slow=Wheaten Terrier, 裁决结果=Scottish Terrier
+快慢不一致: fast=Basset Hound, slow=Saint Bernard, 裁决结果=Saint Bernard
+快慢不一致: fast=Chihuahua, slow=Boxer, 裁决结果=Boxer
+最终决策失败: CUDA out of memory. Tried to allocate 37.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 10.88 GiB is free. Including non-PyTorch memory, this process has 36.51 GiB memory in use. Of the allocated memory 35.79 GiB is allocated by PyTorch, and 416.80 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+快慢不一致: fast=Bengal, slow=Maine Coon, 裁决结果=Maine Coon
+快慢不一致: fast=Great Pyrenees, slow=Golden Retriever, 裁决结果=Great Pyrenees
+快慢不一致: fast=American Bulldog, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Bombay, slow=British Shorthair, 裁决结果=British Shorthair
+快慢不一致: fast=Ragdoll, slow=Siamese, 裁决结果=Siamese
+快慢不一致: fast=Bombay, slow=Black Cat, 裁决结果=Russian Blue
+快慢不一致: fast=Birman, slow=Siamese, 裁决结果=Birman
+快慢不一致: fast=Egyptian Mau, slow=British Shorthair, 裁决结果=Egyptian Mau
+快慢不一致: fast=Samoyed, slow=Pomeranian, 裁决结果=Pomeranian
+快慢不一致: fast=Miniature Pinscher, slow=Chihuahua, 裁决结果=Chihuahua
+快慢不一致: fast=Leonberger, slow=German Shepherd, 裁决结果=German Shepherd
+快慢不一致: fast=Russian Blue, slow=British Shorthair, 裁决结果=British Shorthair
+快慢不一致: fast=Scottish Terrier, slow=West Highland White Terrier (Westie), 裁决结果=West Highland White Terrier (Westie)
+快慢不一致: fast=Pug, slow=Shiba Inu, 裁决结果=Shiba Inu
+快慢不一致: fast=Chihuahua, slow=Beagle, 裁决结果=Beagle
+快慢不一致: fast=German Shorthaired, slow=English Setter, 裁决结果=English Setter
+快慢不一致: fast=Ragdoll, slow=Maine Coon, 裁决结果=Siamese
+快慢不一致: fast=Wheaten Terrier, slow=English Cocker Spaniel, 裁决结果=English Cocker Spaniel
+快慢不一致: fast=Egyptian Mau, slow=Bengal, 裁决结果=Bengal
+快慢不一致: fast=American Bulldog, slow=Boxer, 裁决结果=Boxer
+快慢不一致: fast=Ragdoll, slow=Birman, 裁决结果=Ragdoll
+快慢不一致: fast=English Setter, slow=Cocker Spaniel, 裁决结果=English Cocker Spaniel
+快慢不一致: fast=Bombay, slow=Black Cat, 裁决结果=Siamese
+快慢不一致: fast=Birman, slow=Ragdoll, 裁决结果=Ragdoll
+快慢不一致: fast=Bombay, slow=American Shorthair, 裁决结果=Bombay
+快慢不一致: fast=Pomeranian, slow=Leonberger, 裁决结果=Samoyed
+快慢不一致: fast=Newfoundland, slow=English Cocker Spaniel, 裁决结果=Newfoundland
+快慢不一致: fast=Bombay, slow=Domestic Shorthair, 裁决结果=Egyptian Mau
+快慢不一致: fast=Shiba Inu, slow=Wheaten Terrier, 裁决结果=Wheaten Terrier
+✅ 正确预测总数: 360
+  - 其中仅快思考正确: 263
+  - 其中慢思考触发且正确: 97
+❌ 错误预测总数: 39
+📊 慢思考触发数量: 132
+[fast_slow_classify] 总体准确率: 0.9023 (360/399)
+[fast_slow_classify] 快思考准确率: 0.9850
+[fast_slow_classify] 慢思考触发比例: 0.3308
+[fast_slow_classify] 慢思考准确率: 0.7348
+分类结果已保存到: ./experiments/pet37/classify/classification_results.json
+当前时间为： 2025-11-01 10:34:32
+总耗时: 00:07:55

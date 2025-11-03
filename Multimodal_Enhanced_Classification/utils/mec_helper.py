@@ -14,6 +14,148 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List, Tuple, Any, Optional
 
+def run_mec_pipeline_with_details(
+    mec_path: str,
+    mec_data_dir: str,
+    dataset_name: str,
+    arch: str = 'ViT-B/16',
+    seed: int = 0,
+    batch_size: int = 50,
+    timeout: int = 300
+) -> Dict[str, Any]:
+    """
+    运行完整的MEC流水线并返回详细的AWC增强信息
+    
+    Args:
+        mec_path: MEC框架根目录路径
+        mec_data_dir: MEC数据目录路径  
+        dataset_name: 数据集名称
+        arch: CLIP模型架构
+        seed: 随机种子
+        batch_size: 批次大小
+        timeout: 超时时间（秒）
+    
+    Returns:
+        包含执行结果和详细AWC信息的字典
+    """
+    result = {
+        "success": False,
+        "accuracy": 0.0,
+        "detailed_results": [],
+        "error_message": "",
+        "execution_time": 0.0
+    }
+    
+    try:
+        import time
+        start_time = time.time()
+        
+        # 数据验证逻辑（与原函数相同）
+        test_data_dir = os.path.join(mec_data_dir, f"{dataset_name}_test")
+        retrieved_data_dir = os.path.join(mec_data_dir, f"{dataset_name}_retrieved")
+        descriptions_dir = os.path.join(mec_path, "descriptions")
+        
+        test_desc_file = os.path.join(descriptions_dir, f"{dataset_name}_test_descriptions.json")
+        retrieved_desc_file = os.path.join(descriptions_dir, f"{dataset_name}_retrieved_descriptions.json")
+        
+        # 验证数据存在性
+        if not os.path.exists(test_data_dir):
+            result["error_message"] = f"测试数据目录不存在: {test_data_dir}"
+            return result
+            
+        if not os.path.exists(retrieved_data_dir):
+            result["error_message"] = f"检索数据目录不存在: {retrieved_data_dir}"
+            return result
+            
+        if not os.path.exists(test_desc_file):
+            result["error_message"] = f"测试描述文件不存在: {test_desc_file}"
+            return result
+            
+        if not os.path.exists(retrieved_desc_file):
+            result["error_message"] = f"检索描述文件不存在: {retrieved_desc_file}"
+            return result
+        
+        # 计算样本数量
+        print(f"🔍 验证数据完整性...")
+        print(f"  测试数据目录: {test_data_dir}")
+        print(f"  检索数据目录: {retrieved_data_dir}")
+        
+        # 统计测试图像
+        test_images = []
+        if os.path.exists(test_data_dir):
+            test_images = [f for f in os.listdir(test_data_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
+        
+        # 统计检索图像
+        retrieved_images = []
+        retrieved_subdir = os.path.join(retrieved_data_dir, "retrieved_images")
+        
+        if os.path.exists(retrieved_subdir):
+            retrieved_images = [f for f in os.listdir(retrieved_subdir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
+            print(f"  检索图像位于子目录: {retrieved_subdir}")
+        elif os.path.exists(retrieved_data_dir):
+            retrieved_images = [f for f in os.listdir(retrieved_data_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'))]
+            print(f"  检索图像位于根目录: {retrieved_data_dir}")
+        
+        print(f"  发现测试图像: {len(test_images)} 个")
+        print(f"  发现检索图像: {len(retrieved_images)} 个")
+        
+        if len(test_images) == 0:
+            result["error_message"] = "测试数据集为空"
+            return result
+            
+        if len(retrieved_images) == 0:
+            result["error_message"] = "检索数据集为空"
+            return result
+        
+        print(f"MEC流水线: 测试样本 {len(test_images)} 个, 检索样本 {len(retrieved_images)} 个")
+        
+        # 步骤1: 预提取特征
+        print("🔄 步骤1: 预提取多模态特征...")
+        pre_extract_success = run_pre_extract(
+            mec_path=mec_path,
+            data_root=mec_data_dir,
+            dataset_name=dataset_name,
+            arch=arch,
+            seed=seed,
+            batch_size=batch_size,
+            timeout=timeout//2
+        )
+        
+        if not pre_extract_success:
+            result["error_message"] = "特征预提取失败"
+            return result
+        
+        # 步骤2: 执行评估并获取详细信息
+        print("🔄 步骤2: 执行多模态增强分类评估...")
+        eval_result = run_evaluation_with_details(
+            mec_path=mec_path,
+            dataset_name=dataset_name,
+            arch=arch,
+            seed=seed
+        )
+        
+        if eval_result is None:
+            result["error_message"] = "MEC评估失败"
+            return result
+        
+        # 成功完成
+        result["success"] = True
+        result["accuracy"] = eval_result.get("accuracy", 0.0)
+        result["detailed_results"] = eval_result.get("detailed_results", [])
+        result["summary"] = eval_result.get("summary", {})
+        result["execution_time"] = time.time() - start_time
+        
+        print(f"✅ MEC流水线完成，准确率: {result['accuracy']:.4f}, 耗时: {result['execution_time']:.2f}秒")
+        print(f"📊 返回详细AWC信息: {len(result['detailed_results'])} 个样本")
+        
+    except Exception as e:
+        result["error_message"] = f"MEC流水线异常: {str(e)}"
+        print(f"❌ {result['error_message']}")
+        import traceback
+        traceback.print_exc()
+    
+    return result
+
 def run_mec_pipeline(
     mec_path: str,
     mec_data_dir: str,
@@ -192,8 +334,26 @@ def run_pre_extract(
         )
         
         if process.returncode == 0:
-            print("✅ 特征预提取成功")
-            return True
+            # 验证特征文件是否实际生成
+            save_dir = f"./pre_extracted_feat/{arch.replace('/', '')}/seed{seed}"
+            retrieved_path = os.path.join(mec_path, save_dir, f"{dataset_name}_retrieved.pth")
+            test_path = os.path.join(mec_path, save_dir, f"{dataset_name}_test.pth")
+            
+            if os.path.exists(retrieved_path) and os.path.exists(test_path):
+                print("✅ 特征预提取成功")
+                print(f"✅ 检索特征文件: {retrieved_path}")
+                print(f"✅ 测试特征文件: {test_path}")
+                return True
+            else:
+                print("❌ 特征预提取失败：特征文件未生成")
+                print(f"❌ 检索特征文件不存在: {retrieved_path}")
+                print(f"❌ 测试特征文件不存在: {test_path}")
+                print("📋 预提取输出:")
+                print(process.stdout)
+                if process.stderr:
+                    print("📋 预提取错误:")
+                    print(process.stderr)
+                return False
         else:
             print(f"❌ 特征预提取失败:")
             print(f"stdout: {process.stdout}")
@@ -207,6 +367,88 @@ def run_pre_extract(
         print(f"❌ 特征预提取异常: {e}")
         return False
 
+
+def run_evaluation_with_details(
+    mec_path: str,
+    dataset_name: str,
+    arch: str = 'ViT-B/16',
+    seed: int = 0,
+    timeout: int = 150
+) -> Optional[Dict[str, Any]]:
+    """运行MEC评估并返回详细的AWC增强信息"""
+    try:
+        # 创建临时文件保存详细结果
+        import tempfile
+        temp_result_file = os.path.join(mec_path, f"temp_awc_results_{dataset_name}.json")
+        
+        # 构建评估命令，添加保存详细结果的参数
+        cmd = [
+            sys.executable,
+            "evaluate.py",
+            "--test_set", dataset_name,
+            "--arch", arch,
+            "--seed", str(seed),
+            "--print-freq", "100",
+            "--save_detailed_results", temp_result_file
+        ]
+        
+        print(f"执行评估命令: {' '.join(cmd)}")
+        
+        # 执行命令
+        process = subprocess.run(
+            cmd,
+            cwd=mec_path,
+            capture_output=True,
+            text=True,
+            timeout=timeout
+        )
+        
+        if process.returncode == 0:
+            # 从输出中解析准确率
+            accuracy = parse_accuracy_from_output(process.stdout)
+            
+            # 尝试读取详细结果文件
+            detailed_results = []
+            if os.path.exists(temp_result_file):
+                try:
+                    with open(temp_result_file, 'r', encoding='utf-8') as f:
+                        detailed_data = json.load(f)
+                        detailed_results = detailed_data.get("detailed_results", [])
+                    # 清理临时文件
+                    os.remove(temp_result_file)
+                except Exception as e:
+                    print(f"⚠️  读取详细结果文件失败: {e}")
+            
+            if accuracy is not None:
+                print(f"✅ MEC评估成功，准确率: {accuracy:.4f}")
+                print(f"📊 返回详细AWC信息: {len(detailed_results)} 个样本")
+                
+                return {
+                    "accuracy": accuracy,
+                    "detailed_results": detailed_results,
+                    "summary": {
+                        "total_samples": len(detailed_results),
+                        "correct_predictions": sum(1 for r in detailed_results if r.get("is_correct", False)),
+                        "accuracy": accuracy
+                    }
+                }
+            else:
+                print("❌ 无法解析准确率")
+                return None
+        else:
+            print(f"❌ MEC评估失败:")
+            print(f"stdout: {process.stdout}")
+            print(f"stderr: {process.stderr}")
+            return None
+            
+    except subprocess.TimeoutExpired:
+        print(f"❌ MEC评估超时 ({timeout}秒)")
+        return None
+    except Exception as e:
+        print(f"❌ MEC评估异常: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
 
 def run_evaluation(
     mec_path: str,

@@ -604,6 +604,9 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
     correct_predictions = 0
     total_predictions = 0
     
+    # 存储详细的AWC增强信息
+    detailed_awc_results = []
+    
     # 对每个待测试样本进行匹配
     print("🔄 开始多模态特征匹配...")
     for i, (test_features, target) in enumerate(test_data):
@@ -785,8 +788,13 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
             similarities = torch.stack(similarities)
             retrieved_labels = torch.stack(retrieved_labels)
             
+            # 获取Top-K结果
+            top_k = min(5, len(similarities))
+            top_k_values, top_k_indices = torch.topk(similarities, top_k)
+            
             max_idx = torch.argmax(similarities)
             predicted_label = retrieved_labels[max_idx]
+            predicted_confidence = similarities[max_idx].item()
             
             # 评估预测结果
             is_correct = (predicted_label == target).item()
@@ -794,6 +802,45 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
                 correct_predictions += 1
             
             total_predictions += 1
+            
+            # 收集AWC增强信息
+            awc_info = {
+                "sample_index": i,
+                "final_prediction": int(predicted_label.item()),
+                "final_confidence": predicted_confidence,
+                "true_label": int(target.item()),
+                "is_correct": is_correct,
+                
+                # Top-K信息
+                "top_k_predictions": [int(retrieved_labels[idx].item()) for idx in top_k_indices],
+                "top_k_confidences": [float(similarities[idx].item()) for idx in top_k_indices],
+                
+                # 相似度分布
+                "all_similarities": {int(retrieved_labels[j].item()): float(similarities[j].item()) 
+                                    for j in range(len(similarities))},
+                
+                # 检索证据信息
+                "retrieval_evidence": {
+                    "num_retrieved_samples": len(retrieved_labels),
+                    "avg_similarity": float(similarities.mean().item()),
+                    "max_similarity": float(similarities.max().item()),
+                    "min_similarity": float(similarities.min().item()),
+                    "std_similarity": float(similarities.std().item())
+                }
+            }
+            
+            # 计算Top-K稳定性
+            if len(top_k_values) >= 2:
+                awc_info["topk_stability"] = float(top_k_values[0].item() - top_k_values[1].item())
+            else:
+                awc_info["topk_stability"] = 0.5
+            
+            # 计算置信度分布熵
+            conf_values = similarities / similarities.sum()
+            conf_entropy = -(conf_values * torch.log2(conf_values + 1e-10)).sum()
+            awc_info["confidence_entropy"] = float(conf_entropy.item())
+            
+            detailed_awc_results.append(awc_info)
             
             # 计算当前准确率用于进度显示
             current_acc = (correct_predictions / total_predictions) * 100.0
@@ -824,7 +871,16 @@ def Multimodal_Enhanced_Classification_evaluation(clip_model, args):
     print(f"⏱️  总耗时: {time.time() - start_time:.2f} 秒")
     print("="*60)
     
-    return final_accuracy
+    # 返回准确率和详细的AWC增强信息
+    return {
+        "accuracy": final_accuracy,
+        "detailed_results": detailed_awc_results,
+        "summary": {
+            "total_samples": total_predictions,
+            "correct_predictions": correct_predictions,
+            "accuracy": final_accuracy
+        }
+    }
 
 
 # 简化的主工作函数，专为discovering.py集成设计
@@ -852,13 +908,38 @@ def main_worker(args):
         
         # 执行多模态增强分类评估
         print("🚀 开始多模态增强分类评估...")
-        accuracy = Multimodal_Enhanced_Classification_evaluation(clip_model, args)
+        result = Multimodal_Enhanced_Classification_evaluation(clip_model, args)
         
-        if accuracy > 0:
-            print(f"🎉 MEC评估完成! 准确率: {accuracy:.4f}")
-            return accuracy
+        if isinstance(result, dict):
+            accuracy = result.get("accuracy", 0.0)
+            
+            # 如果指定了保存详细结果的路径，则保存
+            if hasattr(args, 'save_detailed_results') and args.save_detailed_results:
+                try:
+                    import json
+                    with open(args.save_detailed_results, 'w', encoding='utf-8') as f:
+                        json.dump(result, f, ensure_ascii=False, indent=2)
+                    print(f"📁 详细AWC结果已保存到: {args.save_detailed_results}")
+                except Exception as e:
+                    print(f"⚠️  保存详细结果失败: {e}")
+            
+            if accuracy > 0:
+                print(f"🎉 MEC评估完成! 准确率: {accuracy:.4f}")
+                return accuracy
+            else:
+                print("❌ MEC评估失败!")
+                return 0.0
+        elif isinstance(result, (int, float)):
+            # 兼容旧版本返回格式
+            accuracy = float(result)
+            if accuracy > 0:
+                print(f"🎉 MEC评估完成! 准确率: {accuracy:.4f}")
+                return accuracy
+            else:
+                print("❌ MEC评估失败!")
+                return 0.0
         else:
-            print("❌ MEC评估失败!")
+            print("❌ MEC评估返回格式错误!")
             return 0.0
             
     except Exception as e:
@@ -877,9 +958,18 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)  # 随机种子
     parser.add_argument('--descriptor_path', type=str)  # 描述文件路径
     parser.add_argument('--num_descriptor', type=int, default=50)  # 每个类别使用的描述数量
+    parser.add_argument('--save_detailed_results', type=str, help='path to save detailed AWC results')  # 保存详细结果的路径
 
     args = parser.parse_args()
     # 设置随机种子以保证可重复性
     set_random_seed(args.seed)
     # 启动主工作函数
-    main_worker(args)
+    result = main_worker(args)
+    
+    # 根据执行结果设置退出码
+    if isinstance(result, (int, float)) and result > 0:
+        print("✅ MEC评估成功完成")
+        exit(0)
+    else:
+        print("❌ MEC评估失败")
+        exit(1)
