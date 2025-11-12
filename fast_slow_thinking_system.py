@@ -22,6 +22,8 @@ from collections import defaultdict
 from agents.mllm_bot import MLLMBot
 from knowledge_base_builder import KnowledgeBaseBuilder
 from fast_thinking import FastThinking
+from fast_thinking_optimized import FastThinkingOptimized
+from slow_thinking_optimized import SlowThinkingOptimized
 from slow_thinking import SlowThinking
 from utils.fileios import dump_json, load_json
 from utils.util import is_similar
@@ -70,7 +72,7 @@ class FastSlowThinkingSystem:
         
         # 初始化快思考模块
         print("初始化快思考模块...")
-        self.fast_thinking = FastThinking(
+        self.fast_thinking = FastThinkingOptimized(
             knowledge_base_builder=self.kb_builder,
             confidence_threshold=self.cfg.get('confidence_threshold', 0.8),
             similarity_threshold=self.cfg.get('similarity_threshold', 0.7)
@@ -78,7 +80,7 @@ class FastSlowThinkingSystem:
         
         # 初始化慢思考模块
         print("初始化慢思考模块...")
-        self.slow_thinking = SlowThinking(
+        self.slow_thinking = SlowThinkingOptimized(
             mllm_bot=self.mllm_bot,
             knowledge_base_builder=self.kb_builder,
             fast_thinking=self.fast_thinking
@@ -169,28 +171,64 @@ class FastSlowThinkingSystem:
             slow_start_time = time.time()
             
             # 3. 慢思考
-            # slow_result = self.slow_thinking.slow_thinking_pipeline(
-            #     query_image_path, fast_result, top_k
-            # )
-            slow_result = self.slow_thinking.slow_thinking_pipeline_update(
+            slow_result = self.slow_thinking.slow_thinking_pipeline_optimized(
                 query_image_path, fast_result, top_k
             )
+            # slow_result = self.slow_thinking.slow_thinking_pipeline_update(
+            #     query_image_path, fast_result, top_k
+            # )
             slow_time = time.time() - slow_start_time
             
-            # 4. 最终决策：如果快慢思考结果不一致，进行融合决策
+            # 4. 改进的最终决策：智能融合快慢思考结果
             fast_pred = fast_result.get("fused_top1", fast_result.get("predicted_category", "unknown"))
             slow_pred = slow_result["predicted_category"]
+            fast_conf = fast_result.get("fused_top1_prob", fast_result.get("confidence", 0.0))
+            slow_conf = slow_result.get("confidence", 0.0)
             
-            if fast_pred != slow_pred and not is_similar(fast_pred, slow_pred, threshold=0.5):
-                print("快慢思考结果不一致，进行最终融合决策...")
-                final_prediction, final_confidence, final_reasoning = self._final_decision(
-                    query_image_path, fast_result, slow_result, top_k
-                )
-            else:
-                # 结果一致，使用慢思考结果
+            # 检查结果一致性
+            fast_slow_consistent = is_similar(fast_pred, slow_pred, threshold=0.5)
+            
+            # 改进的融合策略：
+            # 1. 如果结果一致，优先使用慢思考结果（通常更准确）
+            # 2. 如果结果不一致，根据置信度和LCB值进行决策
+            # 3. 如果慢思考置信度很高，优先使用慢思考结果
+            # 4. 如果快思考置信度很高且LCB值很高，可以考虑使用快思考结果
+            if fast_slow_consistent:
+                # 结果一致，使用慢思考结果（更详细的分析）
                 final_prediction = slow_pred
-                final_confidence = slow_result["confidence"]
+                final_confidence = slow_conf
                 final_reasoning = slow_result["reasoning"]
+            else:
+                # 结果不一致，进行智能决策
+                lcb_map = fast_result.get('lcb_map', {}) or {}
+                lcb_value = float(lcb_map.get(slow_pred, lcb_map.get(fast_pred, 0.5))) if isinstance(lcb_map, dict) else 0.5
+                
+                # 决策规则：
+                # 1. 如果慢思考置信度很高(>=0.80)，优先使用慢思考
+                # 2. 如果快思考置信度很高(>=0.75)且LCB值很高(>=0.70)，使用快思考
+                # 3. 如果慢思考置信度中等(>=0.70)且快思考置信度较低(<0.70)，使用慢思考
+                # 4. 其他情况，使用慢思考（更详细的分析）
+                if slow_conf >= 0.80:
+                    # 慢思考置信度很高，优先使用
+                    final_prediction = slow_pred
+                    final_confidence = slow_conf
+                    final_reasoning = slow_result["reasoning"] + " | Fast prediction: " + fast_pred
+                elif fast_conf >= 0.75 and lcb_value >= 0.70:
+                    # 快思考置信度很高且LCB值很高，使用快思考
+                    final_prediction = fast_pred
+                    final_confidence = fast_conf
+                    final_reasoning = f"Fast thinking with high confidence (LCB: {lcb_value:.3f}) | Slow prediction: {slow_pred}"
+                elif slow_conf >= 0.70 and fast_conf < 0.70:
+                    # 慢思考置信度中等且快思考置信度较低，使用慢思考
+                    final_prediction = slow_pred
+                    final_confidence = slow_conf
+                    final_reasoning = slow_result["reasoning"] + " | Fast prediction: " + fast_pred
+                else:
+                    # 其他情况，使用慢思考（更详细的分析）
+                    print("快慢思考结果不一致，进行最终融合决策...")
+                    final_prediction, final_confidence, final_reasoning = self._final_decision(
+                        query_image_path, fast_result, slow_result, top_k
+                    )
             
             result.update({
                 "slow_result": slow_result,

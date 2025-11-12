@@ -21,7 +21,9 @@ from agents.mllm_bot import MLLMBot
 from knowledge_base_builder import KnowledgeBaseBuilder
 from fast_thinking import FastThinking
 from utils.util import is_similar
-
+from data.data_stats import DOG_STATS
+import re
+from difflib import get_close_matches
 
 class SlowThinking:
     """慢思考模块"""
@@ -39,6 +41,10 @@ class SlowThinking:
         self.mllm_bot = mllm_bot
         self.kb_builder = knowledge_base_builder
         self.fast_thinking = fast_thinking
+        self.normalized_to_original = {
+            self.normalize_name(cls): cls for cls in DOG_STATS['class_names']
+        }
+        self.normalized_class_names = list(self.normalized_to_original.keys())
         
     def analyze_difficulty(self, query_image_path: str, fast_result: Dict) -> Dict:
         """
@@ -469,6 +475,14 @@ class SlowThinking:
             conf = float(merged[0][1]) if merged else 0.0
             return fallback, conf, f"final_reasoning_simple exception: {str(e)}"
     
+    
+    def normalize_name(self, name):
+        # 转小写，替换连字符和多个空格为单个空格，去掉首尾空格
+        name = name.lower()
+        name = re.sub(r'[-_]', ' ', name)      # 将 - 和 _ 替换为空格
+        name = re.sub(r'\s+', ' ', name)       # 合并多个空格
+        return name.strip()
+
     def slow_thinking_pipeline(self, query_image_path: str, fast_result: Dict, 
                              top_k: int = 5) -> Dict:
         """
@@ -591,7 +605,26 @@ class SlowThinking:
         # )
         print(f"最终预测: {predicted_category} (置信度: {confidence:.4f})")
         print(f"推理过程: {reasoning}")
-
+        # 确保predicted_category在class name里面
+        if predicted_category not in DOG_STATS['class_names']:
+            # 解决类似Boston Terrier-Boston Bull、chihuahua-chihuaha、Black-and-tan Coonhound-Black and tan Coonhound等类似问题
+            norm_pred = self.normalize_name(predicted_category)
+    
+            # 先尝试精确匹配标准化后的名称
+            if norm_pred in self.normalized_class_names:
+                corrected_category = self.normalized_to_original[norm_pred]
+                print(f"精确标准化匹配类别修正: '{predicted_category}' -> '{corrected_category}'")
+                predicted_category = corrected_category
+            else:
+                # 尝试模糊匹配（使用 difflib）
+                close_matches = get_close_matches(norm_pred, self.normalized_class_names, n=1, cutoff=0.3)
+                if close_matches:
+                    best_match_norm = close_matches[0]
+                    corrected_category = self.normalized_to_original[best_match_norm]
+                    print(f"模糊匹配类别修正: '{predicted_category}' -> '{corrected_category}'")
+                    predicted_category = corrected_category
+                else:
+                   print(f'发现新类别:{predicted_category}')
         # 6. 统计更新 + 持续学习：基于最终预测进行自适应更新 上面代码没变
         # 更严格的置信标准：结合LCB、一致性、置信度等多重指标
         enhanced_top1_score = float((enhanced_results or [("", 0.0)])[0][1]) if enhanced_results else 0.0
@@ -639,12 +672,12 @@ class SlowThinking:
             # print(f'fused_results:{fused_results}')
             if isinstance(fast.get('fused_results'), list):
                 for idx, (cat, _) in enumerate(fast['fused_results']):
-                    if is_similar(cat, predicted_category, threshold=0.5):
+                    if is_similar(cat, predicted_category, threshold=0.3):
                         rank_fast = idx
                         break
             if isinstance(enhanced_results, list):
                 for idx, (cat, _) in enumerate(enhanced_results):
-                    if is_similar(cat, predicted_category, threshold=0.5):
+                    if is_similar(cat, predicted_category, threshold=0.3):
                         rank_enh = idx
                         break
             # print(f'候选排名: fast={rank_fast}, enhanced={rank_enh} ')
@@ -657,17 +690,17 @@ class SlowThinking:
                 'rank_in_enhanced_topk': rank_enh
             }
 
-            self.kb_builder.incremental_update(
-                category=predicted_category,
-                image_path=query_image_path,
-                structured_description=structured_description,
-                key_regions=key_regions,
-                confidence=float(confidence),
-                mllm_bot=self.mllm_bot,
-                save_dir=save_dir,
-                signals=signals
-            )
-            print(f"已对知识库进行增量更新: 类别={predicted_category}, 置信度={confidence:.4f}, signals={signals}")
+            # self.kb_builder.incremental_update(
+            #     category=predicted_category,
+            #     image_path=query_image_path,
+            #     structured_description=structured_description,
+            #     key_regions=key_regions,
+            #     confidence=float(confidence),
+            #     mllm_bot=self.mllm_bot,
+            #     save_dir=save_dir,
+            #     signals=signals
+            # )
+            # print(f"已对知识库进行增量更新: 类别={predicted_category}, 置信度={confidence:.4f}, signals={signals}")
         else:
             print("跳过增量更新：预测类别未知或为空")
         

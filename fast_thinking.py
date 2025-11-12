@@ -29,14 +29,18 @@ class FastThinking:
                  # 这两个值调过了，应该是最优区间
                  fusion_weight: float = 0.05,
                  softmax_temp: float = 0.07,
-                 fused_conf_threshold: float = 0.6,
-                 fused_margin_threshold: float = 0.12,
-                 per_modality_conf_threshold: float = 0.5,
+                 # 优化的触发阈值 - 平衡速度和准确率
+                 fused_conf_threshold: float = 0.70,  # 从0.75降低到0.70,增加慢思考触发
+                 fused_margin_threshold: float = 0.18,  # 从0.15提高到0.18,更严格
+                 per_modality_conf_threshold: float = 0.68,  # 从0.65提高到0.68,更严格
                  consider_topk_overlap: bool = True,
                  topk_for_overlap: int = 3,
-                 # —— LCB 相关默认参数 ——
+                 # —— LCB 相关默认参数 - 优化 ——
                  stats_file: str = "/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base/stats.json",
-                 lcb_threshold: float = 0.7,
+                 lcb_threshold: float = 0.68,  # 从0.65提高到0.68,增加慢思考触发
+                 lcb_threshold_adaptive: bool = True,  # 启用自适应阈值
+                 lcb_threshold_min: float = 0.60,  # 最小阈值
+                 lcb_threshold_max: float = 0.78,  # 最大阈值
                  prior_strength: float = 2.0,
                  prior_p: float = 0.6,
                  lcb_eta: float = 1.0,
@@ -64,6 +68,9 @@ class FastThinking:
         self.topk_for_overlap = max(1, topk_for_overlap)
         # LCB 参数与状态
         self.lcb_threshold = lcb_threshold
+        self.lcb_threshold_adaptive = lcb_threshold_adaptive
+        self.lcb_threshold_min = lcb_threshold_min
+        self.lcb_threshold_max = lcb_threshold_max
         self.prior_strength = prior_strength
         self.prior_p = prior_p
         self.lcb_eta = lcb_eta
@@ -73,6 +80,13 @@ class FastThinking:
         self.total_predictions = 1  # 避免对数为0
         # category -> {"n": 历史命中次数, "m": 历史正确次数}
         self.category_stats = defaultdict(lambda: {"n": 0, "m": 0})  # n: 检索命中次数, m: 预测正确次数
+        # 性能统计
+        self.performance_stats = {
+            "fast_path_count": 0,
+            "slow_path_count": 0,
+            "fast_path_correct": 0,
+            "slow_path_correct": 0
+        }
         # 加载历史统计量
         self.load_stats()
 
@@ -85,6 +99,9 @@ class FastThinking:
                 data = json.load(f)
                 self.category_stats = defaultdict(lambda: {"n": 0, "m": 0}, data.get("category_stats", {}))
                 self.total_predictions = data.get("total_predictions", 0)
+                # 加载性能统计
+                if "performance_stats" in data:
+                    self.performance_stats = data["performance_stats"]
             print(f"已加载历史统计量: {self.total_predictions} 次预测")
         else:
             print("未找到历史统计量文件，将从头开始")
@@ -291,7 +308,7 @@ class FastThinking:
                          fused_top1: str, fused_top1_prob: float, fused_margin: float,
                          topk_overlap: bool, name_soft_agree: bool) -> Tuple[bool, str, float]:
         """
-        触发器机制：判断是否需要进入慢思考
+        优化后的触发器机制：多级阈值判断,更早地拒绝慢思考
         
         Args:
             img_category: 图像检索结果
@@ -302,41 +319,66 @@ class FastThinking:
         Returns:
             Tuple[bool, str, float]: (是否需要慢思考, 预测类别, 置信度)
         """
-        # 名称软一致性（语义近似）或Top-K 重叠，弱冲突判定
-        categories_match_soft = is_similar(img_category, text_category, threshold=self.similarity_threshold) or name_soft_agree
-
-        # 若融合Top-1置信度足够高且与次高差距足够大，则直接信任融合结果
-        if fused_top1_prob >= self.fused_conf_threshold and fused_margin >= self.fused_margin_threshold:
+        # === 第一级: 严格的快速路径判断 ===
+        # 1. 融合Top-1置信度足够高且margin足够大 - 最严格条件
+        # 提高要求：同时检查置信度和margin，并且要求两个模态都较高
+        if (fused_top1_prob >= self.fused_conf_threshold and 
+            fused_margin >= self.fused_margin_threshold and
+            img_confidence >= 0.60 and text_confidence >= 0.60):
             return False, fused_top1, fused_top1_prob
 
-        # 若两个模态较为一致（软）且各自置信度均不低，则无需慢思考
-        if categories_match_soft and img_confidence >= self.per_modality_conf_threshold and text_confidence >= self.per_modality_conf_threshold:
+        # 2. 两个模态高度一致且各自置信度都很高 - 更严格的条件
+        categories_match_soft = is_similar(img_category, text_category, threshold=self.similarity_threshold) or name_soft_agree
+        if (categories_match_soft and 
+            img_confidence >= self.per_modality_conf_threshold and 
+            text_confidence >= self.per_modality_conf_threshold and
+            fused_top1_prob >= 0.65):  # 额外要求融合概率也较高
             return False, fused_top1, float(max(img_confidence, text_confidence))
 
-        # 若Top-K结果存在重叠且融合Top-1落在重叠集合中（通过上层传入的布尔），提高信任
-        if self.consider_topk_overlap and topk_overlap and fused_top1_prob >= (self.fused_conf_threshold * 0.9):
+        # 3. Top-K重叠且融合Top-1置信度较高 - 更严格的条件
+        if (self.consider_topk_overlap and topk_overlap and 
+            fused_top1_prob >= (self.fused_conf_threshold * 0.95) and  # 提高到0.95
+            fused_margin >= (self.fused_margin_threshold * 0.8)):  # 要求margin也较高
             return False, fused_top1, fused_top1_prob
 
-        # —— 基于 LCB 的阈值判断（在现有规则基础上追加，不覆盖前面快速返回）——
-        # 1) 准备当前类别与置信度分布；这里使用两个模态的置信度以及融合Top-1概率
+        # === 第二级: LCB判断 ===
+        # 准备置信度分数
         confidence_scores = [
             max(0.0, min(1.0, float(img_confidence))),
             max(0.0, min(1.0, float(text_confidence))),
             max(0.0, min(1.0, float(fused_top1_prob)))
         ]
         category_for_lcb = fused_top1
-        # 2) 冷启动保护：若类别未出现过，则初始化其统计量
+        
+        # 冷启动保护
         if category_for_lcb not in self.category_stats:
             self.category_stats[category_for_lcb] = {"n": 0, "m": 0}
-        # 3) 更新全局计数，确保 calculate_lcb 中的对数项数值稳定
+        
         self.total_predictions = max(1, int(self.total_predictions) + 1)
-        # 4) 计算 LCB 并进行阈值判断
+        
+        # 计算LCB
         lcb_value = self.calculate_lcb(category_for_lcb, confidence_scores)
-        if lcb_value >= self.lcb_threshold:
-            # LCB 足够高：无需慢思考，直接信任融合Top-1
+        
+        # 获取自适应阈值
+        adaptive_threshold = self._get_adaptive_lcb_threshold()
+        
+        # LCB判断 - 使用自适应阈值
+        if lcb_value >= adaptive_threshold:
             return False, fused_top1, fused_top1_prob
 
-        # 其余情况进入慢思考
+        # === 第三级: 额外的快速判断 - 更严格的条件 ===
+        # 如果融合Top-1置信度很高(>=0.75)且margin很大(>=0.15),即使LCB不够高也信任
+        # 同时要求两个模态都较高且一致
+        if (fused_top1_prob >= 0.75 and 
+            fused_margin >= 0.15 and
+            img_confidence >= 0.65 and 
+            text_confidence >= 0.65):
+            # 检查两个模态的Top-1是否一致
+            if is_similar(img_category, text_category, threshold=0.85):  # 提高相似度阈值
+                return False, fused_top1, fused_top1_prob
+
+        # === 需要慢思考 ===
+        # 对于不确定的情况,倾向于使用慢思考以提高准确率
         avg_confidence = (img_confidence + text_confidence) / 2
         return True, "conflict", avg_confidence
     
@@ -382,13 +424,14 @@ class FastThinking:
 
         return max(0.0, min(1.0, lcb))
     
-    def update_stats(self, category: str, is_correct: bool):
+    def update_stats(self, category: str, is_correct: bool, used_slow_thinking: bool = False):
         """
         更新统计量
         
         Args:
-            predicted_category: 预测的类别
+            category: 预测的类别
             is_correct: 预测是否正确
+            used_slow_thinking: 是否使用了慢思考
             n 为命中次数， m为正确次数
         """
         self.category_stats[category]["n"] += 1
@@ -397,16 +440,51 @@ class FastThinking:
         
         self.total_predictions += 1
         
+        # 更新性能统计
+        if used_slow_thinking:
+            self.performance_stats["slow_path_count"] += 1
+            if is_correct:
+                self.performance_stats["slow_path_correct"] += 1
+        else:
+            self.performance_stats["fast_path_count"] += 1
+            if is_correct:
+                self.performance_stats["fast_path_correct"] += 1
+        
         self.save_stats()
     
     def save_stats(self):
         """保存统计量到文件"""
         data = {
             "category_stats": dict(self.category_stats),
-            "total_predictions": self.total_predictions
+            "total_predictions": self.total_predictions,
+            "performance_stats": self.performance_stats
         }
         with open(self.stats_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+    
+    def _get_adaptive_lcb_threshold(self) -> float:
+        """根据历史性能自适应调整LCB阈值"""
+        if not self.lcb_threshold_adaptive:
+            return self.lcb_threshold
+        
+        # 计算快速路径的正确率
+        fast_path_acc = 0.0
+        if self.performance_stats["fast_path_count"] > 0:
+            fast_path_acc = self.performance_stats["fast_path_correct"] / self.performance_stats["fast_path_count"]
+        
+        # 如果快速路径正确率很高(>0.90),可以稍微提高阈值
+        if fast_path_acc > 0.90:
+            adaptive_threshold = min(self.lcb_threshold_max, self.lcb_threshold + 0.03)
+        # 如果快速路径正确率较低(<0.75),降低阈值(更宽松,增加慢思考以提高准确率)
+        elif fast_path_acc < 0.75:
+            adaptive_threshold = max(self.lcb_threshold_min, self.lcb_threshold - 0.08)
+        # 如果快速路径正确率中等,保持阈值或稍微降低
+        elif fast_path_acc < 0.85:
+            adaptive_threshold = max(self.lcb_threshold_min, self.lcb_threshold - 0.03)
+        else:
+            adaptive_threshold = self.lcb_threshold
+        
+        return adaptive_threshold
     
     def fast_thinking_pipeline(self, query_image_path: str, top_k: int = 5) -> Dict:
         """

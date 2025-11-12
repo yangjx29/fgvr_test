@@ -456,13 +456,13 @@ class KnowledgeBaseBuilder:
         image_kb_path = os.path.join(load_dir, "image_knowledge_base.json")
         if os.path.exists(image_kb_path):
             image_kb_data = load_json(image_kb_path)
-            self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data[0].items()}
+            self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data.items()}
         
         # 加载文本知识库
         text_kb_path = os.path.join(load_dir, "text_knowledge_base.json")
         if os.path.exists(text_kb_path):
             text_kb_data = load_json(text_kb_path)
-            self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data[0].items()}
+            self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data.items()}
         
         # 加载类别描述
         desc_path = os.path.join(load_dir, "category_descriptions.json")
@@ -548,11 +548,11 @@ class KnowledgeBaseBuilder:
         # === 严格的质量判断机制 ===
         quality_score = self._evaluate_update_quality(category, confidence, signals)
         
-        if quality_score < 0.6:  # 质量阈值
+        if quality_score < 0.7:  # 质量阈值
             print(f"跳过更新：质量分数过低 {quality_score:.3f}")
             return False
         
-        print(f"质量分数: {quality_score:.3f}，开始增量更新...")
+        print(f"质量分数: {quality_score:.3f}，开始增量更新")
         # === 图像知识库更新 ===
         self._update_image_knowledge_base(category, image_path, quality_score)
         
