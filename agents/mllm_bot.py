@@ -7,8 +7,6 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-# 直接导入UniFGVR目录下的utils模块
-sys.path.insert(0, '/data/yjx/MLLM/UniFGVR')
 from utils.util import encode_base64, prepare_qwen2_5_input, get_important_image_tokens, create_attention_mask
 
 import torch
@@ -191,7 +189,7 @@ class MLLMBot:
     def get_name(self):
         return self.model_name
 
-    def __call_qwen2_5(self, raw_image, prompt):
+    def __call_qwen2_5(self, raw_image, prompt, max_new_tokens=256):
         # print(f"MLLMBot prompt: {prompt}")
 
         if isinstance(raw_image, Image.Image):
@@ -282,7 +280,7 @@ class MLLMBot:
         with torch.no_grad():
             generated_ids = self.qwen2_5.generate(
                 **inputs,
-                max_new_tokens=256,
+                max_new_tokens=max_new_tokens,
                 # logits_processor=logits_processors
             )
         generated_ids_trimmed = [
@@ -316,9 +314,9 @@ class MLLMBot:
         trimmed_reply = trim_answer(reply)
         return reply, trimmed_reply
 
-    def describe_attribute(self, raw_image, attr_prompt):
+    def describe_attribute(self, raw_image, attr_prompt, max_new_tokens=256):
         # raw_image是Image.open之后的格式
-        reply = self.__call_qwen2_5(raw_image, attr_prompt)
+        reply = self.__call_qwen2_5(raw_image, attr_prompt, max_new_tokens)
         trimmed_reply = trim_answer(reply)
         return reply, trimmed_reply
     

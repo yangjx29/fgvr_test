@@ -387,6 +387,8 @@ if __name__ == "__main__":
         """
         构建快慢思考系统的知识库
         CUDA_VISIBLE_DEVICES=3 python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base 2>&1 | tee ./logs/build_knowledge_base_dog120.log
+        
+        CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=1 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base 2>&1 | tee ./logs_opti/build_knowledge_base_dog120_experience.log
         """
         # 初始化快慢思考系统
         system = FastSlowThinkingSystem(
@@ -403,7 +405,6 @@ if __name__ == "__main__":
         for name, path in data_discovery.subcat_to_sample.items():
             for p in path:
                 train_samples[name].append(p)
-        
         print(f"构建知识库，包含 {len(train_samples)} 个类别, dog datasets:{len(DATA_STATS[cfg['dataset_name']]['class_names'])}")
         
         # 构建知识库
@@ -643,6 +644,7 @@ if __name__ == "__main__":
     elif args.mode == 'fast_slow':
         """
         CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_update_lcb_10_context256.log
+        CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_10_experience.log
         """
 
         # 初始化完整的快慢思考系统
@@ -654,7 +656,7 @@ if __name__ == "__main__":
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
-
+        system.load_experience_base(args.knowledge_base_dir)
         # 构建测试样本
         test_samples = {}
         img_root = args.test_data_dir
@@ -684,10 +686,10 @@ if __name__ == "__main__":
         for true_cat, paths in tqdm(test_samples.items(), desc="Processing fast and slow thinking"):
             for path in paths:
                 # 使用完整的快慢思考系统分类
-                result = system.classify_single_image(path, use_slow_thinking=None, top_k=5)
+                result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)
                 
                 pred = result.get('final_prediction', 'unknown')
-                ok = is_similar(pred, true_cat, threshold=0.5)
+                ok = is_similar(pred, true_cat, threshold=0.3)
                 used_slow = result.get('used_slow_thinking', False)
                 
                 if ok:
@@ -708,7 +710,7 @@ if __name__ == "__main__":
                 total += 1
 
         acc = correct / total if total > 0 else 0.0
-        fast_only_acc = fast_only_correct / (total-slow_triggered) if total > 0 else 0.0
+        fast_only_acc = fast_only_correct / (total-slow_triggered) if (total-slow_triggered) > 0 else 0.0
         slow_trigger_ratio = slow_triggered / total if total > 0 else 0.0
         slow_trigger_acc = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0.0
         

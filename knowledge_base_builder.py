@@ -469,6 +469,12 @@ class KnowledgeBaseBuilder:
         if os.path.exists(desc_path):
             self.category_descriptions = load_json(desc_path)
         
+        # 加载self-belief
+        belief_path = os.path.join(load_dir, "self_belief.txt")
+        if os.path.exists(belief_path):
+            with open(belief_path, 'r', encoding='utf-8') as f:
+                self.self_belief = f.read()
+            print(f"Self-Belief已从 {belief_path} 加载")
         print(f"知识库已从 {load_dir} 加载")
     
     def image_retrieval(self, query_image_path: str, top_k: int = 5) -> List[Tuple[str, float]]:
@@ -660,9 +666,9 @@ class KnowledgeBaseBuilder:
                 # 使用结构化描述生成更精确的类别描述
                 prompt = f"""Based on the detailed structured description of this {category} image, generate a concise but discriminative text description that captures the key visual characteristics for fine-grained recognition.
 
-Structured description: {structured_description}
+                Structured description: {structured_description}
 
-Focus on distinctive features that help distinguish this category from similar ones."""
+                Focus on distinctive features that help distinguish this category from similar ones."""
                 
                 try:
                     # 这里需要根据实际的MLLM接口调整

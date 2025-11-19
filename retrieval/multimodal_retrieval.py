@@ -5,8 +5,6 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-# 直接导入UniFGVR目录下的utils模块
-sys.path.insert(0, '/data/yjx/MLLM/UniFGVR')
 import numpy as np
 from PIL import Image
 import torch

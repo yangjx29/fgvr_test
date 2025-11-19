@@ -4,7 +4,14 @@ Using a slow image processor as `use_fast` is unset and a slow processor was sav
 Namespace(mode='build_knowledge_base', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/dog120_all.yml', num_per_category='4', kshot=None, region_num=None, superclass=None, gallery_out=None, fusion_method='concat', knowledge_base_dir='/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7)
 {'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'dog', 'num_classes': 120, 'num_base': 60, 'num_novel': 60, 'seed': 1, 'batch_size': 256, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'OPT6.7B-COCO', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/dogs_120', 'expt_dir': './experiments/dog120', 'expt_dir_describe': './experiments/dog120/describe', 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours', 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs', 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts', 'path_identify_answers': './experiments/dog120/identify', 'expt_dir_guess': './experiments/dog120/guess', 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names', 'expt_dir_gallery': './experiments/dog120/gallery', 'path_references': './experiments/dog120/gallery/dog_image_references', 'path_regions': './experiments/dog120/gallery/dog_image_regions', 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn', 'expt_dir_grouping': './experiments/dog120/grouping'}
 初始化MLLM模型...
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.71s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.91s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.98s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:02,  2.01s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.56s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.73s/it]
+
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.71s/it]
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.91s/it]
+Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.98s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:02,  2.01s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.56s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.73s/it]
 local_model_path: /data/yjx/MLLM/models/Qwen2.5-VL-7B-Instruct
 初始化知识库构建器...
 初始化快思考模块...
@@ -17,7 +24,20 @@ subcat_to_sample: {'Black-and-tan Coonhound': './datasets/dogs_120/images_discov
 训练样本包含 119 个类别
 开始构建知识库...
 构建图像知识库...
-  0%|          | 0/119 [00:00<?, ?it/s]  1%|          | 1/119 [00:00<00:34,  3.44it/s]  8%|▊         | 9/119 [00:00<00:03, 28.53it/s] 14%|█▍        | 17/119 [00:00<00:02, 43.51it/s] 22%|██▏       | 26/119 [00:00<00:01, 57.66it/s] 29%|██▉       | 35/119 [00:00<00:01, 66.12it/s] 37%|███▋      | 44/119 [00:00<00:01, 71.68it/s] 45%|████▍     | 53/119 [00:00<00:00, 77.03it/s] 52%|█████▏    | 62/119 [00:01<00:00, 75.95it/s] 60%|█████▉    | 71/119 [00:01<00:00, 79.60it/s] 67%|██████▋   | 80/119 [00:01<00:00, 81.31it/s] 75%|███████▍  | 89/119 [00:01<00:00, 83.59it/s] 83%|████████▎ | 99/119 [00:01<00:00, 86.05it/s]处理类别: Black-and-tan Coonhound
+
+  0%|          | 0/119 [00:00<?, ?it/s]
+  1%|          | 1/119 [00:00<00:34,  3.44it/s]
+  8%|▊         | 9/119 [00:00<00:03, 28.53it/s]
+ 14%|█▍        | 17/119 [00:00<00:02, 43.51it/s]
+ 22%|██▏       | 26/119 [00:00<00:01, 57.66it/s]
+ 29%|██▉       | 35/119 [00:00<00:01, 66.12it/s]
+ 37%|███▋      | 44/119 [00:00<00:01, 71.68it/s]
+ 45%|████▍     | 53/119 [00:00<00:00, 77.03it/s]
+ 52%|█████▏    | 62/119 [00:01<00:00, 75.95it/s]
+ 60%|█████▉    | 71/119 [00:01<00:00, 79.60it/s]
+ 67%|██████▋   | 80/119 [00:01<00:00, 81.31it/s]
+ 75%|███████▍  | 89/119 [00:01<00:00, 83.59it/s]
+ 83%|████████▎ | 99/119 [00:01<00:00, 86.05it/s]处理类别: Black-and-tan Coonhound
 类别 Black-and-tan Coonhound 图像特征维度: (512,)
 处理类别: Boston Bull
 类别 Boston Bull 图像特征维度: (512,)
@@ -231,7 +251,10 @@ subcat_to_sample: {'Black-and-tan Coonhound': './datasets/dogs_120/images_discov
 类别 Chow 图像特征维度: (512,)
 处理类别: Tibetan Terrier
 类别 Tibetan Terrier 图像特征维度: (512,)
- 91%|█████████ | 108/119 [00:01<00:00, 86.37it/s] 98%|█████████▊| 117/119 [00:01<00:00, 87.07it/s]100%|██████████| 119/119 [00:01<00:00, 69.15it/s]
+
+ 91%|█████████ | 108/119 [00:01<00:00, 86.37it/s]
+ 98%|█████████▊| 117/119 [00:01<00:00, 87.07it/s]
+100%|██████████| 119/119 [00:01<00:00, 69.15it/s]
 处理类别: Golden Retriever
 类别 Golden Retriever 图像特征维度: (512,)
 处理类别: Eskimo Dog
@@ -257,7 +280,12 @@ subcat_to_sample: {'Black-and-tan Coonhound': './datasets/dogs_120/images_discov
 处理类别: Tibetan Mastiff
 类别 Tibetan Mastiff 图像特征维度: (512,)
 构建文本知识库...
-  0%|          | 0/119 [00:00<?, ?it/s]  1%|          | 1/119 [00:27<53:52, 27.39s/it]  2%|▏         | 2/119 [00:53<52:01, 26.68s/it]  3%|▎         | 3/119 [01:24<55:32, 28.73s/it]  3%|▎         | 4/119 [01:54<55:29, 28.95s/it]处理类别: Black-and-tan Coonhound
+
+  0%|          | 0/119 [00:00<?, ?it/s]
+  1%|          | 1/119 [00:27<53:52, 27.39s/it]
+  2%|▏         | 2/119 [00:53<52:01, 26.68s/it]
+  3%|▎         | 3/119 [01:24<55:32, 28.73s/it]
+  3%|▎         | 4/119 [01:54<55:29, 28.95s/it]处理类别: Black-and-tan Coonhound
 wiki desc: Description for Black-and-tan Coonhound category.
 MLLM description: The image depicts a Black-and-tan Coonhound, characterized by its distinctive physical features and color patterns:
 
@@ -338,7 +366,11 @@ This comprehensive description should help in distinguishing a Maltese dog from 
 1. **Distinctive Ph...
 处理类别: Basset Hound
 wiki desc: Description for Basset Hound category.
-  4%|▍         | 5/119 [02:20<53:38, 28.24s/it]  5%|▌         | 6/119 [02:43<49:37, 26.35s/it]  6%|▌         | 7/119 [03:11<49:54, 26.74s/it]  7%|▋         | 8/119 [03:38<49:48, 26.93s/it]MLLM description: The image depicts a Basset Hound puppy with several distinctive features:
+
+  4%|▍         | 5/119 [02:20<53:38, 28.24s/it]
+  5%|▌         | 6/119 [02:43<49:37, 26.35s/it]
+  6%|▌         | 7/119 [03:11<49:54, 26.74s/it]
+  7%|▋         | 8/119 [03:38<49:48, 26.93s/it]MLLM description: The image depicts a Basset Hound puppy with several distinctive features:
 
 1. **Distinctive Physical Features**: The Basset Hound is characterized by its long, droopy ears that hang down to the ground, giving it a unique and endearing appearance. Its face is broad and flat, with a short muzzle and a slightly wrinkled forehead.
 
@@ -408,7 +440,11 @@ This description should help in distinguishing an American Staffordshire Terrier
 描述: The image depicts an American Staffordshire Terrier (AmStaff), characterized by several distinctive ...
 处理类别: Norwich Terrier
 wiki desc: Description for Norwich Terrier category.
-  8%|▊         | 9/119 [04:04<48:47, 26.61s/it]  8%|▊         | 10/119 [04:37<52:10, 28.72s/it]  9%|▉         | 11/119 [05:09<53:05, 29.50s/it] 10%|█         | 12/119 [05:32<49:15, 27.62s/it]MLLM description: The image depicts a Norwich Terrier, characterized by several distinctive features:
+
+  8%|▊         | 9/119 [04:04<48:47, 26.61s/it]
+  8%|▊         | 10/119 [04:37<52:10, 28.72s/it]
+  9%|▉         | 11/119 [05:09<53:05, 29.50s/it]
+ 10%|█         | 12/119 [05:32<49:15, 27.62s/it]MLLM description: The image depicts a Norwich Terrier, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: The Norwich Terrier has a compact, sturdy build with a square-shaped head and a short muzzle. Its ears are small, triangular, and stand erect, giving it an alert expression.
 
@@ -475,7 +511,11 @@ MLLM description: The image depicts a Schipperke, a breed known for its distinct
 1. **Distinctive Phys...
 处理类别: Staffordshire Bullterrier
 wiki desc: Description for Staffordshire Bullterrier category.
- 11%|█         | 13/119 [05:59<48:37, 27.52s/it] 12%|█▏        | 14/119 [06:26<47:40, 27.24s/it] 13%|█▎        | 15/119 [06:53<47:21, 27.33s/it] 13%|█▎        | 16/119 [07:19<45:54, 26.74s/it]MLLM description: The Staffordshire Bull Terrier in the image exhibits several distinctive features:
+
+ 11%|█         | 13/119 [05:59<48:37, 27.52s/it]
+ 12%|█▏        | 14/119 [06:26<47:40, 27.24s/it]
+ 13%|█▎        | 15/119 [06:53<47:21, 27.33s/it]
+ 13%|█▎        | 16/119 [07:19<45:54, 26.74s/it]MLLM description: The Staffordshire Bull Terrier in the image exhibits several distinctive features:
 
 1. **Distinctive Physical Features**: This breed is characterized by its muscular build, broad head, and short muzzle. The ears are typically cropped or natural, standing upright, though cropped ears are less common in recent years.
 
@@ -543,7 +583,11 @@ This description should help in distinguishing a Pembroke Welsh Corgi puppy from
 描述: The image depicts a Pembroke Welsh Corgi puppy. Here's a detailed description focusing on its distin...
 处理类别: Chesapeake Bay Retriever
 wiki desc: Description for Chesapeake Bay Retriever category.
- 14%|█▍        | 17/119 [07:47<46:07, 27.13s/it] 15%|█▌        | 18/119 [08:10<43:42, 25.96s/it] 16%|█▌        | 19/119 [08:37<43:48, 26.28s/it] 17%|█▋        | 20/119 [09:09<46:13, 28.02s/it]MLLM description: The image showcases a Chesapeake Bay Retriever in a snowy landscape. Here's a detailed description focusing on its distinctive features:
+
+ 14%|█▍        | 17/119 [07:47<46:07, 27.13s/it]
+ 15%|█▌        | 18/119 [08:10<43:42, 25.96s/it]
+ 16%|█▌        | 19/119 [08:37<43:48, 26.28s/it]
+ 17%|█▋        | 20/119 [09:09<46:13, 28.02s/it]MLLM description: The image showcases a Chesapeake Bay Retriever in a snowy landscape. Here's a detailed description focusing on its distinctive features:
 
 1. **Distinctive Physical Features**: The dog has a broad head with a short muzzle, which is characteristic of the breed. Its ears are floppy and hang down close to the sides of its head.
 
@@ -625,7 +669,11 @@ The image also includes a watermark "Bugbaby," which might indicate the source o
 1. **Distinctive Phy...
 处理类别: Irish Setter
 wiki desc: Description for Irish Setter category.
- 18%|█▊        | 21/119 [09:34<44:13, 27.08s/it] 18%|█▊        | 22/119 [10:05<45:26, 28.11s/it] 19%|█▉        | 23/119 [10:30<43:42, 27.32s/it] 20%|██        | 24/119 [10:55<41:58, 26.51s/it]MLLM description: The image depicts an Irish Setter, a breed known for its distinctive appearance:
+
+ 18%|█▊        | 21/119 [09:34<44:13, 27.08s/it]
+ 18%|█▊        | 22/119 [10:05<45:26, 28.11s/it]
+ 19%|█▉        | 23/119 [10:30<43:42, 27.32s/it]
+ 20%|██        | 24/119 [10:55<41:58, 26.51s/it]MLLM description: The image depicts an Irish Setter, a breed known for its distinctive appearance:
 
 1. **Distinctive Physical Features**: The Irish Setter is characterized by its long, silky coat that is typically a rich, warm reddish-brown color. This coat can vary in shade from light golden to deep mahogany.
 
@@ -693,7 +741,11 @@ MLLM description: The image depicts a Toy Terrier, a breed known for its distinc
 1. **Distinctive Physi...
 处理类别: German Shepard
 wiki desc: Description for German Shepard category.
- 21%|██        | 25/119 [11:17<39:24, 25.16s/it] 22%|██▏       | 26/119 [11:40<38:18, 24.72s/it] 23%|██▎       | 27/119 [12:10<40:09, 26.19s/it] 24%|██▎       | 28/119 [12:38<40:32, 26.73s/it]MLLM description: The image depicts a young German Shepherd puppy with several distinctive features:
+
+ 21%|██        | 25/119 [11:17<39:24, 25.16s/it]
+ 22%|██▏       | 26/119 [11:40<38:18, 24.72s/it]
+ 23%|██▎       | 27/119 [12:10<40:09, 26.19s/it]
+ 24%|██▎       | 28/119 [12:38<40:32, 26.73s/it]MLLM description: The image depicts a young German Shepherd puppy with several distinctive features:
 
 1. **Distinctive Physical Features**: The puppy has pointed ears that stand upright, a characteristic trait of the breed. Its eyes are dark and expressive, typical of German Shepherds.
 
@@ -761,7 +813,11 @@ Overall, the dog in the image exhibits the classic physical attributes of a Germ
 1. ...
 处理类别: Standard Schnauzer
 wiki desc: Description for Standard Schnauzer category.
- 24%|██▍       | 29/119 [13:08<41:33, 27.71s/it] 25%|██▌       | 30/119 [13:38<42:20, 28.54s/it] 26%|██▌       | 31/119 [14:14<44:59, 30.67s/it] 27%|██▋       | 32/119 [14:43<43:41, 30.13s/it]MLLM description: The image depicts a Standard Schnauzer, characterized by its distinctive physical features:
+
+ 24%|██▍       | 29/119 [13:08<41:33, 27.71s/it]
+ 25%|██▌       | 30/119 [13:38<42:20, 28.54s/it]
+ 26%|██▌       | 31/119 [14:14<44:59, 30.67s/it]
+ 27%|██▋       | 32/119 [14:43<43:41, 30.13s/it]MLLM description: The image depicts a Standard Schnauzer, characterized by its distinctive physical features:
 
 1. **Distinctive Physical Features**: The Standard Schnauzer has a sturdy, muscular build with a square-shaped body. Its head is broad with a short muzzle, and it typically has a beard and mustache, which are prominent facial features. The ears are small, triangular, and stand erect.
 
@@ -831,7 +887,11 @@ MLLM description: The image depicts a Brittany Spaniel, a breed known for its di
 1. **Distinctiv...
 处理类别: Lhasa
 wiki desc: Description for Lhasa category.
- 28%|██▊       | 33/119 [15:10<41:41, 29.08s/it] 29%|██▊       | 34/119 [15:39<41:18, 29.16s/it] 29%|██▉       | 35/119 [16:05<39:42, 28.36s/it] 30%|███       | 36/119 [16:33<38:52, 28.11s/it]MLLM description: This image depicts a Lhasa Apso, a breed known for its distinctive appearance:
+
+ 28%|██▊       | 33/119 [15:10<41:41, 29.08s/it]
+ 29%|██▊       | 34/119 [15:39<41:18, 29.16s/it]
+ 29%|██▉       | 35/119 [16:05<39:42, 28.36s/it]
+ 30%|███       | 36/119 [16:33<38:52, 28.11s/it]MLLM description: This image depicts a Lhasa Apso, a breed known for its distinctive appearance:
 
 1. **Distinctive Physical Features**: The Lhasa Apso in the image has a fluffy, dense coat with a mix of white and light brown fur. Its face is rounded with a short muzzle, and it has large, expressive eyes that give it an endearing expression. The ears are long and hang down close to the cheeks.
 
@@ -899,7 +959,11 @@ This detailed description should help in distinguishing a Welsh Springer Spaniel
 描述: The image depicts a Welsh Springer Spaniel, a breed known for its distinctive appearance and friendl...
 处理类别: Cocker Spaniel
 wiki desc: Description for Cocker Spaniel category.
- 31%|███       | 37/119 [17:06<40:28, 29.62s/it] 32%|███▏      | 38/119 [17:35<39:30, 29.26s/it] 33%|███▎      | 39/119 [18:04<39:00, 29.25s/it] 34%|███▎      | 40/119 [18:35<39:20, 29.88s/it]MLLM description: The image depicts a Cocker Spaniel, a breed known for its distinctive and charming appearance. Here's a detailed description focusing on the key visual characteristics:
+
+ 31%|███       | 37/119 [17:06<40:28, 29.62s/it]
+ 32%|███▏      | 38/119 [17:35<39:30, 29.26s/it]
+ 33%|███▎      | 39/119 [18:04<39:00, 29.25s/it]
+ 34%|███▎      | 40/119 [18:35<39:20, 29.88s/it]MLLM description: The image depicts a Cocker Spaniel, a breed known for its distinctive and charming appearance. Here's a detailed description focusing on the key visual characteristics:
 
 1. **Distinctive Physical Features**: 
    - **Ears**: The Cocker Spaniel has long, floppy ears that hang down to the sides of the head, often with a slight curve at the tips.
@@ -992,7 +1056,12 @@ This description should help in distinguishing the African Hunting Dog from othe
 描述: The image depicts an African Hunting Dog, also known as the African Wild Dog or Painted Wolf. Here's...
 处理类别: Toy Poodle
 wiki desc: Description for Toy Poodle category.
- 34%|███▍      | 41/119 [18:58<36:02, 27.73s/it] 35%|███▌      | 42/119 [19:28<36:43, 28.61s/it] 36%|███▌      | 43/119 [19:55<35:30, 28.03s/it] 37%|███▋      | 44/119 [20:22<34:31, 27.62s/it] 38%|███▊      | 45/119 [20:48<33:37, 27.26s/it]MLLM description: The image depicts a Toy Poodle puppy with the following distinctive features:
+
+ 34%|███▍      | 41/119 [18:58<36:02, 27.73s/it]
+ 35%|███▌      | 42/119 [19:28<36:43, 28.61s/it]
+ 36%|███▌      | 43/119 [19:55<35:30, 28.03s/it]
+ 37%|███▋      | 44/119 [20:22<34:31, 27.62s/it]
+ 38%|███▊      | 45/119 [20:48<33:37, 27.26s/it]MLLM description: The image depicts a Toy Poodle puppy with the following distinctive features:
 
 1. **Distinctive Physical Features**: The puppy has a compact and sturdy build typical of the Toy Poodle breed. Its fur is dense and curly, covering its entire body, giving it a fluffy appearance.
 
@@ -1098,7 +1167,11 @@ MLLM description: The image depicts a Norfolk Terrier, a breed known for its dis
 1. **Distinctive...
 处理类别: Miniature Poodle
 wiki desc: Description for Miniature Poodle category.
- 39%|███▊      | 46/119 [21:12<31:44, 26.09s/it] 39%|███▉      | 47/119 [21:38<31:27, 26.22s/it] 40%|████      | 48/119 [22:06<31:42, 26.80s/it] 41%|████      | 49/119 [22:32<30:57, 26.53s/it]MLLM description: The image depicts a Miniature Poodle, characterized by its distinctive physical features:
+
+ 39%|███▊      | 46/119 [21:12<31:44, 26.09s/it]
+ 39%|███▉      | 47/119 [21:38<31:27, 26.22s/it]
+ 40%|████      | 48/119 [22:06<31:42, 26.80s/it]
+ 41%|████      | 49/119 [22:32<30:57, 26.53s/it]MLLM description: The image depicts a Miniature Poodle, characterized by its distinctive physical features:
 
 1. **Distinctive Physical Features**: The Miniature Poodle in the image has a compact, sturdy build with a dense, curly coat that is predominantly white. Its face is rounded with a short muzzle, and it has large, expressive eyes that give it an alert and intelligent expression.
 
@@ -1175,7 +1248,11 @@ MLLM description: The image depicts a Groenendael, a breed known for its distinc
 1. **Distinctive Phy...
 处理类别: Bloodhound
 wiki desc: Description for Bloodhound category.
- 42%|████▏     | 50/119 [22:58<30:11, 26.25s/it] 43%|████▎     | 51/119 [23:34<33:00, 29.13s/it] 44%|████▎     | 52/119 [23:57<30:31, 27.33s/it] 45%|████▍     | 53/119 [24:29<31:46, 28.88s/it]MLLM description: The image depicts a Bloodhound, characterized by several distinctive features:
+
+ 42%|████▏     | 50/119 [22:58<30:11, 26.25s/it]
+ 43%|████▎     | 51/119 [23:34<33:00, 29.13s/it]
+ 44%|████▎     | 52/119 [23:57<30:31, 27.33s/it]
+ 45%|████▍     | 53/119 [24:29<31:46, 28.88s/it]MLLM description: The image depicts a Bloodhound, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: 
    - The most notable feature is the long, droopy ears that hang down to the sides of the face, which are a hallmark of the breed.
@@ -1285,7 +1362,11 @@ This comprehensive description should help in distinguishing the Airedale Terrie
 描述: The image showcases an Airedale Terrier, a breed known for its distinctive appearance and robust bui...
 处理类别: Pomeranian
 wiki desc: Description for Pomeranian category.
- 45%|████▌     | 54/119 [24:57<30:54, 28.53s/it] 46%|████▌     | 55/119 [25:27<30:58, 29.03s/it] 47%|████▋     | 56/119 [25:59<31:22, 29.88s/it] 48%|████▊     | 57/119 [26:30<31:07, 30.13s/it]MLLM description: The image depicts a Pomeranian dog, characterized by several distinctive features:
+
+ 45%|████▌     | 54/119 [24:57<30:54, 28.53s/it]
+ 46%|████▌     | 55/119 [25:27<30:58, 29.03s/it]
+ 47%|████▋     | 56/119 [25:59<31:22, 29.88s/it]
+ 48%|████▊     | 57/119 [26:30<31:07, 30.13s/it]MLLM description: The image depicts a Pomeranian dog, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: The Pomeranian in the image has a compact body with a sturdy build. Its most notable feature is its fluffy, double coat, which gives it a plush appearance. The ears are large, erect, and pointed, standing upright on its head.
 
@@ -1364,7 +1445,11 @@ MLLM description: The image depicts a Greater Swiss Mountain Dog, characterized 
 1. *...
 处理类别: Siberian Husky
 wiki desc: Description for Siberian Husky category.
- 49%|████▊     | 58/119 [26:56<29:35, 29.11s/it] 50%|████▉     | 59/119 [27:22<28:04, 28.08s/it] 50%|█████     | 60/119 [27:50<27:39, 28.12s/it] 51%|█████▏    | 61/119 [28:18<26:55, 27.85s/it]MLLM description: The image depicts a Siberian Husky, characterized by several distinctive features:
+
+ 49%|████▊     | 58/119 [26:56<29:35, 29.11s/it]
+ 50%|████▉     | 59/119 [27:22<28:04, 28.08s/it]
+ 50%|█████     | 60/119 [27:50<27:39, 28.12s/it]
+ 51%|█████▏    | 61/119 [28:18<26:55, 27.85s/it]MLLM description: The image depicts a Siberian Husky, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: The Husky has a medium-sized, athletic build with a thick double coat that is typically short to medium in length. Its ears are large, triangular, and stand erect, often with a slight curve at the tips. The eyes are almond-shaped and can come in various colors, including blue, brown, or heterochromia (different colors in each eye).
 
@@ -1432,7 +1517,11 @@ This description should help in distinguishing a Bluetick Coonhound from other s
 描述: The image depicts two dogs, one of which appears to be a Bluetick Coonhound. Here's a detailed descr...
 处理类别: English Setter
 wiki desc: Description for English Setter category.
- 52%|█████▏    | 62/119 [28:47<26:54, 28.33s/it] 53%|█████▎    | 63/119 [29:14<26:11, 28.06s/it] 54%|█████▍    | 64/119 [29:40<25:04, 27.35s/it] 55%|█████▍    | 65/119 [30:08<24:43, 27.47s/it]MLLM description: The image depicts an English Setter, characterized by several distinctive features:
+
+ 52%|█████▏    | 62/119 [28:47<26:54, 28.33s/it]
+ 53%|█████▎    | 63/119 [29:14<26:11, 28.06s/it]
+ 54%|█████▍    | 64/119 [29:40<25:04, 27.35s/it]
+ 55%|█████▍    | 65/119 [30:08<24:43, 27.47s/it]MLLM description: The image depicts an English Setter, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: The English Setter is known for its long, silky coat that is typically smooth and glossy. In this image, the dog's coat appears to have a mix of black and white, with some areas showing a mottled pattern.
 
@@ -1515,7 +1604,11 @@ This description should help in distinguishing a Gordon Setter puppy from other 
 描述: The image depicts a young Gordon Setter puppy in an outdoor setting with grass and fallen leaves. He...
 处理类别: Rottweiler
 wiki desc: Description for Rottweiler category.
- 55%|█████▌    | 66/119 [30:37<24:43, 27.99s/it] 56%|█████▋    | 67/119 [31:06<24:25, 28.18s/it] 57%|█████▋    | 68/119 [31:32<23:21, 27.48s/it] 58%|█████▊    | 69/119 [31:57<22:29, 26.99s/it]MLLM description: This image depicts a Rottweiler, a breed known for its distinctive appearance:
+
+ 55%|█████▌    | 66/119 [30:37<24:43, 27.99s/it]
+ 56%|█████▋    | 67/119 [31:06<24:25, 28.18s/it]
+ 57%|█████▋    | 68/119 [31:32<23:21, 27.48s/it]
+ 58%|█████▊    | 69/119 [31:57<22:29, 26.99s/it]MLLM description: This image depicts a Rottweiler, a breed known for its distinctive appearance:
 
 1. **Distinctive Physical Features**: Rottweilers have a muscular build with a broad chest and strong legs. Their head is large with a short muzzle, and they typically have a broad, square-shaped skull.
 
@@ -1589,7 +1682,11 @@ This description should help in distinguishing a Silky Terrier from other breeds
 1. **Distinc...
 处理类别: Malamute
 wiki desc: Description for Malamute category.
- 59%|█████▉    | 70/119 [32:27<22:44, 27.86s/it] 60%|█████▉    | 71/119 [32:52<21:37, 27.04s/it] 61%|██████    | 72/119 [33:19<21:07, 26.96s/it] 61%|██████▏   | 73/119 [33:55<22:38, 29.53s/it]MLLM description: The image depicts a Malamute, a breed known for its distinctive physical features and unique characteristics:
+
+ 59%|█████▉    | 70/119 [32:27<22:44, 27.86s/it]
+ 60%|█████▉    | 71/119 [32:52<21:37, 27.04s/it]
+ 61%|██████    | 72/119 [33:19<21:07, 26.96s/it]
+ 61%|██████▏   | 73/119 [33:55<22:38, 29.53s/it]MLLM description: The image depicts a Malamute, a breed known for its distinctive physical features and unique characteristics:
 
 1. **Distinctive Physical Features**: The Malamute in the image has a thick, double-layered coat with a dense undercoat and a longer, coarser outer coat. This coat is typically well-suited for cold climates.
 
@@ -1661,7 +1758,11 @@ In summary, the Old English Sheepdog in the image is easily identifiable by its 
 1. **Dist...
 处理类别: Samoyed
 wiki desc: Description for Samoyed category.
- 62%|██████▏   | 74/119 [34:20<21:06, 28.15s/it] 63%|██████▎   | 75/119 [34:56<22:32, 30.75s/it] 64%|██████▍   | 76/119 [35:21<20:38, 28.81s/it] 65%|██████▍   | 77/119 [35:47<19:37, 28.05s/it]MLLM description: The image depicts a Samoyed puppy, characterized by its distinctive physical features:
+
+ 62%|██████▏   | 74/119 [34:20<21:06, 28.15s/it]
+ 63%|██████▎   | 75/119 [34:56<22:32, 30.75s/it]
+ 64%|██████▍   | 76/119 [35:21<20:38, 28.81s/it]
+ 65%|██████▍   | 77/119 [35:47<19:37, 28.05s/it]MLLM description: The image depicts a Samoyed puppy, characterized by its distinctive physical features:
 
 1. **Distinctive Physical Features**: The Samoyed has a thick, fluffy white coat that is dense and soft to the touch. Its face is rounded with a black nose and dark eyes, giving it an endearing expression. The ears are triangular and stand upright.
 
@@ -1747,7 +1848,11 @@ This description should help in distinguishing the Norwegian Elkhound from other
 1. **D...
 处理类别: Yorkshire Terrier
 wiki desc: Description for Yorkshire Terrier category.
- 66%|██████▌   | 78/119 [36:17<19:27, 28.48s/it] 66%|██████▋   | 79/119 [36:47<19:21, 29.03s/it] 67%|██████▋   | 80/119 [37:16<18:58, 29.19s/it] 68%|██████▊   | 81/119 [37:42<17:43, 27.98s/it]MLLM description: This image depicts a Yorkshire Terrier, characterized by its distinctive physical features:
+
+ 66%|██████▌   | 78/119 [36:17<19:27, 28.48s/it]
+ 66%|██████▋   | 79/119 [36:47<19:21, 29.03s/it]
+ 67%|██████▋   | 80/119 [37:16<18:58, 29.19s/it]
+ 68%|██████▊   | 81/119 [37:42<17:43, 27.98s/it]MLLM description: This image depicts a Yorkshire Terrier, characterized by its distinctive physical features:
 
 1. **Distinctive Physical Features**: The Yorkshire Terrier in the image has a small, compact body with a long, silky coat that is predominantly light brown with darker brown markings around the eyes, ears, and muzzle. Its ears are large, floppy, and covered with long fur, which often hangs down to the sides of its face.
 
@@ -1815,7 +1920,11 @@ MLLM description: The image depicts a Keeshond, a breed known for its distinctiv
 1. **Distinctive Physic...
 处理类别: Walker Hound
 wiki desc: Description for Walker Hound category.
- 69%|██████▉   | 82/119 [38:10<17:19, 28.10s/it] 70%|██████▉   | 83/119 [38:35<16:16, 27.12s/it] 71%|███████   | 84/119 [39:00<15:24, 26.42s/it] 71%|███████▏  | 85/119 [39:32<15:58, 28.18s/it]MLLM description: The image depicts a Walker Hound, a breed known for its distinctive appearance and purpose. Here's a detailed description:
+
+ 69%|██████▉   | 82/119 [38:10<17:19, 28.10s/it]
+ 70%|██████▉   | 83/119 [38:35<16:16, 27.12s/it]
+ 71%|███████   | 84/119 [39:00<15:24, 26.42s/it]
+ 71%|███████▏  | 85/119 [39:32<15:58, 28.18s/it]MLLM description: The image depicts a Walker Hound, a breed known for its distinctive appearance and purpose. Here's a detailed description:
 
 1. **Distinctive Physical Features**: 
    - The Walker Hound has a medium-sized, muscular build with a deep chest and strong legs.
@@ -1909,7 +2018,11 @@ This description should help in distinguishing a Giant Schnauzer from other simi
 描述: The image depicts a Giant Schnauzer, a breed known for its distinctive appearance. Here's a detailed...
 处理类别: Papillon
 wiki desc: Description for Papillon category.
- 72%|███████▏  | 86/119 [39:56<14:52, 27.05s/it] 73%|███████▎  | 87/119 [40:28<15:06, 28.34s/it] 74%|███████▍  | 88/119 [41:01<15:23, 29.79s/it] 75%|███████▍  | 89/119 [41:28<14:29, 28.99s/it]MLLM description: The image depicts a Papillon, a small breed known for its distinctive features:
+
+ 72%|███████▏  | 86/119 [39:56<14:52, 27.05s/it]
+ 73%|███████▎  | 87/119 [40:28<15:06, 28.34s/it]
+ 74%|███████▍  | 88/119 [41:01<15:23, 29.79s/it]
+ 75%|███████▍  | 89/119 [41:28<14:29, 28.99s/it]MLLM description: The image depicts a Papillon, a small breed known for its distinctive features:
 
 1. **Distinctive Physical Features**: The Papillon is characterized by its large, expressive eyes, long, silky fur, and a curled tail that resembles a butterfly's wings, hence the name "Papillon" which means "butterfly" in French.
 
@@ -1979,7 +2092,11 @@ MLLM description: The image depicts a Bedlington Terrier, characterized by its d
 1. **Di...
 处理类别: Soft-coated Wheaten Terrier
 wiki desc: Description for Soft-coated Wheaten Terrier category.
- 76%|███████▌  | 90/119 [41:52<13:14, 27.41s/it] 76%|███████▋  | 91/119 [42:18<12:35, 26.97s/it] 77%|███████▋  | 92/119 [42:46<12:23, 27.54s/it] 78%|███████▊  | 93/119 [43:13<11:49, 27.29s/it]MLLM description: The image depicts a Soft-coated Wheaten Terrier, characterized by several distinctive features:
+
+ 76%|███████▌  | 90/119 [41:52<13:14, 27.41s/it]
+ 76%|███████▋  | 91/119 [42:18<12:35, 26.97s/it]
+ 77%|███████▋  | 92/119 [42:46<12:23, 27.54s/it]
+ 78%|███████▊  | 93/119 [43:13<11:49, 27.29s/it]MLLM description: The image depicts a Soft-coated Wheaten Terrier, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: The dog has a thick, soft, and slightly wavy coat that is predominantly a light golden or wheaten color. The fur appears dense and fluffy, especially around the head and neck.
 
@@ -2051,7 +2168,11 @@ This description should help in distinguishing a Vizsla from other breeds based 
 1. **Distinctive Physical...
 处理类别: Scottish Deerhound
 wiki desc: Description for Scottish Deerhound category.
- 79%|███████▉  | 94/119 [43:39<11:14, 27.00s/it] 80%|███████▉  | 95/119 [44:05<10:36, 26.52s/it] 81%|████████  | 96/119 [44:32<10:16, 26.81s/it] 82%|████████▏ | 97/119 [44:59<09:47, 26.68s/it]MLLM description: The image depicts a Scottish Deerhound, a breed known for its distinctive appearance and unique characteristics.
+
+ 79%|███████▉  | 94/119 [43:39<11:14, 27.00s/it]
+ 80%|███████▉  | 95/119 [44:05<10:36, 26.52s/it]
+ 81%|████████  | 96/119 [44:32<10:16, 26.81s/it]
+ 82%|████████▏ | 97/119 [44:59<09:47, 26.68s/it]MLLM description: The image depicts a Scottish Deerhound, a breed known for its distinctive appearance and unique characteristics.
 
 1. **Distinctive Physical Features**: The Scottish Deerhound is characterized by its long, slender body, which is well-suited for running. Its head is elongated with a narrow skull, and it has a deep chest and a long neck. The ears are long and drooping, often reaching down to the shoulders.
 
@@ -2117,7 +2238,11 @@ This description should help in distinguishing a Blenheim Cavalier King Charles 
 描述: The image depicts a Blenheim Cavalier King Charles Spaniel, a breed known for its distinctive appear...
 处理类别: Lakeland Terrier
 wiki desc: Description for Lakeland Terrier category.
- 82%|████████▏ | 98/119 [45:28<09:36, 27.47s/it] 83%|████████▎ | 99/119 [45:54<09:00, 27.00s/it] 84%|████████▍ | 100/119 [46:17<08:12, 25.91s/it] 85%|████████▍ | 101/119 [46:48<08:09, 27.21s/it]MLLM description: The image depicts a young Lakeland Terrier puppy, characterized by its distinctive physical features and color patterns:
+
+ 82%|████████▏ | 98/119 [45:28<09:36, 27.47s/it]
+ 83%|████████▎ | 99/119 [45:54<09:00, 27.00s/it]
+ 84%|████████▍ | 100/119 [46:17<08:12, 25.91s/it]
+ 85%|████████▍ | 101/119 [46:48<08:09, 27.21s/it]MLLM description: The image depicts a young Lakeland Terrier puppy, characterized by its distinctive physical features and color patterns:
 
 1. **Distinctive Physical Features**: The Lakeland Terrier in the image has a compact, sturdy build with a slightly rounded head and a short muzzle. Its ears are small, triangular, and set high on the head, often folded over at the tips. The eyes are dark and expressive, giving the dog an alert and intelligent appearance.
 
@@ -2194,7 +2319,11 @@ This description should help in fine-grained visual recognition of a Kelpie, dis
 1. **Distinctiv...
 处理类别: Malinois
 wiki desc: Description for Malinois category.
- 86%|████████▌ | 102/119 [47:16<07:47, 27.50s/it] 87%|████████▋ | 103/119 [47:44<07:21, 27.59s/it] 87%|████████▋ | 104/119 [48:13<07:04, 28.28s/it] 88%|████████▊ | 105/119 [48:37<06:17, 27.00s/it]MLLM description: The image depicts a dog that appears to be a Belgian Malinois, characterized by several distinctive features:
+
+ 86%|████████▌ | 102/119 [47:16<07:47, 27.50s/it]
+ 87%|████████▋ | 103/119 [47:44<07:21, 27.59s/it]
+ 87%|████████▋ | 104/119 [48:13<07:04, 28.28s/it]
+ 88%|████████▊ | 105/119 [48:37<06:17, 27.00s/it]MLLM description: The image depicts a dog that appears to be a Belgian Malinois, characterized by several distinctive features:
 
 1. **Distinctive Physical Features**: The dog has a sturdy build with a strong, muscular body typical of working breeds. Its ears are erect and pointed, which is a hallmark of the breed.
 
@@ -2274,7 +2403,11 @@ MLLM description: The image depicts a Boxer dog wearing a festive Santa hat. Her
 1. **Dist...
 处理类别: Chow
 wiki desc: Description for Chow category.
- 89%|████████▉ | 106/119 [49:11<06:16, 28.93s/it] 90%|████████▉ | 107/119 [49:41<05:52, 29.35s/it] 91%|█████████ | 108/119 [50:07<05:09, 28.14s/it] 92%|█████████▏| 109/119 [50:34<04:39, 27.98s/it]MLLM description: The image depicts a Chow dog at what appears to be a dog show. Here's a detailed description focusing on its distinctive features:
+
+ 89%|████████▉ | 106/119 [49:11<06:16, 28.93s/it]
+ 90%|████████▉ | 107/119 [49:41<05:52, 29.35s/it]
+ 91%|█████████ | 108/119 [50:07<05:09, 28.14s/it]
+ 92%|█████████▏| 109/119 [50:34<04:39, 27.98s/it]MLLM description: The image depicts a Chow dog at what appears to be a dog show. Here's a detailed description focusing on its distinctive features:
 
 ### 1. **Distinctive Physical Features**
    - **Coat**: The Chow has a thick, dense, and fluffy double coat that is characteristic of the breed. The fur appears well-groomed and stands out prominently, giving it a lion-like appearance.
@@ -2349,7 +2482,11 @@ MLLM description: The image depicts an Eskimo Dog, also known as a Siberian Husk
 描述: The image depicts an Eskimo Dog, also known as a Siberian Husky, characterized by several distinctiv...
 处理类别: Japanese Spaniel
 wiki desc: Description for Japanese Spaniel category.
- 92%|█████████▏| 110/119 [51:01<04:09, 27.71s/it] 93%|█████████▎| 111/119 [51:29<03:42, 27.81s/it] 94%|█████████▍| 112/119 [52:02<03:25, 29.37s/it] 95%|█████████▍| 113/119 [52:30<02:53, 28.94s/it]MLLM description: The image depicts a Japanese Spaniel, a breed known for its distinctive appearance:
+
+ 92%|█████████▏| 110/119 [51:01<04:09, 27.71s/it]
+ 93%|█████████▎| 111/119 [51:29<03:42, 27.81s/it]
+ 94%|█████████▍| 112/119 [52:02<03:25, 29.37s/it]
+ 95%|█████████▍| 113/119 [52:30<02:53, 28.94s/it]MLLM description: The image depicts a Japanese Spaniel, a breed known for its distinctive appearance:
 
 1. **Distinctive Physical Features**: The Japanese Spaniel has a compact, well-proportioned body with a short, smooth coat. Its face is characterized by a flat skull, a slightly elongated muzzle, and large, expressive eyes that are often dark in color.
 
@@ -2419,7 +2556,12 @@ This comprehensive description should help in accurately identifying an English 
 1. **Distinct...
 处理类别: Leonberg
 wiki desc: Description for Leonberg category.
- 96%|█████████▌| 114/119 [52:57<02:21, 28.24s/it] 97%|█████████▋| 115/119 [53:25<01:53, 28.26s/it] 97%|█████████▋| 116/119 [53:58<01:29, 29.78s/it] 98%|█████████▊| 117/119 [54:25<00:57, 28.86s/it] 99%|█████████▉| 118/119 [54:37<00:23, 23.78s/it]MLLM description: The image depicts two Leonberg dogs resting on a rocky surface near a red doghouse in a forested area.
+
+ 96%|█████████▌| 114/119 [52:57<02:21, 28.24s/it]
+ 97%|█████████▋| 115/119 [53:25<01:53, 28.26s/it]
+ 97%|█████████▋| 116/119 [53:58<01:29, 29.78s/it]
+ 98%|█████████▊| 117/119 [54:25<00:57, 28.86s/it]
+ 99%|█████████▉| 118/119 [54:37<00:23, 23.78s/it]MLLM description: The image depicts two Leonberg dogs resting on a rocky surface near a red doghouse in a forested area.
 
 1. **Distinctive Physical Features**: Leonbergs are large, muscular dogs with a broad head, strong jaws, and a thick, dense coat. They have a sturdy build with a deep chest and powerful hindquarters.
 
@@ -2504,7 +2646,9 @@ wiki desc: Description for Flat-coated Retriever category.
 描述: Description for Flat-coated Retriever category....
 处理类别: Tibetan Mastiff
 wiki desc: Description for Tibetan Mastiff category.
-100%|██████████| 119/119 [55:02<00:00, 24.19s/it]100%|██████████| 119/119 [55:02<00:00, 27.75s/it]
+
+100%|██████████| 119/119 [55:02<00:00, 24.19s/it]
+100%|██████████| 119/119 [55:02<00:00, 27.75s/it]
 MLLM description: The image depicts a Tibetan Mastiff, characterized by its distinctive physical features:
 
 1. **Distinctive Physical Features**: The Tibetan Mastiff in the image has a thick, shaggy coat that is predominantly black with some lighter shades around the face and ears. Its fur appears dense and wavy, which is typical for the breed.

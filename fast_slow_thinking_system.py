@@ -21,6 +21,7 @@ from collections import defaultdict
 
 from agents.mllm_bot import MLLMBot
 from knowledge_base_builder import KnowledgeBaseBuilder
+from experience_base_builder import ExperienceBaseBuilder
 from fast_thinking import FastThinking
 from fast_thinking_optimized import FastThinkingOptimized
 from slow_thinking_optimized import SlowThinkingOptimized
@@ -86,6 +87,9 @@ class FastSlowThinkingSystem:
             fast_thinking=self.fast_thinking
         )
         
+        # 初始化经验库构建器（可选）
+        self.exp_builder = None
+        
         print("快慢思考系统初始化完成!")
     
     def build_knowledge_base(self, train_samples: Dict[str, List[str]], 
@@ -112,7 +116,10 @@ class FastSlowThinkingSystem:
         
         # 保存知识库
         # self.kb_builder.save_knowledge_base(save_dir)
-        
+
+        self.initialize_experience_base()
+        self.exp_builder.build_experience_base(train_samples,max_iterations=1, max_reflections_per_iter=3, top_k=5)
+        self.exp_builder.save_experience_base(save_dir)
         # 使用训练集初始化LCB统计参数
         print("\n开始初始化LCB统计参数...")
         stats_summary = self.kb_builder.initialize_lcb_stats_with_labels(
@@ -132,7 +139,83 @@ class FastSlowThinkingSystem:
         """
         print(f"从 {load_dir} 加载知识库...")
         self.kb_builder.load_knowledge_base(load_dir)
-        print("知识库加载完成!")   
+        print("知识库加载完成!")
+    
+    def initialize_experience_base(self):
+        """
+        初始化经验库构建器
+        """
+        if self.exp_builder is None:
+            print("初始化经验库构建器...")
+            self.exp_builder = ExperienceBaseBuilder(
+                mllm_bot=self.mllm_bot,
+                knowledge_base_builder=self.kb_builder,
+                fast_thinking_module=self.fast_thinking,
+                slow_thinking_module=self.slow_thinking,
+                device=self.device
+            )
+            print("经验库构建器初始化完成!")
+        return self.exp_builder
+    
+    def build_experience_base(self,
+                              validation_samples: Dict[str, List[str]],
+                              max_iterations: int = 3,
+                              top_k: int = 5,
+                              max_reflections_per_iter: int = 5,
+                              min_improvement: float = 0.01,
+                              max_samples_per_category: Optional[int] = None,
+                              save_dir: str = "./experience_base") -> Dict:
+        """
+        构建经验库（Self-Belief优化）
+        
+        Args:
+            validation_samples: {true_category: [image_paths]} 验证样本
+            max_iterations: 最大迭代次数
+            top_k: 检索top-k结果
+            max_reflections_per_iter: 每次迭代最多反思的样本数
+            min_improvement: 最小性能提升阈值
+            max_samples_per_category: 每个类别最多处理的样本数
+            save_dir: 保存目录
+            
+        Returns:
+            Dict: 构建结果
+        """
+        # 初始化经验库构建器
+        exp_builder = self.initialize_experience_base()
+        
+        # 构建经验库
+        result = exp_builder.build_experience_base(
+            validation_samples=validation_samples,
+            max_iterations=max_iterations,
+            top_k=top_k,
+            max_reflections_per_iter=max_reflections_per_iter,
+            min_improvement=min_improvement,
+            max_samples_per_category=max_samples_per_category
+        )
+        
+        # 保存经验库
+        exp_builder.save_experience_base(save_dir)
+        
+        return result
+    
+    def load_experience_base(self, load_dir: str = "./experience_base"):
+        """
+        加载经验库
+        
+        Args:
+            load_dir: 经验库加载目录
+        """
+        # 初始化经验库构建器
+        exp_builder = self.initialize_experience_base()
+        
+        # 加载经验库
+        exp_builder.load_experience_base(load_dir)
+        
+        # 将Self-Belief传递给慢思考模块（如果需要）
+        if hasattr(self.slow_thinking, 'set_experience_base'):
+            self.slow_thinking.set_experience_base(exp_builder)
+        
+        print("经验库加载完成!")   
         
     def classify_single_image(self, query_image_path: str, 
                             use_slow_thinking: bool = None,
