@@ -36,7 +36,7 @@ class FastThinking:
                  consider_topk_overlap: bool = True,
                  topk_for_overlap: int = 3,
                  # —— LCB 相关默认参数 - 优化 ——
-                 stats_file: str = "/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base/stats.json",
+                 stats_file: str = "./experiments/dog120/knowledge_base/stats.json",
                  lcb_threshold: float = 0.68,  # 从0.65提高到0.68,增加慢思考触发
                  lcb_threshold_adaptive: bool = True,  # 启用自适应阈值
                  lcb_threshold_min: float = 0.60,  # 最小阈值

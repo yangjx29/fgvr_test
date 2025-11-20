@@ -51,7 +51,7 @@ class VQABot:
         self.model_tag = model_tag
         self.model_name = "BLIP-2"
         self.max_answer_tokens = max_answer_tokens
-        local_model_path_abs = "/home/Dataset/Models/blip"
+        local_model_path_abs = "./models/blip"
         local_model_path = path.join(local_model_path_abs, BLIP2ZOO[self.model_tag].split('/')[-1])
         print(f'local_model_path: {local_model_path}')
         # self.blip2_processor = Blip2Processor.from_pretrained(BLIP2ZOO[self.model_tag])

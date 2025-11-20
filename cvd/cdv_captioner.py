@@ -20,7 +20,7 @@ import json
 from utils.fileios import dump_json, load_json, dump_txt 
 from utils.util import *
 class CDVCaptioner:
-    def __init__(self, image_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", device="cuda" if torch.cuda.is_available() else "cpu", cfg = None):
+    def __init__(self, image_encoder_name="./models/Clip/clip-vit-base-patch32", device="cuda" if torch.cuda.is_available() else "cpu", cfg = None):
         """
         Initialize the CDV-Captioner module.
         

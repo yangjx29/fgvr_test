@@ -36,8 +36,8 @@ class FastSlowThinkingSystem:
     def __init__(self, 
                  model_tag: str = "Qwen2.5-VL-7B",
                  model_name: str = "Qwen2.5-VL-7B",
-                 image_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
-                 text_encoder_name: str = "/home/Dataset/Models/Clip/clip-vit-base-patch32",
+                 image_encoder_name: str = "./models/Clip/clip-vit-base-patch32",
+                 text_encoder_name: str = "./models/Clip/clip-vit-base-patch32",
                  device: str = "cuda" if torch.cuda.is_available() else "cpu",
                  cfg: Optional[Dict] = None):
         """

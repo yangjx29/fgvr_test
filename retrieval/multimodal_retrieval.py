@@ -24,7 +24,7 @@ import base64
 from torch.nn import functional as F
 
 class MultimodalRetrieval:
-    def __init__(self, image_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", text_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", fusion_method="concat", device="cuda" if torch.cuda.is_available() else "cpu"):
+    def __init__(self, image_encoder_name="./models/Clip/clip-vit-base-patch32", text_encoder_name="/home/Dataset/Models/Clip/clip-vit-base-patch32", fusion_method="concat", device="cuda" if torch.cuda.is_available() else "cpu"):
         """
         Initialize the Multimodal Retrieval module.
         
@@ -40,7 +40,7 @@ class MultimodalRetrieval:
         # Load CLIP for image and text feature extraction (CLIP can handle both)
         self.clip_model = CLIPModel.from_pretrained(image_encoder_name).to(self.device)
         self.clip_processor = CLIPProcessor.from_pretrained(image_encoder_name)
-        blip_load_path='/home/Dataset/Models/blip/blip2-opt-6.7b-coco'
+        blip_load_path='./models/Blip/blip2-opt-6.7b-coco'
         self.blip_processor = AutoProcessor.from_pretrained("Salesforce/blip-itm-base-coco")
         self.blip_model = BlipForImageTextRetrieval.from_pretrained("Salesforce/blip-itm-base-coco")
         # 确保模型与输入在同一设备，避免 FloatTensor/CudaFloatTensor 不一致
@@ -479,7 +479,7 @@ if __name__ == "__main__":
     test_samples = {}
     # 构建test samples
     # img_root = "/data/yjx/MLLM/UniFGVR/datasets/dogs_120/Images"
-    img_root = "/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10"
+    img_root = "./datasets/dogs_120/images_discovery_all_10"
     class_folders = os.listdir(img_root)
     for i in range(len(class_folders)):
         cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
@@ -577,7 +577,7 @@ if __name__ == "__main__":
                 print(f'匹配失败,correct:{correct},total:{total},score:{score}')
                 print(f'predicted_cat:{predicted_cat}, true_cat:{true_cat}')
                 # 错误预测的图像保存下来，照片是正确的
-                save_path = f'/data/yjx/MLLM/UniFGVR/experiments/dog120/fail_images/{predicted_cat}'
+                save_path = f'./experiments/dog120/fail_images/{predicted_cat}'
                 os.makedirs(save_path, exist_ok=True)
                 import shutil
                 shutil.copy(path, save_path)

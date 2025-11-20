@@ -9,9 +9,6 @@
 # 支持的模式分类：
 # 1. 传统VQA流程：identify, howto, describe, guess, postprocess
 # 2. 快慢思考系统：build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow
-# 3. 分离式推理分类：fast_slow_infer, fast_slow_classify
-# 4. 并行分类：fast_classify, slow_classify, terminal_decision
-# 5. 多模态增强：fast_classify_enhanced, slow_classify_enhanced, terminal_decision_enhanced
 
 # =============================================================================
 # YAML配置读取函数
