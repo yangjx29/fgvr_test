@@ -383,6 +383,23 @@ if __name__ == "__main__":
 
     expt_id_suffix = f"_{args.num_per_category}"  # 创建实验ID后缀
 
+    import pprint
+    import time
+
+    start_time = time.time()
+    print()
+    print(colored(f"=== Experiment Start Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))} ===", "cyan"))
+    print()
+
+    # 打印命令行参数
+    print(colored("=== Experiment Arguments ===", "green"))
+    pprint.pprint(vars(args))
+
+    # 打印配置文件参数
+    print(colored("=== Configuration (cfg) ===", "green"))
+    pprint.pprint(cfg)
+
+
     if args.mode == 'build_knowledge_base':
         """
         构建快慢思考系统的知识库
@@ -726,3 +743,9 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError 
 
+    end_time = time.time()
+    print()
+    print(colored(f"=== Experiment End Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))} ===", "cyan"))
+    print(colored(f"=== Total Runtime: {end_time - start_time:.2f} seconds ===", "cyan"))
+    print()
+    
