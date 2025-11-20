@@ -1,0 +1,58 @@
+# =============================================================================
+# 快慢思考系统统一配置文件 - Fast-Slow Thinking System Configuration
+# =============================================================================
+# 所有脚本的配置参数都在这里统一管理
+
+# GPU配置
+gpu:
+  cuda_visible_devices: "4" # GPU编号，多GPU用逗号分隔如 "0,1,2"
+# 数据集配置
+dataset:
+  name: "pet" # 数据集名称: dog, bird, flower, pet, car
+  test_data_suffix: "1" # 测试数据后缀: 每个类别的样本数量
+  # 可选值: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, random
+  # 例如: "5" 表示每个类别使用5个样本进行测试
+# 模型超参数
+hyperparameters:
+  kshot: 1 # 每类样本数 (K-shot learning)
+# 运行模式配置 (仅用于run_discovery.sh)
+modes:
+  # 发现模式 - 支持19种模式，分为5大类：
+  # 1. 传统VQA流程: identify, howto, describe, guess, postprocess
+  # 2. 快慢思考系统: build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow  
+  # 3. 分离式推理分类: fast_slow_infer, fast_slow_classify
+  # 4. 并行分类: fast_classify, slow_classify, terminal_decision
+  # 5. 多模态增强: fast_classify_enhanced, slow_classify_enhanced, terminal_decision_enhanced
+  discovery_mode: "fast_slow"
+# 环境配置
+environment:
+  conda_env: "finer_dynamic" # conda环境名称
+  conda_base: "/home/hdl/miniconda3" # conda安装路径
+  project_root: "/home/hdl/project/fgvr_test" # 项目根目录
+# 日志配置
+logging:
+  base_dir: "/home/hdl/project/fgvr_test/logs" # 日志基础目录
+# 数据集映射表 (自动配置，无需修改)
+dataset_mapping:
+  dog:
+    num_classes: 120
+    config_file: "dog120_all.yml"
+    data_dir: "dogs_120"
+  bird:
+    num_classes: 200
+    config_file: "bird200_all.yml"
+    data_dir: "CUB_200_2011"
+    # 鸟类数据集特殊路径：CUB_200_2011有两层同名目录
+    special_subdir: "CUB_200_2011"
+  flower:
+    num_classes: 102
+    config_file: "flower102_all.yml"
+    data_dir: "flowers_102"
+  pet:
+    num_classes: 37
+    config_file: "pet37_all.yml"
+    data_dir: "pet_37"
+  car:
+    num_classes: 196
+    config_file: "car196_all.yml"
+    data_dir: "car_196"
