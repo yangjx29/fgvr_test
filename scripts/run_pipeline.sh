@@ -3,6 +3,59 @@
 # FGVR Pipeline 脚本 - 完全后台执行，统一日志文件 + 精简 YAML 输出 + 自动递增日志
 # 知识库构建 + 快慢思考评估
 # =============================================================================
+# 用法示例：
+#   bash run_pipeline.sh                           # 使用YAML配置
+#   bash run_pipeline.sh aircraft                  # 指定数据集
+#   bash run_pipeline.sh eurosat --gpu 2 --kshot 5 # 多参数
+#
+# 命令行参数：
+#   位置参数1: 数据集名称 (dog, bird, flower, pet, car, aircraft, eurosat, food, dtd)
+#   --gpu GPU_ID              GPU编号
+#   --kshot NUM               每类样本数
+#   --test_suffix NUM         测试数据后缀
+#   --conda_env ENV_NAME      Conda环境名
+#   --help                    显示帮助信息
+
+# =============================================================================
+# 帮助函数
+# =============================================================================
+show_help() {
+    cat << EOF
+FGVR Pipeline 脚本 - 完整流程（知识库构建 + 快慢思考评估）
+
+用法:
+    bash run_pipeline.sh [DATASET] [选项]
+
+位置参数:
+    DATASET                  数据集名称 (可选)
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd
+
+选项:
+    --gpu GPU_ID            GPU编号
+    --kshot NUM             每个类别的样本数
+    --test_suffix NUM       测试数据后缀
+    --conda_env ENV_NAME    Conda环境名称
+    --help                  显示此帮助信息
+
+示例:
+    # 使用YAML配置
+    bash run_pipeline.sh
+
+    # 指定数据集
+    bash run_pipeline.sh aircraft
+
+    # 指定多个参数
+    bash run_pipeline.sh food --gpu 3 --kshot 6 --test_suffix 8
+
+优先级: 命令行参数 > YAML配置文件
+
+EOF
+    exit 0
+}
+
+# =============================================================================
+# 配置读取
+# =============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="${SCRIPT_DIR}/config.yaml"
@@ -24,8 +77,10 @@ get_yaml_value() {
 }
 
 # =============================================================================
-# 配置读取
+# 命令行参数解析
 # =============================================================================
+
+# 首先从YAML读取默认配置
 CUDA_VISIBLE_DEVICES=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
 DATASET=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
@@ -34,6 +89,46 @@ CONDA_ENV=$(get_yaml_value "conda_env" "${CONFIG_FILE}")
 CONDA_BASE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
 PROJECT_ROOT=$(get_yaml_value "project_root" "${CONFIG_FILE}")
 LOG_BASE_DIR=$(get_yaml_value "base_dir" "${CONFIG_FILE}")
+
+# 解析命令行参数
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --help|-h)
+            show_help
+            ;;
+        --gpu)
+            CUDA_VISIBLE_DEVICES="$2"
+            shift 2
+            ;;
+        --kshot)
+            KSHOT="$2"
+            shift 2
+            ;;
+        --test_suffix)
+            TEST_DATA_SUFFIX="$2"
+            shift 2
+            ;;
+        --conda_env)
+            CONDA_ENV="$2"
+            shift 2
+            ;;
+        --*)
+            echo "[ERROR] 未知选项: $1"
+            echo "使用 --help 查看帮助信息"
+            exit 1
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# 处理位置参数（数据集名称）
+if [ ${#POSITIONAL_ARGS[@]} -gt 0 ]; then
+    DATASET="${POSITIONAL_ARGS[0]}"
+fi
 
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES}"
 

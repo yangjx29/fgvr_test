@@ -3,8 +3,59 @@
 # =============================================================================
 # 知识库构建脚本 - Knowledge Base Builder
 # =============================================================================
-# 用法：直接运行 bash run_build_knowledge_base.sh
-# 专门用于构建知识库，所有参数从 config.yaml 文件读取
+# 用法示例：
+#   bash run_build_knowledge_base.sh                           # 使用YAML配置
+#   bash run_build_knowledge_base.sh dog                       # 指定数据集
+#   bash run_build_knowledge_base.sh dog --gpu 0 --kshot 5     # 指定多个参数
+#
+# 命令行参数：
+#   位置参数1: 数据集名称 (dog, bird, flower, pet, car, aircraft, eurosat, food, dtd)
+#   --gpu GPU_ID              GPU编号 (覆盖YAML配置)
+#   --kshot NUM               每类样本数 (覆盖YAML配置)
+#   --test_suffix NUM         测试数据后缀 (覆盖YAML配置)
+#   --conda_env ENV_NAME      Conda环境名 (覆盖YAML配置)
+#   --help                    显示帮助信息
+
+# =============================================================================
+# 帮助函数
+# =============================================================================
+show_help() {
+    cat << EOF
+知识库构建脚本 - Knowledge Base Builder
+
+用法:
+    bash run_build_knowledge_base.sh [DATASET] [选项]
+
+位置参数:
+    DATASET                  数据集名称 (可选)
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd
+                            如不指定，使用config.yaml中的配置
+
+选项:
+    --gpu GPU_ID            GPU编号，例如: --gpu 0 或 --gpu "0,1"
+    --kshot NUM             每个类别的样本数，例如: --kshot 5
+    --test_suffix NUM       测试数据后缀，例如: --test_suffix 10
+    --conda_env ENV_NAME    Conda环境名称
+    --help                  显示此帮助信息
+
+示例:
+    # 使用YAML配置
+    bash run_build_knowledge_base.sh
+
+    # 仅指定数据集
+    bash run_build_knowledge_base.sh aircraft
+
+    # 指定数据集和GPU
+    bash run_build_knowledge_base.sh eurosat --gpu 1
+
+    # 指定多个参数
+    bash run_build_knowledge_base.sh food --gpu 2 --kshot 6 --test_suffix 8
+
+优先级: 命令行参数 > YAML配置文件
+
+EOF
+    exit 0
+}
 
 # =============================================================================
 # YAML配置读取函数
@@ -28,7 +79,11 @@ get_yaml_value() {
     grep "^[[:space:]]*${key}:" "$file" | sed 's/^[[:space:]]*[^:]*:[[:space:]]*//' | sed 's/[[:space:]]*#.*//' | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/"
 }
 
-# 读取配置参数
+# =============================================================================
+# 命令行参数解析
+# =============================================================================
+
+# 首先从YAML读取默认配置
 CUDA_VISIBLE_DEVICES_VALUE=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
 DATASET_NAME=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
@@ -38,8 +93,48 @@ CONDA_BASE_VALUE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
 PROJECT_ROOT_VALUE=$(get_yaml_value "project_root" "${CONFIG_FILE}")
 LOG_BASE_DIR_VALUE=$(get_yaml_value "base_dir" "${CONFIG_FILE}")
 
+# 解析命令行参数
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --help|-h)
+            show_help
+            ;;
+        --gpu)
+            CUDA_VISIBLE_DEVICES_VALUE="$2"
+            shift 2
+            ;;
+        --kshot)
+            KSHOT_VALUE="$2"
+            shift 2
+            ;;
+        --test_suffix)
+            TEST_DATA_SUFFIX="$2"
+            shift 2
+            ;;
+        --conda_env)
+            CONDA_ENV_VALUE="$2"
+            shift 2
+            ;;
+        --*)
+            echo "错误: 未知选项 $1"
+            echo "使用 --help 查看帮助信息"
+            exit 1
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# 处理位置参数（数据集名称）
+if [ ${#POSITIONAL_ARGS[@]} -gt 0 ]; then
+    DATASET_NAME="${POSITIONAL_ARGS[0]}"
+fi
+
 # =============================================================================
-# 从配置文件读取参数
+# 应用配置参数
 # =============================================================================
 
 # GPU设置

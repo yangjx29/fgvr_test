@@ -1,0 +1,107 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=0  # 使用的GPU编号
+Dataset: aircraft (num_classes=100)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/aircraft100/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/fgvc_aircraft/images_discovery_all_10  # 测试数据目录
+Results Out: ./results/aircraft_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: aircraft (aircraft100)
+类别数: 100
+实验目录: ./experiments/aircraft100
+当前使用的 GPU 为：0
+
+=== Experiment Start Time: 2025-11-22 22:24:48 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/aircraft100_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/aircraft100/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 64,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/fgvc_aircraft',
+ 'dataset_name': 'aircraft',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/aircraft100',
+ 'expt_dir_describe': './experiments/aircraft100/describe',
+ 'expt_dir_gallery': './experiments/aircraft100/gallery',
+ 'expt_dir_grouping': './experiments/aircraft100/grouping',
+ 'expt_dir_guess': './experiments/aircraft100/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 100,
+ 'num_novel': 50,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/aircraft100/gallery/aircraft_image_descriptions_attn',
+ 'path_identify_answers': './experiments/aircraft100/identify',
+ 'path_llm_gussed_names': './experiments/aircraft100/guess/aircraft_llm_gussed_names',
+ 'path_llm_prompts': './experiments/aircraft100/describe/aircraft_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/aircraft100/guess/aircraft_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/aircraft100/guess/aircraft_llm_replies_raw',
+ 'path_references': './experiments/aircraft100/gallery/aircraft_image_references',
+ 'path_regions': './experiments/aircraft100/gallery/aircraft_image_regions',
+ 'path_vqa_answers': './experiments/aircraft100/describe/aircraft_attributes_pairs',
+ 'path_vqa_questions': './experiments/aircraft100/describe/aircraft_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "aircraft100",
+    "num_classes": 100,
+    "config_file": "aircraft100_all.yml",
+    "data_dir": "fgvc_aircraft",
+    "experiment_dir": "aircraft100",
+    "stats_file": "aircraft100/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/aircraft100/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/aircraft100"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.01s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.30s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.32s/it]scripts/run_pipeline.sh: line 243: 1798468 Killed                  python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/${CONFIG_FILE_DS} --num_per_category=${KSHOT} --knowledge_base_dir=${KNOWLEDGE_BASE_DIR}
+[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=137)

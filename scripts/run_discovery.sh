@@ -3,12 +3,64 @@
 # =============================================================================
 # 通用发现脚本 - Universal Discovery Runner
 # =============================================================================
-# 用法：直接运行 bash run_discovery.sh
-# 支持19种发现模式，所有参数从 config.yaml 文件读取
+# 用法示例：
+#   bash run_discovery.sh                                # 使用YAML配置
+#   bash run_discovery.sh dog evaluate                   # 指定数据集和模式
+#   bash run_discovery.sh bird fast_slow --gpu 1 --kshot 5  # 多参数
+#
+# 命令行参数：
+#   位置参数1: 数据集名称 (dog, bird, flower, pet, car, aircraft, eurosat, food, dtd)
+#   位置参数2: 运行模式 (build_knowledge_base, classify, evaluate, etc.)
+#   --gpu GPU_ID              GPU编号
+#   --kshot NUM               每类样本数
+#   --test_suffix NUM         测试数据后缀
+#   --conda_env ENV_NAME      Conda环境名
+#   --help                    显示帮助信息
 # 
 # 支持的模式分类：
 # 1. 传统VQA流程：identify, howto, describe, guess, postprocess
 # 2. 快慢思考系统：build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow
+
+# =============================================================================
+# 帮助函数
+# =============================================================================
+show_help() {
+    cat << EOF
+通用发现脚本 - Universal Discovery Runner
+
+用法:
+    bash run_discovery.sh [DATASET] [MODE] [选项]
+
+位置参数:
+    DATASET                  数据集名称 (可选)
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd
+    MODE                    运行模式 (可选)
+                            支持: build_knowledge_base, classify, evaluate, 
+                                  fastonly, slowonly, fast_slow, identify, 
+                                  howto, describe, guess, postprocess
+
+选项:
+    --gpu GPU_ID            GPU编号
+    --kshot NUM             每个类别的样本数
+    --test_suffix NUM       测试数据后缀
+    --conda_env ENV_NAME    Conda环境名称
+    --help                  显示此帮助信息
+
+示例:
+    # 使用YAML配置
+    bash run_discovery.sh
+
+    # 指定数据集和模式
+    bash run_discovery.sh aircraft evaluate
+
+    # 指定多个参数
+    bash run_discovery.sh food fast_slow --gpu 2 --kshot 6
+
+优先级: 命令行参数 > YAML配置文件
+
+EOF
+    exit 0
+}
 
 # =============================================================================
 # YAML配置读取函数
@@ -37,7 +89,11 @@ get_yaml_value() {
     sed 's/^[[:space:]]*\(.*\)[[:space:]]*$/\1/'
 }
 
-# 读取配置参数
+# =============================================================================
+# 命令行参数解析
+# =============================================================================
+
+# 首先从YAML读取默认配置
 CUDA_VISIBLE_DEVICES_VALUE=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
 DATASET_NAME=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX_VALUE=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
@@ -48,8 +104,51 @@ CONDA_BASE_VALUE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
 PROJECT_ROOT_VALUE=$(get_yaml_value "project_root" "${CONFIG_FILE}")
 LOG_BASE_DIR_VALUE=$(get_yaml_value "base_dir" "${CONFIG_FILE}")
 
+# 解析命令行参数
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --help|-h)
+            show_help
+            ;;
+        --gpu)
+            CUDA_VISIBLE_DEVICES_VALUE="$2"
+            shift 2
+            ;;
+        --kshot)
+            KSHOT_VALUE="$2"
+            shift 2
+            ;;
+        --test_suffix)
+            TEST_DATA_SUFFIX_VALUE="$2"
+            shift 2
+            ;;
+        --conda_env)
+            CONDA_ENV_VALUE="$2"
+            shift 2
+            ;;
+        --*)
+            echo "错误: 未知选项 $1"
+            echo "使用 --help 查看帮助信息"
+            exit 1
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# 处理位置参数（数据集名称和模式）
+if [ ${#POSITIONAL_ARGS[@]} -gt 0 ]; then
+    DATASET_NAME="${POSITIONAL_ARGS[0]}"
+fi
+if [ ${#POSITIONAL_ARGS[@]} -gt 1 ]; then
+    MODE_VALUE="${POSITIONAL_ARGS[1]}"
+fi
+
 # =============================================================================
-# 从配置文件读取参数
+# 应用配置参数
 # =============================================================================
 
 # GPU设置
