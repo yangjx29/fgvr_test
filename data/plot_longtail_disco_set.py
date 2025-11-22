@@ -73,6 +73,38 @@ bird_longtail = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ]
 
+num_aircraft = 100
+aircraft_longtail = [
+    10, 10, 10, 10, 10, 10, 9, 8, 7, 6, 6, 5, 5, 5, 4, 4, 4,
+    4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+]
+
+num_eurosat = 10
+eurosat_longtail = [
+    10, 8, 6, 5, 4, 3, 2, 2, 1, 1
+]
+
+num_food = 101
+food_longtail = [
+    10, 10, 10, 10, 10, 9, 8, 7, 6, 6, 5, 5, 5, 4, 4, 4, 4,
+    3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+]
+
+num_dtd = 47
+dtd_longtail = [
+    10, 10, 9, 8, 7, 6, 5, 5, 4, 4, 3, 3, 3, 2, 2, 2, 2,
+    2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+]
+
 
 def plot_long_tail_distribution(num_categories, dist_longtail, save_pdf=None):
     categories = range(num_categories)
@@ -129,12 +161,20 @@ if __name__ == '__main__':
     # plot_long_tail_distribution(num_dog, dog_longtail, 'plots/dog_disco-set_longtail.pdf')
     # plot_long_tail_distribution(num_flower, flower_longtail, 'plots/flower_disco-set_longtail.pdf')
     # plot_long_tail_distribution(num_pet, pet_longtail, 'plots/pet_disco-set_longtail.pdf')
+    # plot_long_tail_distribution(num_aircraft, aircraft_longtail, 'plots/aircraft_disco-set_longtail.pdf')
+    # plot_long_tail_distribution(num_eurosat, eurosat_longtail, 'plots/eurosat_disco-set_longtail.pdf')
+    # plot_long_tail_distribution(num_food, food_longtail, 'plots/food_disco-set_longtail.pdf')
+    # plot_long_tail_distribution(num_dtd, dtd_longtail, 'plots/dtd_disco-set_longtail.pdf')
 
     datasets = [
         (num_bird, bird_longtail),
         (num_car, car_longtail),
         (num_dog, dog_longtail),
         (num_flower, flower_longtail),
-        (num_pet, pet_longtail)
+        (num_pet, pet_longtail),
+        (num_aircraft, aircraft_longtail),
+        (num_eurosat, eurosat_longtail),
+        (num_food, food_longtail),
+        (num_dtd, dtd_longtail),
     ]
     plot_combined_long_tail_distributions(datasets, 'plots/combined_disco-set_longtail.pdf')

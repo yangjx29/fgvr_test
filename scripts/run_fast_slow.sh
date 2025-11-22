@@ -82,9 +82,29 @@ case "${DATASET}" in
         CONFIG_FILE="car196_all.yml"
         DATASET_DIR="car_196"
         ;;
+    "aircraft")
+        DATASET_NUM="100"
+        CONFIG_FILE="aircraft100_all.yml"
+        DATASET_DIR="fgvc_aircraft"
+        ;;
+    "eurosat")
+        DATASET_NUM="10"
+        CONFIG_FILE="eurosat10_all.yml"
+        DATASET_DIR="eurosat"
+        ;;
+    "food")
+        DATASET_NUM="101"
+        CONFIG_FILE="food101_all.yml"
+        DATASET_DIR="food_101"
+        ;;
+    "dtd")
+        DATASET_NUM="47"
+        CONFIG_FILE="dtd47_all.yml"
+        DATASET_DIR="dtd"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd"
         exit 1
         ;;
 esac

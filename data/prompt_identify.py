@@ -166,6 +166,114 @@ The useful attributes for distinguishing [__SUPERCLASS__] names in a photo of a 
 ===
 """
 
+aircraft_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] variants in a photo of an [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] variants in a photo of an [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['bill shape', 'wing color', 'upperparts color', 'underparts color', 'breast pattern',
+'back color', 'tail shape', 'upper tail color', 'head pattern', 'breast color',
+'throat color', 'eye color', 'bill length', 'forehead color', 'under tail color',
+'nape color', 'belly color', 'wing shape', 'size', 'shape',
+'back pattern', 'tail pattern', 'belly pattern', 'primary color', 'leg color',
+'bill color', 'crown color', 'wing pattern', 'habitat']
+===
+
+===
+<[__SUPERCLASS__] variants>
+The useful attributes for distinguishing [__SUPERCLASS__] variants in a photo of an [__SUPERCLASS__]:
+===
+"""
+
+
+eurosat_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] land use categories in a satellite image.
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] land use categories in a satellite image.
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['bill shape', 'wing color', 'upperparts color', 'underparts color', 'breast pattern',
+'back color', 'tail shape', 'upper tail color', 'head pattern', 'breast color',
+'throat color', 'eye color', 'bill length', 'forehead color', 'under tail color',
+'nape color', 'belly color', 'wing shape', 'size', 'shape',
+'back pattern', 'tail pattern', 'belly pattern', 'primary color', 'leg color',
+'bill color', 'crown color', 'wing pattern', 'habitat']
+===
+
+===
+<[__SUPERCLASS__] land use categories>
+The useful attributes for distinguishing [__SUPERCLASS__] land use categories in a satellite image:
+===
+"""
+
+
+food_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['bill shape', 'wing color', 'upperparts color', 'underparts color', 'breast pattern',
+'back color', 'tail shape', 'upper tail color', 'head pattern', 'breast color',
+'throat color', 'eye color', 'bill length', 'forehead color', 'under tail color',
+'nape color', 'belly color', 'wing shape', 'size', 'shape',
+'back pattern', 'tail pattern', 'belly pattern', 'primary color', 'leg color',
+'bill color', 'crown color', 'wing pattern', 'habitat']
+===
+
+===
+<[__SUPERCLASS__] categories>
+The useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of [__SUPERCLASS__]:
+===
+"""
+
+
+dtd_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] patterns in a photo of a [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] patterns in a photo of a [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['bill shape', 'wing color', 'upperparts color', 'underparts color', 'breast pattern',
+'back color', 'tail shape', 'upper tail color', 'head pattern', 'breast color',
+'throat color', 'eye color', 'bill length', 'forehead color', 'under tail color',
+'nape color', 'belly color', 'wing shape', 'size', 'shape',
+'back pattern', 'tail pattern', 'belly pattern', 'primary color', 'leg color',
+'bill color', 'crown color', 'wing pattern', 'habitat']
+===
+
+===
+<[__SUPERCLASS__] patterns>
+The useful attributes for distinguishing [__SUPERCLASS__] patterns in a photo of a [__SUPERCLASS__]:
+===
+"""
+
+
 prompts_howto = {
     "bird": bird_how_to,
     "car": car_how_to,
@@ -173,4 +281,8 @@ prompts_howto = {
     "flower": flower_how_to,
     "pet": pet_how_to,
     "pokemon": pokemon_how_to,
+    "aircraft": aircraft_how_to,
+    "eurosat": eurosat_how_to,
+    "food": food_how_to,
+    "dtd": dtd_how_to,
 }

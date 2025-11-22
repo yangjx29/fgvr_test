@@ -39,12 +39,16 @@ export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES}"
 
 # 数据集映射
 case "${DATASET}" in
-    "dog")    DATASET_NUM="120"; CONFIG_FILE_DS="dog120_all.yml"; DATASET_DIR="dogs_120" ;;
-    "bird")   DATASET_NUM="200"; CONFIG_FILE_DS="bird200_all.yml"; DATASET_DIR="CUB_200_2011/CUB_200_2011" ;;
-    "flower") DATASET_NUM="102"; CONFIG_FILE_DS="flower102_all.yml"; DATASET_DIR="flowers_102" ;;
-    "pet")    DATASET_NUM="37"; CONFIG_FILE_DS="pet37_all.yml"; DATASET_DIR="pet_37" ;;
-    "car")    DATASET_NUM="196"; CONFIG_FILE_DS="car196_all.yml"; DATASET_DIR="car_196" ;;
-    *) echo "[ERROR] 不支持的数据集 '${DATASET}'"; exit 1 ;;
+    "dog")      DATASET_NUM="120"; CONFIG_FILE_DS="dog120_all.yml"; DATASET_DIR="dogs_120" ;;
+    "bird")     DATASET_NUM="200"; CONFIG_FILE_DS="bird200_all.yml"; DATASET_DIR="CUB_200_2011/CUB_200_2011" ;;
+    "flower")   DATASET_NUM="102"; CONFIG_FILE_DS="flower102_all.yml"; DATASET_DIR="flowers_102" ;;
+    "pet")      DATASET_NUM="37"; CONFIG_FILE_DS="pet37_all.yml"; DATASET_DIR="pet_37" ;;
+    "car")      DATASET_NUM="196"; CONFIG_FILE_DS="car196_all.yml"; DATASET_DIR="car_196" ;;
+    "aircraft") DATASET_NUM="100"; CONFIG_FILE_DS="aircraft100_all.yml"; DATASET_DIR="fgvc_aircraft" ;;
+    "eurosat")  DATASET_NUM="10"; CONFIG_FILE_DS="eurosat10_all.yml"; DATASET_DIR="eurosat" ;;
+    "food")     DATASET_NUM="101"; CONFIG_FILE_DS="food101_all.yml"; DATASET_DIR="food_101" ;;
+    "dtd")      DATASET_NUM="47"; CONFIG_FILE_DS="dtd47_all.yml"; DATASET_DIR="dtd" ;;
+    *) echo "[ERROR] 不支持的数据集 '${DATASET}'. 支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd"; exit 1 ;;
 esac
 
 KNOWLEDGE_BASE_DIR="./experiments/${DATASET}${DATASET_NUM}/knowledge_base"

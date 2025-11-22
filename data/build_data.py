@@ -49,6 +49,18 @@ def build_data(cfg: dict):
     elif cfg['dataset_name'] == 'flower':
         from .flower102 import FlowerDataset as Dataset
         from .flower102 import _transform as transform
+    elif cfg['dataset_name'] == 'aircraft':
+        from .fgvc_aircraft import AircraftDataset as Dataset
+        from .fgvc_aircraft import _transform as transform
+    elif cfg['dataset_name'] == 'eurosat':
+        from .eurosat import EuroSATDataset as Dataset
+        from .eurosat import _transform as transform
+    elif cfg['dataset_name'] == 'food':
+        from .food_101 import FoodDataset as Dataset
+        from .food_101 import _transform as transform
+    elif cfg['dataset_name'] == 'dtd':
+        from .dtd import DTDDataset as Dataset
+        from .dtd import _transform as transform
     else:
         raise NameError(f"{cfg['dataset_name']} dataset does not exist!")
 
