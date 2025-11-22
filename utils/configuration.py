@@ -65,6 +65,18 @@ def setup_config(config_file_env: str, config_file_expt: str):
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "food_101")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "food101")  # 设置实验目录
         mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "aircraft":  # 如果是飞机数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "fgvc_aircraft")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "aircraft100")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "eurosat":  # 如果是卫星图像数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "eurosat")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "eurosat10")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "dtd":  # 如果是纹理数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "dtd")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "dtd47")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
     elif cfg_expt['dataset_name'] == "place":  # 如果是场景数据集
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "place_365")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "place365")  # 设置实验目录

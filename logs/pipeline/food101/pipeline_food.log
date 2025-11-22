@@ -1,0 +1,623 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+Dataset: food (num_classes=101)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/food101/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/food_101/images_discovery_all_10  # 测试数据目录
+Results Out: ./results/food_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: food (food101)
+类别数: 101
+实验目录: ./experiments/food101
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-11-22 22:07:51 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/food101_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/food101/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 96,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/food_101',
+ 'dataset_name': 'food',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/food101',
+ 'expt_dir_describe': './experiments/food101/describe',
+ 'expt_dir_gallery': './experiments/food101/gallery',
+ 'expt_dir_grouping': './experiments/food101/grouping',
+ 'expt_dir_guess': './experiments/food101/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 101,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/food101/gallery/food_image_descriptions_attn',
+ 'path_identify_answers': './experiments/food101/identify',
+ 'path_llm_gussed_names': './experiments/food101/guess/food_llm_gussed_names',
+ 'path_llm_prompts': './experiments/food101/describe/food_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/food101/guess/food_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/food101/guess/food_llm_replies_raw',
+ 'path_references': './experiments/food101/gallery/food_image_references',
+ 'path_regions': './experiments/food101/gallery/food_image_regions',
+ 'path_vqa_answers': './experiments/food101/describe/food_attributes_pairs',
+ 'path_vqa_questions': './experiments/food101/describe/food_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "food101",
+    "num_classes": 101,
+    "config_file": "food101_all.yml",
+    "data_dir": "food_101",
+    "experiment_dir": "food101",
+    "stats_file": "food101/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/food101/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/food101"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.96s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.16s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.20s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.23s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.71s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.91s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-22 22:08:01
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/food101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/food101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-22 22:09:53
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7c77950ffcd0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7c7792d158e0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/food101/knowledge_base
+使用数据集: food, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-22 22:09:53] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 101 个类别, dog datasets:101
+从 ./experiments/food101/knowledge_base 加载知识库...
+知识库已从 ./experiments/food101/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 101 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/101 [00:00<?, ?it/s]  1%|          | 1/101 [00:00<00:29,  3.44it/s]  4%|▍         | 4/101 [00:00<00:09, 10.39it/s]  6%|▌         | 6/101 [00:00<00:07, 13.13it/s]  9%|▉         | 9/101 [00:00<00:05, 16.97it/s] 12%|█▏        | 12/101 [00:00<00:04, 19.84it/s] 15%|█▍        | 15/101 [00:00<00:03, 21.81it/s] 18%|█▊        | 18/101 [00:01<00:03, 23.28it/s] 21%|██        | 21/101 [00:01<00:03, 24.21it/s] 24%|██▍       | 24/101 [00:01<00:03, 24.86it/s] 27%|██▋       | 27/101 [00:01<00:02, 25.09it/s] 30%|██▉       | 30/101 [00:01<00:02, 25.32it/s] 33%|███▎      | 33/101 [00:01<00:02, 25.56it/s] 36%|███▌      | 36/101 [00:01<00:02, 25.95it/s] 39%|███▊      | 39/101 [00:01<00:02, 25.96it/s] 42%|████▏     | 42/101 [00:01<00:02, 25.89it/s] 45%|████▍     | 45/101 [00:02<00:02, 26.05it/s] 48%|████▊     | 48/101 [00:02<00:02, 26.20it/s] 50%|█████     | 51/101 [00:02<00:01, 26.03it/s] 53%|█████▎    | 54/101 [00:02<00:01, 26.10it/s] 56%|█████▋    | 57/101 [00:02<00:01, 26.32it/s] 59%|█████▉    | 60/101 [00:02<00:01, 26.21it/s] 62%|██████▏   | 63/101 [00:02<00:01, 26.11it/s] 65%|██████▌   | 66/101 [00:02<00:01, 26.09it/s] 68%|██████▊   | 69/101 [00:02<00:01, 26.08it/s] 71%|███████▏  | 72/101 [00:03<00:01, 26.05it/s] 74%|███████▍  | 75/101 [00:03<00:00, 26.02it/s] 77%|███████▋  | 78/101 [00:03<00:00, 26.20it/s] 80%|████████  | 81/101 [00:03<00:00, 26.32it/s] 83%|████████▎ | 84/101 [00:03<00:00, 26.32it/s] 86%|████████▌ | 87/101 [00:03<00:00, 26.34it/s] 89%|████████▉ | 90/101 [00:03<00:00, 26.29it/s] 92%|█████████▏| 93/101 [00:03<00:00, 26.40it/s] 95%|█████████▌| 96/101 [00:03<00:00, 26.34it/s] 98%|█████████▊| 99/101 [00:04<00:00, 26.34it/s]100%|██████████| 101/101 [00:04<00:00, 24.21it/s]
+处理类别: garlic_bread
+类别 garlic_bread 图像特征维度: (512,)
+处理类别: miso_soup
+类别 miso_soup 图像特征维度: (512,)
+处理类别: carrot_cake
+类别 carrot_cake 图像特征维度: (512,)
+处理类别: bibimbap
+类别 bibimbap 图像特征维度: (512,)
+处理类别: edamame
+类别 edamame 图像特征维度: (512,)
+处理类别: club_sandwich
+类别 club_sandwich 图像特征维度: (512,)
+处理类别: macaroni_and_cheese
+类别 macaroni_and_cheese 图像特征维度: (512,)
+处理类别: french_fries
+类别 french_fries 图像特征维度: (512,)
+处理类别: creme_brulee
+类别 creme_brulee 图像特征维度: (512,)
+处理类别: guacamole
+类别 guacamole 图像特征维度: (512,)
+处理类别: baklava
+类别 baklava 图像特征维度: (512,)
+处理类别: bruschetta
+类别 bruschetta 图像特征维度: (512,)
+处理类别: falafel
+类别 falafel 图像特征维度: (512,)
+处理类别: chocolate_cake
+类别 chocolate_cake 图像特征维度: (512,)
+处理类别: crab_cakes
+类别 crab_cakes 图像特征维度: (512,)
+处理类别: panna_cotta
+类别 panna_cotta 图像特征维度: (512,)
+处理类别: spring_rolls
+类别 spring_rolls 图像特征维度: (512,)
+处理类别: frozen_yogurt
+类别 frozen_yogurt 图像特征维度: (512,)
+处理类别: pulled_pork_sandwich
+类别 pulled_pork_sandwich 图像特征维度: (512,)
+处理类别: french_onion_soup
+类别 french_onion_soup 图像特征维度: (512,)
+处理类别: baby_back_ribs
+类别 baby_back_ribs 图像特征维度: (512,)
+处理类别: cannoli
+类别 cannoli 图像特征维度: (512,)
+处理类别: dumplings
+类别 dumplings 图像特征维度: (512,)
+处理类别: pad_thai
+类别 pad_thai 图像特征维度: (512,)
+处理类别: red_velvet_cake
+类别 red_velvet_cake 图像特征维度: (512,)
+处理类别: escargots
+类别 escargots 图像特征维度: (512,)
+处理类别: hummus
+类别 hummus 图像特征维度: (512,)
+处理类别: huevos_rancheros
+类别 huevos_rancheros 图像特征维度: (512,)
+处理类别: lobster_bisque
+类别 lobster_bisque 图像特征维度: (512,)
+处理类别: chicken_quesadilla
+类别 chicken_quesadilla 图像特征维度: (512,)
+处理类别: ice_cream
+类别 ice_cream 图像特征维度: (512,)
+处理类别: ramen
+类别 ramen 图像特征维度: (512,)
+处理类别: hot_dog
+类别 hot_dog 图像特征维度: (512,)
+处理类别: bread_pudding
+类别 bread_pudding 图像特征维度: (512,)
+处理类别: nachos
+类别 nachos 图像特征维度: (512,)
+处理类别: beignets
+类别 beignets 图像特征维度: (512,)
+处理类别: chicken_wings
+类别 chicken_wings 图像特征维度: (512,)
+处理类别: caprese_salad
+类别 caprese_salad 图像特征维度: (512,)
+处理类别: pancakes
+类别 pancakes 图像特征维度: (512,)
+处理类别: waffles
+类别 waffles 图像特征维度: (512,)
+处理类别: lasagna
+类别 lasagna 图像特征维度: (512,)
+处理类别: foie_gras
+类别 foie_gras 图像特征维度: (512,)
+处理类别: seaweed_salad
+类别 seaweed_salad 图像特征维度: (512,)
+处理类别: breakfast_burrito
+类别 breakfast_burrito 图像特征维度: (512,)
+处理类别: cheese_plate
+类别 cheese_plate 图像特征维度: (512,)
+处理类别: spaghetti_carbonara
+类别 spaghetti_carbonara 图像特征维度: (512,)
+处理类别: steak
+类别 steak 图像特征维度: (512,)
+处理类别: risotto
+类别 risotto 图像特征维度: (512,)
+处理类别: fried_rice
+类别 fried_rice 图像特征维度: (512,)
+处理类别: sashimi
+类别 sashimi 图像特征维度: (512,)
+处理类别: takoyaki
+类别 takoyaki 图像特征维度: (512,)
+处理类别: pork_chop
+类别 pork_chop 图像特征维度: (512,)
+处理类别: samosa
+类别 samosa 图像特征维度: (512,)
+处理类别: peking_duck
+类别 peking_duck 图像特征维度: (512,)
+处理类别: shrimp_and_grits
+类别 shrimp_and_grits 图像特征维度: (512,)
+处理类别: gnocchi
+类别 gnocchi 图像特征维度: (512,)
+处理类别: pizza
+类别 pizza 图像特征维度: (512,)
+处理类别: caesar_salad
+类别 caesar_salad 图像特征维度: (512,)
+处理类别: sushi
+类别 sushi 图像特征维度: (512,)
+处理类别: greek_salad
+类别 greek_salad 图像特征维度: (512,)
+处理类别: ceviche
+类别 ceviche 图像特征维度: (512,)
+处理类别: fish_and_chips
+类别 fish_and_chips 图像特征维度: (512,)
+处理类别: onion_rings
+类别 onion_rings 图像特征维度: (512,)
+处理类别: fried_calamari
+类别 fried_calamari 图像特征维度: (512,)
+处理类别: tuna_tartare
+类别 tuna_tartare 图像特征维度: (512,)
+处理类别: cheesecake
+类别 cheesecake 图像特征维度: (512,)
+处理类别: croque_madame
+类别 croque_madame 图像特征维度: (512,)
+处理类别: chocolate_mousse
+类别 chocolate_mousse 图像特征维度: (512,)
+处理类别: tacos
+类别 tacos 图像特征维度: (512,)
+处理类别: hot_and_sour_soup
+类别 hot_and_sour_soup 图像特征维度: (512,)
+处理类别: lobster_roll_sandwich
+[2025-11-22 22:09:56] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 lobster_roll_sandwich 图像特征维度: (512,)
+处理类别: strawberry_shortcake
+类别 strawberry_shortcake 图像特征维度: (512,)
+处理类别: churros
+类别 churros 图像特征维度: (512,)
+处理类别: clam_chowder
+类别 clam_chowder 图像特征维度: (512,)
+处理类别: donuts
+类别 donuts 图像特征维度: (512,)
+处理类别: mussels
+类别 mussels 图像特征维度: (512,)
+处理类别: poutine
+类别 poutine 图像特征维度: (512,)
+处理类别: grilled_cheese_sandwich
+类别 grilled_cheese_sandwich 图像特征维度: (512,)
+处理类别: pho
+类别 pho 图像特征维度: (512,)
+处理类别: chicken_curry
+类别 chicken_curry 图像特征维度: (512,)
+处理类别: macarons
+类别 macarons 图像特征维度: (512,)
+处理类别: eggs_benedict
+类别 eggs_benedict 图像特征维度: (512,)
+处理类别: grilled_salmon
+类别 grilled_salmon 图像特征维度: (512,)
+处理类别: gyoza
+类别 gyoza 图像特征维度: (512,)
+处理类别: oysters
+类别 oysters 图像特征维度: (512,)
+处理类别: ravioli
+类别 ravioli 图像特征维度: (512,)
+处理类别: cup_cakes
+类别 cup_cakes 图像特征维度: (512,)
+处理类别: beef_carpaccio
+类别 beef_carpaccio 图像特征维度: (512,)
+处理类别: beef_tartare
+类别 beef_tartare 图像特征维度: (512,)
+处理类别: spaghetti_bolognese
+类别 spaghetti_bolognese 图像特征维度: (512,)
+处理类别: prime_rib
+类别 prime_rib 图像特征维度: (512,)
+处理类别: french_toast
+类别 french_toast 图像特征维度: (512,)
+处理类别: apple_pie
+类别 apple_pie 图像特征维度: (512,)
+处理类别: filet_mignon
+类别 filet_mignon 图像特征维度: (512,)
+处理类别: paella
+类别 paella 图像特征维度: (512,)
+处理类别: deviled_eggs
+类别 deviled_eggs 图像特征维度: (512,)
+处理类别: tiramisu
+类别 tiramisu 图像特征维度: (512,)
+处理类别: scallops
+类别 scallops 图像特征维度: (512,)
+处理类别: omelette
+类别 omelette 图像特征维度: (512,)
+处理类别: hamburger
+类别 hamburger 图像特征维度: (512,)
+处理类别: beet_salad
+类别 beet_salad 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/101 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+  1%|          | 1/101 [00:20<34:55, 20.96s/it]  2%|▏         | 2/101 [00:48<40:45, 24.70s/it]  3%|▎         | 3/101 [01:13<40:26, 24.76s/it]处理类别: garlic_bread
+[2025-11-22 22:09:59] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 22:10:02] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 22:10:05] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for garlic_bread category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:10:08] [显存监控] 已分配=32.48GB, 已保留=32.85GB, 空闲=14.92GB
+[2025-11-22 22:10:11] [显存监控] 已分配=32.57GB, 已保留=34.78GB, 空闲=14.84GB
+[2025-11-22 22:10:14] [显存监控] 已分配=32.58GB, 已保留=34.78GB, 空闲=14.83GB
+[2025-11-22 22:10:17] [显存监控] 已分配=32.58GB, 已保留=34.78GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.78GB, 剩余=14.97GB
+MLLM description: The images depict garlic bread, characterized by its distinctively soft, slightly puffy texture and golden-brown coloration. The bread is cut into irregular pieces, with some edges appearing crispier than others, suggesting it was baked or toasted to achieve a slightly charred exterior. The surface of the bread is generously sprinkled with chopped green herbs, likely parsley or chives, which add a vibrant contrast to the warm tones of the bread. The size and proportions vary across the pieces, with some being larger and more substantial, while others are smaller and thinner. The bread appears to have been served in a basket lined with a white napkin, indicating it's ready to be eaten. The overall appearance suggests a freshly prepared dish, likely intended as a side or accompaniment to a meal.
+类别 garlic_bread 文本特征维度: (512,)
+描述: The images depict garlic bread, characterized by its distinctively soft, slightly puffy texture and ...
+处理类别: miso_soup
+[2025-11-22 22:10:20] [显存监控] 已分配=32.44GB, 已保留=34.78GB, 空闲=14.97GB
+[2025-11-22 22:10:23] [显存监控] 已分配=32.44GB, 已保留=34.78GB, 空闲=14.97GB
+[2025-11-22 22:10:26] [显存监控] 已分配=32.44GB, 已保留=34.78GB, 空闲=14.97GB
+[2025-11-22 22:10:29] [显存监控] 已分配=32.44GB, 已保留=34.78GB, 空闲=14.97GB
+wiki desc: Description for miso_soup category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:10:32] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:10:35] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:10:38] [显存监控] 已分配=32.57GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:10:41] [显存监控] 已分配=32.57GB, 已保留=34.50GB, 空闲=14.83GB
+[2025-11-22 22:10:44] [显存监控] 已分配=32.58GB, 已保留=34.50GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.50GB, 剩余=14.97GB
+MLLM description: The images depict miso soup, a traditional Japanese soup made with a fermented soybean paste called miso as its primary ingredient. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: Miso soup is typically served in a shallow, wide bowl, often with a red rim, which is visible in all three images. The soup itself has a smooth, creamy texture and a light brown color due to the miso paste. It may contain various ingredients such as tofu, seaweed, vegetables, and sometimes meat or fish.
+
+2. **Color Patterns and Markings**: The color of the soup is a consistent light brown, indicative of the miso paste. The broth appears clear, allowing the ingredients within to be visible. There might be small white cubes of tofu floating in the soup, and green pieces of seaweed or vegetables. The red rim of the bowl provides a strong contrast against the light brown soup.
+
+3. **Size and Proportions**: The bowls are relatively small, designed to hold a single serving of the soup. The size allows for easy consumption and appreciation of the flavors. The soup fills most of the bowl, leaving little space at the top.
+
+4. **Behavioral Characteristics**: The soup does not exhibit any specific behavioral
+类别 miso_soup 文本特征维度: (512,)
+描述: The images depict miso soup, a traditional Japanese soup made with a fermented soybean paste called ...
+处理类别: carrot_cake
+[2025-11-22 22:10:47] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:10:50] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:10:53] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+wiki desc: Description for carrot_cake category.
+[2025-11-22 22:10:56] [显存监控] 已分配=32.45GB, 已保留=32.79GB, 空闲=14.95GB
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:10:59] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:11:02] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:11:05] [显存监控] 已分配=32.57GB, 已保留=34.50GB, 空闲=14.83GB
+[2025-11-22 22:11:08] [显存监控] 已分配=32.58GB, 已保留=34.50GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.50GB, 剩余=14.97GB
+MLLM description: The images depict carrot cakes with distinct physical features:
+
+* **Distinctive Physical Features:** The cakes have a moist, dense texture with visible orange flecks, indicative of grated carrots. They are topped with a layer of white frosting, which can vary in thickness and smoothness. Some cakes may also feature decorative elements like small carrot-shaped candies or sprinkles.
+
+* **Color Patterns and Markings:** The cakes exhibit a warm, earthy orange hue from the carrot, contrasted by the creamy white frosting. The frosting may have slight variations in color due to the cake's density and moisture content. Decorative elements, if present, add pops of color.
+
+* **Size and Proportions:** The cakes appear to be medium-sized, suitable for individual servings. Their height is typically consistent with a single layer, though some may be stacked. The frosting covers the top and sides, creating a uniform appearance.
+
+* **Behavioral Characteristics:** As baked goods, carrot cakes do not exhibit any behavioral characteristics. They are stationary objects awaiting consumption.
+
+* **Unique Identifying Traits:** The combination of carrot flavor, moist texture, and white frosting distinguishes carrot cakes from other types of cakes. The presence of carrot-shaped candies or sprinkles adds a playful touch.
+类别 carrot_cake 文本特征维度: (512,)
+描述: The images depict carrot cakes with distinct physical features:
+
+* **Distinctive Physical Features:*...
+处理类别: bibimbap
+[2025-11-22 22:11:11] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:11:14] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:11:17] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:11:20] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+wiki desc: Description for bibimbap category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:11:23] [显存监控] 已分配=32.62GB, 已保留=35.10GB, 空闲=14.79GB
+[2025-11-22 22:11:26] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:11:29] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:11:32] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:11:35] [显存监控] 已分配=32.60GB, 已保留=35.10GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=35.10GB, 剩余=14.97GB
+  4%|▍         | 4/101 [01:40<41:23, 25.61s/it]  5%|▍         | 5/101 [02:05<41:03, 25.66s/it]  6%|▌         | 6/101 [02:31<40:52, 25.81s/it]MLLM description: All three images depict bibimbap, a traditional Korean dish characterized by its vibrant colors and diverse ingredients. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**:  
+   - **Ingredients**: Each image showcases a mix of vegetables, rice, meat, and a fried egg as the centerpiece. The vegetables include shredded carrots, cucumber slices, bean sprouts, and leafy greens in various shades of green and orange.  
+   - **Presentation**: The dishes are served in bowls or plates, with the ingredients arranged to create an appealing visual contrast. The fried egg is typically placed on top, adding a creamy texture and a pop of color.
+
+2. **Color Patterns and Markings**:  
+   - **Variety of Colors**: The dishes feature a rich palette of colors, including the bright orange of the carrots, the green of the lettuce and cucumber, the white of the rice and egg, and the brown of the meat.  
+   - **Contrast**: The fried egg's golden yolk contrasts sharply with the surrounding ingredients, making it stand out visually.  
+
+3. **Size and Proportions**:  
+   - **Portion Size**: The servings appear to be medium-sized, suitable for one person. The ingredients are distributed evenly across
+类别 bibimbap 文本特征维度: (512,)
+描述: All three images depict bibimbap, a traditional Korean dish characterized by its vibrant colors and ...
+处理类别: edamame
+[2025-11-22 22:11:38] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:11:41] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:11:44] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:11:47] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+wiki desc: Description for edamame category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:11:50] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.83GB
+[2025-11-22 22:11:53] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:11:56] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:11:59] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:12:02] [显存监控] 已分配=32.60GB, 已保留=35.10GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.10GB, 剩余=14.97GB
+MLLM description: The images depict edamame, a type of soybean that is harvested while still in its pod. Here's a detailed description:
+
+1. **Distinctive Physical Features**: Edamame pods are elongated, bean-shaped, and have a smooth texture. They are typically green in color, with a slight sheen due to their natural oils.
+
+2. **Color Patterns and Markings**: The primary color is a vibrant green, which can vary slightly depending on ripeness. There are no distinct markings or patterns on the pods themselves; however, some images show a light dusting of salt, which is often added as a seasoning.
+
+3. **Size and Proportions**: The pods are relatively small compared to other types of beans. Each pod contains one or two seeds, and they are about the size of a fingernail. The pods are tightly packed together in a bowl, showcasing their uniform size and shape.
+
+4. **Behavioral Characteristics**: Edamame is not a living organism, so it does not exhibit any behavioral characteristics. However, it is often served as a snack or side dish, and its consumption involves peeling the pods open to reveal the soft, tender seeds inside.
+
+5. **Unique Identifying Traits**: The key identifying trait of ed
+类别 edamame 文本特征维度: (512,)
+描述: The images depict edamame, a type of soybean that is harvested while still in its pod. Here's a deta...
+处理类别: club_sandwich
+[2025-11-22 22:12:05] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:12:08] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:12:11] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:12:14] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+wiki desc: Description for club_sandwich category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:12:17] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:12:20] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 22:12:23] [显存监控] 已分配=32.57GB, 已保留=34.50GB, 空闲=14.83GB
+[2025-11-22 22:12:26] [显存监控] 已分配=32.58GB, 已保留=34.50GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.50GB, 剩余=14.97GB
+MLLM description: The club sandwich is a type of sandwich characterized by its layered composition, typically featuring multiple slices of bread filled with various ingredients such as meats, cheeses, vegetables, and condiments. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: Club sandwiches are usually square or rectangular in shape due to the way they are cut from a larger loaf of bread. They are often stacked high with fillings, giving them a substantial appearance.
+
+2. **Color Patterns and Markings**: The color pattern of a club sandwich can vary depending on the ingredients used. Common colors include the golden brown of toasted bread, the white or pale yellow of cheese, the green of lettuce, the red of tomatoes, and the pinkish hue of ham or turkey. The fillings may also have distinct textures, such as the crispness of lettuce or the softness of cheese.
+
+3. **Size and Proportions**: Club sandwiches are generally larger than a typical sandwich, often taking up more space on a plate or in a hand. They are designed to be filling and satisfying, making them a popular choice for lunch or a light meal.
+
+4. **Behavioral Characteristics**: Club sandwiches are often eaten with hands, as they are large enough to hold comfortably. Some people may
+类别 club_sandwich 文本特征维度: (512,)
+描述: The club sandwich is a type of sandwich characterized by its layered composition, typically featurin...
+处理类别: macaroni_and_cheese
+[2025-11-22 22:12:29] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:12:32] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:12:35] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 22:12:38] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+wiki desc: Description for macaroni_and_cheese category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:12:41] [显存监控] 已分配=32.49GB, 已保留=35.10GB, 空闲=14.92GB
+[2025-11-22 22:12:44] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:12:47] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:12:50] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:12:53] [显存监控] 已分配=32.61GB, 已保留=35.10GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.10GB, 剩余=14.97GB
+  7%|▋         | 7/101 [02:58<40:37, 25.93s/it]  8%|▊         | 8/101 [03:23<40:04, 25.86s/it]  9%|▉         | 9/101 [03:50<40:05, 26.14s/it]MLLM description: The macaroni_and_cheese in all three images share the following distinctive physical features:
+
+* **Distinctive Physical Features:** All three images depict pasta coated in a creamy cheese sauce, with the pasta being elbow macaroni. The cheese sauce appears to be melted and smooth, covering the pasta evenly.
+
+* **Color Patterns and Markings:** The color pattern is predominantly yellow due to the cheese, with some variation in shade depending on the type of cheese used. In Image 1 and Image 3, there are brown breadcrumbs sprinkled on top, adding a contrasting texture and color. In Image 2, the cheese appears more uniform in color, suggesting a smoother texture.
+
+* **Size and Proportions:** The size and proportions of the macaroni are consistent across all images, with the pasta being medium-sized and the cheese sauce coating them generously. The pasta appears to be cooked al dente, maintaining its shape while being fully covered by the cheese.
+
+* **Behavioral Characteristics:** The macaroni_and_cheese does not exhibit any behavioral characteristics as it is a static food item.
+
+* **Unique Identifying Traits:** The unique identifying traits of macaroni_and_cheese include the combination of elbow macaroni and a creamy cheese sauce, often topped with
+类别 macaroni_and_cheese 文本特征维度: (512,)
+描述: The macaroni_and_cheese in all three images share the following distinctive physical features:
+
+* **...
+处理类别: french_fries
+[2025-11-22 22:12:56] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:12:59] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:02] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:05] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+wiki desc: Description for french_fries category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:13:08] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:13:11] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:13:14] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:13:17] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:13:20] [显存监控] 已分配=32.60GB, 已保留=35.10GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.10GB, 剩余=14.97GB
+MLLM description: The images depict French fries, which are characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: French fries are long, thin, and flat strips of potato that have been deep-fried until golden brown. They are crispy on the outside and soft on the inside.
+
+2. **Color Patterns and Markings**: The fries in all three images are predominantly golden yellow, indicating they have been fried to a crisp. There are no significant color variations or markings, as the focus is on the uniformity of the fry's appearance.
+
+3. **Size and Proportions**: The fries appear to be of standard size, neither too thick nor too thin. The length varies slightly between the images, but they generally maintain a consistent proportion throughout each image.
+
+4. **Behavioral Characteristics**: As food items, French fries do not exhibit any behavioral characteristics. However, their texture and appearance suggest they are meant to be eaten, with the crispy exterior promising a satisfying crunch.
+
+5. **Unique Identifying Traits**: The unique identifying trait of French fries is their shape and preparation method. They are cut into long, thin strips and deep-fried, resulting in their characteristic golden color and crispy texture. The presence of ketchup, a common accompaniment, further distinguishes
+类别 french_fries 文本特征维度: (512,)
+描述: The images depict French fries, which are characterized by their distinctive physical features:
+
+1. ...
+处理类别: creme_brulee
+[2025-11-22 22:13:23] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:26] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:29] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:32] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+wiki desc: Description for creme_brulee category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:13:35] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:13:38] [显存监控] 已分配=32.58GB, 已保留=35.10GB, 空闲=14.82GB
+[2025-11-22 22:13:41] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:13:44] [显存监控] 已分配=32.59GB, 已保留=35.10GB, 空闲=14.81GB
+[2025-11-22 22:13:47] [显存监控] 已分配=32.60GB, 已保留=35.10GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.10GB, 剩余=14.97GB
+MLLM description: The images depict three different presentations of crème brûlée, a dessert characterized by its caramelized sugar topping. 
+
+1. **Distinctive Physical Features**: All three images show a creamy, pale yellow base beneath a layer of caramelized sugar. The sugar topping is unevenly browned in some areas, indicating it has been torched to create a crisp texture.
+
+2. **Color Patterns and Markings**: The caramelized sugar topping varies slightly in color intensity across the images. In Image 1, the sugar appears more uniformly browned, while in Images 2 and 3, there are darker, almost blackened spots, suggesting a more intense caramelization process.
+
+3. **Size and Proportions**: The desserts appear to be served in individual-sized ramekins or bowls, consistent with the typical serving size for crème brûlée. The proportions remain relatively uniform across all images.
+
+4. **Behavioral Characteristics**: There are no behavioral characteristics specific to crème brûlée as it is a static dessert. However, the caramelized sugar topping suggests that the dessert can be broken or scraped off, revealing the creamy custard underneath.
+
+5. **Unique Identifying Traits**: The most distinctive feature of crème brûlée is the caramelized sugar
+类别 creme_brulee 文本特征维度: (512,)
+描述: The images depict three different presentations of crème brûlée, a dessert characterized by its cara...
+处理类别: guacamole
+[2025-11-22 22:13:50] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:53] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:56] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+[2025-11-22 22:13:59] [显存监控] 已分配=32.44GB, 已保留=35.10GB, 空闲=14.97GB
+wiki desc: Description for guacamole category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 22:14:02] [显存监控] 已分配=32.56GB, 已保留=34.78GB, 空闲=14.84GB
+[2025-11-22 22:14:05] [显存监控] 已分配=32.60GB, 已保留=34.78GB, 空闲=14.80GB
+[2025-11-22 22:14:08] [显存监控] 已分配=32.58GB, 已保留=34.78GB, 空闲=14.83GB
+[2025-11-22 22:14:11] [显存监控] 已分配=32.58GB, 已保留=34.78GB, 空闲=14.82GB
+[2025-11-22 22:14:14] [显存监控] 已分配=32.59GB, 已保留=34.78GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.78GB, 剩余=14.97GB
+ 10%|▉         | 10/101 [04:18<40:18, 26.58s/it]

@@ -1,0 +1,455 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=3  # 使用的GPU编号
+Dataset: aircraft (num_classes=100)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/aircraft100/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/fgvc_aircraft/images_discovery_all_10  # 测试数据目录
+Results Out: ./results/aircraft_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: aircraft (aircraft100)
+类别数: 100
+实验目录: ./experiments/aircraft100
+当前使用的 GPU 为：3
+
+=== Experiment Start Time: 2025-11-22 22:10:45 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/aircraft100_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/aircraft100/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 64,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/fgvc_aircraft',
+ 'dataset_name': 'aircraft',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/aircraft100',
+ 'expt_dir_describe': './experiments/aircraft100/describe',
+ 'expt_dir_gallery': './experiments/aircraft100/gallery',
+ 'expt_dir_grouping': './experiments/aircraft100/grouping',
+ 'expt_dir_guess': './experiments/aircraft100/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 100,
+ 'num_novel': 50,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/aircraft100/gallery/aircraft_image_descriptions_attn',
+ 'path_identify_answers': './experiments/aircraft100/identify',
+ 'path_llm_gussed_names': './experiments/aircraft100/guess/aircraft_llm_gussed_names',
+ 'path_llm_prompts': './experiments/aircraft100/describe/aircraft_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/aircraft100/guess/aircraft_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/aircraft100/guess/aircraft_llm_replies_raw',
+ 'path_references': './experiments/aircraft100/gallery/aircraft_image_references',
+ 'path_regions': './experiments/aircraft100/gallery/aircraft_image_regions',
+ 'path_vqa_answers': './experiments/aircraft100/describe/aircraft_attributes_pairs',
+ 'path_vqa_questions': './experiments/aircraft100/describe/aircraft_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "aircraft100",
+    "num_classes": 100,
+    "config_file": "aircraft100_all.yml",
+    "data_dir": "fgvc_aircraft",
+    "experiment_dir": "aircraft100",
+    "stats_file": "aircraft100/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/aircraft100/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/aircraft100"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.89s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.12s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.22s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.24s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.73s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.92s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-22 22:10:56
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/aircraft100/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/aircraft100/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-22 22:12:28
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x79895b7e9af0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x79895b7e9940>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/aircraft100/knowledge_base
+使用数据集: aircraft, 类别数: 100
+✅ 慢思考模块初始化完成，类别映射数量: 100
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-22 22:12:28] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 98 个类别, dog datasets:100
+从 ./experiments/aircraft100/knowledge_base 加载知识库...
+知识库已从 ./experiments/aircraft100/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 98 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/98 [00:00<?, ?it/s]  1%|          | 1/98 [00:00<00:31,  3.03it/s]  2%|▏         | 2/98 [00:00<00:19,  5.05it/s]  4%|▍         | 4/98 [00:00<00:12,  7.61it/s]  5%|▌         | 5/98 [00:00<00:11,  8.03it/s]  7%|▋         | 7/98 [00:00<00:09,  9.33it/s]  9%|▉         | 9/98 [00:01<00:08, 10.11it/s] 11%|█         | 11/98 [00:01<00:08, 10.71it/s] 13%|█▎        | 13/98 [00:01<00:08, 10.51it/s] 15%|█▌        | 15/98 [00:01<00:07, 10.60it/s] 17%|█▋        | 17/98 [00:01<00:07, 10.60it/s] 19%|█▉        | 19/98 [00:02<00:07, 10.60it/s] 21%|██▏       | 21/98 [00:02<00:06, 11.24it/s] 23%|██▎       | 23/98 [00:02<00:06, 11.48it/s] 26%|██▌       | 25/98 [00:02<00:06, 11.53it/s] 28%|██▊       | 27/98 [00:02<00:06, 11.48it/s] 30%|██▉       | 29/98 [00:02<00:06, 11.27it/s] 32%|███▏      | 31/98 [00:03<00:05, 11.30it/s] 34%|███▎      | 33/98 [00:03<00:05, 11.40it/s] 36%|███▌      | 35/98 [00:03<00:05, 11.10it/s] 38%|███▊      | 37/98 [00:03<00:05, 11.58it/s] 40%|███▉      | 39/98 [00:03<00:05, 11.75it/s] 42%|████▏     | 41/98 [00:03<00:04, 12.03it/s] 44%|████▍     | 43/98 [00:04<00:04, 12.31it/s] 46%|████▌     | 45/98 [00:04<00:04, 11.73it/s] 48%|████▊     | 47/98 [00:04<00:04, 11.61it/s] 50%|█████     | 49/98 [00:04<00:04, 11.08it/s] 52%|█████▏    | 51/98 [00:04<00:04, 11.65it/s] 54%|█████▍    | 53/98 [00:04<00:03, 11.93it/s] 56%|█████▌    | 55/98 [00:05<00:03, 11.29it/s] 58%|█████▊    | 57/98 [00:05<00:03, 11.03it/s] 60%|██████    | 59/98 [00:05<00:03, 10.74it/s] 62%|██████▏   | 61/98 [00:05<00:03, 11.32it/s] 64%|██████▍   | 63/98 [00:05<00:03, 11.24it/s] 66%|██████▋   | 65/98 [00:05<00:02, 11.58it/s] 68%|██████▊   | 67/98 [00:06<00:02, 11.64it/s] 70%|███████   | 69/98 [00:06<00:02, 11.81it/s] 72%|███████▏  | 71/98 [00:06<00:02, 12.05it/s] 74%|███████▍  | 73/98 [00:06<00:02, 12.03it/s] 77%|███████▋  | 75/98 [00:06<00:01, 11.91it/s] 79%|███████▊  | 77/98 [00:07<00:01, 11.34it/s] 81%|████████  | 79/98 [00:07<00:01, 11.06it/s] 83%|████████▎ | 81/98 [00:07<00:01, 11.39it/s] 85%|████████▍ | 83/98 [00:07<00:01, 11.48it/s] 87%|████████▋ | 85/98 [00:07<00:01, 12.02it/s] 89%|████████▉ | 87/98 [00:07<00:00, 12.43it/s] 91%|█████████ | 89/98 [00:08<00:00, 12.06it/s] 93%|█████████▎| 91/98 [00:08<00:00, 12.09it/s] 95%|█████████▍| 93/98 [00:08<00:00, 11.79it/s] 97%|█████████▋| 95/98 [00:08<00:00, 11.72it/s] 99%|█████████▉| 97/98 [00:08<00:00, 11.91it/s]100%|██████████| 98/98 [00:08<00:00, 11.15it/s]
+处理类别: An-12
+类别 An-12 图像特征维度: (512,)
+处理类别: Fokker 50
+类别 Fokker 50 图像特征维度: (512,)
+处理类别: BAE-125
+类别 BAE-125 图像特征维度: (512,)
+处理类别: 737-200
+类别 737-200 图像特征维度: (512,)
+处理类别: Dornier 328
+类别 Dornier 328 图像特征维度: (512,)
+处理类别: Tornado
+类别 Tornado 图像特征维度: (512,)
+处理类别: MD-87
+类别 MD-87 图像特征维度: (512,)
+处理类别: A380
+类别 A380 图像特征维度: (512,)
+处理类别: EMB-120
+类别 EMB-120 图像特征维度: (512,)
+处理类别: DC-10
+类别 DC-10 图像特征维度: (512,)
+处理类别: A310
+类别 A310 图像特征维度: (512,)
+处理类别: PA-28
+类别 PA-28 图像特征维度: (512,)
+处理类别: Embraer Legacy 600
+类别 Embraer Legacy 600 图像特征维度: (512,)
+处理类别: 757-300
+类别 757-300 图像特征维度: (512,)
+处理类别: 747-200
+类别 747-200 图像特征维度: (512,)
+处理类别: A320
+类别 A320 图像特征维度: (512,)
+处理类别: 737-400
+类别 737-400 图像特征维度: (512,)
+处理类别: MD-80
+类别 MD-80 图像特征维度: (512,)
+处理类别: A318
+类别 A318 图像特征维度: (512,)
+处理类别: Cessna 172
+类别 Cessna 172 图像特征维度: (512,)
+处理类别: Metroliner
+类别 Metroliner 图像特征维度: (512,)
+处理类别: Tu-134
+类别 Tu-134 图像特征维度: (512,)
+处理类别: Cessna 208
+类别 Cessna 208 图像特征维度: (512,)
+处理类别: ERJ 135
+类别 ERJ 135 图像特征维度: (512,)
+处理类别: DR-400
+类别 DR-400 图像特征维度: (512,)
+处理类别: C-47
+类别 C-47 图像特征维度: (512,)
+处理类别: A340-600
+类别 A340-600 图像特征维度: (512,)
+处理类别: MD-11
+类别 MD-11 图像特征维度: (512,)
+处理类别: Cessna 525
+类别 Cessna 525 图像特征维度: (512,)
+处理类别: C-130
+类别 C-130 图像特征维度: (512,)
+处理类别: DC-8
+[2025-11-22 22:12:31] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 DC-8 图像特征维度: (512,)
+处理类别: 757-200
+类别 757-200 图像特征维度: (512,)
+处理类别: Saab 340
+类别 Saab 340 图像特征维度: (512,)
+处理类别: DC-3
+类别 DC-3 图像特征维度: (512,)
+处理类别: Eurofighter Typhoon
+类别 Eurofighter Typhoon 图像特征维度: (512,)
+处理类别: ERJ 145
+类别 ERJ 145 图像特征维度: (512,)
+处理类别: SR-20
+类别 SR-20 图像特征维度: (512,)
+处理类别: 737-500
+类别 737-500 图像特征维度: (512,)
+处理类别: DH-82
+类别 DH-82 图像特征维度: (512,)
+处理类别: Beechcraft 1900
+类别 Beechcraft 1900 图像特征维度: (512,)
+处理类别: E-170
+类别 E-170 图像特征维度: (512,)
+处理类别: 777-300
+类别 777-300 图像特征维度: (512,)
+处理类别: Yak-42
+类别 Yak-42 图像特征维度: (512,)
+处理类别: 737-800
+类别 737-800 图像特征维度: (512,)
+处理类别: 737-600
+类别 737-600 图像特征维度: (512,)
+处理类别: Boeing 717
+类别 Boeing 717 图像特征维度: (512,)
+处理类别: 737-700
+类别 737-700 图像特征维度: (512,)
+处理类别: A319
+类别 A319 图像特征维度: (512,)
+处理类别: DC-9-30
+类别 DC-9-30 图像特征维度: (512,)
+处理类别: A340-200
+类别 A340-200 图像特征维度: (512,)
+处理类别: 707-320
+类别 707-320 图像特征维度: (512,)
+处理类别: 737-900
+类别 737-900 图像特征维度: (512,)
+处理类别: CRJ-900
+类别 CRJ-900 图像特征维度: (512,)
+处理类别: CRJ-700
+类别 CRJ-700 图像特征维度: (512,)
+处理类别: Falcon 2000
+类别 Falcon 2000 图像特征维度: (512,)
+处理类别: DHC-8-300
+类别 DHC-8-300 图像特征维度: (512,)
+处理类别: MD-90
+类别 MD-90 图像特征维度: (512,)
+处理类别: Gulfstream V
+类别 Gulfstream V 图像特征维度: (512,)
+处理类别: DHC-1
+类别 DHC-1 图像特征维度: (512,)
+处理类别: ATR-72
+类别 ATR-72 图像特征维度: (512,)
+处理类别: A300B4
+类别 A300B4 图像特征维度: (512,)
+处理类别: BAE 146-300
+类别 BAE 146-300 图像特征维度: (512,)
+处理类别: A330-200
+类别 A330-200 图像特征维度: (512,)
+处理类别: Saab 2000
+类别 Saab 2000 图像特征维度: (512,)
+处理类别: DHC-6
+类别 DHC-6 图像特征维度: (512,)
+处理类别: E-195
+[2025-11-22 22:12:34] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 E-195 图像特征维度: (512,)
+处理类别: Il-76
+类别 Il-76 图像特征维度: (512,)
+处理类别: 747-100
+类别 747-100 图像特征维度: (512,)
+处理类别: ATR-42
+类别 ATR-42 图像特征维度: (512,)
+处理类别: Challenger 600
+类别 Challenger 600 图像特征维度: (512,)
+处理类别: DHC-8-100
+类别 DHC-8-100 图像特征维度: (512,)
+处理类别: Tu-154
+类别 Tu-154 图像特征维度: (512,)
+处理类别: CRJ-200
+类别 CRJ-200 图像特征维度: (512,)
+处理类别: Fokker 70
+类别 Fokker 70 图像特征维度: (512,)
+处理类别: 767-200
+类别 767-200 图像特征维度: (512,)
+处理类别: 747-400
+类别 747-400 图像特征维度: (512,)
+处理类别: L-1011
+类别 L-1011 图像特征维度: (512,)
+处理类别: A321
+类别 A321 图像特征维度: (512,)
+处理类别: E-190
+类别 E-190 图像特征维度: (512,)
+处理类别: 777-200
+类别 777-200 图像特征维度: (512,)
+处理类别: 767-400
+类别 767-400 图像特征维度: (512,)
+处理类别: Cessna 560
+类别 Cessna 560 图像特征维度: (512,)
+处理类别: DC-6
+类别 DC-6 图像特征维度: (512,)
+处理类别: Gulfstream IV
+类别 Gulfstream IV 图像特征维度: (512,)
+处理类别: 737-300
+类别 737-300 图像特征维度: (512,)
+处理类别: Spitfire
+类别 Spitfire 图像特征维度: (512,)
+处理类别: 767-300
+类别 767-300 图像特征维度: (512,)
+处理类别: A330-300
+类别 A330-300 图像特征维度: (512,)
+处理类别: 727-200
+类别 727-200 图像特征维度: (512,)
+处理类别: Global Express
+类别 Global Express 图像特征维度: (512,)
+处理类别: Fokker 100
+类别 Fokker 100 图像特征维度: (512,)
+处理类别: Hawk T1
+类别 Hawk T1 图像特征维度: (512,)
+处理类别: Falcon 900
+类别 Falcon 900 图像特征维度: (512,)
+处理类别: 747-300
+类别 747-300 图像特征维度: (512,)
+处理类别: BAE 146-200
+类别 BAE 146-200 图像特征维度: (512,)
+处理类别: A340-300
+类别 A340-300 图像特征维度: (512,)
+处理类别: Model B200
+类别 Model B200 图像特征维度: (512,)
+处理类别: A340-500
+类别 A340-500 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/98 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+  1%|          | 1/98 [00:12<20:12, 12.50s/it]  2%|▏         | 2/98 [00:25<20:22, 12.73s/it]  3%|▎         | 3/98 [00:37<19:49, 12.52s/it]  4%|▍         | 4/98 [00:50<20:07, 12.84s/it]  5%|▌         | 5/98 [01:04<20:03, 12.94s/it]  6%|▌         | 6/98 [01:17<20:12, 13.18s/it]处理类别: An-12
+[2025-11-22 22:12:37] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 22:12:40] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 22:12:43] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 22:12:46] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for An-12 category.
+推理前显存: 已分配=32.49GB, 已保留=32.83GB, 剩余=14.92GB
+[2025-11-22 22:12:49] [显存监控] 已分配=41.32GB, 已保留=41.71GB, 空闲=6.08GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 7.74 GiB. GPU 0 has a total capacity of 47.40 GiB of which 5.37 GiB is free. Including non-PyTorch memory, this process has 42.02 GiB memory in use. Of the allocated memory 41.32 GiB is allocated by PyTorch, and 399.43 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 An-12 文本特征维度: (512,)
+描述: Description for An-12 category....
+处理类别: Fokker 50
+[2025-11-22 22:12:52] [显存监控] 已分配=32.44GB, 已保留=41.71GB, 空闲=14.97GB
+[2025-11-22 22:12:55] [显存监控] 已分配=32.44GB, 已保留=41.71GB, 空闲=14.97GB
+[2025-11-22 22:12:58] [显存监控] 已分配=32.44GB, 已保留=41.71GB, 空闲=14.97GB
+wiki desc: Description for Fokker 50 category.
+图像过大 (1600x1078)，缩小到 (1536x1034) 以节省显存
+[2025-11-22 22:13:01] [显存监控] 已分配=32.44GB, 已保留=41.71GB, 空闲=14.97GB
+推理前显存: 已分配=32.50GB, 已保留=32.90GB, 剩余=14.90GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 11.56 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 46.29 GiB memory in use. Of the allocated memory 45.56 GiB is allocated by PyTorch, and 432.72 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Fokker 50 文本特征维度: (512,)
+描述: Description for Fokker 50 category....
+处理类别: BAE-125
+[2025-11-22 22:13:04] [显存监控] 已分配=32.44GB, 已保留=45.98GB, 空闲=14.97GB
+[2025-11-22 22:13:07] [显存监控] 已分配=32.44GB, 已保留=45.98GB, 空闲=14.97GB
+[2025-11-22 22:13:10] [显存监控] 已分配=32.44GB, 已保留=45.98GB, 空闲=14.97GB
+wiki desc: Description for BAE-125 category.
+[2025-11-22 22:13:13] [显存监控] 已分配=32.44GB, 已保留=45.98GB, 空闲=14.97GB
+推理前显存: 已分配=32.49GB, 已保留=32.85GB, 剩余=14.91GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 9.15 GiB. GPU 0 has a total capacity of 47.40 GiB of which 3.85 GiB is free. Including non-PyTorch memory, this process has 43.55 GiB memory in use. Of the allocated memory 42.88 GiB is allocated by PyTorch, and 363.26 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 BAE-125 文本特征维度: (512,)
+描述: Description for BAE-125 category....
+处理类别: 737-200
+[2025-11-22 22:13:16] [显存监控] 已分配=32.44GB, 已保留=43.24GB, 空闲=14.97GB
+[2025-11-22 22:13:19] [显存监控] 已分配=32.44GB, 已保留=43.24GB, 空闲=14.97GB
+[2025-11-22 22:13:22] [显存监控] 已分配=32.44GB, 已保留=43.24GB, 空闲=14.97GB
+[2025-11-22 22:13:25] [显存监控] 已分配=32.44GB, 已保留=43.24GB, 空闲=14.97GB
+wiki desc: Description for 737-200 category.
+推理前显存: 已分配=32.50GB, 已保留=32.84GB, 剩余=14.91GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 11.15 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.58 GiB is free. Including non-PyTorch memory, this process has 45.81 GiB memory in use. Of the allocated memory 45.10 GiB is allocated by PyTorch, and 413.95 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 737-200 文本特征维度: (512,)
+描述: Description for 737-200 category....
+处理类别: Dornier 328
+[2025-11-22 22:13:28] [显存监控] 已分配=32.44GB, 已保留=45.50GB, 空闲=14.97GB
+[2025-11-22 22:13:31] [显存监控] 已分配=32.44GB, 已保留=45.50GB, 空闲=14.97GB
+[2025-11-22 22:13:34] [显存监控] 已分配=32.44GB, 已保留=45.50GB, 空闲=14.97GB
+[2025-11-22 22:13:37] [显存监控] 已分配=32.44GB, 已保留=45.50GB, 空闲=14.97GB
+wiki desc: Description for Dornier 328 category.
+图像过大 (1600x1079)，缩小到 (1536x1035) 以节省显存
+推理前显存: 已分配=32.51GB, 已保留=32.95GB, 剩余=14.89GB
+[2025-11-22 22:13:40] [显存监控] 已分配=32.83GB, 已保留=33.22GB, 空闲=14.57GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 16.88 GiB. GPU 0 has a total capacity of 47.40 GiB of which 12.07 GiB is free. Including non-PyTorch memory, this process has 35.32 GiB memory in use. Of the allocated memory 34.63 GiB is allocated by PyTorch, and 393.07 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Dornier 328 文本特征维度: (512,)
+描述: Description for Dornier 328 category....
+处理类别: Tornado
+[2025-11-22 22:13:43] [显存监控] 已分配=32.44GB, 已保留=35.01GB, 空闲=14.97GB
+[2025-11-22 22:13:46] [显存监控] 已分配=32.44GB, 已保留=35.01GB, 空闲=14.97GB
+[2025-11-22 22:13:49] [显存监控] 已分配=32.44GB, 已保留=35.01GB, 空闲=14.97GB
+[2025-11-22 22:13:52] [显存监控] 已分配=32.44GB, 已保留=35.01GB, 空闲=14.97GB
+wiki desc: Description for Tornado category.
+推理前显存: 已分配=32.50GB, 已保留=32.86GB, 剩余=14.90GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 13.23 GiB. GPU 0 has a total capacity of 47.40 GiB of which 12.49 GiB is free. Including non-PyTorch memory, this process has 34.91 GiB memory in use. Of the allocated memory 34.24 GiB is allocated by PyTorch, and 363.26 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Tornado 文本特征维度: (512,)
+描述: Description for Tornado category....
+处理类别: MD-87
+[2025-11-22 22:13:55] [显存监控] 已分配=32.44GB, 已保留=34.60GB, 空闲=14.97GB
+[2025-11-22 22:13:58] [显存监控] 已分配=32.44GB, 已保留=34.60GB, 空闲=14.97GB
+[2025-11-22 22:14:01] [显存监控] 已分配=32.44GB, 已保留=34.60GB, 空闲=14.97GB
+[2025-11-22 22:14:04] [显存监控] 已分配=32.44GB, 已保留=34.60GB, 空闲=14.97GB
+wiki desc: Description for MD-87 category.
+图像过大 (1600x1097)，缩小到 (1536x1053) 以节省显存
+推理前显存: 已分配=32.50GB, 已保留=32.85GB, 剩余=14.90GB
+[2025-11-22 22:14:07] [显存监控] 已分配=45.97GB, 已保留=46.38GB, 空闲=1.43GB
+  7%|▋         | 7/98 [01:30<19:46, 13.03s/it]  8%|▊         | 8/98 [01:42<19:15, 12.84s/it]  9%|▉         | 9/98 [01:55<18:47, 12.66s/it]
