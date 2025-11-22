@@ -1,0 +1,790 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Namespace(mode='build_knowledge_base', config_file_env='./configs/env_machine.yml', config_file_expt='./configs/expts/pet37_all.yml', num_per_category='4', kshot=None, region_num=None, superclass=None, gallery_out=None, fusion_method='concat', knowledge_base_dir='./experiments/pet37/knowledge_base', query_image=None, test_data_dir=None, results_out='./results.json', use_slow_thinking=None, confidence_threshold=0.8, similarity_threshold=0.7)
+{'setup': 'ours', 'experiment': 5.0, 'dataset_name': 'pet', 'num_classes': 37, 'num_base': 19, 'num_novel': 18, 'seed': 1, 'batch_size': 32, 'clustering_method': 'multi_clip_voting', 'model_size': 'ViT-B/16', 'model_size_vqa': 'OPT6.7B-COCO', 'model_size_mllm': 'Qwen2.5-VL-7B', 'model_type_llm': 'gpt-3.5-turbo', 'image_size': 224, 'verbose': False, 'host': 'xiao', 'num_workers': 16, 'device': 'cuda', 'device_count': '1', 'device_id': '0', 'data_dir': './datasets/pet_37', 'expt_dir': './experiments/pet37', 'expt_dir_describe': './experiments/pet37/describe', 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours', 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs', 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts', 'path_identify_answers': './experiments/pet37/identify', 'expt_dir_guess': './experiments/pet37/guess', 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw', 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned', 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names', 'expt_dir_gallery': './experiments/pet37/gallery', 'path_references': './experiments/pet37/gallery/pet_image_references', 'path_regions': './experiments/pet37/gallery/pet_image_regions', 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn', 'expt_dir_grouping': './experiments/pet37/grouping'}
+
+=== Experiment Start Time: 2025-11-20 16:00:03 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/pet37_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/pet37/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 32,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/pet_37',
+ 'dataset_name': 'pet',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/pet37',
+ 'expt_dir_describe': './experiments/pet37/describe',
+ 'expt_dir_gallery': './experiments/pet37/gallery',
+ 'expt_dir_grouping': './experiments/pet37/grouping',
+ 'expt_dir_guess': './experiments/pet37/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 19,
+ 'num_classes': 37,
+ 'num_novel': 18,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn',
+ 'path_identify_answers': './experiments/pet37/identify',
+ 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names',
+ 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw',
+ 'path_references': './experiments/pet37/gallery/pet_image_references',
+ 'path_regions': './experiments/pet37/gallery/pet_image_regions',
+ 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs',
+ 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+初始化MLLM模型...
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:06<00:24,  6.24s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:12<00:18,  6.06s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:18<00:11,  5.98s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:23<00:05,  5.93s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:25<00:00,  4.41s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:25<00:00,  5.12s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+初始化知识库构建器...
+初始化快思考模块...
+已加载历史统计量: 5196 次预测
+初始化慢思考模块...
+快慢思考系统初始化完成!
+构建知识库，包含 37 个类别, dog datasets:37
+从 ./experiments/pet37/knowledge_base 加载知识库...
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 37 个类别
+初始化经验库构建器...
+经验库构建器初始化完成!
+============================================================
+开始构建经验库（模型自反思与优化）
+============================================================
+Self-Belief已初始化
+初始策略:
+You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+使用当前Self-Belief评估性能...
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a four-legged animal with fur, lying on grass. It has a distinct facial structure and fur pattern that suggests it is a domesticated dog breed.
+2. **Localize**: The most discriminative local parts include the shape of the ears, the fur texture, and the overall body structure. The ears are upright and pointed, which is characteristic of certain dog breeds. The fur appears thick and shaggy, which is typical for dogs like Keeshonds.
+3. **Compare**: Comparing the observed details with the known characteristics of Keeshonds, such as their distinctive facial features, fur texture, and body shape, the observed animal matches well with the description of a Keeshond.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Keeshond".
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. Localizing the most discriminative local parts, we see features such as the shape of the head, the fur texture, and the overall body structure, which are characteristic of a dog breed.
+3. Comparing these visual characteristics with the known subcategories, the dog appears to have a thick, shaggy coat and a sturdy build, which are typical for breeds like Keeshond or similar large dogs.
+4. Deciding based on the match between the observed details and the subcategory descriptions, the dog's appearance closely matches the description of a Keeshond.
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. Localizing the most discriminative local parts, we see the animal has pointed ears, a black nose, and a fluffy coat, which are characteristic features of a Keeshond.
+3. Comparing these visual characteristics with the candidate subcategories, the description for "Keeshond" matches the observed features perfectly.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Keeshond."
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, fluffy dog lying on a green tarp. The fur appears thick and shaggy, which is characteristic of certain breeds.
+2. The most discriminative local parts include the thick, shaggy fur, the shape of the head, and the overall body structure.
+3. Comparing these features to known dog breeds, the thick, shaggy fur and the distinctive head shape are consistent with the Keeshond breed.
+4. Based on the match between the observed details and the description of the Keeshond, the most likely class is "Keeshond".
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a small, furry animal with pointed ears and a compact body, which are characteristic features of a dog.
+2. Localizing the most discriminative local parts, we see the pointed ears, the fur texture, and the facial structure, all of which are typical of a Yorkshire Terrier.
+3. Comparing these visual characteristics with the known features of a Yorkshire Terrier, such as their small size, long silky coat, and distinctive facial features, we can confidently identify this animal as a Yorkshire Terrier.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is Yorkshire Terrier.
+预测: Yorkshire_Terrier
+evaluate_with_current_belief, 预测: Yorkshire_Terrier, 真实: Yorkshire_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a small, furry animal with a distinct face shape and fur pattern typical of a dog breed.
+2. Localizing the most discriminative local parts, the ears, eyes, nose, and fur texture are particularly indicative of a dog breed.
+3. Comparing these features with the known characteristics of different dog breeds, the small size, the fur pattern, and the facial structure align closely with those of a Yorkshire Terrier.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is Yorkshire Terrier.
+预测: Yorkshire_Terrier
+evaluate_with_current_belief, 预测: Yorkshire_Terrier, 真实: Yorkshire_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a small, furry animal with a distinctive coat and a necklace, which are characteristic features of a Yorkshire Terrier.
+2. The most discriminative local parts include the small size, the long, silky fur, the pointed ears, and the overall shape of the head and body, all of which are typical of a Yorkshire Terrier.
+3. Comparing these visual characteristics with the known features of a Yorkshire Terrier, there is a strong match in terms of size, fur texture, and overall appearance.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is Yorkshire Terrier.
+预测: Yorkshire_Terrier
+evaluate_with_current_belief, 预测: Yorkshire_Terrier, 真实: Yorkshire_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the main subject is a small dog with a distinctive coat pattern and facial features typical of a Yorkshire Terrier breed.
+2. The most discriminative local parts include the fur texture, the shape of the ears, the facial structure, and the overall body size and proportions, which are characteristic of a Yorkshire Terrier.
+3. Comparing these visual characteristics with the known attributes of a Yorkshire Terrier, such as their small size, long hair, and specific facial features, confirms the identification.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Yorkshire_Terrier".
+预测: Yorkshire_Terrier
+evaluate_with_current_belief, 预测: Yorkshire_Terrier, 真实: Yorkshire_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a small dog with pointed ears, a short coat, and a compact body, which are characteristic features of a Miniature Pinscher.
+2. **Localize**: The most discriminative local parts include the pointed ears, the short fur, and the facial structure that is typical of a Miniature Pinscher.
+3. **Compare**: The visual characteristics such as the pointed ears, the short fur, and the compact body align well with the known features of a Miniature Pinscher.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Miniature_Pinscher".
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a small dog with a black and tan coat, standing on a concrete surface. The dog has pointed ears and a short snout, which are characteristic features of a Miniature Pinscher.
+2. **Localize**: The most discriminative local parts include the pointed ears, the short snout, and the overall body shape, which are consistent with the Miniature Pinscher breed.
+3. **Compare**: The visual characteristics such as the pointed ears, short snout, and compact body fit well with the known visual characteristics of a Miniature Pinscher.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Miniature_Pinscher".
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a small dog, which fits into the category of "dog."
+2. Localizing the most discriminative local parts, we see features such as the pointed ears, the short fur, and the overall body shape, which are characteristic of a Miniature Pinscher.
+3. Comparing these features with the known characteristics of a Miniature Pinscher, we note that the dog has a sleek coat, a compact build, and a distinctive head shape with pointed ears, all of which align with the Miniature Pinscher breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Miniature Pinscher."
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, as indicated by its shape, fur, and features such as ears, eyes, and a snout.
+2. The most discriminative local parts include the pointed ears, the short coat, the coloration pattern (black with tan markings), and the collar with tags.
+3. Comparing these features to the known characteristics of dogs, particularly those of the Miniature Pinscher breed, we see a strong match. The pointed ears, short coat, and coloration are consistent with this breed.
+4. Based on the match between the observed details and the known characteristics of the Miniature Pinscher, the most likely class is "Miniature_Pinscher".
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is an animal, specifically a cat based on its fur texture, shape, and posture.
+2. The most discriminative local parts include the long fur, pointed ears, and facial features typical of a cat.
+3. Comparing these features with the known characteristics of different cat breeds, the cat in the image appears to have the long fur and large size characteristic of a Maine Coon.
+4. Based on the match between the observed details and the description of a Maine Coon, the most likely class is "Maine_Coon".
+预测: Maine_Coon
+evaluate_with_current_belief, 预测: Maine_Coon, 真实: Maine_Coon, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is an animal lying on a keyboard in front of a computer screen. The animal has large ears, a fluffy coat, and a relaxed posture, which are characteristic features of a cat.
+2. The most discriminative local parts include the large ears, whiskers, fur texture, and the overall body shape, which are consistent with a cat's anatomy.
+3. Comparing these features with the candidate subcategories, "Maine_Coon" is the most likely class because it describes a specific breed of cat known for its large size, long fur, and distinctive facial features, all of which are visible in the image.
+预测: Maine_Coon
+evaluate_with_current_belief, 预测: Maine_Coon, 真实: Maine_Coon, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur pattern, the shape of the ears, and the facial features such as the eyes and whiskers.
+3. Comparing these features to known cat breeds, the cat in the image has a long-haired coat, large ears, and a distinctive facial structure that matches the characteristics of a Maine Coon cat.
+4. Based on the match between the observed details and the description of a Maine Coon, the most likely class is Maine_Coon.
+预测: Maine_Coon
+evaluate_with_current_belief, 预测: Maine_Coon, 真实: Maine_Coon, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur pattern, the shape of the ears, the eyes, and the overall body structure.
+3. Comparing these features with the known characteristics of cats, we can see that this cat has a long tail, large paws, and a thick coat, which are typical for Maine Coons.
+4. Based on the match between the observed details and the known characteristics of Maine Coons, the most likely class is Maine_Coon.
+预测: Maine_Coon
+evaluate_with_current_belief, 预测: Maine_Coon, 真实: Maine_Coon, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, as indicated by its shape, fur, and posture.
+2. The most discriminative local parts include the ears, face markings, and body structure. The dog has pointed ears, a white face with black markings, and a muscular build typical of certain breeds.
+3. Comparing these features with the known characteristics of different dog breeds, the pattern and structure align closely with those of a Staffordshire Bull Terrier.
+4. Based on the match between the observed details and the described characteristics of a Staffordshire Bull Terrier, the most likely class is Staffordshire Bull Terrier.
+预测: Staffordshire Bull Terrier
+evaluate_with_current_belief, 预测: Staffordshire Bull Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, specifically a Staffordshire Bull Terrier based on its physical features such as the shape of the head, the short muzzle, and the overall body structure.
+2. The most discriminative local parts include the facial features like the short snout, the shape of the ears, and the coloration which is typical for a Staffordshire Bull Terrier.
+3. Comparing these features with the known characteristics of a Staffordshire Bull Terrier, there is a strong match in terms of the physical traits and appearance.
+4. Based on the match between the observed details and the descriptions provided, the most likely class is "Staffordshire Bull Terrier".
+预测: Staffordshire Bull Terrier
+evaluate_with_current_belief, 预测: Staffordshire Bull Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog based on its shape, size, and features such as fur, ears, and tail.
+2. The most discriminative local parts include the head shape, the ears, the body structure, and the overall posture which are characteristic of a Staffordshire Bull Terrier breed.
+3. Comparing these features with the known characteristics of a Staffordshire Bull Terrier, such as a broad head, short muzzle, muscular build, and a friendly expression, the observed dog matches these traits.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Staffordshire Bull Terrier".
+预测: Staffordshire Bull Terrier
+evaluate_with_current_belief, 预测: Staffordshire Bull Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, as indicated by its shape, fur, and posture.
+2. The most discriminative local parts include the head shape, the ears, the facial features, and the body structure. These are characteristic of a Staffordshire Bull Terrier breed.
+3. Comparing these features with the known characteristics of a Staffordshire Bull Terrier, such as a broad head, short muzzle, and muscular build, the observed dog matches these traits.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Staffordshire Bull Terrier."
+预测: Staffordshire Bull Terrier
+evaluate_with_current_belief, 预测: Staffordshire Bull Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. Localizing the most discriminative local parts, we see features such as the shape of the head, the presence of ears, the texture of the fur, and the facial structure, all of which are characteristic of a dog.
+3. Comparing these visual characteristics with the candidate subcategories, the English Setter is known for its long, wavy coat, droopy ears, and distinctive facial markings, which match the observed features in the image.
+4. Based on the match between the observed details and the description of the English Setter, the most likely class is "English_Setter."
+预测: English_Setter
+evaluate_with_current_belief, 预测: English_Setter, 真实: English_Setter, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a large animal with a spotted coat, long ears, and a collar, which are characteristic features of a dog.
+2. **Localize**: The most discriminative local parts include the spotted fur pattern, the shape of the ears, the presence of a collar, and the overall body structure.
+3. **Compare**: Comparing these features with the known characteristics of dogs, we can rule out other categories like birds or cars. The spotted coat and the long ears are particularly indicative of certain breeds of dogs.
+4. **Decide**: Based on the visual characteristics, the dog appears to be an English Setter, given the spotted coat and the long, floppy ears.
+预测: English_Setter
+evaluate_with_current_belief, 预测: English_Setter, 真实: English_Setter, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. The most discriminative local parts include the wet fur, the shape of the face, the presence of a collar, and the overall body structure.
+3. Comparing these features with the known characteristics of dogs, particularly English Setters, we see that the wet fur, facial structure, and the general body shape are consistent with this breed.
+4. Based on the match between the observed details and the description of an English Setter, the most likely class is "English_Setter."
+预测: English_Setter
+evaluate_with_current_belief, 预测: English_Setter, 真实: English_Setter, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadruped with fur, which aligns with the coarse category of "dog."
+2. The most discriminative local parts include the shape of the head, the presence of ears, the fur texture, and the posture. These features are consistent with those of a dog.
+3. Comparing these features with the candidate subcategories, the visual characteristics such as the long fur, the shape of the head, and the overall body structure match those of an English Setter.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "English_Setter."
+预测: English_Setter
+evaluate_with_current_belief, 预测: English_Setter, 真实: English_Setter, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, black, furry animal standing outdoors. This suggests it could be a dog.
+2. The most discriminative local parts include the fur texture, the shape of the head, and the size of the body. These features are consistent with those of a Newfoundland breed.
+3. Comparing these features to the known characteristics of Newfoundlands, such as their large size, thick fur, and distinctive facial features, the observed animal matches well with the Newfoundland breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Newfoundland."
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a large, black, furry animal with a thick coat, which is characteristic of a dog breed.
+2. The most discriminative local parts include the fur texture, the shape of the head, the size of the body, and the overall posture, all of which are consistent with a dog.
+3. Recalling the visual characteristics of the Newfoundland breed, it matches the observed details: a large, black, fluffy dog with a thick coat and a sturdy build.
+4. Based on the match between the observed details and the Newfoundland breed description, the most likely class is Newfoundland.
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a black, furry animal lying on a couch. The shape and features suggest it is a puppy.
+2. **Localize**: The most discriminative local parts include the fur texture, the shape of the ears, the eyes, and the nose. These features are characteristic of a puppy.
+3. **Compare**: Recalling the visual characteristics of puppies, they typically have soft, fluffy fur, large expressive eyes, and a small, rounded head. The image matches these characteristics.
+4. **Decide**: Based on the observed details matching the described characteristics of a puppy, the most likely class is "Newfoundland."
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadruped with fur, which aligns with the coarse category of "dog."
+2. The most discriminative local parts include the shape of the head, the presence of a snout, the eyes, and the ears, all of which are characteristic of a dog.
+3. Comparing these features with the known characteristics of dogs, particularly those resembling the Newfoundland breed, such as the size, the texture of the fur, and the facial structure, the subject matches well with the Newfoundland breed.
+4. Based on the match between the observed details and the Newfoundland breed's description, the most likely class is "Newfoundland."
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a small, fluffy animal with a face that has distinct features such as a black nose, dark eyes, and a pink tongue visible. The fur appears long and shaggy, covering the ears and part of the body.
+
+2. **Localize**: The most discriminative local parts include the facial features like the eyes, nose, and mouth, which are characteristic of a dog. The texture and color of the fur also suggest a dog breed.
+
+3. **Compare**: Recalling the visual characteristics of dogs, this animal matches the typical appearance of a Havanese, which is known for its long, silky coat and friendly expression. The fur texture and the overall shape of the head align well with the Havanese breed.
+
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Havanese".
+预测: Havanese
+evaluate_with_current_belief, 预测: Havanese, 真实: Havanese, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a small, furry animal standing on grass, which aligns with the coarse category of "dog."
+2. Localizing the most discriminative local parts, we see features such as the fur texture, facial structure, and body shape that are characteristic of a dog breed.
+3. Comparing these features with the known characteristics of different dog breeds, the subject's appearance closely matches those of a Havanese, a breed known for its fluffy coat and friendly demeanor.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Havanese."
+预测: Havanese
+evaluate_with_current_belief, 预测: Havanese, 真实: Havanese, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a quadruped with fur, which is characteristic of a dog.
+2. The most discriminative local parts include the curly fur, the shape of the face, and the presence of a harness with a tag.
+3. Comparing these features to known dog breeds, the curly fur and facial structure are consistent with a Havanese, which is a breed known for its curly coat and friendly demeanor.
+4. Based on the match between the observed details and the Havanese description, the most likely class is "Havanese."
+预测: Havanese
+evaluate_with_current_belief, 预测: Havanese, 真实: Havanese, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a small, fluffy animal with a distinctive coat pattern, which is characteristic of a dog breed.
+2. The most discriminative local parts include the curly fur, the facial features, and the coloration that suggests a specific breed.
+3. Comparing these features to known dog breeds, the coat pattern and facial structure are consistent with the Havanese breed, which is known for its curly fur and distinctive facial markings.
+4. Based on the match between the observed details and the Havanese breed description, the most likely class is "Havanese."
+预测: Havanese
+evaluate_with_current_belief, 预测: Havanese, 真实: Havanese, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the lack of fur, the shape of the ears, and the overall body structure.
+3. Comparing these features to the known characteristics of Sphynx cats, such as their hairless appearance, large ears, and unique body shape, it matches well with the description provided.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Sphynx."
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a cat with no fur, which is characteristic of the Sphynx breed.
+2. **Localize**: The most discriminative local parts include the lack of fur, the shape of the ears, the eyes, and the body structure.
+3. **Compare**: The visual characteristics match those of the Sphynx breed, which is known for being hairless and having a unique appearance.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Sphynx".
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, identifiable by its distinct features such as ears, eyes, and furless body.
+2. The most discriminative local parts include the large, pointed ears, the lack of fur, and the green eyes.
+3. Comparing these features to the known characteristics of different cat breeds, the lack of fur and the specific shape of the ears are particularly indicative of the Sphynx breed.
+4. Based on the match between the observed details and the description of the Sphynx breed, the most likely class is "Sphynx."
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object in the image is a cat with no fur, which is characteristic of the Sphynx breed.
+2. **Localize**: The most discriminative local parts include the large, pointed ears, the lack of fur, and the distinctive facial features typical of the Sphynx breed.
+3. **Compare**: The visual characteristics such as the large ears, the lack of fur, and the overall body shape match those of the Sphynx breed.
+4. **Decide**: Based on the observed details matching the known characteristics of the Sphynx breed, the most likely class is "Sphynx".
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a black, medium-sized dog with a shaggy coat, pointed ears, and a short snout. These features are characteristic of a Scottish Terrier.
+2. **Localize**: The most discriminative local parts include the pointed ears, the shaggy fur, the short snout, and the overall body shape.
+3. **Compare**: The visual characteristics match those of a Scottish Terrier, which typically has a black coat, a shaggy beard, and a compact body.
+4. **Decide**: Based on the match between the observed details and the known characteristics of a Scottish Terrier, the most likely class is "Scottish_Terrier".
+预测: Scottish_Terrier
+evaluate_with_current_belief, 预测: Scottish_Terrier, 真实: Scottish_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog based on its shape, fur, and posture.
+2. The most discriminative local parts include the ears, eyes, nose, and the overall body structure which are characteristic of a dog.
+3. Comparing these features with the known characteristics of dogs, we can see that the subject has a short, dense coat, pointed ears, and a sturdy build, which are typical for a Scottish Terrier.
+4. Based on the match between the observed details and the description of a Scottish Terrier, the most likely class is "Scottish_Terrier".
+预测: Scottish_Terrier
+evaluate_with_current_belief, 预测: Scottish_Terrier, 真实: Scottish_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a dog with a shaggy coat, pointed ears, and a distinctive facial structure that includes a slightly open mouth showing teeth. These features are characteristic of a Scottish Terrier breed.
+2. **Localize**: The most discriminative local parts include the pointed ears, the shaggy fur texture, the facial expression with visible teeth, and the overall body shape.
+3. **Compare**: The visual characteristics match those typically described for a Scottish Terrier, which is known for its rough, wiry coat and terrier-like appearance.
+4. **Decide**: Based on the observed details matching the typical features of a Scottish Terrier, the most likely class is "Scottish_Terrier".
+预测: Scottish_Terrier
+evaluate_with_current_belief, 预测: Scottish_Terrier, 真实: Scottish_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. Localizing the most discriminative local parts, we see features such as pointed ears, a small snout, and a compact body shape, which are characteristic of the Scottish Terrier breed.
+3. Comparing these visual characteristics with the known traits of the Scottish Terrier, we note the short coat, the distinctive facial structure, and the overall body type, which match well with the observed dog in the image.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Scottish Terrier."
+预测: Scottish_Terrier
+evaluate_with_current_belief, 预测: Scottish_Terrier, 真实: Scottish_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, fluffy white animal standing on grass, which is consistent with the appearance of a dog.
+2. The most discriminative local parts include the fur texture, the shape of the ears, the tail, and the overall body structure, all of which are characteristic of a Samoyed breed.
+3. Comparing these features with the known characteristics of a Samoyed, such as their thick, white fur, curled tails, and friendly expressions, it aligns well with the observed details in the image.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Samoyed."
+预测: Samoyed
+evaluate_with_current_belief, 预测: Samoyed, 真实: Samoyed, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, fluffy white animal with a curled tail and pointed ears, which are characteristic features of a Samoyed dog.
+2. The most discriminative local parts include the thick white fur, the curled tail, the pointed ears, and the overall body shape.
+3. Comparing these features to the known characteristics of a Samoyed, such as their thick white coat, friendly expression, and distinctive facial features, it aligns perfectly with the Samoyed breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Samoyed."
+预测: Samoyed
+evaluate_with_current_belief, 预测: Samoyed, 真实: Samoyed, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a large, white, fluffy dog standing on a balance beam.
+2. The most discriminative local parts include the dog's fur, shape, and posture. The dog has a thick, fluffy coat, a curled tail, and is standing in a way that suggests it is a domesticated animal.
+3. Comparing these observations with the candidate subcategories, "Samoyed" is the most fitting description as it matches the physical characteristics of the dog in the image, such as the thick white fur and the curled tail.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Samoyed".
+预测: Samoyed
+evaluate_with_current_belief, 预测: Samoyed, 真实: Samoyed, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a white, fluffy animal standing on grass. It has a distinct facial structure with pointed ears, a black nose, and dark eyes, which are characteristic features of a dog.
+2. **Localize**: The most discriminative local parts include the pointed ears, the fluffy white fur, the black nose, and the dark eyes. These features are highly indicative of a dog breed.
+3. **Compare**: Recalling the visual characteristics of Samoyeds, they are known for their thick, fluffy white coats, pointed ears, and friendly expressions. The animal in the image matches these characteristics.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Samoyed."
+预测: Samoyed
+evaluate_with_current_belief, 预测: Samoyed, 真实: Samoyed, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is an animal with fur, which narrows down the coarse category to mammals or birds. Given the context and appearance, it is more likely to be a mammal.
+2. The most discriminative local parts include the fluffy white fur, the large eyes, and the distinct facial features that resemble those of a Persian cat.
+3. Comparing these features to the known characteristics of a Persian cat, such as the long, dense fur, the round face, and the large eyes, the observed details match well with the Persian cat description.
+4. Based on the match between the observed details and the Persian cat description, the most likely class is "Persian."
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur texture, facial features, and body posture. The cat has long, fluffy fur, a distinctive face shape with a flat face and large eyes, and a relaxed sitting position.
+3. Comparing these visual characteristics to the candidate subcategories, the Persian cat matches well with the description of having a flat face, long fur, and a specific facial structure.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Persian."
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, identifiable by its fur, eyes, and ears.
+2. The most discriminative local parts include the fluffy white fur, the shape of the face, the eyes, and the ears.
+3. Comparing these features to the known characteristics of cats, we can see that this cat has the long, fluffy fur typical of Persian cats.
+4. Based on the match between the observed details and the description of Persian cats, the most likely class is "Persian."
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fluffy fur, the pointed ears, the eyes, and the whiskers. These features are characteristic of a Persian cat.
+3. Comparing these features to the known characteristics of a Persian cat, such as long, dense fur, large eyes, and a round face, it aligns well with the description of a Persian cat.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Persian."
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a small, fluffy animal with a short snout, perked ears, and a happy expression. These features are characteristic of a dog breed.
+2. **Localize**: The most discriminative local parts include the pointed ears, the short snout, the compact body, and the fluffy fur. These features are particularly indicative of a Pomeranian.
+3. **Compare**: The visual characteristics match those of a Pomeranian, which is known for its small size, fluffy coat, and distinctive facial features.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pomeranian".
+预测: Pomeranian
+evaluate_with_current_belief, 预测: Pomeranian, 真实: Pomeranian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the image depicts a small, fluffy animal with a distinctive face shape and fur texture, which are characteristic features of a dog.
+2. Localizing the most discriminative local parts, we see the animal has a small, pointed snout, large expressive eyes, and a furry coat, all of which are typical of a Pomeranian breed.
+3. Comparing these visual characteristics with the candidate subcategories, the description for "Pomeranian" matches perfectly with the observed details of the animal's appearance.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pomeranian."
+预测: Pomeranian
+evaluate_with_current_belief, 预测: Pomeranian, 真实: Pomeranian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a small, fluffy animal with a short snout, perked ears, and a curled tail. These features are characteristic of a dog breed.
+2. **Localize**: The most discriminative local parts include the fur texture, the shape of the face, the size of the body, and the tail. The fur is thick and fluffy, the face is small with a short snout, and the body is compact.
+3. **Compare**: Comparing these features with known dog breeds, the Pomeranian is known for its small size, fluffy coat, and perked ears, which match the observed characteristics.
+4. **Decide**: Based on the match between the observed details and the description of a Pomeranian, the most likely class is "Pomeranian".
+预测: Pomeranian
+evaluate_with_current_belief, 预测: Pomeranian, 真实: Pomeranian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a small, fluffy animal with a short snout, large eyes, and a long tongue sticking out. This is characteristic of a dog breed.
+2. **Localize**: The most discriminative local parts include the fur texture, the shape of the face, and the size of the body. These features are consistent with a Pomeranian breed.
+3. **Compare**: The visual characteristics such as the fluffy coat, the size, and the facial structure align closely with those of a Pomeranian dog.
+4. **Decide**: Based on the match between the observed details and the known characteristics of a Pomeranian, the most likely class is "Pomeranian".
+预测: Pomeranian
+evaluate_with_current_belief, 预测: Pomeranian, 真实: Pomeranian, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadrupedal animal with a muscular build, pointed ears, and a short coat. These features are characteristic of a dog.
+2. **Localize**: The most discriminative local parts include the shape of the head, the structure of the ears, the body proportions, and the tail. The pointed ears and the muscular build are particularly indicative of a specific breed.
+3. **Compare**: Comparing these features with known breeds, the pointed ears and the muscular build are consistent with the American Pit Bull Terrier breed.
+4. **Decide**: Based on the observed details matching the characteristics of the American Pit Bull Terrier, the most likely class is "American_Pit_Bull_Terrier".
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadruped with a muscular build, short fur, and a distinctive facial structure that includes a broad head, short muzzle, and floppy ears. These features are characteristic of a dog breed.
+2. **Localize**: The most discriminative local parts include the broad head, short muzzle, floppy ears, and the overall body shape which is consistent with a dog breed.
+3. **Compare**: Recalling the visual characteristics of the American Pit Bull Terrier, it matches the observed features such as the broad head, short muzzle, and muscular build.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "American Pit Bull Terrier".
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, specifically a breed that resembles an American Pit Bull Terrier based on its physical features such as the shape of the head, the ears, and the facial structure.
+2. The most discriminative local parts include the shape of the head, the ears, the facial structure, and the overall body shape which are characteristic of an American Pit Bull Terrier.
+3. Comparing these visual characteristics with the known subcategories, the features align closely with those described for an American Pit Bull Terrier.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "American_Pit_Bull_Terrier".
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, as it has the typical features such as fur, ears, and a tail.
+2. Localizing the most discriminative local parts, we see the dog's face, which includes a distinctive white and brown coloration, and its posture, sitting on a doormat.
+3. Comparing these observations with the candidate subcategories, "American Pit Bull Terrier" is the most likely class because the dog's facial structure, including the shape of the head and the color pattern, aligns with the breed's typical appearance.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "American Pit Bull Terrier."
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a large animal with fur, lying on grass. It has a distinct head shape, pointed ears, and a body structure that suggests it is a dog.
+2. **Localize**: The most discriminative local parts include the pointed ears, the shape of the head, and the overall body structure which is consistent with a dog breed.
+3. **Compare**: Recalling the visual characteristics of the German Shorthaired breed, it typically has a short, dense coat, a strong build, and a distinctive head shape. The dog in the image matches these characteristics.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions for the German Shorthaired breed, the most likely class is "German_Shorthaired".
+预测: German_Shorthaired
+evaluate_with_current_belief, 预测: German_Shorthaired, 真实: German_Shorthaired, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadruped with fur, ears, and a tail, which are characteristic features of a dog.
+2. **Localize**: The most discriminative local parts include the shape of the head, the presence of ears, the pattern of fur, and the overall body structure.
+3. **Compare**: The visual characteristics such as the pointed ears, the white coat with brown spots, and the overall body shape align closely with the typical appearance of a German Shorthaired Pointer.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "German_Shorthaired".
+预测: German_Shorthaired
+evaluate_with_current_belief, 预测: German_Shorthaired, 真实: German_Shorthaired, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which is characteristic of a dog.
+2. The most discriminative local parts include the shape of the head, the ears, the eyes, and the body structure, all of which are consistent with a dog's anatomy.
+3. Comparing these features with the candidate subcategories, "German_Shorthaired" does not have any specific description provided, but based on the visible characteristics such as the size, shape, and color of the fur, it aligns closely with a German Shorthaired Pointer or a similar breed.
+4. Given the match between the observed details and the description of a German Shorthaired, the most likely class is "German_Shorthaired".
+预测: German_Shorthaired
+evaluate_with_current_belief, 预测: German_Shorthaired, 真实: German_Shorthaired, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a large animal with a fur coat, pointed ears, and a snout that suggests it is a dog breed.
+2. **Localize**: The most discriminative local parts include the pointed ears, the shape of the snout, and the texture of the fur which appears to be short and smooth.
+3. **Compare**: Recalling the visual characteristics of the German Shorthaired Pointer, it matches the observed details such as the pointed ears, the short fur, and the overall head shape.
+4. **Decide**: Based on the match between the observed details and the characteristics of the German Shorthaired Pointer, the most likely class is "German_Shorthaired".
+预测: German_Shorthaired
+evaluate_with_current_belief, 预测: German_Shorthaired, 真实: German_Shorthaired, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, fluffy dog standing on grass. This immediately suggests that the object belongs to the "dog" category.
+2. The most discriminative local parts include the dog's size, fur texture, and posture. The dog appears to be a Leonberger breed, identifiable by its large size, thick coat, and distinctive facial features.
+3. Comparing the observed details with the known characteristics of a Leonberger, such as its size, coat color, and build, it matches well with the described breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Leonberger".
+预测: Leonberger
+evaluate_with_current_belief, 预测: Leonberger, 真实: Leonberger, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a young animal with a large head, thick fur, and a playful demeanor, lying on the ground next to a tennis ball. The size and shape suggest it is a puppy.
+2. **Localize**: The most discriminative local parts include the large head, thick fur, and the playful interaction with the tennis ball. These features are characteristic of a puppy.
+3. **Compare**: Comparing these features with the candidate subcategories, "Leonberger" is the only one that matches the visual characteristics of the puppy in the image. Leonbergers are known for their large size, thick fur, and playful nature, which aligns with the observed features.
+4. **Decide**: Based on the match between the observed details and the description of a Leonberger, the most likely class is "Leonberger."
+预测: Leonberger
+evaluate_with_current_belief, 预测: Leonberger, 真实: Leonberger, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, fluffy dog standing on grass, which aligns with the coarse category of "dog."
+2. The most discriminative local parts include the dog's size, fur texture, and facial features, which are characteristic of a Leonberger breed.
+3. Comparing the visual characteristics of the dog in the image with the known features of a Leonberger, such as its large size, thick coat, and distinctive facial structure, it matches well with the description of the Leonberger breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Leonberger."
+预测: Leonberger
+evaluate_with_current_belief, 预测: Leonberger, 真实: Leonberger, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a large, furry animal with a distinctive coat pattern and a chain collar, which are characteristic features of a Leonberger breed.
+2. The most discriminative local parts include the thick fur, the shape of the head, the size of the body, and the presence of a chain collar.
+3. Comparing these features with the known characteristics of a Leonberger, such as its large size, thick fur, and distinctive facial features, it matches well with the described breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Leonberger."
+预测: Leonberger
+evaluate_with_current_belief, 预测: Leonberger, 真实: Leonberger, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which is characteristic of a dog.
+2. The most discriminative local parts include the shape of the head, the size and shape of the ears, the texture of the fur, and the overall body structure. These features are consistent with those of a dog.
+3. Comparing these features with the known characteristics of dogs, we can see that the subject has a medium-sized body, a furry coat, and a face shape typical of certain breeds like the Wheaten Terrier.
+4. Based on the match between the observed details and the descriptions of the Wheaten Terrier, the most likely class for this subject is "Wheaten Terrier."
+预测: Wheaten Terrier
+evaluate_with_current_belief, 预测: Wheaten Terrier, 真实: Wheaten_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadruped with fur, which is characteristic of a dog.
+2. **Localize**: The most discriminative local parts include the fur texture, the shape of the ears, the facial features like the eyes and nose, and the overall body structure.
+3. **Compare**: The fur texture appears soft and dense, the ears are floppy, and the facial features are consistent with those of a Terrier breed. The body structure is compact and sturdy, which aligns with the Wheaten Terrier breed.
+4. **Decide**: Based on the observed details, the dog's appearance matches the characteristics of a Wheaten Terrier.
+预测: Wheaten_Terrier
+evaluate_with_current_belief, 预测: Wheaten_Terrier, 真实: Wheaten_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. Localizing the most discriminative local parts, we see the dog's fur, ears, eyes, nose, and tongue. The fur appears thick and curly, and the dog has a relaxed posture lying on grass.
+3. Comparing these visual characteristics with the candidate subcategories, the Wheaten Terrier is known for having a thick, curly coat that matches the appearance of the dog in the image. There are no other breeds that closely match the visual characteristics seen here.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Wheaten Terrier."
+预测: Wheaten Terrier
+evaluate_with_current_belief, 预测: Wheaten Terrier, 真实: Wheaten_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which is characteristic of a dog.
+2. The most discriminative local parts include the shape of the head, the fur texture, and the overall body structure, all of which are consistent with a dog.
+3. Comparing these features with the known characteristics of dogs, particularly those resembling a Wheaten Terrier, we see that the fur color and texture align well with the Wheaten Terrier breed.
+4. Based on the match between the observed details and the Wheaten Terrier description, the most likely class is "Wheaten Terrier".
+预测: Wheaten Terrier
+evaluate_with_current_belief, 预测: Wheaten Terrier, 真实: Wheaten_Terrier, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadruped with fur, which is characteristic of a dog. The presence of a toy in its mouth further supports this observation.
+2. **Localize**: The most discriminative local parts include the long, floppy ears, the shape of the head, and the body structure typical of a dog breed.
+3. **Compare**: The visual characteristics such as the long, floppy ears, the shape of the head, and the body structure align with those of the English Cocker Spaniel breed.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "English_Cocker_Spaniel".
+预测: English_Cocker_Spaniel
+evaluate_with_current_belief, 预测: English_Cocker_Spaniel, 真实: English_Cocker_Spaniel, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the image depicts a dog, identifiable by its fur, ears, and facial features.
+2. The most discriminative local parts include the fur texture, the shape of the ears, and the overall head structure, which are characteristic of a dog breed.
+3. Comparing these features with the known characteristics of different dog breeds, the dog in the image has a curly coat, floppy ears, and a distinctive facial structure that matches the English Cocker Spaniel breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "English_Cocker_Spaniel".
+预测: English_Cocker_Spaniel
+evaluate_with_current_belief, 预测: English_Cocker_Spaniel, 真实: English_Cocker_Spaniel, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the image depicts a dog, specifically one with long floppy ears and a friendly expression.
+2. The most discriminative local parts include the long, floppy ears, the shape of the face, and the fur texture which are characteristic of a Cocker Spaniel breed.
+3. Comparing these features with the known characteristics of English Cocker Spaniels, such as their friendly demeanor, long floppy ears, and distinctive facial structure, the observed details match well with this breed.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "English_Cocker_Spaniel".
+预测: English_Cocker_Spaniel
+evaluate_with_current_belief, 预测: English_Cocker_Spaniel, 真实: English_Cocker_Spaniel, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a small animal with fur, which suggests it could be a dog.
+2. Localizing the most discriminative local parts, we see the ears, eyes, and fur pattern. The ears are floppy and the fur has a distinct black and gray coloration.
+3. Comparing these features with the known characteristics of dogs, particularly English Cocker Spaniels, we note the floppy ears and the specific color pattern.
+4. Deciding based on the match, the subject's features align closely with those of an English Cocker Spaniel.
+预测: English_Cocker_Spaniel
+evaluate_with_current_belief, 预测: English_Cocker_Spaniel, 真实: English_Cocker_Spaniel, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with a short coat, a flat face, and a wrinkled forehead, which are characteristic features of a dog.
+2. Localizing the most discriminative local parts, we see the animal has a short muzzle, large eyes, and a compact body shape, all of which are typical for a pug breed.
+3. Comparing these visual characteristics with the candidate subcategories, the description "Pug" matches perfectly with the observed features.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pug".
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadruped with a short coat, a flat face, and a curled tail, which are characteristic features of a dog.
+2. **Localize**: The most discriminative local parts include the short, wrinkled face, the small ears that stand up, the curled tail, and the overall body shape.
+3. **Compare**: These features match those of a Pug, a breed known for its distinctive appearance.
+4. **Decide**: Based on the observed details matching the characteristics of a Pug, the most likely class is "Pug".
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a quadruped with a short snout, large eyes, and floppy ears, which are characteristic features of a dog breed.
+2. **Localize**: The most discriminative local parts include the short muzzle, large round eyes, and the distinctive facial wrinkles typical of a pug breed.
+3. **Compare**: Comparing these features with the known characteristics of different dog breeds, the features align closely with those of a pug.
+4. **Decide**: Based on the observed details matching the subcategory descriptions for a pug, the most likely class is "Pug".
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object in the image is a small, short-haired dog with a distinctive face shape, large eyes, and a wrinkled forehead. These features are characteristic of a pug breed.
+2. **Localize**: The most discriminative local parts include the flat face, the large, expressive eyes, the short snout, and the compact body structure typical of a pug.
+3. **Compare**: Comparing these features with the known characteristics of a pug, such as the brachycephalic skull, the droopy jowls, and the compact body, confirms that this is indeed a pug.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pug".
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a cat, identifiable by its fur, eyes, ears, and whiskers.
+2. **Localize**: The most discriminative local parts include the large blue eyes, long white fur, and the distinct facial features typical of a Ragdoll breed.
+3. **Compare**: The visual characteristics such as the large blue eyes, long fur, and the overall appearance align closely with those of a Ragdoll cat.
+4. **Decide**: Based on the match between the observed details and the known characteristics of a Ragdoll cat, the most likely class is "Ragdoll".
+预测: Ragdoll
+evaluate_with_current_belief, 预测: Ragdoll, 真实: Ragdoll, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a cat, identifiable by its fur, eyes, and facial structure.
+2. **Localize**: The most discriminative local parts include the blue eyes, the white and gray fur pattern, and the whiskers.
+3. **Compare**: The visual characteristics such as the blue eyes and the specific fur pattern are consistent with the Ragdoll breed, which is known for its distinctive blue eyes and fluffy coat.
+4. **Decide**: Based on the match between the observed details and the Ragdoll breed's description, the most likely class is "Ragdoll."
+预测: Ragdoll
+evaluate_with_current_belief, 预测: Ragdoll, 真实: Ragdoll, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is clearly a cat, identifiable by its fur, ears, eyes, and tail.
+2. The most discriminative local parts include the fur texture, eye color, and the shape of the ears.
+3. Comparing these features with the known characteristics of cats, we can see that this matches the typical appearance of a Ragdoll cat, which is known for its long fur, large eyes, and often a white coat with patches of another color.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Ragdoll."
+预测: Ragdoll
+evaluate_with_current_belief, 预测: Ragdoll, 真实: Ragdoll, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur texture, facial features, and the shape of the ears.
+3. Comparing these features to known cat breeds, the cat in the image has a fluffy white coat and a distinctive facial structure that is characteristic of the Ragdoll breed.
+4. Based on the match between the observed details and the Ragdoll breed description, the most likely class is "Ragdoll."
+预测: Ragdoll
+evaluate_with_current_belief, 预测: Ragdoll, 真实: Ragdoll, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur texture, facial features, and body posture. The cat has long, soft fur, large eyes, and a relaxed posture.
+3. Comparing these features to the Birman breed, which is known for its long, silky fur, large eyes, and a calm demeanor, the cat in the image matches these characteristics.
+4. Based on the match between the observed details and the Birman breed description, the most likely class is "Birman."
+预测: Birman
+evaluate_with_current_belief, 预测: Birman, 真实: Birman, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a cat, identifiable by its fur, eyes, and ears.
+2. **Localize**: The most discriminative local parts include the blue eyes, the white and gray fur pattern, and the pointed ears characteristic of certain cat breeds.
+3. **Compare**: The visual characteristics such as the blue eyes and the specific fur pattern are consistent with the Birman breed, which is known for its distinctive blue eyes and white coat with darker points.
+4. **Decide**: Based on the match between the observed details and the Birman breed description, the most likely class is Birman.
+预测: Birman
+evaluate_with_current_belief, 预测: Birman, 真实: Birman, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur coloration, facial features, and eyes. The cat has a white chest and face with darker fur around the ears and back, which is characteristic of Birman cats.
+3. Comparing the visual characteristics of the cat in the image to the Birman breed, it matches well with the typical Birman appearance, including the blue eyes and the distinct color pattern.
+4. Based on the match between the observed details and the Birman breed description, the most likely class is Birman.
+预测: Birman
+evaluate_with_current_belief, 预测: Birman, 真实: Birman, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the fur coloration, facial features, and body shape. The cat has a light-colored coat with darker points on the ears, face, paws, and tail, which is characteristic of a Birman cat.
+3. Comparing the visual characteristics of the cat in the image to the Birman breed description, it matches well with the typical Birman appearance.
+4. Based on the match between the observed details and the Birman breed description, the most likely class is Birman.
+预测: Birman
+evaluate_with_current_belief, 预测: Birman, 真实: Birman, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object in the image is a small animal being held by two people. The animal has a compact body, pointed ears, and a short snout, which are characteristic features of a Shiba Inu.
+2. The most discriminative local parts include the pointed ears, the short snout, and the compact body shape.
+3. Comparing these features with the known characteristics of a Shiba Inu, they align well with the description provided for the Shiba Inu category.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Shiba Inu".
+预测: Shiba Inu
+evaluate_with_current_belief, 预测: Shiba Inu, 真实: Shiba_Inu, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which aligns with the coarse category of "dog."
+2. The most discriminative local parts include the pointed ears, the facial structure, the coloration of the fur (white and tan), and the overall body shape, which are characteristic features of a Shiba Inu breed.
+3. Comparing these visual characteristics with the known features of a Shiba Inu, such as the compact build, the triangular ears, and the distinctive facial markings, the observed details match those of a Shiba Inu.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Shiba Inu."
+预测: Shiba Inu
+evaluate_with_current_belief, 预测: Shiba Inu, 真实: Shiba_Inu, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the image depicts a dog, identifiable by its fur, ears, and facial features.
+2. The most discriminative local parts include the pointed ears, the shape of the face, and the fur texture, which are characteristic of a dog breed.
+3. Comparing these features with the known characteristics of different dog breeds, the Shiba Inu is a breed known for its fox-like appearance, including pointed ears and a compact body. The dog in the image has these features.
+4. Based on the match between the observed details and the description of the Shiba Inu, the most likely class is Shiba Inu.
+预测: Shiba Inu
+evaluate_with_current_belief, 预测: Shiba Inu, 真实: Shiba_Inu, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. Observing the overall object, it is clear that the subject is a quadrupedal animal with fur, which is characteristic of a dog.
+2. The most discriminative local parts include the shape of the head, the presence of ears, the facial features such as eyes and nose, and the body structure. These features are consistent with those of a dog.
+3. Comparing these features with the known characteristics of dogs, we can see that this animal has a typical dog-like appearance with a mix of white, brown, and black fur, which is common in breeds like Australian Shepherds or similar mixed breeds.
+4. Based on the match between the observed details and the descriptions of dog categories, the most likely class is "dog".
+预测: Dog
+evaluate_with_current_belief, 预测: Dog, 真实: Shiba_Inu, 是否正确: False
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a black cat with a sleek body, pointed ears, and a compact build. It has a glossy coat and striking yellow eyes.
+2. **Localize**: The most discriminative local parts include the sleek fur, pointed ears, and the distinctive yellow eyes which are characteristic of certain cat breeds.
+3. **Compare**: The visual characteristics such as the sleek coat, pointed ears, and the coloration align closely with the Bombay breed, which is known for its short-haired, glossy coat and striking yellow eyes.
+4. **Decide**: Based on the observed details matching the Bombay breed's description, the most likely class is "Bombay".
+预测: Bombay
+evaluate_with_current_belief, 预测: Bombay, 真实: Bombay, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a black cat lying down, which fits into the coarse category of "animal."
+2. The most discriminative local parts include the cat's fur texture, eyes, ears, and whiskers.
+3. Comparing these features to the candidate subcategories, the visual characteristics align closely with those of a cat, particularly a Bombay breed, which is known for its sleek coat and striking appearance.
+4. Based on the match between the observed details and the subcategory descriptions, the most likely class is "Bombay."
+预测: Bombay
+evaluate_with_current_belief, 预测: Bombay, 真实: Bombay, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, which belongs to the coarse category of "animal."
+2. The most discriminative local parts include the shape of the head, the eyes, the ears, the fur texture, and the tail.
+3. Comparing these features with known cat breeds, the cat in the image has a sleek black coat, pointed ears, and a compact body, which are characteristic of the Bombay breed.
+4. Based on the match between the observed details and the description of the Bombay breed, the most likely class is "Bombay."
+预测: Bombay
+evaluate_with_current_belief, 预测: Bombay, 真实: Bombay, 是否正确: True
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. The overall object is a cat, identifiable by its fur, eyes, ears, and whiskers.
+2. The most discriminative local parts include the eyes, which are large and yellowish-green, the pointed ears, and the sleek black fur.
+3. Comparing these features to the candidate categories, "Bombay" does not have any specific description provided, making it impossible to determine if this cat fits into that category.
+4. Since there is no additional information or description for "Bombay," and the cat clearly matches the typical features of a cat, the most likely class is simply "cat."
+预测: Cat
+evaluate_with_current_belief, 预测: Cat, 真实: Bombay, 是否正确: False
+图像检索失败: 图像知识库为空，请先构建知识库
+推理链: 1. **Observe**: The overall object is a cat, identifiable by its distinct features such as fur, eyes, ears, and tail.
+2. **Localize**: The most discriminative local parts include the striped fur pattern, the shape of the ears, the position of the tail, and the overall body posture.
+3. **Compare**: The visual characteristics match those of a domestic cat, which is a common pet. There is no specific description for "Egyptian Mau" that would suggest this particular breed over others.
+4. **Decide**: Based on the observed details, the most likely class is a domestic cat.
+预测: Domestic_Cat
+evaluate_with_current_belief, 预测: Domestic_Cat, 真实: Egyptian_Mau, 是否正确: False
+图像检索失败: 图像知识库为空，请先构建知识库
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test/discovering.py", line 429, in <module>
+    augmentation=True
+  File "/home/hdl/project/fgvr_test/fast_slow_thinking_system.py", line 121, in build_knowledge_base
+    self.exp_builder.build_experience_base(train_samples,max_iterations=1, max_reflections_per_iter=3, top_k=5)
+  File "/home/hdl/project/fgvr_test/experience_base_builder.py", line 609, in build_experience_base
+    initial_performance = self.evaluate_with_current_belief(validation_samples, top_k)
+  File "/home/hdl/project/fgvr_test/experience_base_builder.py", line 554, in evaluate_with_current_belief
+    cot, prediction = self.generate_cot_with_self_belief(
+  File "/home/hdl/project/fgvr_test/experience_base_builder.py", line 150, in generate_cot_with_self_belief
+    reply, response = self.mllm_bot.describe_attribute(image, prompt)
+  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 319, in describe_attribute
+    reply = self.__call_qwen2_5(raw_image, attr_prompt, max_new_tokens)
+  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 281, in __call_qwen2_5
+    generated_ids = self.qwen2_5.generate(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/utils.py", line 2223, in generate
+    result = self._sample(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/utils.py", line 3211, in _sample
+    outputs = self(**model_inputs, return_dict=True)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 1799, in forward
+    image_embeds = self.visual(pixel_values, grid_thw=image_grid_thw)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 558, in forward
+    hidden_states = blk(hidden_states, cu_seqlens=cu_seqlens_now, position_embeddings=position_embeddings)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 351, in forward
+    hidden_states = hidden_states + self.attn(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 320, in forward
+    attn_output = F.scaled_dot_product_attention(q, k, v, attention_mask, dropout_p=0.0)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 37.60 GiB. GPU 0 has a total capacity of 47.40 GiB of which 9.96 GiB is free. Including non-PyTorch memory, this process has 37.44 GiB memory in use. Of the allocated memory 36.67 GiB is allocated by PyTorch, and 463.01 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

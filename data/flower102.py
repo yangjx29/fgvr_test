@@ -202,6 +202,7 @@ class FlowerDiscovery102:
 
         self.samples = []
         self.targets = []
+        self.subcategories = []
         for folder in self.class_folders:
             label = int(folder.split('/')[-1][:3])
             # label = label - 1
@@ -210,8 +211,18 @@ class FlowerDiscovery102:
             for name in file_names:
                 self.targets.append(label)
                 self.samples.append(os.path.join(folder, name))
+                # 从文件夹名称提取类别名称
+                class_name = folder.split('/')[-1].split('.', 1)[1] if '.' in folder.split('/')[-1] else folder.split('/')[-1]
+                self.subcategories.append(class_name)
 
         self.classes = FLOWER_STATS['class_names']
+        
+        # 添加subcat_to_sample属性，按类别名分组图片路径
+        from collections import defaultdict
+        self.subcat_to_sample = defaultdict(list)
+        for subcat, sample in zip(self.subcategories, self.samples):
+            self.subcat_to_sample[subcat].append(sample)
+        
         self.index = 0
 
     def __len__(self):

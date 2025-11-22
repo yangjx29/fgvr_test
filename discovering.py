@@ -21,9 +21,59 @@ import re
 import hashlib
 from collections import defaultdict
 import numpy as np
+import yaml
 
 
 DEBUG = False  # 设置调试模式为关闭状态
+
+# 全局数据集配置
+DATASET_CONFIG = None
+CURRENT_DATASET = None
+
+def load_dataset_config():
+    """加载数据集配置文件"""
+    global DATASET_CONFIG
+    config_path = os.path.join(os.path.dirname(__file__), "configs", "datasets_list.yml")
+    with open(config_path, 'r', encoding='utf-8') as f:
+        DATASET_CONFIG = yaml.safe_load(f)
+    return DATASET_CONFIG
+
+def get_dataset_info(dataset_name: str) -> dict:
+    """
+    获取数据集信息
+    
+    Args:
+        dataset_name: 数据集名称 (dog, bird, flower, pet, car)
+        
+    Returns:
+        dict: 数据集配置信息
+    """
+    global DATASET_CONFIG
+    if DATASET_CONFIG is None:
+        load_dataset_config()
+    
+    if dataset_name not in DATASET_CONFIG['dataset_mapping']:
+        raise ValueError(f"Unknown dataset: {dataset_name}. Available: {list(DATASET_CONFIG['dataset_mapping'].keys())}")
+    
+    dataset_info = DATASET_CONFIG['dataset_mapping'][dataset_name].copy()
+    # 添加实验根目录
+    experiments_root = DATASET_CONFIG.get('experiments_root', './experiments')
+    dataset_info['experiments_root'] = experiments_root
+    # 构建完整的stats文件路径
+    dataset_info['stats_file_full'] = os.path.join(experiments_root, dataset_info['stats_file'])
+    # 构建完整的实验目录路径
+    dataset_info['experiment_dir_full'] = os.path.join(experiments_root, dataset_info['experiment_dir'])
+    
+    return dataset_info
+
+def set_current_dataset(dataset_name: str):
+    """设置当前数据集"""
+    global CURRENT_DATASET
+    CURRENT_DATASET = get_dataset_info(dataset_name)
+    print(f"当前数据集: {dataset_name} ({CURRENT_DATASET['full_name']})")
+    print(f"类别数: {CURRENT_DATASET['num_classes']}")
+    print(f"实验目录: {CURRENT_DATASET['experiment_dir_full']}")
+    return CURRENT_DATASET
 
 
 def cint2cname(label: int, cname_sheet: list):
@@ -372,12 +422,13 @@ if __name__ == "__main__":
     parser.add_argument('--confidence_threshold', type=float, default=0.8, help='confidence threshold for fast thinking')
     parser.add_argument('--similarity_threshold', type=float, default=0.7, help='similarity threshold for trigger mechanism')
 
-    args = parser.parse_args()  
-    print(colored(args, 'blue'))  
-
+    args = parser.parse_args()    
     cfg = setup_config(args.config_file_env, args.config_file_expt)  
-    print(colored(cfg, 'yellow')) 
-
+    
+    # 设置当前数据集
+    dataset_name = cfg.get('dataset_name', 'dog')  # 从配置文件获取数据集名称
+    set_current_dataset(dataset_name)
+    
     # drop the seed - 设置随机种子
     seed_everything(cfg['seed']) 
 
@@ -385,6 +436,9 @@ if __name__ == "__main__":
 
     import pprint
     import time
+
+    cuda_ids = os.environ.get("CUDA_VISIBLE_DEVICES", None)
+    print(f"当前使用的 GPU 为：{cuda_ids}")
 
     start_time = time.time()
     print()
@@ -399,12 +453,15 @@ if __name__ == "__main__":
     print(colored("=== Configuration (cfg) ===", "green"))
     pprint.pprint(cfg)
 
+    # 全局系统实例管理 - 避免重复加载模型
+    system = None
+    
 
     if args.mode == 'build_knowledge_base':
         """
         构建快慢思考系统的知识库
         CUDA_VISIBLE_DEVICES=3 python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base 2>&1 | tee ./logs/build_knowledge_base_dog120.log
-        
+            
         CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=1 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base 2>&1 | tee ./logs_opti/build_knowledge_base_dog120_experience.log
         """
         # 初始化快慢思考系统
@@ -412,9 +469,10 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
         )
-        
+            
         # 加载训练样本
         data_discovery = DATA_DISCOVERY[cfg['dataset_name']](cfg, folder_suffix=expt_id_suffix)
         train_samples = defaultdict(list)
@@ -423,7 +481,7 @@ if __name__ == "__main__":
             for p in path:
                 train_samples[name].append(p)
         print(f"构建知识库，包含 {len(train_samples)} 个类别, dog datasets:{len(DATA_STATS[cfg['dataset_name']]['class_names'])}")
-        
+            
         # 构建知识库
         system.load_knowledge_base(args.knowledge_base_dir) # 方便构建stats
         image_kb, text_kb = system.build_knowledge_base(
@@ -431,9 +489,9 @@ if __name__ == "__main__":
             save_dir=args.knowledge_base_dir,
             augmentation=True
         )
-        
+            
         print(f"知识库构建完成，保存到: {args.knowledge_base_dir}")
-    
+        
     elif args.mode == 'classify':
         """
         使用快慢思考系统进行单张图像分类
@@ -448,7 +506,8 @@ if __name__ == "__main__":
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
             device_id=cfg.get('device_id', 0),
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
         )
         
         # 加载知识库
@@ -481,7 +540,8 @@ if __name__ == "__main__":
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
             device_id=cfg.get('device_id', 0),
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
         )
         
         # 加载知识库
@@ -523,7 +583,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
@@ -600,7 +661,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
@@ -669,7 +731,8 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
         )
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
@@ -743,9 +806,23 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError 
 
+
+
     end_time = time.time()
     print()
     print(colored(f"=== Experiment End Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))} ===", "cyan"))
-    print(colored(f"=== Total Runtime: {end_time - start_time:.2f} seconds ===", "cyan"))
-    print()
     
+    elapsed = end_time - start_time
+
+    days = int(elapsed // 86400)
+    hours = int((elapsed % 86400) // 3600)
+    minutes = int((elapsed % 3600) // 60)
+    seconds = elapsed % 60
+
+    if days > 0:
+        time_str = f"{days}天 {hours}小时 {minutes}分 {seconds:.2f}秒"
+    else:
+        time_str = f"{hours}小时 {minutes}分 {seconds:.2f}秒"
+
+    print(colored(f"=== Total Runtime: {time_str} ===", "cyan"))
+    print()

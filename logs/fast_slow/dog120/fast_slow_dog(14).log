@@ -1,0 +1,80 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: dog (dog120)
+类别数: 120
+实验目录: ./experiments/dog120
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-11-22 11:54:19 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/dog120_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/dog120/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/dog_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': './datasets/dogs_120/images_discovery_all_10',
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 256,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/dogs_120',
+ 'dataset_name': 'dog',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/dog120',
+ 'expt_dir_describe': './experiments/dog120/describe',
+ 'expt_dir_gallery': './experiments/dog120/gallery',
+ 'expt_dir_grouping': './experiments/dog120/grouping',
+ 'expt_dir_guess': './experiments/dog120/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 60,
+ 'num_classes': 120,
+ 'num_novel': 60,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn',
+ 'path_identify_answers': './experiments/dog120/identify',
+ 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names',
+ 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw',
+ 'path_references': './experiments/dog120/gallery/dog_image_references',
+ 'path_regions': './experiments/dog120/gallery/dog_image_regions',
+ 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs',
+ 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+初始化MLLM模型...
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.93s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.15s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.20s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.22s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.72s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.92s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+初始化知识库构建器...
+初始化快思考模块...
+使用数据集stats文件: ./experiments/dog120/knowledge_base/stats.json
+已加载历史统计量: 5196 次预测
+初始化慢思考模块...
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test/discovering.py", line 730, in <module>
+    system = FastSlowThinkingSystem(
+  File "/home/hdl/project/fgvr_test/fast_slow_thinking_system.py", line 89, in __init__
+    self.slow_thinking = SlowThinkingOptimized(
+  File "/home/hdl/project/fgvr_test/slow_thinking_optimized.py", line 72, in __init__
+    )
+NameError: name 'os' is not defined

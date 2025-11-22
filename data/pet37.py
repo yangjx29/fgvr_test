@@ -275,15 +275,23 @@ class PetDiscovery37:
         self.targets = []
         for folder in self.class_folders:
             label = int(folder.split('/')[-1][:3])
-            # label = label - 1
             file_names = os.listdir(folder)
-
             for name in file_names:
                 self.targets.append(label)
                 self.samples.append(os.path.join(folder, name))
 
         self.classes = PET_STATS['class_names']
         self.index = 0
+
+        # 新增subcat_to_sample属性，按类别名分组图片路径
+        self.subcat_to_sample = {}
+        for folder in self.class_folders:
+            # 文件夹名格式如'000.ClassName'，提取类别名
+            folder_name = os.path.basename(folder)
+            class_name = folder_name[4:]
+            file_names = os.listdir(folder)
+            img_paths = [os.path.join(folder, name) for name in file_names]
+            self.subcat_to_sample[class_name] = img_paths
 
     def __len__(self):
         return len(self.samples)

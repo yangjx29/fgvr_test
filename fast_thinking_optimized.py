@@ -35,7 +35,7 @@ class FastThinkingOptimized:
                  consider_topk_overlap: bool = True,
                  topk_for_overlap: int = 3,
                  # LCB 相关参数 - 优化
-                 stats_file: str = "./experiments/dog120/knowledge_base/stats.json",
+                 stats_file: str = None,  # 将从dataset_info自动推断
                  lcb_threshold: float = 0.65,  # 从0.7降低到0.65,更严格
                  lcb_threshold_adaptive: bool = True,  # 启用自适应阈值
                  lcb_threshold_min: float = 0.55,  # 最小阈值
@@ -47,7 +47,9 @@ class FastThinkingOptimized:
                  lcb_epsilon: float = 1e-6,
                  # 缓存相关
                  enable_cache: bool = True,
-                 cache_size: int = 1000):
+                 cache_size: int = 1000,
+                 # 数据集信息
+                 dataset_info: dict = None):
         """
         初始化优化后的快思考模块
         """
@@ -74,7 +76,22 @@ class FastThinkingOptimized:
         self.lcb_eta = lcb_eta
         self.lcb_alpha = lcb_alpha
         self.lcb_epsilon = lcb_epsilon
-        self.stats_file = stats_file
+        
+        # 数据集信息 - 自动推断stats_file路径
+        self.dataset_info = dataset_info or {}
+        if stats_file is None:
+            if not self.dataset_info or 'stats_file_full' not in self.dataset_info:
+                raise ValueError(
+                    "FastThinkingOptimized初始化失败: 必须提供dataset_info或明确指定stats_file。"
+                    "dataset_info应包含'stats_file_full'字段，以避免误污染知识库。"
+                )
+            # 从dataset_info构建stats_file路径
+            self.stats_file = self.dataset_info['stats_file_full']
+            print(f"使用数据集stats文件: {self.stats_file}")
+        else:
+            self.stats_file = stats_file
+            print(f"使用指定的stats文件: {self.stats_file}")
+        
         self.total_predictions = 1
         self.category_stats = defaultdict(lambda: {"n": 0, "m": 0})
         self.load_stats()

@@ -65,33 +65,59 @@ class MLLMBot:
         self.model_tag = model_tag
         self.model_name = model_name
         self.max_answer_tokens = max_answer_tokens
+
         local_model_path_abs = "./models/Qwen"
         local_model_path = path.join(local_model_path_abs, QWEN[self.model_tag].split('/')[-1])
+
+        # 加载处理器
         self.qwen2_5_processor = AutoProcessor.from_pretrained(local_model_path)
-        # self.qwen2_5_processor = AutoProcessor.from_pretrained(
-        #     local_model_path,
-        #     trust_remote_code=True,
-        #     padding_side='left',
-        #     use_fast=True,
-        # )
+
+        print("\n================= 模型初始化（MLLMBot） =================")
+        print(f"📌 模型标识（model_tag）: {model_tag}")
+        print(f"📌 模型名称（model_name）: {model_name}")
+        print(f"📁 本地模型路径: {local_model_path}")
+
+        # ========== CPU ==========
         if device == 'cpu':
             self.device = 'cpu'
             self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(local_model_path)
+            dtype_used = "float32（CPU 默认）"
+            print(f"🖥️ 设备: CPU")
+
+        # ========== GPU ==========
         else:
-            self.device = 'cuda:{}'.format(device_id)
+            self.device = f'cuda:{device_id}'
             self.bit8 = bit8
-            dtype = {'load_in_8bit': True} if self.bit8 else {'torch_dtype': torch.float16}
-            # attn_implementation="sdpa"与 output_attentions不兼容
-            # self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(local_model_path,
-            #                                                         device_map={'': int(device_id)},
-            #                                                         **dtype)
-            self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(local_model_path,
-                                                                    device_map="auto",
-                                                                    # attn_implementation="eager",
-                                                                    torch_dtype=torch.float32,
-                                                                    ).eval()
-        # print(f'model:{self.qwen2_5}')
-        print(f'local_model_path: {local_model_path}')
+
+            print(f"🖥️ 设备: GPU - {self.device}")
+            print(f"🤖 使用 8bit 推理: {'是' if self.bit8 else '否'}")
+
+            # 按你的原始逻辑：8bit 或 float32
+            if self.bit8:
+                dtype_config = {"load_in_8bit": True}
+                dtype_used = "int8（8bit 量化推理）"
+            else:
+                dtype_config = {"torch_dtype": torch.float32}
+                dtype_used = "float32（FP32）"
+
+            print(f"🔍 使用数据类型: {dtype_used}")
+
+            self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+                local_model_path,
+                device_map="auto",
+                **dtype_config
+            ).eval()
+
+            # 开启梯度检查点
+            if hasattr(self.qwen2_5, 'gradient_checkpointing_enable'):
+                self.qwen2_5.gradient_checkpointing_enable()
+                print("✓ 已启用梯度检查点以节省显存")
+
+        print(f"📁 local_model_path: {local_model_path}")
+        print(f"🔢 当前使用的精度 dtype: {dtype_used}")
+        print(f"🔧 最大生成长度 max_answer_tokens: {self.max_answer_tokens}")
+        print("🚀 模型加载完成！")
+        print("========================================================\n")
         
         # TODO超参数
         self.pai_enable_attn = pai_enable_attn   # 阶段一：是否增强图像注意力
@@ -100,6 +126,30 @@ class MLLMBot:
         self.pai_enable_cfg = False    # 阶段二：是否开启CFG logits精炼
         self.pai_gamma = 1.1           # 阶段二：γ 指导强度
         self.num_map = 0
+        
+    def __del__(self):
+        """析构函数：清理GPU内存"""
+        try:
+            if hasattr(self, 'qwen2_5'):
+                del self.qwen2_5
+            if hasattr(self, 'qwen2_5_processor'):
+                del self.qwen2_5_processor
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+        except Exception as e:
+            print(f"清理MLLMBot内存时出错: {e}")
+    
+    def cleanup(self):
+        """手动清理内存"""
+        try:
+            if hasattr(self, 'qwen2_5'):
+                del self.qwen2_5
+            if hasattr(self, 'qwen2_5_processor'):
+                del self.qwen2_5_processor
+            torch.cuda.empty_cache()
+            print("MLLMBot内存已清理")
+        except Exception as e:
+            print(f"清理MLLMBot内存时出错: {e}")
         
     def _get_model_device(self):
         try:
@@ -188,6 +238,31 @@ class MLLMBot:
 
     def get_name(self):
         return self.model_name
+    
+    def _resize_image_if_needed(self, image: Image.Image, max_size: int = 1536) -> Image.Image:
+        """
+        如果图像尺寸超过max_size，按比例缩小以防止显存爆炸
+        
+        Args:
+            image: PIL图像
+            max_size: 最大边长（默认1536，足够保留细节）
+            
+        Returns:
+            调整后的PIL图像
+        """
+        width, height = image.size
+        max_dim = max(width, height)
+        
+        if max_dim > max_size:
+            # 计算缩放比例
+            scale = max_size / max_dim
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            
+            print(f"图像过大 ({width}x{height})，缩小到 ({new_width}x{new_height}) 以节省显存")
+            return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+        
+        return image
 
     def __call_qwen2_5(self, raw_image, prompt, max_new_tokens=256):
         # print(f"MLLMBot prompt: {prompt}")
@@ -201,6 +276,8 @@ class MLLMBot:
         #     content.append({"type": "image", "image": img})
         # content.append({"type": "text", "text": prompt})
         for img in raw_image:
+            # 限制图像最大尺寸，防止超大图片导致显存爆炸
+            img = self._resize_image_if_needed(img, max_size=1536)
             image_str = encode_base64(img)
             content.append({"type": "image", "image": f'data:image;base64,{image_str}'})
         content.append({"type": "text", "text": prompt})
@@ -233,8 +310,8 @@ class MLLMBot:
         #         videos=video_inputs,           
         #         padding=True,
         #         return_tensors="pt"
-        #     ).to(self.device,torch.float16)
-        # generated_ids = self.qwen2_5.generate(**inputs, max_new_tokens=128)
+        #     ).to(self.device,torch.float32)
+        # generated_ids = self.qwen2_5.generate(**inputs, max_new_tokens=256)
         model_device = self._get_model_device()
         inputs = prepare_qwen2_5_input(messages, self.qwen2_5_processor).to(model_device, torch.float32)
 
@@ -277,22 +354,78 @@ class MLLMBot:
             # self._inject_qwen_pai_attention(img_start_idx, img_end_idx)
             self._inject_qwen_pai_attention_with_importance(img_start_idx, img_end_idx, important_tokens_info)
 
+        # 清理显存缓存
+        torch.cuda.empty_cache()
+        
+        # 检查显存使用情况 - 基于剩余显存的清理策略
+        if torch.cuda.is_available():
+            memory_allocated = torch.cuda.memory_allocated() / 1024**3  # GB
+            memory_reserved = torch.cuda.memory_reserved() / 1024**3   # GB
+            memory_total = torch.cuda.get_device_properties(0).total_memory / 1024**3  # GB
+            memory_free = memory_total - memory_allocated
+            print(f"推理前显存: 已分配={memory_allocated:.2f}GB, 已保留={memory_reserved:.2f}GB, 剩余={memory_free:.2f}GB")
+            
+            # 如果剩余显存 < 12GB，触发清理（适配A6000 48GB和A800 80GB）
+            if memory_free < 12:  
+                print(f"警告: 剩余显存不足 ({memory_free:.2f}GB < 12GB)，强制清理...")
+                torch.cuda.empty_cache()
+                torch.cuda.synchronize()
+                # 再次检查
+                memory_after_clear = torch.cuda.memory_allocated() / 1024**3
+                memory_free_after = memory_total - memory_after_clear
+                print(f"清理后剩余显存: {memory_free_after:.2f}GB")
+                if memory_free_after < 10:
+                    torch.cuda.reset_peak_memory_stats()
+                    print(f"已重置峰值显存统计")
+        
         with torch.no_grad():
+            # 使用平衡速度和显存的生成参数
             generated_ids = self.qwen2_5.generate(
                 **inputs,
                 max_new_tokens=max_new_tokens,
+                do_sample=False,                     # 禁用采样以提高速度
+                use_cache=True,                      # 启用KV缓存加速推理
+                num_beams=1,                         # 禁用beam search节省显存
+                pad_token_id=self.qwen2_5_processor.tokenizer.eos_token_id,
                 # logits_processor=logits_processors
             )
+            
+        # 在删除inputs之前，先保存input_ids
+        input_ids = inputs.input_ids
+        
+        # 使用保存的input_ids
         generated_ids_trimmed = [
-            out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+            out_ids[len(in_ids) :] for in_ids, out_ids in zip(input_ids, generated_ids)
         ]
-
+        
         # 8. 解码
         reply = self.qwen2_5_processor.batch_decode(
             generated_ids_trimmed,
             skip_special_tokens=True,
             clean_up_tokenization_spaces=False
         )
+        
+        # 推理完成后立即清理临时变量
+        del inputs, input_ids, generated_ids, generated_ids_trimmed
+        
+        # 基于剩余显存决定是否清理
+        if torch.cuda.is_available():
+            memory_after = torch.cuda.memory_allocated() / 1024**3
+            memory_reserved = torch.cuda.memory_reserved() / 1024**3
+            memory_total = torch.cuda.get_device_properties(0).total_memory / 1024**3
+            memory_free = memory_total - memory_after
+            print(f"推理后显存: 已分配={memory_after:.2f}GB, 已保留={memory_reserved:.2f}GB, 剩余={memory_free:.2f}GB")
+            
+            # 只在剩余显存 < 10GB 时才清理，否则保留缓存提升性能
+            if memory_free < 10:
+                torch.cuda.empty_cache()
+                print(f"剩余显存不足10GB，已清理缓存")
+                
+                # 如果保留的显存过多且剩余不足10GB，重置峰值统计
+                if memory_reserved > memory_free and memory_free < 10:
+                    torch.cuda.reset_peak_memory_stats()
+                    print(f"已重置峰值显存统计")
+        
         # print(f"test MLLM answer after decode: {reply}")
         return reply
 
@@ -315,7 +448,7 @@ class MLLMBot:
         return reply, trimmed_reply
 
     def describe_attribute(self, raw_image, attr_prompt, max_new_tokens=256):
-        # raw_image是Image.open之后的格式
+        # raw_image是Image.open之后的格式   
         reply = self.__call_qwen2_5(raw_image, attr_prompt, max_new_tokens)
         trimmed_reply = trim_answer(reply)
         return reply, trimmed_reply
@@ -375,7 +508,7 @@ class MLLMBot:
         prompts_temp = self.qwen2_5_processor(None, prompts, return_tensors="pt")
         model_device = self._get_model_device()
         input_ids = prompts_temp['input_ids'].to(model_device)
-        attention_mask = prompts_temp['attention_mask'].to(model_device, torch.float16)
+        attention_mask = prompts_temp['attention_mask'].to(model_device, torch.float32)
 
         prompts_embeds = self.qwen2_5.language_model.get_input_embeddings()(input_ids)
 

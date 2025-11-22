@@ -1,0 +1,1776 @@
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前使用的 GPU 为：6
+
+=== Experiment Start Time: 2025-11-22 11:20:07 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/pet37_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/pet37/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 32,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/pet_37',
+ 'dataset_name': 'pet',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/pet37',
+ 'expt_dir_describe': './experiments/pet37/describe',
+ 'expt_dir_gallery': './experiments/pet37/gallery',
+ 'expt_dir_grouping': './experiments/pet37/grouping',
+ 'expt_dir_guess': './experiments/pet37/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 19,
+ 'num_classes': 37,
+ 'num_novel': 18,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn',
+ 'path_identify_answers': './experiments/pet37/identify',
+ 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names',
+ 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw',
+ 'path_references': './experiments/pet37/gallery/pet_image_references',
+ 'path_regions': './experiments/pet37/gallery/pet_image_regions',
+ 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs',
+ 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+初始化MLLM模型...
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.81s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.05s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.12s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.15s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.67s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.85s/it]
+local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+初始化知识库构建器...
+初始化快思考模块...
+已加载历史统计量: 1536 次预测
+初始化慢思考模块...
+[显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+快慢思考系统初始化完成!
+构建知识库，包含 37 个类别, dog datasets:37
+从 ./experiments/pet37/knowledge_base 加载知识库...
+知识库已从 ./experiments/pet37/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 37 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/37 [00:00<?, ?it/s]  3%|▎         | 1/37 [00:00<00:09,  3.62it/s] 11%|█         | 4/37 [00:00<00:02, 11.75it/s] 19%|█▉        | 7/37 [00:00<00:01, 16.56it/s] 27%|██▋       | 10/37 [00:00<00:01, 19.59it/s] 35%|███▌      | 13/37 [00:00<00:01, 21.20it/s] 43%|████▎     | 16/37 [00:00<00:00, 22.06it/s] 51%|█████▏    | 19/37 [00:01<00:01, 17.67it/s] 59%|█████▉    | 22/37 [00:01<00:00, 19.19it/s] 68%|██████▊   | 25/37 [00:01<00:00, 20.46it/s] 76%|███████▌  | 28/37 [00:01<00:00, 20.30it/s] 84%|████████▍ | 31/37 [00:01<00:00, 21.39it/s] 92%|█████████▏| 34/37 [00:01<00:00, 22.13it/s]100%|██████████| 37/37 [00:01<00:00, 22.80it/s]100%|██████████| 37/37 [00:01<00:00, 19.56it/s]
+处理类别: Chihuahua
+类别 Chihuahua 图像特征维度: (512,)
+处理类别: Beagle
+类别 Beagle 图像特征维度: (512,)
+处理类别: Keeshond
+类别 Keeshond 图像特征维度: (512,)
+处理类别: Pug
+类别 Pug 图像特征维度: (512,)
+处理类别: Great_Pyrenees
+类别 Great_Pyrenees 图像特征维度: (512,)
+处理类别: Bengal
+类别 Bengal 图像特征维度: (512,)
+处理类别: American_Pit_Bull_Terrier
+类别 American_Pit_Bull_Terrier 图像特征维度: (512,)
+处理类别: Siamese
+类别 Siamese 图像特征维度: (512,)
+处理类别: Shiba_Inu
+类别 Shiba_Inu 图像特征维度: (512,)
+处理类别: Miniature_Pinscher
+类别 Miniature_Pinscher 图像特征维度: (512,)
+处理类别: Basset_Hound
+类别 Basset_Hound 图像特征维度: (512,)
+处理类别: Sphynx
+类别 Sphynx 图像特征维度: (512,)
+处理类别: Persian
+类别 Persian 图像特征维度: (512,)
+处理类别: Newfoundland
+类别 Newfoundland 图像特征维度: (512,)
+处理类别: Russian_Blue
+类别 Russian_Blue 图像特征维度: (512,)
+处理类别: British_Shorthair
+类别 British_Shorthair 图像特征维度: (512,)
+处理类别: Staffordshire_Bull_Terrier
+类别 Staffordshire_Bull_Terrier 图像特征维度: (512,)
+处理类别: Egyptian_Mau
+类别 Egyptian_Mau 图像特征维度: (512,)
+处理类别: Pomeranian
+类别 Pomeranian 图像特征维度: (512,)
+处理类别: American_Bulldog
+类别 American_Bulldog 图像特征维度: (512,)
+处理类别: Yorkshire_Terrier
+类别 Yorkshire_Terrier 图像特征维度: (512,)
+处理类别: Havanese
+类别 Havanese 图像特征维度: (512,)
+处理类别: English_Setter
+类别 English_Setter 图像特征维度: (512,)
+处理类别: English_Cocker_Spaniel
+类别 English_Cocker_Spaniel 图像特征维度: (512,)
+处理类别: Leonberger
+类别 Leonberger 图像特征维度: (512,)
+处理类别: Boxer
+类别 Boxer 图像特征维度: (512,)
+处理类别: Abyssinian
+类别 Abyssinian 图像特征维度: (512,)
+处理类别: Samoyed
+类别 Samoyed 图像特征维度: (512,)
+处理类别: Japanese_Chin
+类别 Japanese_Chin 图像特征维度: (512,)
+处理类别: Wheaten_Terrier
+类别 Wheaten_Terrier 图像特征维度: (512,)
+处理类别: Scottish_Terrier
+类别 Scottish_Terrier 图像特征维度: (512,)
+处理类别: Bombay
+类别 Bombay 图像特征维度: (512,)
+处理类别: Birman
+类别 Birman 图像特征维度: (512,)
+处理类别: German_Shorthaired
+类别 German_Shorthaired 图像特征维度: (512,)
+处理类别: Ragdoll
+类别 Ragdoll 图像特征维度: (512,)
+处理类别: Saint_Bernard
+类别 Saint_Bernard 图像特征维度: (512,)
+处理类别: Maine_Coon
+类别 Maine_Coon 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/37 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+  3%|▎         | 1/37 [00:23<14:01, 23.38s/it]  5%|▌         | 2/37 [00:48<14:04, 24.14s/it]  8%|▊         | 3/37 [01:12<13:50, 24.43s/it] 11%|█         | 4/37 [01:37<13:28, 24.49s/it]处理类别: Chihuahua
+[显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for Chihuahua category.
+[显存监控] 已分配=32.49GB, 已保留=33.34GB, 空闲=14.91GB
+[显存监控] 已分配=32.51GB, 已保留=33.34GB, 空闲=14.89GB
+[显存监控] 已分配=32.51GB, 已保留=33.34GB, 空闲=14.89GB
+[显存监控] 已分配=32.51GB, 已保留=33.34GB, 空闲=14.89GB
+MLLM description: The images depict Chihuahuas, a small breed known for their compact size, large ears, and expressive eyes.
+
+1. **Distinctive Physical Features:** Chihuahuas have a short, smooth coat with a variety of colors and patterns. They typically have a sturdy build, with a short back and a long tail curled over their back. Their ears are large and often stand upright or fold over at the tips.
+
+2. **Color Patterns and Markings:** The Chihuahuas in the images showcase different color patterns. One has a light brown coat with white markings on its chest and paws, while another is predominantly white with some brown patches. The third image shows a Chihuahua with a light tan coat and a red bandana around its neck.
+
+3. **Size and Proportions:** Chihuahuas are small dogs, usually weighing between 2 to 6 pounds as adults. They have a compact body with a short back and a long tail that curls over their back. Their head is large in proportion to their body, with a short muzzle and large, expressive eyes.
+
+4. **Behavioral Characteristics:** Chihuahuas are known for their high energy levels and can be quite vocal, barking frequently. They are also very
+类别 Chihuahua 文本特征维度: (512,)
+描述: The images depict Chihuahuas, a small breed known for their compact size, large ears, and expressive...
+处理类别: Beagle
+[显存监控] 已分配=32.44GB, 已保留=33.34GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.34GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.34GB, 空闲=14.97GB
+wiki desc: Description for Beagle category.
+[显存监控] 已分配=32.57GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+MLLM description: The images depict Beagles, a breed known for their distinctive physical features:
+
+1. **Distinctive Physical Features**: Beagles have a compact, sturdy build with a short, smooth coat. They typically have a fox-like face with long, floppy ears, expressive eyes, and a curled tail.
+
+2. **Color Patterns and Markings**: Beagles often display tricolor coats, which include combinations of black, tan, and white. The coloration can vary, with some dogs having more prominent tan markings than others. The white markings are usually found on the chest, muzzle, and sometimes the legs and paws.
+
+3. **Size and Proportions**: Beagles are medium-sized dogs, generally standing between 13-16 inches tall at the shoulder and weighing around 20-30 pounds. Their body is well-proportioned, with a strong, muscular build.
+
+4. **Behavioral Characteristics**: Beagles are known for their friendly, energetic, and curious nature. They are often described as playful and social, making them excellent companions. In the images, one dog appears alert and attentive, while another is resting, showcasing their adaptable behavior.
+
+5. **Unique Identifying Traits**: Beagles have a unique facial
+类别 Beagle 文本特征维度: (512,)
+描述: The images depict Beagles, a breed known for their distinctive physical features:
+
+1. **Distinctive ...
+处理类别: Keeshond
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Keeshond category.
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+MLLM description: The Keeshond is a distinctive breed characterized by its unique physical features, color patterns, size, and behavior.
+
+1. **Distinctive Physical Features**: Keeshonds have a fox-like face with a black mask around their eyes and a black nose. Their ears are triangular and stand upright, giving them an alert appearance. They have a thick, double coat that can vary in length, often appearing shaggy or fluffy. Their tail is bushy and curled over their back.
+
+2. **Color Patterns and Markings**: Keeshonds typically have a gray or silver-gray coat with a black mask and a black nose. Some may also have white markings on their chest, paws, or muzzle. The coloration can range from light to dark gray, with the darker shades being more common.
+
+3. **Size and Proportions**: Keeshonds are medium-sized dogs, generally standing between 18-20 inches tall at the shoulder and weighing between 40-60 pounds. They have a sturdy build with a broad chest and a muscular body.
+
+4. **Behavioral Characteristics**: Keeshonds are known for their friendly and affectionate nature. They are intelligent, loyal, and protective of their families. They can be somewhat stubborn and independent
+类别 Keeshond 文本特征维度: (512,)
+描述: The Keeshond is a distinctive breed characterized by its unique physical features, color patterns, s...
+处理类别: Pug
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Pug category.
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+MLLM description: The images depict Pugs, a breed known for their distinctive physical features:
+
+1. **Distinctive Physical Features**: Pugs are characterized by their wrinkled faces, short muzzles, and curled tails. Their eyes are large and expressive, often giving them an inquisitive or slightly grumpy expression.
+
+2. **Color Patterns and Markings**: Pugs can come in various colors, including fawn (a light tan or beige), black, brindle (striped), and sometimes with white markings. The image shows a fawn-colored Pug with a white chest and paws, while another has a black face and ears with a lighter body. The third image shows a Pug with a mix of fawn and black fur.
+
+3. **Size and Proportions**: Pugs are small dogs, typically weighing between 10-20 pounds. They have a compact, sturdy build with a short, smooth coat. The images show Pugs of similar size, standing on grass or dirt.
+
+4. **Behavioral Characteristics**: While not directly observable in these still images, Pugs are generally known to be playful, affectionate, and loyal companions. They may appear somewhat stubborn due to their strong willpower.
+
+5. **Unique Identifying Traits
+类别 Pug 文本特征维度: (512,)
+描述: The images depict Pugs, a breed known for their distinctive physical features:
+
+1. **Distinctive Phy...
+处理类别: Great_Pyrenees
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Great_Pyrenees category.
+[显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.84GB
+ 14%|█▎        | 5/37 [02:02<13:06, 24.57s/it] 16%|█▌        | 6/37 [02:20<11:39, 22.57s/it] 19%|█▉        | 7/37 [02:44<11:25, 22.86s/it] 22%|██▏       | 8/37 [03:08<11:17, 23.36s/it][显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.84GB
+MLLM description: The images depict Great Pyrenees dogs, characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Great Pyrenees are large, muscular dogs with a thick, fluffy coat that can vary in color from white to cream, sometimes with light brown or gray markings. Their face is broad, with a short muzzle and a strong, square-shaped head. They have a gentle expression, often with a slightly open mouth showing their pink tongue.
+
+2. **Color Patterns and Markings**: The primary color pattern is white, which can range from very pale to creamy white. Some dogs may have light brown or gray markings on their ears, legs, or body. The coat is dense and double-layered, providing excellent insulation against cold weather.
+
+3. **Size and Proportions**: Great Pyrenees are large dogs, typically weighing between 80-130 pounds as adults. They have a sturdy build with a deep chest, strong legs, and a broad back. Their height at the shoulder can range from 26 to 32 inches.
+
+4. **Behavioral Characteristics**: Great Pyrenees are generally calm, patient, and protective of their family. They are known for their gentle nature and loyalty. They are also highly intelligent and
+类别 Great_Pyrenees 文本特征维度: (512,)
+描述: The images depict Great Pyrenees dogs, characterized by their distinctive physical features:
+
+1. **D...
+处理类别: Bengal
+[显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+wiki desc: Description for Bengal category.
+[显存监控] 已分配=32.60GB, 已保留=34.71GB, 空闲=14.80GB
+[显存监控] 已分配=32.56GB, 已保留=34.71GB, 空闲=14.84GB
+[显存监控] 已分配=32.57GB, 已保留=34.71GB, 空闲=14.83GB
+MLLM description: Bengal cats are known for their distinctive physical features, including large, expressive eyes, pointed ears, and a muscular build. Their color patterns and markings are characterized by a mix of dark spots, rosettes, and stripes on a lighter background, often with a golden or brown base color. They have a medium to large size, with a sturdy and athletic body structure. Bengal cats are known for their playful and energetic nature, often exhibiting a wild, independent spirit. They are also known for their unique identifying traits, such as their spotted coat pattern and their ability to climb trees and hunt like their wild ancestors.
+类别 Bengal 文本特征维度: (512,)
+描述: Bengal cats are known for their distinctive physical features, including large, expressive eyes, poi...
+处理类别: American_Pit_Bull_Terrier
+[显存监控] 已分配=32.44GB, 已保留=34.71GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.71GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.71GB, 空闲=14.97GB
+wiki desc: Description for American_Pit_Bull_Terrier category.
+[显存监控] 已分配=32.48GB, 已保留=32.84GB, 空闲=14.92GB
+[显存监控] 已分配=32.51GB, 已保留=33.54GB, 空闲=14.89GB
+[显存监控] 已分配=32.51GB, 已保留=33.54GB, 空闲=14.89GB
+[显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+MLLM description: The images depict American Pit Bull Terriers with distinct physical features, color patterns, size, and behavioral characteristics.
+
+1. **Distinctive Physical Features**: American Pit Bull Terriers have a muscular build, broad head, and short, smooth coat. Their ears are typically cropped or left natural, and their tails are docked in some cases. They have strong jaws and a square-shaped head.
+
+2. **Color Patterns and Markings**: The dogs in the images showcase various color patterns and markings. One dog has a light brown coat with white markings on its chest and face, while another has a white coat with dark brown patches. The third dog is predominantly brown with a white patch on its chest. These color variations are common among American Pit Bull Terriers.
+
+3. **Size and Proportions**: American Pit Bull Terriers are medium-sized dogs, generally weighing between 30-60 pounds. They have a compact body with a deep chest and a short back. Their legs are sturdy and muscular, supporting their weight.
+
+4. **Behavioral Characteristics**: While not explicitly shown in the images, American Pit Bull Terriers are known to be energetic, loyal, and protective of their families. They can be affectionate towards their owners and may exhibit a strong desire to
+类别 American_Pit_Bull_Terrier 文本特征维度: (512,)
+描述: The images depict American Pit Bull Terriers with distinct physical features, color patterns, size, ...
+处理类别: Siamese
+[显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+wiki desc: Description for Siamese category.
+[显存监控] 已分配=32.56GB, 已保留=33.99GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+MLLM description: The images depict Siamese cats, which are easily recognizable by their distinctive physical features and color patterns:
+
+1. **Distinctive Physical Features**: Siamese cats have large, expressive eyes, often in blue or green hues, and pointed ears. Their bodies are slender and muscular, with long legs and a compact frame.
+
+2. **Color Patterns and Markings**: Siamese cats are known for their "pointed" coloration, where the darker points (ears, face, paws, and tail) contrast sharply with the lighter body. This is due to a genetic mutation affecting pigmentation. The base coat can range from cream to light brown, while the points are typically a deeper brown or black.
+
+3. **Size and Proportions**: Siamese cats are medium-sized, with a balanced body structure. They are not as large as some other cat breeds but are proportionally longer than they are tall.
+
+4. **Behavioral Characteristics**: Siamese cats are known for their intelligence, curiosity, and affectionate nature. They are social animals and enjoy being around people. They are often described as "talkative," as they meow frequently.
+
+5. **Unique Identifying Traits**: The combination of their pointed coloration, large eyes, and
+类别 Siamese 文本特征维度: (512,)
+描述: The images depict Siamese cats, which are easily recognizable by their distinctive physical features...
+处理类别: Shiba_Inu
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Shiba_Inu category.
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+ 24%|██▍       | 9/37 [03:34<11:12, 24.00s/it] 27%|██▋       | 10/37 [03:58<10:49, 24.05s/it] 30%|██▉       | 11/37 [04:23<10:35, 24.46s/it] 32%|███▏      | 12/37 [04:48<10:12, 24.48s/it]MLLM description: The images showcase Shiba Inu dogs, a Japanese breed known for their distinctive features:
+
+1. **Distinctive Physical Features**: Shiba Inus have a compact, muscular build with a short, smooth coat. Their ears are triangular and stand erect, while their tail is curled over their back.
+
+2. **Color Patterns and Markings**: The Shiba Inu in image 1 has a reddish-brown coat with white markings on its face and chest. Image 2 displays a dog with a tri-color pattern of white, brown, and black, which is common among Shiba Inus. Image 3 shows a Shiba Inu with a cream-colored coat and a darker face, possibly indicating a different color variation within the breed.
+
+3. **Size and Proportions**: Shiba Inus are small to medium-sized dogs, typically standing around 10-16 inches tall at the shoulder. They have a balanced body structure with a strong, compact frame.
+
+4. **Behavioral Characteristics**: Shiba Inus are known for their independent and sometimes aloof nature. They can be stubborn and require firm but patient training. They are also highly alert and protective of their territory and family.
+
+5. **Unique Identifying Traits**: Shiba In
+类别 Shiba_Inu 文本特征维度: (512,)
+描述: The images showcase Shiba Inu dogs, a Japanese breed known for their distinctive features:
+
+1. **Dis...
+处理类别: Miniature_Pinscher
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Miniature_Pinscher category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.85GB
+MLLM description: The Miniature Pinscher is a small, energetic breed known for its distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Miniature Pinscher has a compact, muscular body with a short, smooth coat. Its most notable feature is its large, erect ears, which stand tall and alert. The eyes are typically almond-shaped and expressive.
+
+2. **Color Patterns and Markings**: The coat color can vary widely, including black, brown, fawn, or a combination of these colors. Many Miniature Pinschers have a tan or rust-colored mask around their muzzle, chest, and legs, creating a striking contrast against the darker fur. Some may also have white markings on the chest, paws, or face.
+
+3. **Size and Proportions**: These dogs are small to medium-sized, standing between 9-12 inches at the shoulder and weighing approximately 10-18 pounds. They have a balanced build, with a slightly longer back than height at the shoulder, and a deep chest.
+
+4. **Behavioral Characteristics**: Miniature Pinschers are known for their high energy levels, intelligence, and loyalty. They are often described as confident, assertive, and protective of their families. They can be
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+类别 Miniature_Pinscher 文本特征维度: (512,)
+描述: The Miniature Pinscher is a small, energetic breed known for its distinctive appearance. Here's a de...
+处理类别: Basset_Hound
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Basset_Hound category.
+[显存监控] 已分配=32.55GB, 已保留=33.81GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+MLLM description: The Basset Hound is a distinctive breed characterized by its long, droopy ears, short muzzle, and large, expressive eyes. Here's a detailed breakdown:
+
+1. **Distinctive Physical Features**: The most notable feature of a Basset Hound is its long, floppy ears which hang down to the sides of its head. Its body is compact and low to the ground, with a short, smooth coat that can come in various colors and patterns.
+
+2. **Color Patterns and Markings**: Basset Hounds typically have a tricolor coat, featuring brown, white, and black. The coloration can vary, with some dogs having more or less of each color. The white often appears on the chest, legs, and face, while the brown and black are distributed across the rest of the body. Some Bassets may also have liver-colored coats, which are a solid brown color.
+
+3. **Size and Proportions**: Basset Hounds are medium-sized dogs, generally weighing between 30-60 pounds. They have a short, sturdy build with a deep chest and a short back. Their legs are short and strong, supporting their low-slung bodies.
+
+4. **Behavioral Characteristics**: Basset Hounds are known for their gentle
+类别 Basset_Hound 文本特征维度: (512,)
+描述: The Basset Hound is a distinctive breed characterized by its long, droopy ears, short muzzle, and la...
+处理类别: Sphynx
+[显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for Sphynx category.
+[显存监控] 已分配=32.57GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+MLLM description: The images showcase Sphynx cats, which are characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Sphynx cats are known for their lack of fur, giving them a hairless appearance. Their skin is smooth and wrinkled, especially around the body and face. They have large, pointed ears and a slender build.
+
+2. **Color Patterns and Markings**: The coloration can vary widely among Sphynx cats. In the images, the cat in the first image appears to have a light pinkish hue, while the second and third images show a cat with a mix of white and gray fur. The eyes are typically large and expressive, often with a green or yellowish tint.
+
+3. **Size and Proportions**: Sphynx cats are medium-sized, with a lean and athletic build. They have long legs and a small, compact body. The proportions are balanced, with a long tail that complements their overall slender frame.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Sphynx cats are generally known for being intelligent, playful, and affectionate. They enjoy human interaction and are often described as "cat-cats" due to their independent nature.
+
+5.
+类别 Sphynx 文本特征维度: (512,)
+描述: The images showcase Sphynx cats, which are characterized by their distinctive physical features:
+
+1....
+处理类别: Persian
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Persian category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+ 35%|███▌      | 13/37 [05:12<09:48, 24.53s/it] 38%|███▊      | 14/37 [05:37<09:24, 24.53s/it] 41%|████      | 15/37 [06:03<09:10, 25.02s/it] 43%|████▎     | 16/37 [06:28<08:47, 25.12s/it]MLLM description: The images depict Persian cats, which are characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Persian cats are known for their round heads, large eyes, and short, flat faces. Their ears are small and set wide apart. Their bodies are compact and muscular, with thick fur that can come in various colors and patterns.
+
+2. **Color Patterns and Markings**: The Persian cat in the first image has a white coat with some light brown patches, while the second image shows a fluffy white Persian cat. The third image features a close-up of a white Persian cat with dark eyes and a pink nose. The color patterns and markings can vary widely among Persians, including solid colors, tabbies, and tortoiseshell.
+
+3. **Size and Proportions**: Persian cats are generally medium to large-sized, with a sturdy build and a thick, plush coat. They have a broad chest and a short, stocky body. Their legs are short and sturdy, supporting their weight.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Persian cats are known for their affectionate and gentle nature. They are often described as calm, patient, and loving companions. They enjoy being petted and are generally good with children and
+类别 Persian 文本特征维度: (512,)
+描述: The images depict Persian cats, which are characterized by their distinctive physical features:
+
+1. ...
+处理类别: Newfoundland
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Newfoundland category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+MLLM description: The images depict Newfoundlands, a breed known for their distinctive physical features:
+
+1. **Distinctive Physical Features**: Newfoundlands have a large, sturdy build with a broad head, short muzzle, and a thick, water-repellent double coat that can vary in color from black to brown, often with white markings. Their eyes are typically dark and expressive.
+
+2. **Color Patterns and Markings**: The primary color is black, but they can also appear in liver (brown) or even a mix of both. White markings are common, appearing on the chest, paws, and sometimes the face. The coat is dense, water-resistant, and can be wavy or slightly curly.
+
+3. **Size and Proportions**: Newfoundlands are large dogs, with males typically weighing between 100-180 pounds and females around 70-120 pounds. They have a strong, muscular body with a deep chest and a broad back.
+
+4. **Behavioral Characteristics**: Known for their gentle nature, Newfoundlands are often described as calm, patient, and protective. They are excellent swimmers and retrievers, making them popular as water rescue dogs. They are also highly intelligent and trainable.
+
+5. **Unique Ident
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+类别 Newfoundland 文本特征维度: (512,)
+描述: The images depict Newfoundlands, a breed known for their distinctive physical features:
+
+1. **Distin...
+处理类别: Russian_Blue
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Russian_Blue category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+MLLM description: The Russian Blue cat is characterized by its distinctive physical features, including a sleek, short-haired coat with a uniform blue-gray color. This coloration is a result of the breed's genetic makeup, which results in a lack of pigment in the fur, giving it a silvery-blue appearance. The cat's eyes are typically a striking green or gold, adding to its unique beauty.
+
+In terms of size and proportions, Russian Blues are medium-sized cats, with a sturdy build and a compact body. They have a broad head, large ears, and a strong jawline, which contribute to their overall muscular appearance. Their tails are also relatively long and thick, complementing their overall physique.
+
+Behaviorally, Russian Blues are known for being calm, gentle, and affectionate. They are often described as "gentle giants" due to their friendly nature and relaxed demeanor. They are generally good with children and other pets, making them excellent family companions.
+
+Unique identifying traits include their distinctive blue-gray coat, green or gold eyes, and their overall muscular build. These features set them apart from other similar breeds, such as the British Shorthair or the Maine Coon, which may have different coat colors, eye colors, or body types.
+类别 Russian_Blue 文本特征维度: (512,)
+描述: The Russian Blue cat is characterized by its distinctive physical features, including a sleek, short...
+处理类别: British_Shorthair
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for British_Shorthair category.
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+MLLM description: The British Shorthair cat is a distinctive breed characterized by its robust build, dense coat, and round face. Here's a detailed description of their key visual characteristics:
+
+1. **Distinctive Physical Features**: British Shorthairs have a stocky body with a broad chest and short legs. Their head is large and round, with a short muzzle and prominent cheekbones. Their ears are small and rounded, set wide apart.
+
+2. **Color Patterns and Markings**: British Shorthairs come in a variety of colors and patterns, including solid, tabby, tortoiseshell, and smoke. The most common color is the classic "blue," which appears as a silvery gray. Other colors include cream, red, chocolate, and lilac. They can also have white markings, such as bibs or socks.
+
+3. **Size and Proportions**: British Shorthairs are medium to large-sized cats, weighing between 8-16 pounds. Males tend to be larger than females. Their body is well-proportioned, with a sturdy frame and a thick neck.
+
+4. **Behavioral Characteristics**: British Shorthairs are known for their affectionate and gentle nature. They are often described as calm, patient, and adaptable. They
+类别 British_Shorthair 文本特征维度: (512,)
+描述: The British Shorthair cat is a distinctive breed characterized by its robust build, dense coat, and ...
+处理类别: Staffordshire_Bull_Terrier
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Staffordshire_Bull_Terrier category.
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+ 46%|████▌     | 17/37 [06:53<08:18, 24.91s/it] 49%|████▊     | 18/37 [07:19<08:00, 25.27s/it] 51%|█████▏    | 19/37 [07:42<07:24, 24.71s/it] 54%|█████▍    | 20/37 [08:07<06:59, 24.65s/it]MLLM description: The Staffordshire Bull Terrier is a medium-sized dog with a muscular build, short coat, and a broad head. Here's a detailed breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The Staffordshire Bull Terrier has a strong jaw, a broad skull, and a short muzzle. Its ears are typically cropped or left natural, standing upright. The eyes are almond-shaped and expressive.
+
+2. **Color Patterns and Markings**: The breed can come in various colors, including white, black, brindle, fawn, and combinations thereof. The most common color pattern is white with a black mask, which is evident in all three images. Some dogs may have a white blaze down their face or a white chest patch.
+
+3. **Size and Proportions**: The Staffordshire Bull Terrier is medium-sized, with males typically weighing between 60-70 pounds and females slightly lighter at around 50-60 pounds. They have a compact body with a deep chest and a short back.
+
+4. **Behavioral Characteristics**: Staffordshire Bull Terriers are known for their friendly and energetic nature. They are often described as loyal, affectionate, and protective of their families. However, they can also be assertive and may
+类别 Staffordshire_Bull_Terrier 文本特征维度: (512,)
+描述: The Staffordshire Bull Terrier is a medium-sized dog with a muscular build, short coat, and a broad ...
+处理类别: Egyptian_Mau
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Egyptian_Mau category.
+[显存监控] 已分配=32.63GB, 已保留=35.30GB, 空闲=14.78GB
+[显存监控] 已分配=32.58GB, 已保留=35.30GB, 空闲=14.82GB
+[显存监控] 已分配=32.59GB, 已保留=35.30GB, 空闲=14.81GB
+[显存监控] 已分配=32.59GB, 已保留=35.30GB, 空闲=14.81GB
+[显存监控] 已分配=32.60GB, 已保留=35.30GB, 空闲=14.80GB
+MLLM description: The Egyptian Mau is a medium-sized cat with a muscular build and a short, dense coat. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Egyptian Mau has a strong, athletic body with a broad chest and powerful hindquarters. Its head is medium-sized with a slightly rounded forehead and large, expressive eyes that can vary in color, often appearing green or gold. The ears are large, triangular, and set wide apart.
+
+2. **Color Patterns and Markings**: The Egyptian Mau is known for its distinctive coat pattern, which includes a mix of dark brown, black, and tan stripes that run vertically down the back and horizontally across the sides. The legs, tail, and face may have additional markings, such as spots or rosettes. The coat can range from a rich, glossy black to a lighter, silver-gray, depending on the individual cat.
+
+3. **Size and Proportions**: The Egyptian Mau typically weighs between 8-12 pounds and stands about 10-12 inches tall at the shoulder. They are medium-sized cats with a balanced body structure, neither too heavy nor too light.
+
+4. **Behavioral Characteristics**: Egyptian Maus are known for their playful and
+[显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+类别 Egyptian_Mau 文本特征维度: (512,)
+描述: The Egyptian Mau is a medium-sized cat with a muscular build and a short, dense coat. Here's a detai...
+处理类别: Pomeranian
+[显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+wiki desc: Description for Pomeranian category.
+[显存监控] 已分配=32.51GB, 已保留=33.57GB, 空闲=14.89GB
+[显存监控] 已分配=32.51GB, 已保留=33.57GB, 空闲=14.89GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+MLLM description: The images depict Pomeranians, a breed known for their distinctive features:
+
+1. **Distinctive Physical Features**: Pomeranians have a compact body with a short, sturdy build. They possess a thick double coat that is dense and fluffy, giving them a "pom-pom" appearance. Their ears are large, erect, and triangular, often standing upright. Their tails are bushy and curled over their backs.
+
+2. **Color Patterns and Markings**: Pomeranians can come in various colors, including fawn, black, white, and combinations thereof. The images show dogs with fawn-colored coats, which are a rich, warm brownish-orange hue. Some dogs may have white markings on their chest or paws, while others might have a darker coloration around their eyes and muzzle.
+
+3. **Size and Proportions**: Pomeranians are small dogs, typically weighing between 3 to 7 pounds. They have a square-shaped head, with a short muzzle and a strong jaw. Their legs are short and sturdy, supporting their compact body.
+
+4. **Behavioral Characteristics**: While not explicitly shown in the images, Pomeranians are generally known for their lively, energetic, and playful nature. They are also
+类别 Pomeranian 文本特征维度: (512,)
+描述: The images depict Pomeranians, a breed known for their distinctive features:
+
+1. **Distinctive Physi...
+处理类别: American_Bulldog
+[显存监控] 已分配=32.44GB, 已保留=33.57GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.57GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.57GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=33.57GB, 空闲=14.97GB
+wiki desc: Description for American_Bulldog category.
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+MLLM description: The images depict American Bulldogs, a breed known for their distinctive physical features:
+
+1. **Distinctive Physical Features**: American Bulldogs have a broad head with a short muzzle, giving them a square-shaped face. Their ears are typically folded over, and they have a muscular build with a strong, compact body.
+
+2. **Color Patterns and Markings**: The coloration can vary widely among American Bulldogs. In the first image, the dog has a white coat with brown patches around its eyes and ears. The second and third images show dogs with predominantly white coats, sometimes with some brown or brindle markings.
+
+3. **Size and Proportions**: American Bulldogs are medium-sized dogs, generally weighing between 60-80 pounds. They have a sturdy build with a deep chest and a short, thick neck.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, American Bulldogs are known to be loyal, affectionate, and protective of their families. They can be energetic and playful, especially when young, but also enjoy being close to their owners.
+
+5. **Unique Identifying Traits**: The unique identifying traits of an American Bulldog include their wrinkled face, short muzzle, and muscular build. Their friendly and gentle demeanor makes them popular family pets
+类别 American_Bulldog 文本特征维度: (512,)
+描述: The images depict American Bulldogs, a breed known for their distinctive physical features:
+
+1. **Di...
+处理类别: Yorkshire_Terrier
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+wiki desc: Description for Yorkshire_Terrier category.
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.83GB
+ 57%|█████▋    | 21/37 [08:31<06:33, 24.58s/it] 59%|█████▉    | 22/37 [08:57<06:11, 24.79s/it] 62%|██████▏   | 23/37 [09:21<05:45, 24.70s/it] 65%|██████▍   | 24/37 [09:46<05:20, 24.64s/it]MLLM description: The Yorkshire Terrier is a small breed with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: Yorkies have a compact body with a long, silky coat that can vary in color. Their ears are typically large and erect, and their tail is often carried over their back.
+
+2. **Color Patterns and Markings**: Yorkies come in a variety of colors, including steel blue and tan, black and tan, and fawn and tan. The coat can also feature a mix of these colors. The markings are usually symmetrical and can include a white blaze on the face or chest.
+
+3. **Size and Proportions**: Yorkies are small dogs, typically weighing between 4-7 pounds as adults. They have a sturdy build with a short, smooth coat that requires regular grooming to maintain its lustrous appearance.
+
+4. **Behavioral Characteristics**: Yorkies are known for their lively and affectionate nature. They are intelligent, curious, and often become attached to one person in particular. They can be quite vocal and may bark frequently.
+
+5. **Unique Identifying Traits**: The combination of their small size, long silky coat, and expressive eyes makes them easily recognizable. Additionally, their unique color patterns and markings further
+类别 Yorkshire_Terrier 文本特征维度: (512,)
+描述: The Yorkshire Terrier is a small breed with a distinctive appearance. Here's a detailed description:...
+处理类别: Havanese
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Havanese category.
+[显存监控] 已分配=32.56GB, 已保留=34.64GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.64GB, 空闲=14.84GB
+[显存监控] 已分配=32.58GB, 已保留=34.64GB, 空闲=14.83GB
+[显存监控] 已分配=32.58GB, 已保留=34.64GB, 空闲=14.82GB
+[显存监控] 已分配=32.58GB, 已保留=34.64GB, 空闲=14.82GB
+MLLM description: The images depict Havanese dogs, a breed known for their distinctive appearance. Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Havanese dogs have a compact, sturdy build with a short, smooth coat. Their most notable feature is their curly, dense fur, which can vary in length and texture.
+
+2. **Color Patterns and Markings**: Havanese dogs typically come in solid colors such as white, cream, or biscuit, often with black or brown markings on the face, ears, and legs. Some may also have patches of color on their body. The dog in image 1 has a predominantly white coat with black markings around its eyes and ears, while the dog in image 2 has a mix of white and black fur with some brown markings.
+
+3. **Size and Proportions**: Havanese dogs are small to medium-sized, with a height at the shoulder usually ranging from 9 to 12 inches. They have a balanced body structure, with a slightly longer back than the front legs, giving them an elegant stance.
+
+4. **Behavioral Characteristics**: Havanese dogs are known for their friendly, affectionate, and energetic personalities. They are intelligent, loyal, and make great
+类别 Havanese 文本特征维度: (512,)
+描述: The images depict Havanese dogs, a breed known for their distinctive appearance. Here's a breakdown ...
+处理类别: English_Setter
+[显存监控] 已分配=32.44GB, 已保留=34.64GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.64GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.64GB, 空闲=14.97GB
+wiki desc: Description for English_Setter category.
+[显存监控] 已分配=32.44GB, 已保留=34.64GB, 空闲=14.97GB
+[显存监控] 已分配=32.58GB, 已保留=34.05GB, 空闲=14.82GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+MLLM description: The English Setter is a medium-sized dog with a distinctive appearance characterized by its long, silky coat, which can vary in color and pattern. Here's a detailed breakdown:
+
+1. **Distinctive Physical Features**: English Setters have a slender yet muscular build, with a deep chest and a strong, arched neck. Their head is broad with a slightly domed forehead, and they possess a long, narrow muzzle. Their eyes are almond-shaped and expressive, often with a gentle, kind look.
+
+2. **Color Patterns and Markings**: English Setters come in a variety of colors, including liver, black, white, and combinations thereof. The most common pattern is the "tricolor" or "tri-color," featuring liver, white, and black markings. Other patterns include solid liver, solid black, and parti-color (a mix of liver and white). The coat is typically long and wavy, with feathering on the ears, legs, and tail.
+
+3. **Size and Proportions**: English Setters are medium-sized dogs, generally standing between 20-26 inches tall at the shoulder and weighing around 45-70 pounds. They have a balanced body structure, with a slightly longer back than height, and a level to
+类别 English_Setter 文本特征维度: (512,)
+描述: The English Setter is a medium-sized dog with a distinctive appearance characterized by its long, si...
+处理类别: English_Cocker_Spaniel
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for English_Cocker_Spaniel category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.59GB, 已保留=34.05GB, 空闲=14.82GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+MLLM description: The images depict English Cocker Spaniels, a breed known for their distinctive features:
+
+1. **Distinctive Physical Features**: English Cocker Spaniels have a medium-sized, compact body with a deep chest and a short, smooth coat. Their most notable feature is their long, silky ears that hang down to the sides of their face.
+
+2. **Color Patterns and Markings**: The coloration can vary widely among English Cocker Spaniels. The dog in image 1 has a predominantly black coat with white markings, while the dog in image 2 has a light golden or cream-colored coat. Image 3 shows a puppy with a mix of black and gray fur, with a white patch on its chest.
+
+3. **Size and Proportions**: English Cocker Spaniels are typically small to medium-sized dogs, with a height at the shoulder usually ranging between 16-18 inches. They have a balanced build, neither too heavy nor too light.
+
+4. **Behavioral Characteristics**: English Cocker Spaniels are known for their friendly, affectionate, and gentle nature. They are often described as having a "gentle giant" personality. They are also highly intelligent and responsive to training. The dogs in the images appear
+类别 English_Cocker_Spaniel 文本特征维度: (512,)
+描述: The images depict English Cocker Spaniels, a breed known for their distinctive features:
+
+1. **Disti...
+处理类别: Leonberger
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Leonberger category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+ 68%|██████▊   | 25/37 [10:11<04:58, 24.89s/it] 70%|███████   | 26/37 [10:37<04:36, 25.15s/it] 73%|███████▎  | 27/37 [11:04<04:18, 25.87s/it] 76%|███████▌  | 28/37 [11:29<03:50, 25.56s/it]MLLM description: The Leonberger is a large breed with a distinctive appearance. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: Leonbergers have a broad head, a short muzzle, and a strong jaw. Their eyes are almond-shaped and dark in color, giving them an alert expression. They have a thick, double coat that can vary in length and texture, often appearing shaggy.
+
+2. **Color Patterns and Markings**: Leonbergers typically have a tri-color coat, which includes black, brown, and white. The black coloration is usually found on the face, ears, and legs, while the brown covers the body and tail. White markings are common on the chest, neck, and paws. The exact pattern can vary, but the tri-color combination is characteristic.
+
+3. **Size and Proportions**: Leonbergers are large dogs, often weighing between 100-160 pounds as adults. They have a muscular build with a deep chest and a broad back. Their legs are strong and sturdy, supporting their weight well. The height at the shoulder can range from 24 to 28 inches.
+
+4. **Behavioral Characteristics**: Leonbergers are generally friendly, loyal, and
+类别 Leonberger 文本特征维度: (512,)
+描述: The Leonberger is a large breed with a distinctive appearance. Here's a breakdown of its key visual ...
+处理类别: Boxer
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Boxer category.
+[显存监控] 已分配=32.58GB, 已保留=34.17GB, 空闲=14.82GB
+[显存监控] 已分配=32.59GB, 已保留=34.17GB, 空闲=14.82GB
+[显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[显存监控] 已分配=32.57GB, 已保留=34.17GB, 空闲=14.84GB
+MLLM description: The images depict Boxers, a breed known for their distinctive physical features:
+
+1. **Distinctive Physical Features**: Boxers have a broad head with a short muzzle, giving them a square-shaped face. Their eyes are almond-shaped and expressive, often appearing alert or curious. They have a muscular build with a deep chest and a short, smooth coat.
+
+2. **Color Patterns and Markings**: Boxers typically come in two main color patterns: fawn (a light brown) and brindle (striped). The fawn variety can have white markings on the chest, paws, and sometimes the face. The brindle pattern is characterized by darker stripes on a lighter background. The image shows a fawn Boxer with a white chest marking.
+
+3. **Size and Proportions**: Boxers are medium to large-sized dogs, with males usually weighing between 60-75 pounds and females slightly smaller. They have a compact body with a strong, muscular build. The images show Boxers with a sturdy frame and a well-proportioned body.
+
+4. **Behavioral Characteristics**: Boxers are known for their friendly and energetic nature. They are loyal, protective, and often seen as family companions. They are intelligent and responsive to training, making
+类别 Boxer 文本特征维度: (512,)
+描述: The images depict Boxers, a breed known for their distinctive physical features:
+
+1. **Distinctive P...
+处理类别: Abyssinian
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+wiki desc: Description for Abyssinian category.
+[显存监控] 已分配=32.67GB, 已保留=33.02GB, 空闲=14.73GB
+[显存监控] 已分配=32.95GB, 已保留=47.06GB, 空闲=14.45GB
+[显存监控] 已分配=32.76GB, 已保留=47.06GB, 空闲=14.64GB
+[显存监控] 已分配=32.76GB, 已保留=47.06GB, 空闲=14.64GB
+[显存监控] 已分配=32.77GB, 已保留=47.06GB, 空闲=14.63GB
+[显存监控] 已分配=32.77GB, 已保留=47.06GB, 空闲=14.63GB
+MLLM description: Abyssinian cats are known for their distinctive physical features, including a slender body, large ears, and a short, dense coat with a "ticked" pattern. Their color patterns typically include a mix of brown, black, and cream, with darker points on the ears, tail, and paws. Abyssinians have a medium-sized head with a strong jawline and expressive eyes. They are often described as having a graceful and athletic build. Behaviorally, Abyssinians are known to be intelligent, curious, and playful, making them excellent companions. Their unique identifying traits include their ticked coat pattern and their alert, attentive demeanor.
+类别 Abyssinian 文本特征维度: (512,)
+描述: Abyssinian cats are known for their distinctive physical features, including a slender body, large e...
+处理类别: Samoyed
+[显存监控] 已分配=32.44GB, 已保留=47.06GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=47.06GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=47.06GB, 空闲=14.97GB
+wiki desc: Description for Samoyed category.
+[显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[显存监控] 已分配=32.57GB, 已保留=34.22GB, 空闲=14.83GB
+MLLM description: The images depict Samoyeds, a breed known for their distinctive features:
+
+1. **Distinctive Physical Features**: Samoyeds have a thick, fluffy double coat that is predominantly white, with a soft undercoat and a dense outer layer. Their ears are triangular and stand upright, while their tails are curled over their backs in a characteristic "flying-saucer" shape.
+
+2. **Color Patterns and Markings**: The primary color of Samoyeds is white, with no significant color variations or markings. Some may have slight tan or cream shading on their faces, paws, or tail tips, but these are not common.
+
+3. **Size and Proportions**: Samoyeds are medium to large-sized dogs, with males typically weighing between 60-75 pounds and females slightly smaller at around 50-65 pounds. They have a sturdy build with a broad chest, strong legs, and a deep, muscular neck.
+
+4. **Behavioral Characteristics**: Samoyeds are known for their friendly, affectionate, and playful nature. They are intelligent, loyal, and make great family pets. They are also highly energetic and require regular exercise.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of Samoyeds is
+类别 Samoyed 文本特征维度: (512,)
+描述: The images depict Samoyeds, a breed known for their distinctive features:
+
+1. **Distinctive Physical...
+处理类别: Japanese_Chin
+[显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+wiki desc: Description for Japanese_Chin category.
+[显存监控] 已分配=32.53GB, 已保留=34.12GB, 空闲=14.87GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.84GB
+ 78%|███████▊  | 29/37 [11:54<03:22, 25.26s/it] 81%|████████  | 30/37 [12:18<02:55, 25.01s/it] 84%|████████▍ | 31/37 [12:43<02:29, 24.86s/it] 86%|████████▋ | 32/37 [13:09<02:06, 25.30s/it]MLLM description: The Japanese Chin is a small breed with a compact body, expressive eyes, and a distinctive facial structure. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Japanese Chin has a rounded head, a short muzzle, and a slightly upturned nose. Its ears are long, soft, and hang down close to the cheeks.
+
+2. **Color Patterns and Markings**: Japanese Chins come in various colors and patterns, including solid white, black and tan, and brindle. The most common pattern is the "tan and white" coloration, where the face, chest, and legs are white, while the rest of the body is a rich tan or reddish-brown. Some may have a mask-like marking around their eyes.
+
+3. **Size and Proportions**: Japanese Chins are small dogs, typically weighing between 6-10 pounds. They have a sturdy build with a short, smooth coat that can vary in length depending on the individual dog.
+
+4. **Behavioral Characteristics**: Japanese Chins are known for their lively and affectionate nature. They are intelligent, curious, and often enjoy being the center of attention. They can be quite vocal and may bark frequently. They are also known for their playful and energetic behavior,
+类别 Japanese_Chin 文本特征维度: (512,)
+描述: The Japanese Chin is a small breed with a compact body, expressive eyes, and a distinctive facial st...
+处理类别: Wheaten_Terrier
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Wheaten_Terrier category.
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+MLLM description: The Wheaten Terrier is a medium-sized dog with a distinctive coat color ranging from light to dark golden-brown, often referred to as "wheat." Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Wheaten Terrier has a sturdy build with a compact body, short legs, and a broad head. Its face is expressive, with a slightly wrinkled forehead and a strong, black nose. The ears are medium-sized, floppy, and hang down close to the cheeks.
+
+2. **Color Patterns and Markings**: The coat is dense, soft, and wavy, with a rich golden-brown hue. The color can vary from light to dark, sometimes with a slight reddish tint. The fur may have a slight sheen, giving it a healthy appearance. There are no specific markings or patterns, as the uniform coat color is the defining characteristic.
+
+3. **Size and Proportions**: The Wheaten Terrier typically stands between 16-18 inches tall at the shoulder and weighs around 30-40 pounds. They have a balanced body structure, with a slightly longer back than the front legs, giving them an alert and agile stance.
+
+4. **Behavioral Characteristics**: Wheaten Terriers are
+类别 Wheaten_Terrier 文本特征维度: (512,)
+描述: The Wheaten Terrier is a medium-sized dog with a distinctive coat color ranging from light to dark g...
+处理类别: Scottish_Terrier
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+wiki desc: Description for Scottish_Terrier category.
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+MLLM description: The images depict Scottish Terriers, a breed known for their distinctive appearance:
+
+1. **Distinctive Physical Features**: Scottish Terriers have a compact, sturdy build with a short, smooth coat that is typically black in color, although some may have tan or brindle markings. Their most recognizable feature is their "tartan" pattern, which is a mix of black and tan fur, often seen as a patchwork across their body.
+
+2. **Color Patterns and Markings**: The primary color is black, with tan or brindle markings on the face, chest, and legs. The tan markings can vary in intensity and distribution, while the brindle pattern consists of a mix of black and tan stripes.
+
+3. **Size and Proportions**: Scottish Terriers are small to medium-sized dogs, standing around 10-12 inches tall at the shoulder and weighing between 18-28 pounds. They have a square-shaped head, erect ears, and a short, thick tail that curls over their back.
+
+4. **Behavioral Characteristics**: Scottish Terriers are known for their independent and sometimes stubborn nature. They are intelligent, loyal, and protective of their families. They can be assertive and may not always follow commands immediately, but they respond
+类别 Scottish_Terrier 文本特征维度: (512,)
+描述: The images depict Scottish Terriers, a breed known for their distinctive appearance:
+
+1. **Distincti...
+处理类别: Bombay
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Bombay category.
+[显存监控] 已分配=32.59GB, 已保留=35.61GB, 空闲=14.81GB
+[显存监控] 已分配=32.59GB, 已保留=35.61GB, 空闲=14.81GB
+[显存监控] 已分配=32.60GB, 已保留=35.61GB, 空闲=14.81GB
+[显存监控] 已分配=32.61GB, 已保留=35.61GB, 空闲=14.80GB
+[显存监控] 已分配=32.61GB, 已保留=35.61GB, 空闲=14.79GB
+MLLM description: The images depict Bombay cats, which are characterized by their sleek, short-haired coat and striking green eyes. Here's a detailed description:
+
+1. **Distinctive Physical Features**: Bombay cats have a compact, muscular build with a deep chest and a broad head. Their ears are large and triangular, and their tails are long and tapering.
+
+2. **Color Patterns and Markings**: These cats are predominantly black, with a glossy, lustrous coat that can appear almost metallic in certain lighting conditions. They lack any visible markings or patterns, maintaining a uniform color across their body.
+
+3. **Size and Proportions**: Bombays are medium-sized cats, neither tiny nor large. They have a balanced body structure, with a well-proportioned head and a sturdy frame.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Bombays are known to be intelligent, affectionate, and playful. They are often described as confident and independent, yet they enjoy spending time with their human companions.
+
+5. **Unique Identifying Traits**: The most distinctive feature of a Bombay cat is its all-black coat and striking green eyes. Additionally, their short, dense fur gives them a sleek appearance, and their large, expressive eyes add to their captivating charm.
+类别 Bombay 文本特征维度: (512,)
+描述: The images depict Bombay cats, which are characterized by their sleek, short-haired coat and strikin...
+处理类别: Birman
+[显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+wiki desc: Description for Birman category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+ 89%|████████▉ | 33/37 [13:35<01:41, 25.40s/it] 92%|█████████▏| 34/37 [13:53<01:09, 23.27s/it] 95%|█████████▍| 35/37 [14:18<00:47, 23.68s/it] 97%|█████████▋| 36/37 [14:43<00:24, 24.10s/it]MLLM description: The Birman cat is a distinctive breed characterized by its unique physical features, color patterns, size, and behavior.
+
+1. **Distinctive Physical Features**: Birman cats have large, expressive blue eyes, which are a hallmark of the breed. Their ears are large and rounded, and their face has a gentle, almost serene expression. They also have a short, dense coat that feels soft to the touch.
+
+2. **Color Patterns and Markings**: Birman cats come in a variety of colors, including seal point, chocolate point, blue point, and lilac point. The points refer to the darker coloration on the ears, face, paws, and tail. The body fur is typically a lighter shade, creating a striking contrast with the points. The white fur on the chest, chin, and toes is another defining characteristic.
+
+3. **Size and Proportions**: Birman cats are medium-sized, with males generally larger than females. They have a sturdy build, with a broad head and a muscular body. Their legs are long and slender, and their paws are large and round, resembling mittens.
+
+4. **Behavioral Characteristics**: Birman cats are known for their gentle and affectionate nature. They are often described as "gentle giants
+类别 Birman 文本特征维度: (512,)
+描述: The Birman cat is a distinctive breed characterized by its unique physical features, color patterns,...
+处理类别: German_Shorthaired
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for German_Shorthaired category.
+[显存监控] 已分配=32.62GB, 已保留=34.43GB, 空闲=14.78GB
+[显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+MLLM description: The German Shorthaired Pointer is a medium to large-sized dog with a broad head, long muzzle, and floppy ears. Their coat is short and dense, typically in solid colors like liver, black, or white, often with some white markings. They have a strong, muscular build with a deep chest and a slightly arched back. Their tail is usually docked and set low. These dogs are known for their energetic and playful nature, often displaying a high level of enthusiasm and intelligence. They are also highly trainable and make excellent hunting companions due to their keen sense of smell and retrieving abilities.
+类别 German_Shorthaired 文本特征维度: (512,)
+描述: The German Shorthaired Pointer is a medium to large-sized dog with a broad head, long muzzle, and fl...
+处理类别: Ragdoll
+[显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+wiki desc: Description for Ragdoll category.
+[显存监控] 已分配=32.66GB, 已保留=34.17GB, 空闲=14.74GB
+[显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[显存监控] 已分配=32.59GB, 已保留=34.17GB, 空闲=14.81GB
+[显存监控] 已分配=32.60GB, 已保留=34.17GB, 空闲=14.80GB
+MLLM description: The images depict cats belonging to the Ragdoll breed, characterized by their distinctive physical features, color patterns, size, and unique identifying traits.
+
+1. **Distinctive Physical Features**: Ragdolls are known for their large, round heads, prominent ears, and long, fluffy fur. Their eyes are typically large and expressive, often appearing blue or greenish-blue, which is a hallmark of the breed. Their bodies are medium-sized with a muscular yet elegant build, and they have a soft, plush coat that can come in various colors and patterns.
+
+2. **Color Patterns and Markings**: Ragdolls exhibit a wide range of color patterns, including solid colors like cream, white, and blue, as well as bi-colors, mitted, and point patterns. The most common pattern is the "point" pattern, where the face, ears, paws, and tail are a darker color than the body. The color of the points can vary, including seal, chocolate, lilac, and blue. The body is usually a lighter shade, often white or cream.
+
+3. **Size and Proportions**: Ragdolls are medium-sized cats, with males typically weighing between 8-14 pounds and females between 6-10 pounds. They
+类别 Ragdoll 文本特征维度: (512,)
+描述: The images depict cats belonging to the Ragdoll breed, characterized by their distinctive physical f...
+处理类别: Saint_Bernard
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+wiki desc: Description for Saint_Bernard category.
+[显存监控] 已分配=32.52GB, 已保留=32.87GB, 空闲=14.88GB
+[显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[显存监控] 已分配=32.57GB, 已保留=34.36GB, 空闲=14.84GB
+[显存监控] 已分配=32.58GB, 已保留=34.36GB, 空闲=14.83GB
+MLLM description: The Saint Bernard is a large breed with a distinctive appearance. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: Saint Bernards have a broad head, a short muzzle, and a strong jaw. Their eyes are usually dark and expressive, often giving them an alert or gentle expression.
+
+2. **Color Patterns and Markings**: They typically have a white coat with brown and black markings. The brown can range from light to dark, and the black markings are usually found around the eyes, ears, and muzzle. Some may also have a tan or red marking on their chest.
+
+3. **Size and Proportions**: Saint Bernards are large dogs, often weighing between 100-180 pounds as adults. They have a sturdy build with a deep chest and a muscular body. Their legs are long and powerful, supporting their weight well.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Saint Bernards are known for their calm and gentle nature. They are often described as patient and protective, making them excellent family pets. They are also known for their strong sense of smell and their ability to navigate difficult terrain.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of a Saint Bernard
+类别 Saint_Bernard 文本特征维度: (512,)
+描述: The Saint Bernard is a large breed with a distinctive appearance. Here's a breakdown of its key visu...
+处理类别: Maine_Coon
+[显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+wiki desc: Description for Maine_Coon category.
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+100%|██████████| 37/37 [15:08<00:00, 24.55s/it]100%|██████████| 37/37 [15:08<00:00, 24.56s/it]
+MLLM description: The images depict Maine Coons, a breed known for their distinctive physical features:
+
+1. **Distinctive Physical Features**: Maine Coons are large cats with a muscular build, long legs, and a thick, fluffy coat. Their ears are large and tufted, and they have a prominent nose and whiskers.
+
+2. **Color Patterns and Markings**: Maine Coons come in various colors and patterns, including solid colors like orange or brown, tabby patterns, and tortoiseshell. They often have a mix of dark and light fur, creating a striking contrast. Their eyes can range from green to gold, adding to their unique appearance.
+
+3. **Size and Proportions**: Maine Coons are one of the largest domestic cat breeds, with males typically weighing between 12-20 pounds and females around 8-12 pounds. They have a balanced body structure, with a strong, broad chest and a long tail.
+
+4. **Behavioral Characteristics**: Maine Coons are generally friendly, intelligent, and affectionate. They are known for their playful nature and love to interact with their owners. They can be quite vocal and enjoy being around people.
+
+5. **Unique Identifying Traits**: Maine Coons have a distinctive "mane
+类别 Maine_Coon 文本特征维度: (512,)
+描述: The images depict Maine Coons, a breed known for their distinctive physical features:
+
+1. **Distinct...
+知识库构建完成!
+图像知识库包含 37 个类别
+文本知识库包含 37 个类别
+知识库已保存到: ./experiments/pet37/knowledge_base
+初始化经验库构建器...
+经验库构建器初始化完成!
+============================================================
+开始构建经验库（模型自反思与优化）
+============================================================
+Self-Belief已初始化
+初始策略:
+You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+使用当前Self-Belief评估性能...
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog lying on a carpeted floor. The dog appears to have a short coat, a compact body, and a short muzzle, which are characteristic features of a Chihuahua.
+2. **Localization**: The dog's ears are not prominently visible, but the overall body shape and size suggest it could be a Chihuahua. The dog's coat is light brown with white markings on the chest and paws, which aligns with the color patterns described for Chihuahuas.
+3. **Comparison**: The dog's size, compact body, and short muzzle are consistent with the physical features of a Chihuahua. The coat pattern and size also match the typical characteristics of this breed.
+4. **Decision**: Based on the observed features and the comparison with the Chihuahua description, the dog in the image is most likely a Chihuahua.
+预测: Chihuahua
+evaluate_with_current_belief, 预测: Chihuahua, 真实: Chihuahua, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog with a compact body, large ears, and a short muzzle, which are characteristic features of a Chihuahua.
+2. **Localization**: The dog's size, the shape of its ears, and the overall body structure align closely with the typical physical attributes of a Chihuahua.
+3. **Comparison**: The dog's small size, large ears, and the general build are consistent with the Chihuahua description. The other breeds listed do not match the observed features as closely.
+4. **Decision**: Based on the observed features and the comparison with the Chihuahua description, the most likely class is Chihuahua.
+预测: Chihuahua
+evaluate_with_current_belief, 预测: Chihuahua, 真实: Chihuahua, 是否正确: True
+[显存监控] 已分配=32.54GB, 已保留=33.37GB, 空闲=14.86GB
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog with a light tan coat, large ears, and a short muzzle. The dog appears to be sitting on grass, which is consistent with outdoor settings where dogs are commonly found.
+   
+2. **Localization**: The most discriminative local parts include the large ears, short muzzle, and the overall compact size of the dog. These features are characteristic of Chihuahuas.
+
+3. **Comparison**: Comparing these observations with the category descriptions, the dog's size, coat texture, and facial features align closely with those of a Chihuahua. The large ears and short muzzle are particularly indicative of this breed.
+
+4. **Decision**: Based on the match between the observed details and the Chihuahua description, the most likely class is Chihuahua.
+预测: Chihuahua
+evaluate_with_current_belief, 预测: Chihuahua, 真实: Chihuahua, 是否正确: True
+[显存监控] 已分配=32.52GB, 已保留=33.38GB, 空闲=14.88GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog with large ears, a short muzzle, and a compact body. These features are characteristic of a Chihuahua.
+2. **Localization**: The dog's ears are large and stand upright, which aligns with the description of Chihuahuas having large ears that often stand upright or fold over at the tips.
+3. **Comparison**: The dog's size, proportions, and facial features match those of a Chihuahua. The dog's build is compact, and it has a short muzzle, which are typical traits of this breed.
+4. **Decision**: Based on the observed features and the comparison with the Chihuahua description, the dog in the image is most likely a Chihuahua.
+预测: Chihuahua
+evaluate_with_current_belief, 预测: Chihuahua, 真实: Chihuahua, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog based on its shape, size, and features such as fur, ears, and eyes.
+2. Localizing the most discriminative local parts, the dog has a fox-like face with long, floppy ears, expressive eyes, and a curled tail, which are characteristic of Beagles.
+3. Comparing the visual characteristics of the candidate subcategories, the dog's features align closely with those of a Beagle, particularly the fox-like face, long floppy ears, and curled tail.
+4. Deciding based on the match between observed details and subcategory descriptions, the dog's features strongly suggest it is a Beagle.
+预测: Beagle
+evaluate_with_current_belief, 预测: Beagle, 真实: Beagle, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, specifically a Beagle based on its physical features such as the short, smooth coat, fox-like face, long floppy ears, and tricolor coat pattern (black, tan, and white).
+2. Localizing the most discriminative local parts, we see the dog's distinct facial features, including the long floppy ears, expressive eyes, and the tricolor coat pattern.
+3. Comparing these visual characteristics with the candidate subcategories, the Beagle description matches the observed details perfectly, including the tricolor coat and the fox-like face.
+4. Deciding based on the match between the observed details and the Beagle description, the most likely class is Beagle.
+预测: Beagle
+evaluate_with_current_belief, 预测: Beagle, 真实: Beagle, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog. The size, shape, and posture align with typical dog characteristics.
+2. Localizing the most discriminative local parts, the dog has a medium-sized build, a short coat, and a curled tail, which are common features of Beagles.
+3. Comparing the visual characteristics with the candidate subcategories, the dog's coat pattern and the curled tail are particularly indicative of Beagles. The tricolor coat with tan markings is consistent with Beagle color patterns.
+4. Deciding based on the match between observed details and subcategory descriptions, the dog's features strongly align with those of a Beagle.
+预测: Beagle
+evaluate_with_current_belief, 预测: Beagle, 真实: Beagle, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.66GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.66GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.66GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.66GB, 空闲=14.84GB
+推理链: 1. **Observation**: The image shows a close-up of a dog with a distinctive face, including long, floppy ears, a white stripe down the middle of the forehead, and a tricolor coat pattern with brown, white, and black markings. The dog's expression is alert and attentive.
+   
+2. **Localization**: The most discriminative local parts include the long, floppy ears, the white stripe on the forehead, and the tricolor coat pattern. These features are characteristic of Beagles.
+
+3. **Comparison**: Comparing these observations with the category descriptions:
+   - **Beagle**: The dog has a fox-like face, long floppy ears, and a tricolor coat pattern, which matches the description.
+   - **Basset_Hound**: Basset Hounds have shorter legs and a different facial structure, which does not match the image.
+   - **Boxer**: Boxers have a different head shape and lack the tricolor coat pattern.
+   - **English_Cocker_Spaniel**: Cocker Spaniels have a different head shape and lack the tricolor coat pattern.
+   - **English_Setter**: Setters have a different head shape and lack the tricolor coat pattern.
+
+4. **Decision**: Based on
+预测: Beagle
+evaluate_with_current_belief, 预测: Beagle, 真实: Beagle, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.54GB, 空闲=14.84GB
+推理链: 1. **Observation**: The image shows a dog sitting on a red couch. The dog has a thick, shaggy coat, a fox-like face with a black mask around its eyes, and upright triangular ears. These features are characteristic of the Keeshond breed.
+
+2. **Localization**: The most discriminative local parts include the dog's facial features (fox-like face with a black mask), the shape and position of the ears (triangular and upright), and the texture of the fur (thick and shaggy).
+
+3. **Comparison**: Comparing these observations with the category descriptions:
+   - **Keeshond**: Matches perfectly with the fox-like face, black mask, upright triangular ears, and thick, shaggy coat.
+   - **Pomeranian**: Typically has a rounder face and shorter fur.
+   - **Samoyed**: Has a fluffy white coat and a friendly expression but lacks the black mask and triangular ears.
+   - **Maine Coon**: Has a long, fluffy coat but does not have the black mask or triangular ears.
+   - **Leonberger**: Has a large, fluffy coat but does not have the black mask or triangular ears.
+
+4. **Decision**: Based on the match
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.57GB, 已保留=33.56GB, 空闲=14.83GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog based on its physical features such as fur, ears, and posture.
+2. Localizing the most discriminative local parts, the dog has a thick, shaggy coat, a fox-like face with a black mask around the eyes, and triangular ears that stand upright.
+3. Comparing these visual characteristics with the candidate subcategories, the Keeshond description matches the observed features best. The dog's coat is thick and shaggy, which aligns with the Keeshond's thick, double coat. The facial features, including the black mask and triangular ears, are consistent with the Keeshond's distinctive appearance.
+4. Deciding based on the match, the dog in the image most closely resembles a Keeshond.
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a thick, shaggy coat, a large head, and a sturdy build. The dog's face has a distinctive black mask around the eyes and a black nose, which aligns with the description of a Keeshond.
+
+2. **Localization**: The most discriminative local parts include the dog's facial features, such as the black mask around the eyes and the black nose, as well as the thick, shaggy coat.
+
+3. **Comparison**: Comparing the observed details with the category descriptions, the dog's facial features and coat characteristics match those of a Keeshond. The black mask and black nose are particularly indicative of this breed.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Keeshond".
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog lying on grass. The dog has a thick, shaggy coat that appears gray or silver-gray with a black mask around its eyes and a black nose. Its ears are triangular and stand upright, and it has a bushy tail curled over its back.
+
+2. **Localization**: The most discriminative local parts include the dog's coat texture, color pattern, facial features, and tail shape. These features align closely with the description of a Keeshond.
+
+3. **Comparison**: 
+   - **Keeshond**: The dog matches the description perfectly with its thick, shaggy coat, gray or silver-gray color, black mask, and triangular, upright ears. The tail is also bushy and curled over the back.
+   - **Pomeranian**: While Pomeranians can have a similar coat texture, they are typically smaller and have a different facial structure.
+   - **Samoyed**: Samoyeds have a white coat and a different facial structure.
+   - **Great Pyrenees**: Great Pyrenees have a thicker coat but are larger and have a different facial structure.
+   - **Maine Coon**: Maine Coons have a longer, more fluffy
+预测: Keeshond
+evaluate_with_current_belief, 预测: Keeshond, 真实: Keeshond, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clearly a dog, specifically a small breed with distinct facial features.
+2. Localizing the most discriminative local parts, the dog has a wrinkled face, short muzzle, and curled tail, which are characteristic of a Pug.
+3. Comparing the visual characteristics with the candidate subcategories, the dog's features match those of a Pug, such as the wrinkled face, short muzzle, and the overall body shape.
+4. Deciding based on the match between observed details and subcategory descriptions, the dog in the image is most consistent with the description of a Pug.
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+[显存监控] 已分配=32.60GB, 已保留=33.13GB, 空闲=14.80GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog with a wrinkled face, short muzzle, and curled tail, which are characteristic features of a Pug.
+2. **Localization**: The dog's facial features, such as the large, expressive eyes and the short, flat nose, are prominent. The curled tail is also visible, further supporting the identification.
+3. **Comparison**: The color pattern of the dog is consistent with that of a Pug, showing a fawn coat with a white chest and paws. The size and proportions are also typical of a Pug.
+4. **Decision**: Based on the distinctive physical features, color pattern, and size, the dog in the image matches the description of a Pug.
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a wrinkled face, short muzzle, and a curled tail, which are characteristic features of a Pug.
+2. **Localization**: The dog's facial features, such as the large, expressive eyes and the short, wrinkled nose, are highly indicative of a Pug. The curled tail is also visible but less prominent in this image.
+3. **Comparison**: The color pattern of the dog in the image is consistent with that of a Pug, which can come in various colors including fawn, black, brindle, and sometimes with white markings. The dog in the image appears to be a fawn-colored Pug with a white chest and paws.
+4. **Decision**: Based on the distinctive physical features and the color pattern, the dog in the image matches the description of a Pug.
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog with a wrinkled face, short muzzle, and curled tail, which are characteristic features of a Pug.
+2. **Localization**: The dog's facial features, such as the large, expressive eyes and the short, flat nose, are prominent. The curled tail is also visible.
+3. **Comparison**: The dog matches the description of a Pug, including its size, color pattern, and physical features. There are no features that suggest it could be any other breed listed.
+4. **Decision**: Based on the observed features and the comparison with the Pug description, the dog in the image is most likely a Pug.
+预测: Pug
+evaluate_with_current_belief, 预测: Pug, 真实: Pug, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a large, fluffy white dog sitting outdoors. The dog has a broad head, a short muzzle, and a thick, double-layered coat, which are characteristic features of the Great Pyrenees breed.
+2. **Localization**: The most discriminative local parts include the dog's thick, fluffy coat, broad head, and short muzzle. These features align closely with the description of the Great Pyrenees.
+3. **Comparison**: Comparing the observed details with the candidate subcategories, the Great Pyrenees matches the most closely due to its large size, thick coat, and broad head. The other breeds listed do not exhibit these specific features.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Great_Pyrenees".
+预测: Great_Pyrenees
+evaluate_with_current_belief, 预测: Great_Pyrenees, 真实: Great_Pyrenees, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a large, fluffy white dog lying down. The dog has a broad head, a short muzzle, and a thick, double-layered coat, which are characteristic features of the Great Pyrenees breed.
+2. **Localization**: The most discriminative local parts include the dog's size, coat texture, and facial structure. The dog appears to be large, with a thick, fluffy coat, and a broad head with a short muzzle.
+3. **Comparison**: Comparing these observations with the candidate subcategories, the Great Pyrenees description matches the dog in the image best. The other breeds listed do not match the physical features described in the Great Pyrenees category.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is Great Pyrenees.
+预测: Great_Pyrenees
+evaluate_with_current_belief, 预测: Great_Pyrenees, 真实: Great_Pyrenees, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a large, fluffy dog lying in a grassy field. The dog has a thick, white coat with some light brown markings on its ears and legs. Its face is broad with a short muzzle and a strong, square-shaped head. The dog's expression is gentle, with a slightly open mouth showing its pink tongue.
+
+2. **Localization**: The most discriminative local parts include the dog's size, coat texture, facial structure, and color patterns. The dog's size and build are consistent with a large breed, and the coat texture and color patterns align with those described for Great Pyrenees.
+
+3. **Comparison**: Comparing the observed details with the candidate subcategories, the dog's physical features, such as the broad face, short muzzle, and thick, fluffy coat, closely match the description of a Great Pyrenees. The color pattern and markings are also consistent with this breed.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Great_Pyrenees".
+预测: Great_Pyrenees
+evaluate_with_current_belief, 预测: Great_Pyrenees, 真实: Great_Pyrenees, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.63GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.63GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.63GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, specifically a large breed with a thick, fluffy white coat.
+2. Localizing the most discriminative local parts, the dog has a broad head, a short muzzle, and a thick, fluffy coat, which are characteristic features of the Great Pyrenees breed.
+3. Comparing these visual characteristics with the candidate subcategories, the Great Pyrenees description matches the observed features the most closely, including the size, coat texture, and facial structure.
+4. Deciding based on the match, the dog in the image aligns best with the Great Pyrenees category.
+预测: Great_Pyrenees
+evaluate_with_current_belief, 预测: Great_Pyrenees, 真实: Great_Pyrenees, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.79GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.79GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.79GB, 空闲=14.85GB
+推理链: 1. **Observe**: The overall object is a cat with a distinctive spotted coat pattern, large ears, and a muscular build. These features are characteristic of the Bengal breed.
+2. **Localize**: The most discriminative local parts include the spotted coat pattern, large ears, and the overall body structure which matches the Bengal breed's description.
+3. **Compare**: The visual characteristics of the cat in the image align closely with the Bengal breed's description. The spotted coat pattern, large ears, and muscular build are all consistent with the Bengal breed.
+4. **Decide**: Based on the match between the observed details and the Bengal breed's description, the most likely class is the Bengal.
+预测: Bengal
+evaluate_with_current_belief, 预测: Bengal, 真实: Bengal, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observe**: The overall object is a cat with a spotted coat pattern, sitting on grass. The cat has large, expressive eyes and pointed ears, which are characteristic of certain breeds.
+2. **Localize**: The most discriminative local parts include the spotted coat pattern, the large eyes, and the pointed ears. These features are particularly indicative of the Bengal breed.
+3. **Compare**: Recalling the visual characteristics of the candidate subcategories, the Bengal cat matches the described features best. It has a distinctive spotted coat pattern, large expressive eyes, and pointed ears, all of which are consistent with the image.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is the Bengal cat.
+预测: Bengal
+evaluate_with_current_belief, 预测: Bengal, 真实: Bengal, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.45GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.45GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.45GB, 空闲=14.85GB
+推理链: 1. **Observe**: The overall object is a cat with a distinctive spotted coat pattern, large expressive eyes, and a muscular build. These features are characteristic of the Bengal breed.
+2. **Localize**: The most discriminative local parts include the large, expressive eyes, the spotted coat pattern, and the muscular build. The coat has a mix of dark spots, rosettes, and stripes on a lighter background, which aligns with the Bengal breed's description.
+3. **Compare**: Comparing the observed details with the candidate subcategories, the Bengal breed matches the visual characteristics best. The other breeds listed do not exhibit the same spotted coat pattern and muscular build.
+4. **Decide**: Based on the match between the observed details and the Bengal breed's description, the most likely class is Bengal.
+预测: Bengal
+evaluate_with_current_belief, 预测: Bengal, 真实: Bengal, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observe**: The overall object is a cat with distinct physical features such as large, expressive eyes, pointed ears, and a spotted coat pattern. These features are characteristic of the Bengal breed.
+2. **Localize**: The most discriminative local parts include the large, round eyes, the pointed ears, and the spotted coat pattern. These features are consistent with the Bengal breed.
+3. **Compare**: Comparing these features with the category descriptions, the Bengal breed matches the observed details the most closely. The other breeds listed do not exhibit the same combination of large eyes, pointed ears, and spotted coat pattern.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is the Bengal breed.
+预测: Bengal
+evaluate_with_current_belief, 预测: Bengal, 真实: Bengal, 是否正确: True
+[显存监控] 已分配=32.57GB, 已保留=33.38GB, 空闲=14.83GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a muscular build, broad head, and short, smooth coat. The ears appear cropped, and the tail is docked, which are characteristic features of American Pit Bull Terriers.
+2. **Localization**: The dog's physical features such as the muscular build, broad head, and short coat align with the description of American Pit Bull Terriers. The color pattern, with a light brown coat and white markings, also matches the typical color variations seen in this breed.
+3. **Comparison**: The visual characteristics of the dog in the image, including its muscular build, broad head, short coat, and color pattern, closely match those described for American Pit Bull Terriers.
+4. **Decision**: Based on the observed details and the comparison with the known characteristics of American Pit Bull Terriers, the most likely class is "American_Pit_Bull_Terrier".
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.57GB, 已保留=33.56GB, 空闲=14.83GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog sitting on a porch, facing forward. The dog appears to have a muscular build, broad head, and short, smooth coat, which are characteristic features of American Pit Bull Terriers.
+   
+2. **Localization**: The dog's facial structure, including the broad head and short muzzle, along with the muscular build and short coat, aligns closely with the physical traits of an American Pit Bull Terrier. The ears appear to be cropped, which is a common practice for this breed.
+
+3. **Comparison**: The color pattern of the dog, which includes a white coat with dark brown patches, matches the typical color variations seen in American Pit Bull Terriers. The dog's size and proportions also fit within the range expected for this breed.
+
+4. **Decision**: Based on the distinctive physical features, color patterns, and size, the dog in the image most closely matches the description of an American Pit Bull Terrier.
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a muscular build, broad head, and short, smooth coat. The ears are cropped, which is a characteristic feature of American Pit Bull Terriers. The dog's facial structure, including the strong jaw and square-shaped head, aligns with the description of American Pit Bull Terriers.
+
+2. **Localization**: The most discriminative local parts include the muscular build, broad head, short coat, and cropped ears. The dog's facial structure and body proportions are consistent with the American Pit Bull Terrier breed.
+
+3. **Comparison**: Comparing the observed details with the category descriptions, the muscular build, broad head, short coat, and cropped ears are all consistent with the American Pit Bull Terrier. The color pattern (light brown coat with white markings) also matches the typical color variations seen in this breed.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "American_Pit_Bull_Terrier".
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a muscular build, broad head, and short, smooth coat. The ears are left natural, and the tail appears to be docked, which aligns with the typical physical features of an American Pit Bull Terrier.
+2. **Localization**: The dog's facial structure, including the broad head and short muzzle, is consistent with the breed's characteristics. The coat color and pattern, with a light brown coat and white markings on the chest and face, also match the described color variations for American Pit Bull Terriers.
+3. **Comparison**: The visual characteristics such as the muscular build, broad head, and short muzzle are highly indicative of an American Pit Bull Terrier. The color pattern and markings further support this identification.
+4. **Decision**: Based on the observed details matching the described characteristics of an American Pit Bull Terrier, the most likely class is "American_Pit_Bull_Terrier".
+预测: American_Pit_Bull_Terrier
+evaluate_with_current_belief, 预测: American_Pit_Bull_Terrier, 真实: American_Pit_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat with distinct features such as large, expressive blue eyes, pointed ears, and a slender, muscular body. The cat's fur has a lighter base color with darker points on the ears, face, paws, and tail, which is characteristic of the Siamese breed.
+
+2. **Localization**: The most discriminative local parts include the cat's large, blue eyes, pointed ears, and the color pattern of the fur, which matches the typical Siamese cat's appearance.
+
+3. **Comparison**: Comparing these observations with the category descriptions, the Siamese breed matches the visual characteristics best. The other breeds listed do not exhibit the same combination of features, especially the pointed coloration and the specific eye color.
+
+4. **Decision**: Based on the match between the observed details and the Siamese breed description, the most likely class is Siamese.
+预测: Siamese
+evaluate_with_current_belief, 预测: Siamese, 真实: Siamese, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat sitting on a bathroom sink. The cat has large, expressive eyes that appear to be blue, which is characteristic of Siamese cats. The cat's body is slender and muscular, with long legs and a compact frame, fitting the description of a Siamese cat.
+
+2. **Localization**: The most discriminative local parts include the cat's large, blue eyes, pointed ears, and the contrast between the darker points (ears, face, paws, and tail) and the lighter body, which is typical of Siamese cats.
+
+3. **Comparison**: Comparing the observed details with the category descriptions, the cat matches the physical features and color patterns of a Siamese cat. The pointed coloration, large eyes, and slender build are all consistent with the Siamese breed.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Siamese."
+预测: Siamese
+evaluate_with_current_belief, 预测: Siamese, 真实: Siamese, 是否正确: True
+[显存监控] 已分配=32.56GB, 已保留=33.58GB, 空闲=14.84GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a cat, specifically a Siamese cat based on its distinct physical features such as the pointed ears, large expressive eyes, and the color pattern typical of Siamese cats.
+2. Localizing the most discriminative local parts, we see the pointed ears, the blue eyes, and the characteristic coloration with darker points on the face, ears, and paws contrasting with a lighter body.
+3. Comparing these observations with the category descriptions, the Siamese cat matches all the described traits perfectly, including the pointed coloration, large eyes, and overall body structure.
+4. Deciding based on the match, the Siamese cat is the most likely class among the given options.
+预测: Siamese
+evaluate_with_current_belief, 预测: Siamese, 真实: Siamese, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat with distinct features such as large, expressive eyes, pointed ears, and a slender, muscular body. The coloration is consistent with the "pointed" pattern typical of Siamese cats, with darker points on the ears, face, paws, and tail contrasting against a lighter body.
+
+2. **Localization**: The most discriminative local parts include the large, expressive eyes, the pointed ears, and the coloration pattern. These features are characteristic of Siamese cats.
+
+3. **Comparison**: Comparing these observations with the category descriptions, the Siamese breed matches the visual characteristics best. The pointed coloration, large eyes, and slender build align perfectly with the Siamese breed description.
+
+4. **Decision**: Based on the match between the observed details and the Siamese breed description, the most likely class is Siamese.
+预测: Siamese
+evaluate_with_current_belief, 预测: Siamese, 真实: Siamese, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.57GB, 已保留=33.56GB, 空闲=14.83GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog based on its physical features such as fur, ears, and facial structure.
+2. Localizing the most discriminative local parts, the dog's ears are pointed and upright, which is characteristic of Shiba Inus. Additionally, the coat coloration with reddish-brown and white markings aligns with the typical color patterns of Shiba Inus.
+3. Comparing the visual characteristics of the candidate subcategories, the Shiba Inu description matches the observed features of the dog in the image, including the ear shape, coat color, and general appearance.
+4. Deciding based on the match between the observed details and the Shiba Inu description, the most likely class is Shiba Inu.
+预测: Shiba Inu
+evaluate_with_current_belief, 预测: Shiba Inu, 真实: Shiba_Inu, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.57GB, 已保留=33.56GB, 空闲=14.83GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, not a bird, car, or cat.
+2. Localizing the most discriminative local parts, the dog has a thick, fluffy coat with a mix of white, brown, and black fur, which is characteristic of certain breeds like the Shiba Inu.
+3. Comparing the visual characteristics of the candidate subcategories, the dog's coat pattern matches the tri-color pattern described for Shiba Inus, which includes white, brown, and black.
+4. Deciding based on the match between the observed details and the subcategory descriptions, the dog in the image aligns most closely with the Shiba Inu breed.
+预测: Shiba Inu
+evaluate_with_current_belief, 预测: Shiba Inu, 真实: Shiba_Inu, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, as indicated by its size, shape, and fur.
+2. Localizing the most discriminative local parts, such as the pointed ears, curled tail, and compact body, aligns with the physical features described for Shiba Inus.
+3. Comparing these observations with the category descriptions, the Shiba Inu matches the distinctive physical features, including the reddish-brown coat with white markings on the face and chest, which is consistent with the image.
+4. Deciding based on the match, the dog in the image exhibits traits that are characteristic of a Shiba Inu.
+预测: Shiba_Inu
+evaluate_with_current_belief, 预测: Shiba_Inu, 真实: Shiba_Inu, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that we are dealing with a small dog being held by two individuals.
+2. Localizing the most discriminative local parts, such as the pointed ears, curled tail, and compact body, aligns with the physical features described for Shiba Inus.
+3. Comparing these observations with the category descriptions, the distinctive physical features, size, and behavior characteristics match those of a Shiba Inu.
+4. Deciding based on the match, the most likely class is Shiba Inu.
+预测: Shiba Inu
+evaluate_with_current_belief, 预测: Shiba Inu, 真实: Shiba_Inu, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, specifically a small breed given its size and features.
+2. Localizing the most discriminative local parts, the dog has a small, compact body, short fur, and pointed ears that stand upright. The facial features include almond-shaped eyes and a short muzzle, which are characteristic of the Miniature Pinscher breed.
+3. Comparing these observations with the candidate subcategories, the Miniature Pinscher matches the physical description best, with its compact body, short fur, and distinctive ear shape. The other breeds listed do not match the observed features as closely.
+4. Based on the match between the observed details and the Miniature Pinscher description, the most likely class is Miniature Pinscher.
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.61GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.61GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.61GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.61GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.61GB, 空闲=14.84GB
+推理链: 1. **Observation**: The image shows a small dog with a short, smooth coat, large erect ears, and a distinctive facial marking that includes a tan or rust-colored mask around the muzzle. The dog appears to be alert and has a compact, muscular body typical of a small breed.
+
+2. **Localization**: The most discriminative local parts include the large, erect ears, the almond-shaped eyes, and the tan or rust-colored mask around the muzzle. These features are characteristic of the Miniature Pinscher.
+
+3. **Comparison**: Comparing these observations with the category descriptions:
+   - **Miniature_Pinscher**: The dog matches the description of having large, erect ears, a tan or rust-colored mask around the muzzle, and a compact, muscular body.
+   - **Chihuahua**: While Chihuahuas can have erect ears, they typically do not have the tan or rust-colored mask around the muzzle.
+   - **Scottish_Terrier**: Scottish Terriers have a different coat texture and facial markings.
+   - **American_Pit_Bull_Terrier**: This breed does not have the distinctive facial markings or the compact body shape seen here.
+   - **Beagle**: Beagles have a different coat
+预测: Beagle
+evaluate_with_current_belief, 预测: Beagle, 真实: Miniature_Pinscher, 是否正确: False
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.38GB, 空闲=14.84GB
+[显存监控] 已分配=32.55GB, 已保留=33.38GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog lying on a blanket. The dog has a compact, muscular body with a short, smooth coat. It has large, erect ears that stand tall and alert, and its eyes are almond-shaped and expressive. The coat color appears to be black with a tan or rust-colored mask around its muzzle, chest, and legs, creating a striking contrast against the darker fur. This matches the distinctive physical features of a Miniature Pinscher.
+
+2. **Localization**: The most discriminative local parts include the large, erect ears, the almond-shaped eyes, the compact and muscular body, and the color pattern with a tan or rust-colored mask against a darker coat.
+
+3. **Comparison**: Comparing these observations with the category descriptions, the Miniature Pinscher matches the most closely. The other breeds listed do not have the same distinctive features or color patterns as seen in the image.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is Miniature Pinscher.
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.37GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a small dog with a compact body, short coat, and large, erect ears. The coat appears to be black with some tan markings around the muzzle and chest, which matches the typical color pattern of a Miniature Pinscher.
+2. **Localization**: The most discriminative local parts include the large, erect ears, the short, smooth coat, and the tan markings around the muzzle and chest.
+3. **Comparison**: Comparing these features with the candidate subcategories, the Miniature Pinscher closely matches the observed details. The other breeds listed do not have the same distinctive physical features or color patterns.
+4. **Decision**: Based on the match between the observed details and the Miniature Pinscher description, the most likely class is Miniature Pinscher.
+预测: Miniature_Pinscher
+evaluate_with_current_belief, 预测: Miniature_Pinscher, 真实: Miniature_Pinscher, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with long, floppy ears, a short muzzle, and large, expressive eyes. These features are characteristic of a Basset Hound.
+2. **Localization**: The most discriminative local parts include the long, droopy ears, the short muzzle, and the large, expressive eyes.
+3. **Comparison**: Comparing these features with the candidate subcategories, the Basset Hound matches the description best. The other breeds listed do not exhibit the same combination of features.
+4. **Decision**: Based on the observed details and the subcategory descriptions, the most likely class is Basset Hound.
+预测: Basset_Hound
+evaluate_with_current_belief, 预测: Basset_Hound, 真实: Basset_Hound, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog lying on grass with a blue ball nearby. The dog has long, floppy ears, a short muzzle, and a tricolor coat with brown, white, and black markings. These features are characteristic of a Basset Hound.
+   
+2. **Localization**: The most discriminative local parts include the long, floppy ears, the short muzzle, and the tricolor coat pattern. These features are consistent with the Basset Hound breed description.
+
+3. **Comparison**: Comparing the observed details with the category descriptions, the Basset Hound matches the most closely. The long, floppy ears, short muzzle, and tricolor coat are all prominent features of this breed.
+
+4. **Decision**: Based on the match between the observed details and the Basset Hound description, the most likely class is Basset Hound.
+预测: Basset_Hound
+evaluate_with_current_belief, 预测: Basset_Hound, 真实: Basset_Hound, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.52GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.52GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.52GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog lying down with distinct physical features such as long, floppy ears, a short muzzle, and a tricolor coat pattern of brown, white, and black. These features are characteristic of a Basset Hound.
+   
+2. **Localization**: The most discriminative local parts include the long, floppy ears, the short muzzle, and the tricolor coat pattern. These features are consistent with the Basset Hound breed description.
+
+3. **Comparison**: Comparing the observed details with the candidate subcategories, the Basset Hound matches the most closely due to the long, floppy ears, short muzzle, and tricolor coat pattern. The other breeds listed do not exhibit these specific features.
+
+4. **Decision**: Based on the match between the observed details and the Basset Hound description, the most likely class is Basset Hound.
+预测: Basset_Hound
+evaluate_with_current_belief, 预测: Basset_Hound, 真实: Basset_Hound, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.59GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with long, floppy ears, a short muzzle, and a tricolor coat (brown, white, and black). These features are characteristic of a Basset Hound.
+2. **Localization**: The most discriminative local parts include the long, floppy ears, the short muzzle, and the tricolor coat pattern.
+3. **Comparison**: Comparing these observations with the category descriptions, the Basset Hound matches the description perfectly. The long, floppy ears, short muzzle, and tricolor coat are all consistent with the Basset Hound breed.
+4. **Decision**: Based on the match between the observed details and the Basset Hound description, the most likely class is Basset Hound.
+预测: Basset_Hound
+evaluate_with_current_belief, 预测: Basset_Hound, 真实: Basset_Hound, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat with a hairless appearance, large pointed ears, and a slender build. These features are characteristic of Sphynx cats.
+2. **Localization**: The most discriminative local parts include the lack of fur, the wrinkled skin, the large pointed ears, and the overall slender build.
+3. **Comparison**: Comparing these observations with the category descriptions, the Sphynx cat matches the description perfectly. The other breeds listed do not exhibit the same distinctive features.
+4. **Decision**: Based on the match between the observed details and the Sphynx cat's description, the most likely class is Sphynx.
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat with a hairless appearance, large pointed ears, and a slender build. These features are characteristic of Sphynx cats.
+2. **Localization**: The most discriminative local parts include the lack of fur, large pointed ears, and the overall slender build.
+3. **Comparison**: Comparing these observations with the category descriptions, the Sphynx cat matches the description best. The other breeds listed do not exhibit the same distinctive features.
+4. **Decision**: Based on the match between the observed details and the Sphynx cat's description, the most likely class is Sphynx.
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+[显存监控] 已分配=32.57GB, 已保留=33.58GB, 空闲=14.83GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat with a hairless appearance, large pointed ears, and a slender build. These features are characteristic of the Sphynx breed.
+2. **Localization**: The cat's lack of fur, large ears, and slender body are the most discriminative local parts.
+3. **Comparison**: Comparing these features with the candidate subcategories, the Sphynx breed matches the description best. The other breeds listed do not exhibit the same distinctive physical features.
+4. **Decision**: Based on the match between the observed details and the Sphynx breed description, the most likely class is Sphynx.
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a hairless cat with large, pointed ears and a slender build, which are characteristic features of Sphynx cats.
+2. **Localization**: The most discriminative local parts include the lack of fur, large ears, and the overall body shape.
+3. **Comparison**: Comparing these features with the candidate subcategories, the Sphynx cat matches the description best. The other breeds listed do not exhibit the same lack of fur or the specific body structure seen in the image.
+4. **Decision**: Based on the observed details and the subcategory descriptions, the most likely class is Sphynx.
+预测: Sphynx
+evaluate_with_current_belief, 预测: Sphynx, 真实: Sphynx, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a cat, specifically a Persian cat based on its distinct physical features such as the round head, large eyes, and short, flat face.
+2. Localizing the most discriminative local parts, we see the cat's round head, large eyes, and short, flat face, which are characteristic of Persian cats.
+3. Comparing these visual characteristics with the candidate subcategories, the Persian cat matches the description provided in the category descriptions, particularly the distinctive physical features and the color pattern.
+4. Deciding based on the match between the observed details and the subcategory descriptions, the most likely class is "Persian."
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a fluffy white cat with a round head, large eyes, and a short, flat face. These features are characteristic of Persian cats.
+2. **Localization**: The cat's round head, large eyes, and short, flat face are the most discriminative local parts.
+3. **Comparison**: Comparing these features with the category descriptions, the Persian cat matches the description best. The cat does not exhibit the long legs or slender body typical of other breeds like Maine Coon or Ragdoll.
+4. **Decision**: Based on the observed features and the comparison with the category descriptions, the cat is most likely a Persian cat.
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+[显存监控] 已分配=33.00GB, 已保留=33.58GB, 空闲=14.40GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a fluffy white cat with a round head, large eyes, and a short, flat face. The ears are small and set wide apart, and the body appears compact and muscular with a thick, plush coat.
+2. **Localization**: The most discriminative local parts include the round head, large eyes, short flat face, and the thick, fluffy coat.
+3. **Comparison**: Comparing these features with the category descriptions:
+   - **Persian**: Matches all the described features, including the round head, large eyes, short flat face, and thick, fluffy coat.
+   - **Ragdoll**: Typically has a long, silky coat but does not match the short, flat face and round head.
+   - **Birman**: Known for their blue eyes and white coats, but this cat's eyes are not blue.
+   - **Bombay**: Dark-colored with a sleek coat, which does not match the fluffy white coat.
+   - **Siamese**: Has a slender body and a short coat, which does not match the thick, fluffy coat.
+4. **Decision**: Based on the match between the observed details and the Persian cat description, the most likely class is Persian.
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a fluffy white cat with a round head, large eyes, and a short, flat face. The ears are small and set wide apart, and the body appears compact and muscular with a thick, plush coat.
+2. **Localization**: The most discriminative local parts include the round head, large eyes, short flat face, and the thick, fluffy coat.
+3. **Comparison**: Comparing these features with the category descriptions:
+   - **Persian**: Matches all the described features perfectly, including the round head, large eyes, short flat face, and thick, fluffy coat.
+   - **Ragdoll**: Typically has a long, silky coat but does not match the short, flat face and round head.
+   - **Birman**: Known for their blue eyes and white coats, but the eyes in this image are not blue.
+   - **British Shorthair**: Has a more square-shaped face and shorter legs compared to the image.
+   - **Bombay**: Typically has a black coat and a sleeker build, which does not match the fluffy coat in the image.
+4. **Decision**: Based on the match between the observed details and the Persian cat's description, the most likely
+预测: Persian
+evaluate_with_current_belief, 预测: Persian, 真实: Persian, 是否正确: True
+[显存监控] 已分配=32.60GB, 已保留=33.13GB, 空闲=14.80GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.58GB, 空闲=14.84GB
+推理链: 1. Observing the overall object, it is clear that the subject is a dog, specifically a large breed with a thick, dark coat.
+2. Localizing the most discriminative local parts, the dog has a broad head, short muzzle, and a thick, water-repellent double coat, which are characteristic features of Newfoundlands.
+3. Comparing the visual characteristics of the dog with the candidate subcategories, the dog's size, coat texture, and color align closely with the description of a Newfoundland.
+4. Deciding based on the match between observed details and subcategory descriptions, the dog most closely matches the characteristics of a Newfoundland.
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clearly a dog, which narrows down the coarse category.
+2. Localizing the most discriminative local parts, the dog has a large, sturdy build, a broad head, short muzzle, and a thick, water-repellent double coat. The coat appears dense and wavy, which aligns with the description of a Newfoundland's coat.
+3. Comparing the visual characteristics of the candidate subcategories, the dog's physical features such as the broad head, short muzzle, and thick coat are most consistent with those of a Newfoundland.
+4. Deciding based on the match between observed details and subcategory descriptions, the dog's features strongly suggest it is a Newfoundland.
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clearly a dog based on its size, shape, and fur texture.
+2. Localizing the most discriminative local parts, the dog has a large, sturdy build with a broad head, short muzzle, and a thick, water-repellent double coat. The coat appears dense and wavy, which aligns with the description of a Newfoundland's coat.
+3. Comparing the visual characteristics of the candidate subcategories, the dog matches the distinctive features of a Newfoundland, such as the broad head, short muzzle, and thick, water-repellent coat. The color is predominantly black, which is consistent with the typical coloration of a Newfoundland.
+4. Deciding based on the match between observed details and subcategory descriptions, the dog in the image most closely resembles a Newfoundland.
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.57GB, 已保留=33.58GB, 空闲=14.83GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the image depicts a puppy with a large, fluffy coat and a broad head, which are characteristic features of a Newfoundland.
+2. Localizing the most discriminative local parts, the puppy has a thick, dark coat, a broad head, and a short muzzle, all of which align with the Newfoundland breed's physical features.
+3. Comparing the visual characteristics of the puppy with the candidate subcategories, the Newfoundland breed matches the observed details the most closely, including the coat texture, head shape, and overall size.
+4. Deciding based on the match between the observed details and the Newfoundland breed description, the puppy in the image is most likely a Newfoundland.
+预测: Newfoundland
+evaluate_with_current_belief, 预测: Newfoundland, 真实: Newfoundland, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.57GB, 空闲=14.84GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. **Observe**: The cat in the image has a sleek, short-haired coat that appears to be a uniform blue-gray color. Its eyes are a striking green, which aligns with the description of Russian Blue cats having green or gold eyes. The cat's face shape, with a broad head and large ears, is consistent with the breed's typical features. The overall build seems muscular and compact, fitting the description of a Russian Blue.
+
+2. **Localize**: Key features include the blue-gray coat, green eyes, broad head, and large ears. The muscular build and compact body are also noticeable.
+
+3. **Compare**: 
+   - **Russian Blue**: Matches the blue-gray coat, green eyes, broad head, and muscular build.
+   - **British Shorthair**: Can have various coat colors but typically lacks the specific blue-gray color and green eyes.
+   - **Bombay**: Typically black with a sleek coat, which does not match the blue-gray color.
+   - **Persian**: Has a long, fluffy coat, which is not present here.
+   - **Siamese**: Has a distinct color point pattern and darker points, which do not match the uniform blue-gray coat.
+
+4. **Decide**: Based
+预测: Russian_Blue
+evaluate_with_current_belief, 预测: Russian_Blue, 真实: Russian_Blue, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. **Observe**: The overall object in the image is a cat with a sleek, short-haired coat that appears to be a uniform blue-gray color. The cat has striking green eyes, which are a key feature mentioned in the description of the Russian Blue breed.
+   
+2. **Localize**: The most discriminative local parts include the cat's coat color, eye color, and overall body structure. The coat is a consistent blue-gray, and the eyes are bright green, both of which align with the Russian Blue breed description.
+
+3. **Compare**: Comparing the observed details with the category descriptions, the Russian Blue breed matches the cat in the image best. The blue-gray coat and green eyes are distinctive features of this breed, and there are no significant differences that would suggest another breed.
+
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is the Russian Blue.
+预测: Russian_Blue
+evaluate_with_current_belief, 预测: Russian_Blue, 真实: Russian_Blue, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.56GB, 已保留=33.57GB, 空闲=14.84GB
+推理链: 1. **Observe**: The cat in the image has a sleek, short-haired coat with a uniform blue-gray color. Its eyes are a striking green, which aligns with the description of Russian Blue cats. The cat's build appears medium-sized with a sturdy and compact body, broad head, and large ears, consistent with the breed's characteristics.
+
+2. **Localize**: The most discriminative local parts include the blue-gray coat, green eyes, broad head, and large ears. These features are particularly indicative of the Russian Blue breed.
+
+3. **Compare**: Comparing these observations with the category descriptions, the Russian Blue cat matches the visual characteristics best. The other breeds listed do not have the same combination of blue-gray coat and green eyes that are prominently featured in this image.
+
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is Russian Blue.
+预测: Russian_Blue
+evaluate_with_current_belief, 预测: Russian_Blue, 真实: Russian_Blue, 是否正确: True
+[显存监控] 已分配=32.99GB, 已保留=33.57GB, 空闲=14.41GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. **Observe**: The image shows a cat partially hidden in a pile of hay. The cat has a sleek, short-haired coat that appears to be a uniform blue-gray color. Its eyes are a striking green, which aligns with the description of Russian Blue cats having green or gold eyes.
+   
+2. **Localize**: The cat's coat color and eye color are the most discriminative local parts. The blue-gray coat and green eyes are key identifiers.
+
+3. **Compare**: The visual characteristics of the cat in the image match the description of a Russian Blue cat. The coat color and eye color are consistent with the breed's typical appearance.
+
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the cat in the image is most likely a Russian Blue.
+预测: Russian_Blue
+evaluate_with_current_belief, 预测: Russian_Blue, 真实: Russian_Blue, 是否正确: True
+[显存监控] 已分配=32.56GB, 已保留=33.55GB, 空闲=14.84GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+推理链: 1. **Observation**: The cat in the image has a robust build, dense coat, and a round face, which are characteristic features of the British Shorthair breed.
+2. **Localization**: The cat's body is stocky with a broad chest and short legs. Its head is large and round, with a short muzzle and prominent cheekbones. The ears are small and rounded, set wide apart.
+3. **Comparison**: The visual characteristics of the cat match the detailed description of the British Shorthair breed. The cat's color is a silvery gray, which is one of the common colors for this breed.
+4. **Decision**: Based on the observed details and the match with the British Shorthair breed description, the cat in the image is most likely a British Shorthair.
+预测: British_Shorthair
+evaluate_with_current_belief, 预测: British_Shorthair, 真实: British_Shorthair, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+推理链: 1. **Observation**: The cat in the image has a robust build, dense coat, and a round face, which are characteristic features of the British Shorthair breed.
+2. **Localization**: The cat's body is stocky with a broad chest and short legs. Its head is large and round, with a short muzzle and prominent cheekbones. The ears are small and rounded, set wide apart.
+3. **Comparison**: The visual characteristics of the cat match those of the British Shorthair breed. The cat's color is a silvery gray, which is one of the common colors for this breed.
+4. **Decision**: Based on the observed details and the comparison with the British Shorthair breed description, the cat in the image is most likely a British Shorthair.
+预测: British_Shorthair
+evaluate_with_current_belief, 预测: British_Shorthair, 真实: British_Shorthair, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.56GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a cat with a robust build, dense coat, and a round face, which aligns with the physical features of a British Shorthair.
+2. **Localization**: The cat has a stocky body, a broad chest, short legs, a large round head, and small rounded ears, all consistent with the British Shorthair breed.
+3. **Comparison**: The cat's coat appears to be a silvery gray, which matches the classic "blue" color pattern of British Shorthairs. The cat does not show any white markings, which is typical for this breed.
+4. **Decision**: Based on the observed physical features and color pattern, the cat in the image most closely matches the description of a British Shorthair.
+预测: British_Shorthair
+evaluate_with_current_belief, 预测: British_Shorthair, 真实: British_Shorthair, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理链: 1. Observing the overall object, it is clear that the subject is a cat, specifically a domestic short-haired breed given its appearance.
+2. Localizing the most discriminative local parts, the cat has a round face, short fur, and a compact body, which are characteristic features of the British Shorthair breed.
+3. Comparing these visual characteristics with the provided category descriptions, the British Shorthair matches the observed features best, particularly the round face, short fur, and compact body.
+4. Deciding based on the match, the cat in the image aligns most closely with the British Shorthair breed.
+预测: British_Shorthair
+evaluate_with_current_belief, 预测: British_Shorthair, 真实: British_Shorthair, 是否正确: True
+[显存监控] 已分配=32.44GB, 已保留=33.58GB, 空闲=14.97GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.57GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a medium-sized dog with a muscular build, short coat, and a broad head, which aligns with the physical characteristics of a Staffordshire Bull Terrier.
+2. **Localization**: The dog has a strong jaw, a broad skull, and a short muzzle, which are distinctive features of the Staffordshire Bull Terrier. The ears appear to be cropped, standing upright, and the eyes are almond-shaped and expressive.
+3. **Comparison**: The dog's color pattern is predominantly white, which matches the common color pattern of the Staffordshire Bull Terrier. The size and proportions also fit within the typical range for this breed.
+4. **Decision**: Based on the observed details matching the characteristics of the Staffordshire Bull Terrier, the most likely class is Staffordshire Bull Terrier.
+预测: Staffordshire_Bull_Terrier
+evaluate_with_current_belief, 预测: Staffordshire_Bull_Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a short coat, a broad head, and a muscular build. The dog has a white face with a black mask, which is characteristic of the Staffordshire Bull Terrier.
+2. **Localization**: The dog's ears are standing upright, which aligns with the typical appearance of a Staffordshire Bull Terrier. The facial structure, including the broad skull and short muzzle, is consistent with this breed.
+3. **Comparison**: The color pattern and physical features match those of a Staffordshire Bull Terrier. The dog's size and proportions are also consistent with the breed description.
+4. **Decision**: Based on the observed details and the comparison with the Staffordshire Bull Terrier's characteristics, the dog in the image is most likely a Staffordshire Bull Terrier.
+预测: Staffordshire_Bull_Terrier
+evaluate_with_current_belief, 预测: Staffordshire_Bull_Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a large black dog lying on grass. The dog has a broad head, a short muzzle, and a muscular build, which are characteristic features of the Staffordshire Bull Terrier.
+2. **Localization**: Key discriminative local parts include the broad skull, short muzzle, and the overall muscular build. The ears appear to be cropped, standing upright, which is typical for this breed.
+3. **Comparison**: Comparing these features with the category descriptions, the broad skull, short muzzle, and muscular build align closely with the Staffordshire Bull Terrier. The color is black, which is one of the common color patterns for this breed.
+4. **Decision**: Based on the observed features matching the Staffordshire Bull Terrier description, the most likely class is Staffordshire Bull Terrier.
+预测: Staffordshire_Bull_Terrier
+evaluate_with_current_belief, 预测: Staffordshire_Bull_Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.60GB, 空闲=14.85GB
+推理链: 1. **Observation**: The image shows a dog with a broad head, short muzzle, and a muscular build, which are characteristic features of the Staffordshire Bull Terrier.
+2. **Localization**: The dog has a broad skull, a short muzzle, and almond-shaped eyes, which align with the physical features of the Staffordshire Bull Terrier.
+3. **Comparison**: The dog's color pattern, which includes a white blaze down the face and a brindle coat, matches the typical color patterns of the Staffordshire Bull Terrier.
+4. **Decision**: Based on the observed features and the comparison with the Staffordshire Bull Terrier description, the dog in the image is most likely a Staffordshire Bull Terrier.
+预测: Staffordshire_Bull_Terrier
+evaluate_with_current_belief, 预测: Staffordshire_Bull_Terrier, 真实: Staffordshire_Bull_Terrier, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.74GB, 空闲=14.85GB
+[显存监控] 已分配=32.58GB, 已保留=34.41GB, 空闲=14.82GB
+[显存监控] 已分配=32.58GB, 已保留=34.41GB, 空闲=14.82GB
+[显存监控] 已分配=32.59GB, 已保留=34.41GB, 空闲=14.81GB
+推理链: 1. **Observation**: The object in the image is clearly a cat, identifiable by its distinct features such as fur, eyes, ears, and tail.
+2. **Localization**: The most discriminative local parts include the striped coat pattern, the shape of the ears, the size and proportions of the body, and the tail.
+3. **Comparison**: 
+   - The Egyptian Mau is described as having a strong, athletic body with a broad chest and powerful hindquarters. The cat in the image appears to have a robust build, which aligns with this description.
+   - The Egyptian Mau has a distinctive coat pattern with vertical and horizontal stripes, which matches the striped pattern seen in the image.
+   - The size and proportions of the Egyptian Mau are medium-sized, which seems consistent with the cat in the image.
+4. **Decision**: Based on the observed details matching the characteristics of the Egyptian Mau, the most likely class is Egyptian Mau.
+预测: Egyptian_Mau
+evaluate_with_current_belief, 预测: Egyptian_Mau, 真实: Egyptian_Mau, 是否正确: True
+[显存监控] 已分配=32.48GB, 已保留=32.91GB, 空闲=14.93GB
+[显存监控] 已分配=32.55GB, 已保留=33.50GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.50GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.50GB, 空闲=14.85GB
+推理链: 1. **Observation**: The cat in the image appears to be a medium-sized feline with a short, dense coat. It has a striped pattern on its body, which is characteristic of certain breeds.
+2. **Localization**: The cat's coat pattern is predominantly dark brown with black and tan stripes, which matches the description of the Egyptian Mau's distinctive coat pattern.
+3. **Comparison**: The Egyptian Mau is known for its strong, athletic build, medium-sized head with a slightly rounded forehead, and large, triangular ears. The cat in the image does not show these specific features, but it does have the characteristic striped coat pattern.
+4. **Decision**: Given the visual similarity to the Egyptian Mau's coat pattern, despite the lack of other distinct features, the cat in the image is most likely an Egyptian Mau.
+预测: Egyptian_Mau
+evaluate_with_current_belief, 预测: Egyptian_Mau, 真实: Egyptian_Mau, 是否正确: True
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.55GB, 已保留=33.55GB, 空闲=14.85GB
+[显存监控] 已分配=32.58GB, 已保留=33.55GB, 空闲=14.82GB
+推理链: 1. **Observation**: The cat in the image appears to be a medium-sized cat with a short, dense coat. It has a distinct coat pattern with vertical stripes running down the back and horizontally across the sides. The ears are large and triangular, and the eyes are large and expressive, which aligns with the description of the Egyptian Mau.
+
+2. **Localization**: The cat's physical features, such as the large triangular ears, the medium-sized head with a slightly rounded forehead, and the large, expressive eyes, are consistent with the Egyptian Mau. The coat pattern, with vertical stripes and horizontal markings, also matches the description of the Egyptian Mau.
+
+3. **Comparison**: Comparing the observed details with the candidate subcategories, the Egyptian Mau closely matches the visual characteristics described. The other breeds listed do not have the same distinctive features or coat patterns as seen in the image.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is the Egyptian Mau.
+预测: Egyptian_Mau
+evaluate_with_current_belief, 预测: Egyptian_Mau, 真实: Egyptian_Mau, 是否正确: True
+[显存监控] 已分配=32.44GB, 已保留=33.55GB, 空闲=14.97GB
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test/discovering.py", line 432, in <module>
+    # drop the seed - 设置随机种子
+  File "/home/hdl/project/fgvr_test/fast_slow_thinking_system.py", line 171, in build_knowledge_base
+  File "/home/hdl/project/fgvr_test/experience_base_builder.py", line 609, in build_experience_base
+  File "/home/hdl/project/fgvr_test/experience_base_builder.py", line 554, in evaluate_with_current_belief
+  File "/home/hdl/project/fgvr_test/experience_base_builder.py", line 150, in generate_cot_with_self_belief
+  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 377, in describe_attribute
+    reply = self.__call_qwen2_5(raw_image, attr_prompt, max_new_tokens)
+  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 320, in __call_qwen2_5
+    generated_ids = self.qwen2_5.generate(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/utils.py", line 2223, in generate
+    result = self._sample(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/utils.py", line 3211, in _sample
+    outputs = self(**model_inputs, return_dict=True)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 1799, in forward
+    image_embeds = self.visual(pixel_values, grid_thw=image_grid_thw)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 558, in forward
+    hidden_states = blk(hidden_states, cu_seqlens=cu_seqlens_now, position_embeddings=position_embeddings)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 351, in forward
+    hidden_states = hidden_states + self.attn(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 320, in forward
+    attn_output = F.scaled_dot_product_attention(q, k, v, attention_mask, dropout_p=0.0)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 37.60 GiB. GPU 0 has a total capacity of 47.40 GiB of which 9.96 GiB is free. Including non-PyTorch memory, this process has 37.43 GiB memory in use. Of the allocated memory 36.68 GiB is allocated by PyTorch, and 452.42 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

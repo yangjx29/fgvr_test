@@ -7,6 +7,7 @@
 4. 快速路径优化 - 在慢思考中也可以提前退出
 """
 
+import os
 import numpy as np
 import torch
 from PIL import Image
@@ -22,7 +23,7 @@ from knowledge_base_builder import KnowledgeBaseBuilder
 from experience_base_builder import ExperienceBaseBuilder
 from fast_thinking import FastThinking
 from utils.util import is_similar
-from data.data_stats import DOG_STATS
+from data import DATA_STATS
 from difflib import get_close_matches
 
 
@@ -36,7 +37,8 @@ class SlowThinkingOptimized:
                  cache_size: int = 1000,
                  simplified_reasoning: bool = True,
                  use_experience_base: bool = True,
-                 top_k_experience: int = 1):
+                 top_k_experience: int = 1,
+                 dataset_info: dict = None):
         """
         初始化优化后的慢思考模块
         
@@ -60,16 +62,61 @@ class SlowThinkingOptimized:
         self.simplified_reasoning = simplified_reasoning
         self.use_experience_base = use_experience_base
         self.top_k_experience = top_k_experience
+        self.dataset_info = dataset_info or {}
+        
+        # 使用dataset_info获取默认save_dir
+        if not self.dataset_info or 'experiment_dir_full' not in self.dataset_info:
+            raise ValueError(
+                "SlowThinkingOptimized初始化失败: 必须提供完整的dataset_info。"
+                "dataset_info应包含'experiment_dir_full'字段，以避免误污染知识库。"
+            )
+        self.default_save_dir = os.path.join(
+            self.dataset_info['experiment_dir_full'],
+            'knowledge_base'
+        )
+        print(f"慢思考默认保存目录: {self.default_save_dir}")
         
         # 缓存机制
         self._mllm_cache = {}  # MLLM响应缓存
         self._description_cache = {}  # 描述缓存
         
+        # 动态获取当前数据集的类别名称
+        dataset_name = self._get_dataset_name_from_info()
+        if dataset_name not in DATA_STATS:
+            raise ValueError(
+                f"SlowThinkingOptimized初始化失败: 未知的数据集 '{dataset_name}'。"
+                f"可用数据集: {list(DATA_STATS.keys())}"
+            )
+        self.current_dataset_stats = DATA_STATS[dataset_name]
+        print(f"使用数据集: {dataset_name}, 类别数: {self.current_dataset_stats['num_classes']}")
+        
         # 类别名称映射
         self.normalized_to_original = {
-            self.normalize_name(cls): cls for cls in DOG_STATS['class_names']
+            self.normalize_name(cls): cls for cls in self.current_dataset_stats['class_names']
         }
         self.normalized_class_names = list(self.normalized_to_original.keys())
+    
+    def _get_dataset_name_from_info(self) -> str:
+        """从dataset_info推断数据集名称"""
+        # 尝试从full_name推断 (例如: dog120 -> dog)
+        if 'full_name' in self.dataset_info:
+            full_name = self.dataset_info['full_name'].lower()
+            for dataset_name in DATA_STATS.keys():
+                if dataset_name in full_name:
+                    return dataset_name
+        
+        # 尝试从experiment_dir推断
+        if 'experiment_dir' in self.dataset_info:
+            exp_dir = self.dataset_info['experiment_dir'].lower()
+            for dataset_name in DATA_STATS.keys():
+                if dataset_name in exp_dir:
+                    return dataset_name
+        
+        # 如果无法推断，抛出错误
+        raise ValueError(
+            "无法从dataset_info推断数据集名称。"
+            "请确保dataset_info包含'full_name'或'experiment_dir'字段。"
+        )
     
     def set_experience_base(self, experience_base_builder: ExperienceBaseBuilder):
         """设置经验库构建器"""
@@ -251,8 +298,18 @@ class SlowThinkingOptimized:
         # 类别名称修正
         predicted_category = self._correct_category_name(prediction)
         
+        # 计算置信度（使用fast_result中的得分）
+        confidence = 0.0
+        if top_k_candidates:
+            # 使用第一个候选的得分作为置信度
+            for cat, score in fast_result.get("fused_results", []):
+                if self.normalize_name(cat) == self.normalize_name(predicted_category):
+                    confidence = float(score)
+                    break
+        
         return {
             "predicted_category": predicted_category,
+            "confidence": confidence,
             "reasoning": cot,
             "fast_result": fast_result,
             "top_k_candidates": top_k_candidates,
@@ -504,7 +561,7 @@ Return ONLY a JSON object with the following fields:
     
     def _correct_category_name(self, predicted_category: str) -> str:
         """修正类别名称"""
-        if predicted_category not in DOG_STATS['class_names']:
+        if predicted_category not in self.current_dataset_stats['class_names']:
             # 标准化名称
             norm_pred = self.normalize_name(predicted_category)
             

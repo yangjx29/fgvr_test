@@ -39,7 +39,8 @@ class ExperienceBaseBuilder:
                  knowledge_base_builder: KnowledgeBaseBuilder,
                  fast_thinking_module,
                  slow_thinking_module,
-                 device: str = "cuda"):
+                 device: str = "cuda",
+                 dataset_info: dict = None):
         """
         初始化经验库构建器
         
@@ -55,6 +56,7 @@ class ExperienceBaseBuilder:
         self.fast_thinking = fast_thinking_module
         self.slow_thinking = slow_thinking_module
         self.device = device
+        self.dataset_info = dataset_info or {}
         
         # Self-Belief：当前推理策略
         self.max_strategy_rules = 8
@@ -261,10 +263,10 @@ class ExperienceBaseBuilder:
             str: 类别描述
         """
         if hasattr(self.kb_builder, 'category_descriptions'):
-            description = self.kb_builder.category_descriptions[0].get(category, "")
+            # category_descriptions 应为 {类别名: 描述} 的字典
+            description = self.kb_builder.category_descriptions.get(category, "")
             if description:
                 return f"{category}: {description}"
-        
         return f"{category}: No description available"
     
     def _normalize_rule_text(self, text: str) -> str:

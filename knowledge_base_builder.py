@@ -34,7 +34,8 @@ class KnowledgeBaseBuilder:
                  image_encoder_name="./models/Clip/clip-vit-base-patch32",
                  text_encoder_name="./models/Clip/clip-vit-base-patch32", 
                  device="cuda" if torch.cuda.is_available() else "cpu",
-                 cfg=None):
+                 cfg=None,
+                 dataset_info=None):
         """
         初始化知识库构建器
         
@@ -46,6 +47,7 @@ class KnowledgeBaseBuilder:
         """
         self.device = device
         self.cfg = cfg
+        self.dataset_info = dataset_info or {}
         
         # 初始化检索模块
         self.retrieval = MultimodalRetrieval(
@@ -191,8 +193,19 @@ class KnowledgeBaseBuilder:
                 if isinstance(description, list):
                     description = " ".join(description)
                 print(f'MLLM description: {description}')
+                
+                # 清理图像以释放内存
+                del images
+                import gc
+                gc.collect()
+                
                 return description
-            except:
+            except Exception as e:
+                print(f"MLLM描述生成失败: {e}")
+                # 清理图像
+                del images
+                import gc
+                gc.collect()
                 return wiki_desc
         else:
             return wiki_desc
@@ -456,18 +469,55 @@ class KnowledgeBaseBuilder:
         image_kb_path = os.path.join(load_dir, "image_knowledge_base.json")
         if os.path.exists(image_kb_path):
             image_kb_data = load_json(image_kb_path)
-            self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data.items()}
+            # 处理两种格式：字典格式或列表格式（旧版本）
+            if isinstance(image_kb_data, dict):
+                self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data.items()}
+            elif isinstance(image_kb_data, list) and len(image_kb_data) > 0:
+                # 旧格式：列表的第一个元素是字典
+                if isinstance(image_kb_data[0], dict):
+                    self.image_knowledge_base = {cat: np.array(feat) for cat, feat in image_kb_data[0].items()}
+                else:
+                    print(f"警告: 图像知识库格式不正确，跳过加载")
+                    self.image_knowledge_base = {}
+            else:
+                print(f"警告: 图像知识库为空或格式不正确")
+                self.image_knowledge_base = {}
         
         # 加载文本知识库
         text_kb_path = os.path.join(load_dir, "text_knowledge_base.json")
         if os.path.exists(text_kb_path):
             text_kb_data = load_json(text_kb_path)
-            self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data.items()}
+            # 处理两种格式：字典格式或列表格式（旧版本）
+            if isinstance(text_kb_data, dict):
+                self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data.items()}
+            elif isinstance(text_kb_data, list) and len(text_kb_data) > 0:
+                # 旧格式：列表的第一个元素是字典
+                if isinstance(text_kb_data[0], dict):
+                    self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data[0].items()}
+                else:
+                    print(f"警告: 文本知识库格式不正确，跳过加载")
+                    self.text_knowledge_base = {}
+            else:
+                print(f"警告: 文本知识库为空或格式不正确")
+                self.text_knowledge_base = {}
         
         # 加载类别描述
         desc_path = os.path.join(load_dir, "category_descriptions.json")
         if os.path.exists(desc_path):
-            self.category_descriptions = load_json(desc_path)
+            desc_data = load_json(desc_path)
+            # 处理两种格式：字典格式或列表格式
+            if isinstance(desc_data, dict):
+                self.category_descriptions = desc_data
+            elif isinstance(desc_data, list) and len(desc_data) > 0:
+                # 列表格式：取第一个元素（应该是字典）
+                if isinstance(desc_data[0], dict):
+                    self.category_descriptions = desc_data[0]
+                else:
+                    print(f"警告: 类别描述格式不正确，跳过加载")
+                    self.category_descriptions = {}
+            else:
+                print(f"警告: 类别描述为空或格式不正确")
+                self.category_descriptions = {}
         
         # 加载self-belief
         belief_path = os.path.join(load_dir, "self_belief.txt")

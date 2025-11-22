@@ -18,6 +18,8 @@ from tqdm import tqdm
 import time
 import torch
 from collections import defaultdict
+import threading
+from datetime import datetime
 
 from agents.mllm_bot import MLLMBot
 from knowledge_base_builder import KnowledgeBaseBuilder
@@ -39,7 +41,8 @@ class FastSlowThinkingSystem:
                  image_encoder_name: str = "./models/Clip/clip-vit-base-patch32",
                  text_encoder_name: str = "./models/Clip/clip-vit-base-patch32",
                  device: str = "cuda" if torch.cuda.is_available() else "cpu",
-                 cfg: Optional[Dict] = None):
+                 cfg: Optional[Dict] = None,
+                 dataset_info: Optional[Dict] = None):
         """
         初始化快慢思考系统
         
@@ -53,6 +56,7 @@ class FastSlowThinkingSystem:
         """
         self.device = device
         self.cfg = cfg or {}
+        self.dataset_info = dataset_info or {}
         
         # 初始化MLLM
         print("初始化MLLM模型...")
@@ -68,7 +72,8 @@ class FastSlowThinkingSystem:
             image_encoder_name=image_encoder_name,
             text_encoder_name=text_encoder_name,
             device=device,
-            cfg=cfg
+            cfg=cfg,
+            dataset_info=self.dataset_info
         )
         
         # 初始化快思考模块
@@ -76,7 +81,8 @@ class FastSlowThinkingSystem:
         self.fast_thinking = FastThinkingOptimized(
             knowledge_base_builder=self.kb_builder,
             confidence_threshold=self.cfg.get('confidence_threshold', 0.8),
-            similarity_threshold=self.cfg.get('similarity_threshold', 0.7)
+            similarity_threshold=self.cfg.get('similarity_threshold', 0.7),
+            dataset_info=self.dataset_info
         )
         
         # 初始化慢思考模块
@@ -84,13 +90,63 @@ class FastSlowThinkingSystem:
         self.slow_thinking = SlowThinkingOptimized(
             mllm_bot=self.mllm_bot,
             knowledge_base_builder=self.kb_builder,
-            fast_thinking=self.fast_thinking
+            fast_thinking=self.fast_thinking,
+            dataset_info=self.dataset_info
         )
         
         # 初始化经验库构建器（可选）
         self.exp_builder = None
         
+        # 启动显存监控线程
+        self.memory_monitor_stop = threading.Event()
+        self.memory_monitor_thread = threading.Thread(
+            target=self._monitor_memory,
+            daemon=True
+        )
+        self.memory_monitor_thread.start()
+        
         print("快慢思考系统初始化完成!")
+        
+    def __del__(self):
+        """析构函数：清理系统资源"""
+        self.cleanup()
+        
+    def _monitor_memory(self):
+        """后台线程：每3秒记录一次显存使用情况"""
+        while not self.memory_monitor_stop.is_set():
+            if torch.cuda.is_available():
+                memory_allocated = torch.cuda.memory_allocated() / 1024**3
+                memory_reserved = torch.cuda.memory_reserved() / 1024**3
+                memory_total = torch.cuda.get_device_properties(0).total_memory / 1024**3
+                memory_free = memory_total - memory_allocated
+                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{current_time}] [显存监控] 已分配={memory_allocated:.2f}GB, 已保留={memory_reserved:.2f}GB, 空闲={memory_free:.2f}GB")
+            self.memory_monitor_stop.wait(3)
+    
+    def cleanup(self):
+        """手动清理系统资源"""
+        try:
+            # 停止显存监控线程
+            if hasattr(self, 'memory_monitor_stop'):
+                self.memory_monitor_stop.set()
+            if hasattr(self, 'memory_monitor_thread') and self.memory_monitor_thread.is_alive():
+                self.memory_monitor_thread.join(timeout=2)
+            
+            if hasattr(self, 'mllm_bot') and self.mllm_bot:
+                self.mllm_bot.cleanup()
+                del self.mllm_bot
+            if hasattr(self, 'kb_builder'):
+                del self.kb_builder
+            if hasattr(self, 'fast_thinking'):
+                del self.fast_thinking
+            if hasattr(self, 'slow_thinking'):
+                del self.slow_thinking
+            if hasattr(self, 'exp_builder'):
+                del self.exp_builder
+            torch.cuda.empty_cache()
+            print("FastSlowThinkingSystem资源已清理")
+        except Exception as e:
+            print(f"清理FastSlowThinkingSystem资源时出错: {e}")
     
     def build_knowledge_base(self, train_samples: Dict[str, List[str]], 
                            save_dir: str = "./knowledge_base",
@@ -110,12 +166,12 @@ class FastSlowThinkingSystem:
         print(f"训练样本包含 {len(train_samples)} 个类别")
         
         # 构建知识库
-        # image_kb, text_kb = self.kb_builder.build_knowledge_base(
-        #     self.mllm_bot, train_samples, augmentation
-        # )
+        image_kb, text_kb = self.kb_builder.build_knowledge_base(
+            self.mllm_bot, train_samples, augmentation
+        )
         
         # 保存知识库
-        # self.kb_builder.save_knowledge_base(save_dir)
+        self.kb_builder.save_knowledge_base(save_dir)
 
         self.initialize_experience_base()
         self.exp_builder.build_experience_base(train_samples,max_iterations=1, max_reflections_per_iter=3, top_k=5)
@@ -152,7 +208,8 @@ class FastSlowThinkingSystem:
                 knowledge_base_builder=self.kb_builder,
                 fast_thinking_module=self.fast_thinking,
                 slow_thinking_module=self.slow_thinking,
-                device=self.device
+                device=self.device,
+                dataset_info=self.dataset_info
             )
             print("经验库构建器初始化完成!")
         return self.exp_builder
@@ -606,8 +663,29 @@ Make your final prediction in JSON format:
             
         except Exception as e:
             print(f"最终决策失败: {e}")
-            # 使用慢思考结果作为fallback
-            return slow_result["predicted_category"], slow_result["confidence"], f"Final decision failed: {str(e)}"
+            import traceback
+            traceback.print_exc()
+            
+            # 使用慢思考结果作为fallback，带默认值
+            predicted_category = slow_result.get("predicted_category", slow_result.get("category", "unknown"))
+            confidence = slow_result.get("confidence", slow_result.get("similarity", 0.0))
+            
+            # 如果仍然没有有效值，使用快思考结果
+            if not predicted_category or predicted_category == "unknown":
+                if fast_result and "predicted_category" in fast_result:
+                    predicted_category = fast_result["predicted_category"]
+                    confidence = fast_result.get("confidence", 0.0)
+                else:
+                    # 从融合结果中获取
+                    fused_results = fast_result.get("fused_results", [])
+                    if fused_results:
+                        predicted_category = fused_results[0][0]
+                        confidence = fused_results[0][1]
+                    else:
+                        predicted_category = "unknown"
+                        confidence = 0.0
+            
+            return predicted_category, confidence, f"Final decision failed: {str(e)}"
 
 
 # 示例使用
