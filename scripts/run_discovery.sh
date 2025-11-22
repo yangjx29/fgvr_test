@@ -178,7 +178,7 @@ cd "${PROJECT_ROOT}" || {
 print_info "创建必要目录..."
 mkdir -p "${LOG_DIR}"
 
-# 打印配置信息
+# 打印配置信息到终端和日志文件
 print_info "=== 运行配置 ==="
 echo "GPU: ${CUDA_VISIBLE_DEVICES}"
 echo "数据集: ${DATASET}"
@@ -191,6 +191,25 @@ echo "结果输出: ${RESULTS_OUT}"
 echo "日志文件: ${LOG_FILE}"
 echo "虚拟环境: ${CONDA_ENV}"
 print_info "================"
+
+# 将配置信息写入临时文件
+TEMP_HEADER="/tmp/discovery_header_${DATASET}_${MODE}_$$.txt"
+cat > "${TEMP_HEADER}" << LOGHEADER
+[INFO] === Discovery 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}  # 使用的GPU编号
+Dataset: ${DATASET} (num_classes=${NUM_CLASSES})  # 数据集及类别数
+K-shot: ${KSHOT}  # 检索库使用每个类别的样本数目
+Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径
+Project Root: ${PROJECT_ROOT}  # 项目根目录
+Knowledge Base Dir: ${KNOWLEDGE_BASE_DIR}  # 知识库目录
+Test Data Dir: ${TEST_DATA_DIR}  # 测试数据目录
+Results Out: ${RESULTS_OUT}  # 结果输出文件
+Config File: ./configs/expts/${CONFIG_FILE}  # 实验配置文件
+Log File: ${LOG_FILE}  # 日志文件路径
+Run Mode: ${MODE}  # 运行模式
+[INFO] ========================================================
+
+LOGHEADER
 
 # 激活conda环境并运行
 print_info "激活虚拟环境并开始运行..."
@@ -409,10 +428,13 @@ case "${MODE}" in
         ;;
 esac
 
-# 创建启动脚本
+# 创建启动脚本（先写配置信息，再运行Python）
 TEMP_SCRIPT="/tmp/run_discovery_${DATASET}_$$.sh"
 cat > "${TEMP_SCRIPT}" << EOF
 #!/bin/bash
+# 先将配置信息写入日志
+cat "${TEMP_HEADER}"
+# 然后运行Python程序
 ${CMD}
 EOF
 chmod +x "${TEMP_SCRIPT}"
@@ -421,6 +443,10 @@ chmod +x "${TEMP_SCRIPT}"
 print_info "开始后台运行..."
 nohup bash "${TEMP_SCRIPT}" > "${LOG_FILE}" 2>&1 &
 PID=$!
+
+# 清理临时配置文件
+sleep 1
+rm -f "${TEMP_HEADER}" 2>/dev/null
 
 print_success "任务已启动！"
 print_info "进程ID: ${PID}"

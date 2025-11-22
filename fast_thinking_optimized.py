@@ -53,6 +53,8 @@ class FastThinkingOptimized:
         """
         初始化优化后的快思考模块
         """
+        print("\n================= 快思考模块初始化 =================")
+
         self.kb_builder = knowledge_base_builder
         self.confidence_threshold = confidence_threshold
         self.similarity_threshold = similarity_threshold
@@ -92,6 +94,21 @@ class FastThinkingOptimized:
             self.stats_file = stats_file
             print(f"使用指定的stats文件: {self.stats_file}")
         
+        print(f"📊 使用数据集 stats 文件: {self.stats_file}")
+        print(f"🔧 置信度阈值 confidence_threshold: {self.confidence_threshold}")
+        print(f"🔧 相似度阈值 similarity_threshold: {self.similarity_threshold}")
+        print(f"🔧 融合权重 fusion_weight: {self.fusion_weight}")
+        print(f"🔧 softmax 温度 softmax_temp: {self.softmax_temp}")
+        print(f"🔧 融合阈值 fused_conf_threshold: {self.fused_conf_threshold}")
+        print(f"🔧 融合边距阈值 fused_margin_threshold: {self.fused_margin_threshold}")
+        print(f"🔧 单模态阈值 per_modality_conf_threshold: {self.per_modality_conf_threshold}")
+        print(f"🔧 考虑 topk 重叠: {self.consider_topk_overlap}, topk_for_overlap: {self.topk_for_overlap}")
+        print(f"📈 LCB 阈值: {self.lcb_threshold}, 自适应: {self.lcb_threshold_adaptive}, 范围: [{self.lcb_threshold_min}, {self.lcb_threshold_max}]")
+        print(f"📈 LCB 先验: strength={self.prior_strength}, p={self.prior_p}, eta={self.lcb_eta}, alpha={self.lcb_alpha}, epsilon={self.lcb_epsilon}")
+        print(f"💾 缓存启用: {enable_cache}, 缓存大小: {cache_size}")
+        print("====================================================\n")
+
+        # 初始化统计与缓存
         self.total_predictions = 1
         self.category_stats = defaultdict(lambda: {"n": 0, "m": 0})
         self.load_stats()

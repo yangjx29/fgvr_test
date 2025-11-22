@@ -53,6 +53,19 @@ class SlowThinkingOptimized:
             use_experience_base: 是否使用经验库
             top_k_experience: 使用top-k个类别的经验
         """
+        from datetime import datetime
+        init_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print("\n================= 慢思考模块初始化 =================")
+        print(f"🕒 初始化时间: {init_time}")
+        print(f"🖥️ 使用设备: {mllm_bot.device}")
+        print(f"🧠 MLLM模型: {mllm_bot.model_name}")
+        print(f"📚 知识库构建器: {knowledge_base_builder}")
+        print(f"⚡ 快思考模块: {fast_thinking}")
+        print(f"📖 经验库构建器: {experience_base_builder}")
+        print(f"💾 启用缓存: {'是' if enable_cache else '否'}, 缓存大小: {cache_size}")
+        print(f"🔍 简化推理: {'是' if simplified_reasoning else '否'}")
+        print(f"🧩 使用经验库: {'是' if use_experience_base else '否'}, top_k_experience={top_k_experience}")
+
         self.mllm_bot = mllm_bot
         self.kb_builder = knowledge_base_builder
         self.fast_thinking = fast_thinking
@@ -95,6 +108,8 @@ class SlowThinkingOptimized:
             self.normalize_name(cls): cls for cls in self.current_dataset_stats['class_names']
         }
         self.normalized_class_names = list(self.normalized_to_original.keys())
+        print(f"✅ 慢思考模块初始化完成，类别映射数量: {len(self.normalized_class_names)}")
+        print("====================================================\n")        
     
     def _get_dataset_name_from_info(self) -> str:
         """从dataset_info推断数据集名称"""

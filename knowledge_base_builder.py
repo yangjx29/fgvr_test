@@ -45,22 +45,40 @@ class KnowledgeBaseBuilder:
             device: 设备
             cfg: 配置参数
         """
+
+        from datetime import datetime
+        init_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print("\n================= 知识库构建器初始化 =================")
+        print(f"🕒 初始化时间: {init_time}")
+        print(f"🖥️ 设备: {device}")
+        print(f"🖼️ 图像编码器: {image_encoder_name}")
+        print(f"📝 文本编码器: {text_encoder_name}")
+
         self.device = device
         self.cfg = cfg
         self.dataset_info = dataset_info or {}
+
+        if self.dataset_info:
+            print(f"📊 数据集信息 keys: {list(self.dataset_info.keys())}")
+        else:
+            print("📊 数据集信息: 空")
         
         # 初始化检索模块
+        print("🔍 初始化 MultimodalRetrieval 模块...")
         self.retrieval = MultimodalRetrieval(
             image_encoder_name=image_encoder_name,
             text_encoder_name=text_encoder_name,
             fusion_method='weighted',
             device=device
         )
+        print("✓ 检索模块初始化完成")
         
         # 知识库存储
         self.image_knowledge_base = {}  # {category: [image_features]}
         self.text_knowledge_base = {}   # {category: [text_features]}
         self.category_descriptions = {} # {category: description}
+        print("📚 知识库初始化完成")
+        print("====================================================\n")
         
     def augment_image(self, image_path: str, augmentation_type: str = "all") -> List[str]:
         """

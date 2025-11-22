@@ -1,0 +1,1313 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=9  # 使用的GPU编号
+Dataset: car (num_classes=196)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/car196/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/car_196/images_discovery_all_10  # 测试数据目录
+Results Out: ./results/car_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: car (car196)
+类别数: 196
+实验目录: ./experiments/car196
+当前使用的 GPU 为：9
+
+=== Experiment Start Time: 2025-11-22 19:51:26 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/car196_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/car196/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/car_196',
+ 'dataset_name': 'car',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/car196',
+ 'expt_dir_describe': './experiments/car196/describe',
+ 'expt_dir_gallery': './experiments/car196/gallery',
+ 'expt_dir_grouping': './experiments/car196/grouping',
+ 'expt_dir_guess': './experiments/car196/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 98,
+ 'num_classes': 196,
+ 'num_novel': 98,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/car196/gallery/car_image_descriptions_attn',
+ 'path_identify_answers': './experiments/car196/identify',
+ 'path_llm_gussed_names': './experiments/car196/guess/car_llm_gussed_names',
+ 'path_llm_prompts': './experiments/car196/describe/car_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/car196/guess/car_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/car196/guess/car_llm_replies_raw',
+ 'path_references': './experiments/car196/gallery/car_image_references',
+ 'path_regions': './experiments/car196/gallery/car_image_regions',
+ 'path_vqa_answers': './experiments/car196/describe/car_attributes_pairs',
+ 'path_vqa_questions': './experiments/car196/describe/car_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "car196",
+    "num_classes": 196,
+    "config_file": "car196_all.yml",
+    "data_dir": "car_196",
+    "experiment_dir": "car196",
+    "stats_file": "car196/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/car196/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/car196"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.95s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.17s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.22s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.27s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.74s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.94s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-22 19:51:37
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/car196/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/car196/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-22 19:52:28
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x720be7dbc400>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x720be55d5fd0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/car196/knowledge_base
+使用数据集: car, 类别数: 196
+✅ 慢思考模块初始化完成，类别映射数量: 196
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-22 19:52:28] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 196 个类别, dog datasets:196
+从 ./experiments/car196/knowledge_base 加载知识库...
+知识库已从 ./experiments/car196/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 196 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/196 [00:00<?, ?it/s]  1%|          | 1/196 [00:00<00:54,  3.60it/s]  2%|▏         | 4/196 [00:00<00:17, 11.09it/s]  3%|▎         | 6/196 [00:00<00:15, 11.98it/s]  5%|▍         | 9/196 [00:00<00:12, 14.59it/s]  6%|▌         | 11/196 [00:00<00:12, 15.11it/s]  7%|▋         | 13/196 [00:01<00:13, 13.62it/s]  8%|▊         | 16/196 [00:01<00:10, 16.46it/s]  9%|▉         | 18/196 [00:01<00:10, 16.51it/s] 10%|█         | 20/196 [00:01<00:11, 15.81it/s] 11%|█         | 22/196 [00:01<00:21,  8.20it/s] 13%|█▎        | 25/196 [00:02<00:15, 10.92it/s] 14%|█▍        | 27/196 [00:02<00:21,  8.01it/s] 15%|█▍        | 29/196 [00:02<00:18,  9.22it/s] 16%|█▋        | 32/196 [00:02<00:14, 11.71it/s] 18%|█▊        | 35/196 [00:03<00:14, 10.99it/s] 19%|█▉        | 37/196 [00:03<00:12, 12.36it/s] 20%|██        | 40/196 [00:03<00:10, 14.22it/s] 22%|██▏       | 43/196 [00:03<00:09, 16.37it/s] 23%|██▎       | 45/196 [00:03<00:09, 16.66it/s] 25%|██▌       | 49/196 [00:03<00:07, 20.13it/s] 27%|██▋       | 52/196 [00:03<00:07, 19.66it/s] 28%|██▊       | 55/196 [00:04<00:09, 14.63it/s] 29%|██▉       | 57/196 [00:04<00:09, 15.42it/s] 31%|███       | 60/196 [00:04<00:07, 17.13it/s] 32%|███▏      | 63/196 [00:04<00:08, 16.42it/s] 33%|███▎      | 65/196 [00:04<00:07, 16.74it/s] 35%|███▍      | 68/196 [00:04<00:07, 18.00it/s] 36%|███▌      | 70/196 [00:05<00:07, 16.74it/s] 37%|███▋      | 73/196 [00:05<00:06, 17.92it/s] 38%|███▊      | 75/196 [00:05<00:06, 17.85it/s] 40%|███▉      | 78/196 [00:05<00:06, 19.10it/s]处理类别: Ford_Focus_Sedan_2007
+类别 Ford_Focus_Sedan_2007 图像特征维度: (512,)
+处理类别: Volvo_C30_Hatchback_2012
+类别 Volvo_C30_Hatchback_2012 图像特征维度: (512,)
+处理类别: Bentley_Continental_GT_Coupe_2012
+类别 Bentley_Continental_GT_Coupe_2012 图像特征维度: (512,)
+处理类别: GMC_Canyon_Extended_Cab_2012
+类别 GMC_Canyon_Extended_Cab_2012 图像特征维度: (512,)
+处理类别: GMC_Savana_Van_2012
+类别 GMC_Savana_Van_2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz_E-Class_Sedan_2012
+类别 Mercedes-Benz_E-Class_Sedan_2012 图像特征维度: (512,)
+处理类别: BMW_Z4_Convertible_2012
+类别 BMW_Z4_Convertible_2012 图像特征维度: (512,)
+处理类别: Mazda_Tribute_SUV_2011
+类别 Mazda_Tribute_SUV_2011 图像特征维度: (512,)
+处理类别: Honda_Accord_Sedan_2012
+类别 Honda_Accord_Sedan_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Tahoe_Hybrid_SUV_2012
+类别 Chevrolet_Tahoe_Hybrid_SUV_2012 图像特征维度: (512,)
+处理类别: Nissan_240SX_Coupe_1998
+类别 Nissan_240SX_Coupe_1998 图像特征维度: (512,)
+处理类别: Jeep_Wrangler_SUV_2012
+类别 Jeep_Wrangler_SUV_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Silverado_1500_Extended_Cab_2012
+类别 Chevrolet_Silverado_1500_Extended_Cab_2012 图像特征维度: (512,)
+处理类别: Honda_Accord_Coupe_2012
+类别 Honda_Accord_Coupe_2012 图像特征维度: (512,)
+处理类别: Ford_Freestar_Minivan_2007
+类别 Ford_Freestar_Minivan_2007 图像特征维度: (512,)
+处理类别: FIAT_500_Abarth_2012
+类别 FIAT_500_Abarth_2012 图像特征维度: (512,)
+处理类别: Ford_Edge_SUV_2012
+类别 Ford_Edge_SUV_2012 图像特征维度: (512,)
+处理类别: AM_General_Hummer_SUV_2000
+类别 AM_General_Hummer_SUV_2000 图像特征维度: (512,)
+处理类别: Jeep_Compass_SUV_2012
+类别 Jeep_Compass_SUV_2012 图像特征维度: (512,)
+处理类别: Dodge_Durango_SUV_2012
+类别 Dodge_Durango_SUV_2012 图像特征维度: (512,)
+处理类别: Bugatti_Veyron_16.4_Convertible_2009
+类别 Bugatti_Veyron_16.4_Convertible_2009 图像特征维度: (512,)
+处理类别: Chevrolet_Impala_Sedan_2007
+类别 Chevrolet_Impala_Sedan_2007 图像特征维度: (512,)
+处理类别: Chevrolet_Monte_Carlo_Coupe_2007
+类别 Chevrolet_Monte_Carlo_Coupe_2007 图像特征维度: (512,)
+处理类别: Ford_F-150_Regular_Cab_2007
+类别 Ford_F-150_Regular_Cab_2007 图像特征维度: (512,)
+处理类别: Chevrolet_Malibu_Sedan_2007
+类别 Chevrolet_Malibu_Sedan_2007 图像特征维度: (512,)
+处理类别: BMW_M6_Convertible_2010
+类别 BMW_M6_Convertible_2010 图像特征维度: (512,)
+处理类别: Hyundai_Sonata_Sedan_2012
+类别 Hyundai_Sonata_Sedan_2012 图像特征维度: (512,)
+处理类别: Hyundai_Veracruz_SUV_2012
+类别 Hyundai_Veracruz_SUV_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Sonic_Sedan_2012
+类别 Chevrolet_Sonic_Sedan_2012 图像特征维度: (512,)
+处理类别: Lamborghini_Diablo_Coupe_2001
+类别 Lamborghini_Diablo_Coupe_2001 图像特征维度: (512,)
+处理类别: Buick_Regal_GS_2012
+类别 Buick_Regal_GS_2012 图像特征维度: (512,)
+处理类别: BMW_M5_Sedan_2010
+[2025-11-22 19:52:31] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 BMW_M5_Sedan_2010 图像特征维度: (512,)
+处理类别: Ferrari_458_Italia_Convertible_2012
+类别 Ferrari_458_Italia_Convertible_2012 图像特征维度: (512,)
+处理类别: Volkswagen_Golf_Hatchback_2012
+类别 Volkswagen_Golf_Hatchback_2012 图像特征维度: (512,)
+处理类别: Mitsubishi_Lancer_Sedan_2012
+类别 Mitsubishi_Lancer_Sedan_2012 图像特征维度: (512,)
+处理类别: Ford_E-Series_Wagon_Van_2012
+类别 Ford_E-Series_Wagon_Van_2012 图像特征维度: (512,)
+处理类别: Toyota_4Runner_SUV_2012
+类别 Toyota_4Runner_SUV_2012 图像特征维度: (512,)
+处理类别: BMW_X6_SUV_2012
+类别 BMW_X6_SUV_2012 图像特征维度: (512,)
+处理类别: Buick_Rainier_SUV_2007
+类别 Buick_Rainier_SUV_2007 图像特征维度: (512,)
+处理类别: Audi_S4_Sedan_2007
+类别 Audi_S4_Sedan_2007 图像特征维度: (512,)
+处理类别: Lamborghini_Reventon_Coupe_2008
+类别 Lamborghini_Reventon_Coupe_2008 图像特征维度: (512,)
+处理类别: HUMMER_H2_SUT_Crew_Cab_2009
+类别 HUMMER_H2_SUT_Crew_Cab_2009 图像特征维度: (512,)
+处理类别: Audi_S5_Coupe_2012
+类别 Audi_S5_Coupe_2012 图像特征维度: (512,)
+处理类别: BMW_3_Series_Sedan_2012
+类别 BMW_3_Series_Sedan_2012 图像特征维度: (512,)
+处理类别: BMW_X5_SUV_2007
+类别 BMW_X5_SUV_2007 图像特征维度: (512,)
+处理类别: Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012
+类别 Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012 图像特征维度: (512,)
+处理类别: Ford_F-150_Regular_Cab_2012
+类别 Ford_F-150_Regular_Cab_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Silverado_1500_Classic_Extended_Cab_2007
+类别 Chevrolet_Silverado_1500_Classic_Extended_Cab_2007 图像特征维度: (512,)
+处理类别: Dodge_Ram_Pickup_3500_Crew_Cab_2010
+类别 Dodge_Ram_Pickup_3500_Crew_Cab_2010 图像特征维度: (512,)
+处理类别: Scion_xD_Hatchback_2012
+类别 Scion_xD_Hatchback_2012 图像特征维度: (512,)
+处理类别: Bentley_Arnage_Sedan_2009
+类别 Bentley_Arnage_Sedan_2009 图像特征维度: (512,)
+处理类别: Dodge_Ram_Pickup_3500_Quad_Cab_2009
+类别 Dodge_Ram_Pickup_3500_Quad_Cab_2009 图像特征维度: (512,)
+处理类别: Hyundai_Tucson_SUV_2012
+类别 Hyundai_Tucson_SUV_2012 图像特征维度: (512,)
+处理类别: Ferrari_458_Italia_Coupe_2012
+类别 Ferrari_458_Italia_Coupe_2012 图像特征维度: (512,)
+处理类别: Aston_Martin_Virage_Convertible_2012
+类别 Aston_Martin_Virage_Convertible_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Express_Van_2007
+类别 Chevrolet_Express_Van_2007 图像特征维度: (512,)
+处理类别: Volkswagen_Golf_Hatchback_1991
+类别 Volkswagen_Golf_Hatchback_1991 图像特征维度: (512,)
+处理类别: Hyundai_Accent_Sedan_2012
+类别 Hyundai_Accent_Sedan_2012 图像特征维度: (512,)
+处理类别: FIAT_500_Convertible_2012
+类别 FIAT_500_Convertible_2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz_SL-Class_Coupe_2009
+类别 Mercedes-Benz_SL-Class_Coupe_2009 图像特征维度: (512,)
+处理类别: Audi_S4_Sedan_2012
+类别 Audi_S4_Sedan_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Avalanche_Crew_Cab_2012
+类别 Chevrolet_Avalanche_Crew_Cab_2012 图像特征维度: (512,)
+处理类别: McLaren_MP4-12C_Coupe_2012
+类别 McLaren_MP4-12C_Coupe_2012 图像特征维度: (512,)
+处理类别: Aston_Martin_V8_Vantage_Convertible_2012
+类别 Aston_Martin_V8_Vantage_Convertible_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Camaro_Convertible_2012
+类别 Chevrolet_Camaro_Convertible_2012 图像特征维度: (512,)
+处理类别: GMC_Yukon_Hybrid_SUV_2012
+类别 GMC_Yukon_Hybrid_SUV_2012 图像特征维度: (512,)
+处理类别: Acura_Integra_Type_R_2001
+类别 Acura_Integra_Type_R_2001 图像特征维度: (512,)
+处理类别: Honda_Odyssey_Minivan_2012
+类别 Honda_Odyssey_Minivan_2012 图像特征维度: (512,)
+处理类别: Bentley_Continental_Flying_Spur_Sedan_2007
+类别 Bentley_Continental_Flying_Spur_Sedan_2007 图像特征维度: (512,)
+处理类别: Ford_Ranger_SuperCab_2011
+类别 Ford_Ranger_SuperCab_2011 图像特征维度: (512,)
+处理类别: BMW_X3_SUV_2012
+类别 BMW_X3_SUV_2012 图像特征维度: (512,)
+处理类别: Hyundai_Elantra_Sedan_2007
+类别 Hyundai_Elantra_Sedan_2007 图像特征维度: (512,)
+处理类别: Bentley_Mulsanne_Sedan_2011
+类别 Bentley_Mulsanne_Sedan_2011 图像特征维度: (512,)
+处理类别: Chevrolet_Traverse_SUV_2012
+类别 Chevrolet_Traverse_SUV_2012 图像特征维度: (512,)
+处理类别: Jeep_Liberty_SUV_2012
+类别 Jeep_Liberty_SUV_2012 图像特征维度: (512,)
+处理类别: BMW_M3_Coupe_2012
+类别 BMW_M3_Coupe_2012 图像特征维度: (512,)
+处理类别: Bugatti_Veyron_16.4_Coupe_2009
+类别 Bugatti_Veyron_16.4_Coupe_2009 图像特征维度: (512,)
+处理类别: Chrysler_300_SRT-8_2010
+类别 Chrysler_300_SRT-8_2010 图像特征维度: (512,)
+处理类别: Acura_TL_Sedan_2012
+ 41%|████      | 80/196 [00:05<00:06, 18.73it/s] 42%|████▏     | 83/196 [00:05<00:05, 20.10it/s] 44%|████▍     | 86/196 [00:05<00:05, 18.77it/s] 45%|████▍     | 88/196 [00:06<00:07, 15.37it/s] 46%|████▌     | 90/196 [00:06<00:06, 16.32it/s] 47%|████▋     | 93/196 [00:06<00:05, 18.45it/s] 48%|████▊     | 95/196 [00:06<00:06, 15.57it/s] 49%|████▉     | 97/196 [00:06<00:06, 15.36it/s] 51%|█████     | 99/196 [00:06<00:07, 12.80it/s] 52%|█████▏    | 101/196 [00:06<00:07, 13.30it/s] 53%|█████▎    | 104/196 [00:07<00:05, 16.01it/s] 54%|█████▍    | 106/196 [00:07<00:05, 16.27it/s] 56%|█████▌    | 109/196 [00:07<00:04, 19.08it/s] 57%|█████▋    | 112/196 [00:07<00:04, 19.52it/s] 59%|█████▊    | 115/196 [00:07<00:05, 13.67it/s] 60%|██████    | 118/196 [00:07<00:04, 15.94it/s] 62%|██████▏   | 121/196 [00:08<00:04, 17.81it/s] 63%|██████▎   | 124/196 [00:08<00:03, 19.88it/s] 65%|██████▍   | 127/196 [00:08<00:03, 20.17it/s] 66%|██████▋   | 130/196 [00:08<00:03, 21.87it/s] 68%|██████▊   | 133/196 [00:08<00:02, 22.14it/s] 69%|██████▉   | 136/196 [00:08<00:02, 23.22it/s] 71%|███████   | 139/196 [00:08<00:02, 21.29it/s] 72%|███████▏  | 142/196 [00:08<00:02, 21.47it/s] 74%|███████▍  | 145/196 [00:09<00:02, 21.45it/s] 76%|███████▌  | 148/196 [00:09<00:02, 21.76it/s] 77%|███████▋  | 151/196 [00:09<00:02, 20.05it/s] 79%|███████▊  | 154/196 [00:09<00:02, 18.25it/s]类别 Acura_TL_Sedan_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Corvette_Convertible_2012
+类别 Chevrolet_Corvette_Convertible_2012 图像特征维度: (512,)
+处理类别: Toyota_Sequoia_SUV_2012
+类别 Toyota_Sequoia_SUV_2012 图像特征维度: (512,)
+处理类别: Ram_C_V_Cargo_Van_Minivan_2012
+类别 Ram_C_V_Cargo_Van_Minivan_2012 图像特征维度: (512,)
+处理类别: Ferrari_FF_Coupe_2012
+类别 Ferrari_FF_Coupe_2012 图像特征维度: (512,)
+处理类别: Porsche_Panamera_Sedan_2012
+[2025-11-22 19:52:34] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 Porsche_Panamera_Sedan_2012 图像特征维度: (512,)
+处理类别: Suzuki_SX4_Sedan_2012
+类别 Suzuki_SX4_Sedan_2012 图像特征维度: (512,)
+处理类别: Dodge_Caliber_Wagon_2012
+类别 Dodge_Caliber_Wagon_2012 图像特征维度: (512,)
+处理类别: Jeep_Patriot_SUV_2012
+类别 Jeep_Patriot_SUV_2012 图像特征维度: (512,)
+处理类别: Volkswagen_Beetle_Hatchback_2012
+类别 Volkswagen_Beetle_Hatchback_2012 图像特征维度: (512,)
+处理类别: Dodge_Caravan_Minivan_1997
+类别 Dodge_Caravan_Minivan_1997 图像特征维度: (512,)
+处理类别: Cadillac_SRX_SUV_2012
+类别 Cadillac_SRX_SUV_2012 图像特征维度: (512,)
+处理类别: BMW_ActiveHybrid_5_Sedan_2012
+类别 BMW_ActiveHybrid_5_Sedan_2012 图像特征维度: (512,)
+处理类别: Audi_100_Sedan_1994
+类别 Audi_100_Sedan_1994 图像特征维度: (512,)
+处理类别: Chrysler_Crossfire_Convertible_2008
+类别 Chrysler_Crossfire_Convertible_2008 图像特征维度: (512,)
+处理类别: smart_fortwo_Convertible_2012
+类别 smart_fortwo_Convertible_2012 图像特征维度: (512,)
+处理类别: Tesla_Model_S_Sedan_2012
+类别 Tesla_Model_S_Sedan_2012 图像特征维度: (512,)
+处理类别: Ford_Mustang_Convertible_2007
+类别 Ford_Mustang_Convertible_2007 图像特征维度: (512,)
+处理类别: Ferrari_California_Convertible_2012
+类别 Ferrari_California_Convertible_2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz_S-Class_Sedan_2012
+类别 Mercedes-Benz_S-Class_Sedan_2012 图像特征维度: (512,)
+处理类别: Nissan_Juke_Hatchback_2012
+类别 Nissan_Juke_Hatchback_2012 图像特征维度: (512,)
+处理类别: Toyota_Corolla_Sedan_2012
+类别 Toyota_Corolla_Sedan_2012 图像特征维度: (512,)
+处理类别: Buick_Verano_Sedan_2012
+类别 Buick_Verano_Sedan_2012 图像特征维度: (512,)
+处理类别: MINI_Cooper_Roadster_Convertible_2012
+类别 MINI_Cooper_Roadster_Convertible_2012 图像特征维度: (512,)
+处理类别: Maybach_Landaulet_Convertible_2012
+类别 Maybach_Landaulet_Convertible_2012 图像特征维度: (512,)
+处理类别: Audi_S6_Sedan_2011
+类别 Audi_S6_Sedan_2011 图像特征维度: (512,)
+处理类别: Spyker_C8_Convertible_2009
+类别 Spyker_C8_Convertible_2009 图像特征维度: (512,)
+处理类别: Audi_100_Wagon_1994
+类别 Audi_100_Wagon_1994 图像特征维度: (512,)
+处理类别: Dodge_Charger_Sedan_2012
+类别 Dodge_Charger_Sedan_2012 图像特征维度: (512,)
+处理类别: Dodge_Dakota_Crew_Cab_2010
+类别 Dodge_Dakota_Crew_Cab_2010 图像特征维度: (512,)
+处理类别: Mercedes-Benz_C-Class_Sedan_2012
+类别 Mercedes-Benz_C-Class_Sedan_2012 图像特征维度: (512,)
+处理类别: Dodge_Charger_SRT-8_2009
+类别 Dodge_Charger_SRT-8_2009 图像特征维度: (512,)
+处理类别: Volvo_240_Sedan_1993
+类别 Volvo_240_Sedan_1993 图像特征维度: (512,)
+处理类别: Hyundai_Elantra_Touring_Hatchback_2012
+类别 Hyundai_Elantra_Touring_Hatchback_2012 图像特征维度: (512,)
+处理类别: Audi_R8_Coupe_2012
+类别 Audi_R8_Coupe_2012 图像特征维度: (512,)
+处理类别: Eagle_Talon_Hatchback_1998
+类别 Eagle_Talon_Hatchback_1998 图像特征维度: (512,)
+处理类别: Infiniti_G_Coupe_IPL_2012
+类别 Infiniti_G_Coupe_IPL_2012 图像特征维度: (512,)
+处理类别: Isuzu_Ascender_SUV_2008
+类别 Isuzu_Ascender_SUV_2008 图像特征维度: (512,)
+处理类别: Ford_Expedition_EL_SUV_2009
+类别 Ford_Expedition_EL_SUV_2009 图像特征维度: (512,)
+处理类别: Cadillac_CTS-V_Sedan_2012
+类别 Cadillac_CTS-V_Sedan_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007
+类别 Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007 图像特征维度: (512,)
+处理类别: Dodge_Magnum_Wagon_2008
+类别 Dodge_Magnum_Wagon_2008 图像特征维度: (512,)
+处理类别: Chrysler_PT_Cruiser_Convertible_2008
+类别 Chrysler_PT_Cruiser_Convertible_2008 图像特征维度: (512,)
+处理类别: BMW_1_Series_Convertible_2012
+类别 BMW_1_Series_Convertible_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Corvette_ZR1_2012
+类别 Chevrolet_Corvette_ZR1_2012 图像特征维度: (512,)
+处理类别: Rolls-Royce_Phantom_Sedan_2012
+类别 Rolls-Royce_Phantom_Sedan_2012 图像特征维度: (512,)
+处理类别: Infiniti_QX56_SUV_2011
+类别 Infiniti_QX56_SUV_2011 图像特征维度: (512,)
+处理类别: Land_Rover_Range_Rover_SUV_2012
+类别 Land_Rover_Range_Rover_SUV_2012 图像特征维度: (512,)
+处理类别: Audi_TTS_Coupe_2012
+类别 Audi_TTS_Coupe_2012 图像特征维度: (512,)
+处理类别: Geo_Metro_Convertible_1993
+类别 Geo_Metro_Convertible_1993 图像特征维度: (512,)
+处理类别: Audi_V8_Sedan_1994
+类别 Audi_V8_Sedan_1994 图像特征维度: (512,)
+处理类别: Acura_TL_Type-S_2008
+类别 Acura_TL_Type-S_2008 图像特征维度: (512,)
+处理类别: Honda_Odyssey_Minivan_2007
+类别 Honda_Odyssey_Minivan_2007 图像特征维度: (512,)
+处理类别: Land_Rover_LR2_SUV_2012
+类别 Land_Rover_LR2_SUV_2012 图像特征维度: (512,)
+处理类别: Jeep_Grand_Cherokee_SUV_2012
+类别 Jeep_Grand_Cherokee_SUV_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Malibu_Hybrid_Sedan_2010
+类别 Chevrolet_Malibu_Hybrid_Sedan_2010 图像特征维度: (512,)
+处理类别: Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012
+类别 Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012 图像特征维度: (512,)
+处理类别: Chrysler_Sebring_Convertible_2010
+类别 Chrysler_Sebring_Convertible_2010 图像特征维度: (512,)
+处理类别: Nissan_Leaf_Hatchback_2012
+[2025-11-22 19:52:37] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 Nissan_Leaf_Hatchback_2012 图像特征维度: (512,)
+处理类别: Jaguar_XK_XKR_2012
+类别 Jaguar_XK_XKR_2012 图像特征维度: (512,)
+处理类别: Ford_F-450_Super_Duty_Crew_Cab_2012
+类别 Ford_F-450_Super_Duty_Crew_Cab_2012 图像特征维度: (512,)
+处理类别: Bentley_Continental_GT_Coupe_2007
+类别 Bentley_Continental_GT_Coupe_2007 图像特征维度: (512,)
+处理类别: Audi_TT_RS_Coupe_2012
+类别 Audi_TT_RS_Coupe_2012 图像特征维度: (512,)
+处理类别: Audi_RS_4_Convertible_2008
+类别 Audi_RS_4_Convertible_2008 图像特征维度: (512,)
+处理类别: Spyker_C8_Coupe_2009
+类别 Spyker_C8_Coupe_2009 图像特征维度: (512,)
+处理类别: Lamborghini_Aventador_Coupe_2012
+类别 Lamborghini_Aventador_Coupe_2012 图像特征维度: (512,)
+处理类别: Dodge_Sprinter_Cargo_Van_2009
+类别 Dodge_Sprinter_Cargo_Van_2009 图像特征维度: (512,)
+处理类别: Dodge_Journey_SUV_2012
+类别 Dodge_Journey_SUV_2012 图像特征维度: (512,)
+处理类别: Hyundai_Santa_Fe_SUV_2012
+类别 Hyundai_Santa_Fe_SUV_2012 图像特征维度: (512,)
+处理类别: Hyundai_Genesis_Sedan_2012
+类别 Hyundai_Genesis_Sedan_2012 图像特征维度: (512,)
+处理类别: BMW_6_Series_Convertible_2007
+类别 BMW_6_Series_Convertible_2007 图像特征维度: (512,)
+处理类别: Acura_ZDX_Hatchback_2012
+类别 Acura_ZDX_Hatchback_2012 图像特征维度: (512,)
+处理类别: Lamborghini_Gallardo_LP_570-4_Superleggera_2012
+类别 Lamborghini_Gallardo_LP_570-4_Superleggera_2012 图像特征维度: (512,)
+处理类别: BMW_3_Series_Wagon_2012
+类别 BMW_3_Series_Wagon_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Cobalt_SS_2010
+类别 Chevrolet_Cobalt_SS_2010 图像特征维度: (512,)
+处理类别: Suzuki_Aerio_Sedan_2007
+类别 Suzuki_Aerio_Sedan_2007 图像特征维度: (512,)
+处理类别: Nissan_NV_Passenger_Van_2012
+类别 Nissan_NV_Passenger_Van_2012 图像特征维度: (512,)
+处理类别: Ford_GT_Coupe_2006 80%|███████▉  | 156/196 [00:09<00:02, 16.78it/s] 81%|████████  | 158/196 [00:09<00:02, 17.17it/s] 82%|████████▏ | 161/196 [00:10<00:01, 19.56it/s] 84%|████████▎ | 164/196 [00:10<00:01, 20.13it/s] 85%|████████▌ | 167/196 [00:10<00:01, 19.53it/s] 86%|████████▌ | 169/196 [00:10<00:01, 18.87it/s] 87%|████████▋ | 171/196 [00:10<00:01, 18.89it/s] 88%|████████▊ | 173/196 [00:10<00:01, 18.84it/s] 90%|████████▉ | 176/196 [00:10<00:00, 21.50it/s] 91%|█████████▏| 179/196 [00:10<00:00, 21.77it/s] 93%|█████████▎| 182/196 [00:10<00:00, 23.69it/s] 94%|█████████▍| 185/196 [00:11<00:00, 24.18it/s] 96%|█████████▌| 188/196 [00:11<00:00, 18.34it/s] 97%|█████████▋| 191/196 [00:11<00:00, 18.70it/s] 99%|█████████▉| 194/196 [00:11<00:00, 19.98it/s]100%|██████████| 196/196 [00:11<00:00, 16.69it/s]
+
+类别 Ford_GT_Coupe_2006 图像特征维度: (512,)
+处理类别: Hyundai_Sonata_Hybrid_Sedan_2012
+类别 Hyundai_Sonata_Hybrid_Sedan_2012 图像特征维度: (512,)
+处理类别: Chrysler_Town_and_Country_Minivan_2012
+类别 Chrysler_Town_and_Country_Minivan_2012 图像特征维度: (512,)
+处理类别: GMC_Acadia_SUV_2012
+类别 GMC_Acadia_SUV_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Silverado_2500HD_Regular_Cab_2012
+类别 Chevrolet_Silverado_2500HD_Regular_Cab_2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz_Sprinter_Van_2012
+类别 Mercedes-Benz_Sprinter_Van_2012 图像特征维度: (512,)
+处理类别: Chevrolet_TrailBlazer_SS_2009
+类别 Chevrolet_TrailBlazer_SS_2009 图像特征维度: (512,)
+处理类别: Plymouth_Neon_Coupe_1999
+类别 Plymouth_Neon_Coupe_1999 图像特征维度: (512,)
+处理类别: Hyundai_Veloster_Hatchback_2012
+类别 Hyundai_Veloster_Hatchback_2012 图像特征维度: (512,)
+处理类别: Fisker_Karma_Sedan_2012
+类别 Fisker_Karma_Sedan_2012 图像特征维度: (512,)
+处理类别: Audi_S5_Convertible_2012
+类别 Audi_S5_Convertible_2012 图像特征维度: (512,)
+处理类别: Bentley_Continental_Supersports_Conv._Convertible_2012
+类别 Bentley_Continental_Supersports_Conv._Convertible_2012 图像特征维度: (512,)
+处理类别: Hyundai_Azera_Sedan_2012
+类别 Hyundai_Azera_Sedan_2012 图像特征维度: (512,)
+处理类别: Suzuki_SX4_Hatchback_2012
+类别 Suzuki_SX4_Hatchback_2012 图像特征维度: (512,)
+处理类别: Audi_TT_Hatchback_2011
+类别 Audi_TT_Hatchback_2011 图像特征维度: (512,)
+处理类别: Volvo_XC90_SUV_2007
+类别 Volvo_XC90_SUV_2007 图像特征维度: (512,)
+处理类别: Aston_Martin_Virage_Coupe_2012
+类别 Aston_Martin_Virage_Coupe_2012 图像特征维度: (512,)
+处理类别: Chevrolet_HHR_SS_2010
+类别 Chevrolet_HHR_SS_2010 图像特征维度: (512,)
+处理类别: Acura_TSX_Sedan_2012
+类别 Acura_TSX_Sedan_2012 图像特征维度: (512,)
+处理类别: Daewoo_Nubira_Wagon_2002
+类别 Daewoo_Nubira_Wagon_2002 图像特征维度: (512,)
+处理类别: Dodge_Durango_SUV_2007
+类别 Dodge_Durango_SUV_2007 图像特征维度: (512,)
+处理类别: Lincoln_Town_Car_Sedan_2011
+类别 Lincoln_Town_Car_Sedan_2011 图像特征维度: (512,)
+处理类别: BMW_1_Series_Coupe_2012
+类别 BMW_1_Series_Coupe_2012 图像特征维度: (512,)
+处理类别: Dodge_Challenger_SRT8_2011
+类别 Dodge_Challenger_SRT8_2011 图像特征维度: (512,)
+处理类别: Rolls-Royce_Ghost_Sedan_2012
+类别 Rolls-Royce_Ghost_Sedan_2012 图像特征维度: (512,)
+处理类别: Chrysler_Aspen_SUV_2009
+类别 Chrysler_Aspen_SUV_2009 图像特征维度: (512,)
+处理类别: GMC_Terrain_SUV_2012
+类别 GMC_Terrain_SUV_2012 图像特征维度: (512,)
+处理类别: HUMMER_H3T_Crew_Cab_2010
+类别 HUMMER_H3T_Crew_Cab_2010 图像特征维度: (512,)
+处理类别: Mercedes-Benz_300-Class_Convertible_1993
+类别 Mercedes-Benz_300-Class_Convertible_1993 图像特征维度: (512,)
+处理类别: Ford_Fiesta_Sedan_2012
+类别 Ford_Fiesta_Sedan_2012 图像特征维度: (512,)
+处理类别: Buick_Enclave_SUV_2012
+类别 Buick_Enclave_SUV_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Silverado_1500_Regular_Cab_2012
+类别 Chevrolet_Silverado_1500_Regular_Cab_2012 图像特征维度: (512,)
+处理类别: Suzuki_Kizashi_Sedan_2012
+类别 Suzuki_Kizashi_Sedan_2012 图像特征维度: (512,)
+处理类别: Toyota_Camry_Sedan_2012
+类别 Toyota_Camry_Sedan_2012 图像特征维度: (512,)
+处理类别: Aston_Martin_V8_Vantage_Coupe_2012
+类别 Aston_Martin_V8_Vantage_Coupe_2012 图像特征维度: (512,)
+处理类别: Chevrolet_Express_Cargo_Van_2007
+类别 Chevrolet_Express_Cargo_Van_2007 图像特征维度: (512,)
+处理类别: Dodge_Caliber_Wagon_2007
+类别 Dodge_Caliber_Wagon_2007 图像特征维度: (512,)
+处理类别: Cadillac_Escalade_EXT_Crew_Cab_2007
+类别 Cadillac_Escalade_EXT_Crew_Cab_2007 图像特征维度: (512,)
+处理类别: Audi_A5_Coupe_2012
+类别 Audi_A5_Coupe_2012 图像特征维度: (512,)
+处理类别: Dodge_Dakota_Club_Cab_2007
+类别 Dodge_Dakota_Club_Cab_2007 图像特征维度: (512,)
+处理类别: Acura_RL_Sedan_2012
+[2025-11-22 19:52:40] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 Acura_RL_Sedan_2012 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/196 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+  1%|          | 1/196 [00:23<1:17:56, 23.98s/it]  1%|          | 2/196 [00:52<1:26:33, 26.77s/it]  2%|▏         | 3/196 [01:16<1:22:28, 25.64s/it]处理类别: Ford_Focus_Sedan_2007
+[2025-11-22 19:52:43] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 19:52:46] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 19:52:49] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for Ford_Focus_Sedan_2007 category.
+推理前显存: 已分配=32.44GB, 已保留=32.80GB, 剩余=14.96GB
+[2025-11-22 19:52:52] [显存监控] 已分配=32.51GB, 已保留=33.72GB, 空闲=14.89GB
+[2025-11-22 19:52:55] [显存监控] 已分配=32.56GB, 已保留=33.72GB, 空闲=14.84GB
+[2025-11-22 19:52:58] [显存监控] 已分配=32.55GB, 已保留=33.72GB, 空闲=14.85GB
+[2025-11-22 19:53:01] [显存监控] 已分配=32.55GB, 已保留=33.72GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.72GB, 剩余=14.97GB
+MLLM description: The Ford Focus Sedan 2007 is a compact car with a sleek and aerodynamic design. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The Ford Focus has a low-slung profile with a long hood and short rear deck, giving it a sporty appearance. It features a prominent grille with the Ford logo at the center, flanked by sharp, angular headlights. The car has a set of five-spoke alloy wheels, which add to its modern look.
+
+2. **Color Patterns and Markings**: The images show the Ford Focus in three different colors: maroon, white, and silver. Each color variant has a glossy finish, reflecting light and emphasizing the car's curves. The maroon model has a bold and vibrant appearance, while the white and silver models have a more understated elegance.
+
+3. **Size and Proportions**: The Ford Focus is a compact sedan, measuring approximately 168 inches in length, 69 inches in width, and 56 inches in height. Its proportions are balanced, with a slightly longer wheelbase than its rivals, providing ample interior space. The car's stance is low and wide, enhancing its stability and handling.
+
+4. **Behavioral Characteristics
+类别 Ford_Focus_Sedan_2007 文本特征维度: (512,)
+描述: The Ford Focus Sedan 2007 is a compact car with a sleek and aerodynamic design. Here's a breakdown o...
+处理类别: Volvo_C30_Hatchback_2012
+[2025-11-22 19:53:04] [显存监控] 已分配=32.44GB, 已保留=33.72GB, 空闲=14.97GB
+[2025-11-22 19:53:07] [显存监控] 已分配=32.44GB, 已保留=33.72GB, 空闲=14.97GB
+[2025-11-22 19:53:10] [显存监控] 已分配=32.44GB, 已保留=33.72GB, 空闲=14.97GB
+[2025-11-22 19:53:13] [显存监控] 已分配=32.44GB, 已保留=33.72GB, 空闲=14.97GB
+wiki desc: Description for Volvo_C30_Hatchback_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.83GB, 剩余=14.94GB
+[2025-11-22 19:53:16] [显存监控] 已分配=32.75GB, 已保留=39.07GB, 空闲=14.65GB
+[2025-11-22 19:53:19] [显存监控] 已分配=32.66GB, 已保留=39.07GB, 空闲=14.74GB
+[2025-11-22 19:53:22] [显存监控] 已分配=32.66GB, 已保留=39.07GB, 空闲=14.74GB
+[2025-11-22 19:53:25] [显存监控] 已分配=32.72GB, 已保留=39.07GB, 空闲=14.68GB
+[2025-11-22 19:53:28] [显存监控] 已分配=32.67GB, 已保留=39.07GB, 空闲=14.73GB
+[2025-11-22 19:53:31] [显存监控] 已分配=32.68GB, 已保留=39.07GB, 空闲=14.72GB
+推理后显存: 已分配=32.44GB, 已保留=39.07GB, 剩余=14.97GB
+MLLM description: The Volvo C30 Hatchback 2012 is a compact car with a sporty and stylish design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The C30 has a sleek, aerodynamic body with sharp lines and curves. It features a prominent front grille with the Volvo logo, LED headlights, and a distinctive rear spoiler. The car also has alloy wheels, which enhance its sporty appearance.
+
+2. **Color Patterns and Markings**: The car in the first image is painted in a vibrant orange color, while the second image shows a silver model. The third image displays an orange car as well. The color patterns are consistent across all three images, with no additional markings or logos visible apart from the Volvo emblem and the "C30" badge on the rear.
+
+3. **Size and Proportions**: The C30 is a compact hatchback, smaller than a typical sedan but larger than a subcompact car. Its proportions are balanced, with a short wheelbase and a long hood, giving it a sporty stance. The side profile reveals a low-slung design, emphasizing its agility and handling capabilities.
+
+4. **Behavioral Characteristics**: As a vehicle, the C30 is
+类别 Volvo_C30_Hatchback_2012 文本特征维度: (512,)
+描述: The Volvo C30 Hatchback 2012 is a compact car with a sporty and stylish design. Here's a detailed de...
+处理类别: Bentley_Continental_GT_Coupe_2012
+[2025-11-22 19:53:34] [显存监控] 已分配=32.44GB, 已保留=39.07GB, 空闲=14.97GB
+[2025-11-22 19:53:37] [显存监控] 已分配=32.44GB, 已保留=39.07GB, 空闲=14.97GB
+[2025-11-22 19:53:40] [显存监控] 已分配=32.44GB, 已保留=39.07GB, 空闲=14.97GB
+wiki desc: Description for Bentley_Continental_GT_Coupe_2012 category.
+[2025-11-22 19:53:43] [显存监控] 已分配=32.44GB, 已保留=39.07GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.96GB
+[2025-11-22 19:53:46] [显存监控] 已分配=32.56GB, 已保留=34.23GB, 空闲=14.84GB
+[2025-11-22 19:53:49] [显存监控] 已分配=32.56GB, 已保留=34.23GB, 空闲=14.84GB
+[2025-11-22 19:53:52] [显存监控] 已分配=32.56GB, 已保留=34.23GB, 空闲=14.84GB
+[2025-11-22 19:53:55] [显存监控] 已分配=32.56GB, 已保留=34.23GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.23GB, 剩余=14.97GB
+MLLM description: The Bentley Continental GT Coupe 2012 is a luxury sports car known for its elegant design and performance. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Continental GT has a sleek, low-slung profile with a long hood and short rear deck, emphasizing its sporty character. Its signature grille, featuring the iconic Bentley "Flying B" emblem, is prominently displayed at the front. The car's body is smooth and aerodynamic, with sharp lines and curves that give it a modern yet timeless look.
+
+2. **Color Patterns and Markings**: The images showcase the car in three different colors: white, blue, and orange. The white model has a clean, classic appearance, while the blue one exudes a sense of sophistication and elegance. The orange model adds a vibrant touch, making it stand out against the backdrop. Each color highlights the car's contours and enhances its overall aesthetic appeal.
+
+3. **Size and Proportions**: The Continental GT is a mid-size luxury coupe, measuring approximately 4.7 meters in length. It has a balanced stance with a long wheelbase and short overhangs, contributing to its dynamic and agile appearance. The car's proportions are harmonious, with a wide stance
+类别 Bentley_Continental_GT_Coupe_2012 文本特征维度: (512,)
+描述: The Bentley Continental GT Coupe 2012 is a luxury sports car known for its elegant design and perfor...
+处理类别: GMC_Canyon_Extended_Cab_2012
+[2025-11-22 19:53:58] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+[2025-11-22 19:54:01] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+[2025-11-22 19:54:04] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+[2025-11-22 19:54:07] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+wiki desc: Description for GMC_Canyon_Extended_Cab_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.81GB, 剩余=14.94GB
+[2025-11-22 19:54:10] [显存监控] 已分配=32.67GB, 已保留=38.44GB, 空闲=14.73GB
+[2025-11-22 19:54:13] [显存监控] 已分配=32.65GB, 已保留=38.44GB, 空闲=14.75GB
+[2025-11-22 19:54:16] [显存监控] 已分配=32.66GB, 已保留=38.44GB, 空闲=14.75GB
+[2025-11-22 19:54:19] [显存监控] 已分配=32.66GB, 已保留=38.44GB, 空闲=14.74GB
+[2025-11-22 19:54:22] [显存监控] 已分配=32.69GB, 已保留=38.44GB, 空闲=14.71GB
+  2%|▏         | 4/196 [01:45<1:25:28, 26.71s/it]  3%|▎         | 5/196 [02:06<1:18:09, 24.55s/it]  3%|▎         | 6/196 [02:17<1:04:02, 20.23s/it]  4%|▎         | 7/196 [02:46<1:11:54, 22.83s/it][2025-11-22 19:54:25] [显存监控] 已分配=32.67GB, 已保留=38.44GB, 空闲=14.73GB
+推理后显存: 已分配=32.44GB, 已保留=38.44GB, 剩余=14.97GB
+MLLM description: The GMC Canyon Extended Cab 2012 is a mid-size pickup truck with a distinctive design. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The Canyon Extended Cab has a boxy yet sleek profile, with a prominent grille featuring the GMC logo. It has a single cab configuration, meaning it seats four passengers, with two doors and a single rear door. The bed is relatively short compared to full-size trucks.
+
+2. **Color Patterns and Markings**: The Canyon Extended Cab in the images is available in white, red, and black. The white model has a clean and simple appearance, while the red and black models have a more vibrant and bold look. The color patterns are consistent across all three images, with no additional markings or logos visible.
+
+3. **Size and Proportions**: The Canyon Extended Cab is smaller than full-size trucks, making it more maneuverable and easier to park. Its proportions are balanced, with a slightly longer hood and a shorter bed compared to full-size trucks. The tires appear to be standard-sized for a mid-size truck.
+
+4. **Behavioral Characteristics**: As a vehicle, the Canyon Extended Cab is designed for practicality and utility. It can be used for various purposes, such
+类别 GMC_Canyon_Extended_Cab_2012 文本特征维度: (512,)
+描述: The GMC Canyon Extended Cab 2012 is a mid-size pickup truck with a distinctive design. Here's a brea...
+处理类别: GMC_Savana_Van_2012
+[2025-11-22 19:54:28] [显存监控] 已分配=32.44GB, 已保留=38.44GB, 空闲=14.97GB
+[2025-11-22 19:54:31] [显存监控] 已分配=32.44GB, 已保留=38.44GB, 空闲=14.97GB
+[2025-11-22 19:54:34] [显存监控] 已分配=32.44GB, 已保留=38.44GB, 空闲=14.97GB
+wiki desc: Description for GMC_Savana_Van_2012 category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-22 19:54:37] [显存监控] 已分配=32.54GB, 已保留=32.89GB, 空闲=14.86GB
+[2025-11-22 19:54:40] [显存监控] 已分配=32.59GB, 已保留=35.54GB, 空闲=14.81GB
+[2025-11-22 19:54:43] [显存监控] 已分配=32.59GB, 已保留=35.54GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=35.54GB, 剩余=14.97GB
+MLLM description: The GMC Savana Van 2012 is a large van with a boxy shape, featuring a prominent rear cargo area. It has a white body color with black trim around the windows and roof. The vehicle's size is substantial, with a long wheelbase and high ground clearance. The front grille displays the GMC logo, and the side mirrors are integrated into the door panels. The rear doors have sliding mechanisms, and the tailgate is hinged at the top. The tires are standard-sized, and the wheels have a simple design. The vehicle appears to be designed for commercial or personal use, offering ample space for passengers or cargo.
+[2025-11-22 19:54:47] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+类别 GMC_Savana_Van_2012 文本特征维度: (512,)
+描述: The GMC Savana Van 2012 is a large van with a boxy shape, featuring a prominent rear cargo area. It ...
+处理类别: Mercedes-Benz_E-Class_Sedan_2012
+[2025-11-22 19:54:50] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+[2025-11-22 19:54:53] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+[2025-11-22 19:54:56] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+wiki desc: Description for Mercedes-Benz_E-Class_Sedan_2012 category.
+推理前显存: 已分配=32.49GB, 已保留=32.84GB, 剩余=14.92GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 7.94 GiB. GPU 0 has a total capacity of 47.40 GiB of which 5.19 GiB is free. Including non-PyTorch memory, this process has 42.21 GiB memory in use. Of the allocated memory 41.55 GiB is allocated by PyTorch, and 359.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Mercedes-Benz_E-Class_Sedan_2012 文本特征维度: (512,)
+描述: Description for Mercedes-Benz_E-Class_Sedan_2012 category....
+处理类别: BMW_Z4_Convertible_2012
+[2025-11-22 19:54:59] [显存监控] 已分配=32.44GB, 已保留=41.90GB, 空闲=14.97GB
+[2025-11-22 19:55:02] [显存监控] 已分配=32.44GB, 已保留=41.90GB, 空闲=14.97GB
+[2025-11-22 19:55:05] [显存监控] 已分配=32.44GB, 已保留=41.90GB, 空闲=14.97GB
+[2025-11-22 19:55:08] [显存监控] 已分配=32.44GB, 已保留=41.90GB, 空闲=14.97GB
+wiki desc: Description for BMW_Z4_Convertible_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.82GB, 剩余=14.94GB
+[2025-11-22 19:55:11] [显存监控] 已分配=32.73GB, 已保留=38.25GB, 空闲=14.67GB
+[2025-11-22 19:55:14] [显存监控] 已分配=32.69GB, 已保留=38.25GB, 空闲=14.71GB
+[2025-11-22 19:55:17] [显存监控] 已分配=32.65GB, 已保留=38.25GB, 空闲=14.75GB
+[2025-11-22 19:55:20] [显存监控] 已分配=32.70GB, 已保留=38.25GB, 空闲=14.70GB
+[2025-11-22 19:55:23] [显存监控] 已分配=32.66GB, 已保留=38.25GB, 空闲=14.74GB
+[2025-11-22 19:55:26] [显存监控] 已分配=32.67GB, 已保留=38.25GB, 空闲=14.73GB
+推理后显存: 已分配=32.44GB, 已保留=38.25GB, 剩余=14.97GB
+MLLM description: The BMW Z4 Convertible 2012 is a sleek, two-door convertible with a sporty design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car has a long hood, short rear deck, and a low-slung profile, emphasizing its sporty character. The front grille is large and prominent, featuring the iconic BMW kidney shape. The headlights are angular and sharp, contributing to the car's aggressive look. The side profile showcases a smooth, flowing line from the front fender to the rear, accentuated by the soft, curved roofline. The rear end is compact and balanced, with a subtle spoiler integrated into the trunk lid.
+
+2. **Color Patterns and Markings**: The car in the images is painted in a vibrant red color, which stands out against the backdrop. The paint appears glossy, reflecting light and enhancing the car's polished appearance. There are no visible markings or logos on the bodywork, except for the BMW badge on the front grille and the model designation on the rear.
+
+3. **Size and Proportions**: The Z4 Convertible is a mid-size sports car, measuring approximately 4.6 meters in length. It has a relatively short wheelbase, which contributes to its agile handling
+类别 BMW_Z4_Convertible_2012 文本特征维度: (512,)
+描述: The BMW Z4 Convertible 2012 is a sleek, two-door convertible with a sporty design. Here's a detailed...
+处理类别: Mazda_Tribute_SUV_2011
+[2025-11-22 19:55:29] [显存监控] 已分配=32.44GB, 已保留=38.25GB, 空闲=14.97GB
+[2025-11-22 19:55:32] [显存监控] 已分配=32.44GB, 已保留=38.25GB, 空闲=14.97GB
+[2025-11-22 19:55:35] [显存监控] 已分配=32.44GB, 已保留=38.25GB, 空闲=14.97GB
+wiki desc: Description for Mazda_Tribute_SUV_2011 category.
+推理前显存: 已分配=32.47GB, 已保留=32.81GB, 剩余=14.94GB
+[2025-11-22 19:55:38] [显存监控] 已分配=32.61GB, 已保留=32.95GB, 空闲=14.79GB
+[2025-11-22 19:55:41] [显存监控] 已分配=32.67GB, 已保留=39.86GB, 空闲=14.73GB
+[2025-11-22 19:55:44] [显存监控] 已分配=32.67GB, 已保留=39.87GB, 空闲=14.73GB
+[2025-11-22 19:55:47] [显存监控] 已分配=32.68GB, 已保留=39.87GB, 空闲=14.73GB
+[2025-11-22 19:55:50] [显存监控] 已分配=32.68GB, 已保留=39.87GB, 空闲=14.72GB
+[2025-11-22 19:55:53] [显存监控] 已分配=32.69GB, 已保留=39.87GB, 空闲=14.71GB
+[2025-11-22 19:55:56] [显存监控] 已分配=32.70GB, 已保留=39.87GB, 空闲=14.70GB
+推理后显存: 已分配=32.44GB, 已保留=39.87GB, 剩余=14.97GB
+  4%|▍         | 8/196 [03:15<1:18:08, 24.94s/it]  5%|▍         | 9/196 [03:41<1:18:59, 25.35s/it]  5%|▌         | 10/196 [03:53<1:05:54, 21.26s/it]  6%|▌         | 11/196 [04:11<1:02:19, 20.21s/it]MLLM description: The Mazda Tribute SUV 2011 is a compact crossover SUV with a boxy yet aerodynamic design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Tribute SUV has a prominent front grille with the Mazda logo, sleek headlights, and a robust bumper. It features a roof rack, which adds to its versatility. The side profile showcases a smooth, flowing line with a slightly raised roofline, giving it a sporty appearance.
+
+2. **Color Patterns and Markings**: The vehicle in the first image is blue, while the second and third images show white and gray versions respectively. The color variations are subtle, with no distinct markings or patterns.
+
+3. **Size and Proportions**: The Tribute SUV is compact compared to larger SUVs, making it ideal for urban driving. Its proportions are balanced, with a short wheelbase and a long hood, providing ample interior space.
+
+4. **Behavioral Characteristics**: As an SUV, the Tribute is designed for off-road capability, though its performance in such conditions isn't explicitly shown in these images. It's likely equipped with all-wheel drive, as many SUVs are.
+
+5. **Unique Identifying Traits**: The Tribute SUV stands out due to its distinctive grille, roof rack, and
+类别 Mazda_Tribute_SUV_2011 文本特征维度: (512,)
+描述: The Mazda Tribute SUV 2011 is a compact crossover SUV with a boxy yet aerodynamic design. Here's a d...
+处理类别: Honda_Accord_Sedan_2012
+[2025-11-22 19:55:59] [显存监控] 已分配=32.44GB, 已保留=39.87GB, 空闲=14.97GB
+[2025-11-22 19:56:02] [显存监控] 已分配=32.44GB, 已保留=39.87GB, 空闲=14.97GB
+[2025-11-22 19:56:05] [显存监控] 已分配=32.44GB, 已保留=39.87GB, 空闲=14.97GB
+wiki desc: Description for Honda_Accord_Sedan_2012 category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:56:08] [显存监控] 已分配=32.52GB, 已保留=32.87GB, 空闲=14.88GB
+[2025-11-22 19:56:11] [显存监控] 已分配=32.56GB, 已保留=34.57GB, 空闲=14.84GB
+[2025-11-22 19:56:14] [显存监控] 已分配=32.57GB, 已保留=34.57GB, 空闲=14.83GB
+[2025-11-22 19:56:17] [显存监控] 已分配=32.58GB, 已保留=34.57GB, 空闲=14.83GB
+[2025-11-22 19:56:20] [显存监控] 已分配=32.58GB, 已保留=34.57GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.57GB, 剩余=14.97GB
+MLLM description: The Honda Accord Sedan 2012 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The vehicle has a sleek, aerodynamic design with a prominent grille featuring the Honda emblem, sharp headlights, and a smooth, curved body. The rear showcases a clean, integrated taillight design.
+
+2. **Color Patterns and Markings**: The car is available in various colors, including the metallic gray shown in Image 1, a light blue in Image 2, and black in Image 3. The color patterns are consistent across all images, with no visible markings or logos other than the Honda emblem.
+
+3. **Size and Proportions**: The Accord Sedan 2012 is a mid-size sedan, offering a balanced size between compact and full-size models. It appears to have a spacious interior and a moderate trunk capacity, suitable for family use. The proportions are harmonious, with a long hood and short overhangs, contributing to its elegant appearance.
+
+4. **Behavioral Characteristics**: As a sedan, it is designed for comfortable cruising and practicality rather than high performance. The behavior would be smooth and efficient, with a focus on passenger comfort and fuel efficiency.
+
+5. **Unique Identifying Traits**: The Accord Sedan
+类别 Honda_Accord_Sedan_2012 文本特征维度: (512,)
+描述: The Honda Accord Sedan 2012 exhibits several distinctive features:
+
+1. **Distinctive Physical Featur...
+处理类别: Chevrolet_Tahoe_Hybrid_SUV_2012
+[2025-11-22 19:56:23] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+[2025-11-22 19:56:26] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+[2025-11-22 19:56:29] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+[2025-11-22 19:56:32] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+wiki desc: Description for Chevrolet_Tahoe_Hybrid_SUV_2012 category.
+图像过大 (2100x1575)，缩小到 (1536x1152) 以节省显存
+推理前显存: 已分配=32.48GB, 已保留=32.83GB, 剩余=14.92GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 1.58 GiB. GPU 0 has a total capacity of 47.40 GiB of which 636.31 MiB is free. Including non-PyTorch memory, this process has 46.77 GiB memory in use. Of the allocated memory 46.07 GiB is allocated by PyTorch, and 404.65 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Chevrolet_Tahoe_Hybrid_SUV_2012 文本特征维度: (512,)
+描述: Description for Chevrolet_Tahoe_Hybrid_SUV_2012 category....
+处理类别: Nissan_240SX_Coupe_1998
+[2025-11-22 19:56:35] [显存监控] 已分配=32.44GB, 已保留=46.46GB, 空闲=14.97GB
+[2025-11-22 19:56:38] [显存监控] 已分配=32.44GB, 已保留=46.46GB, 空闲=14.97GB
+[2025-11-22 19:56:41] [显存监控] 已分配=32.44GB, 已保留=46.46GB, 空闲=14.97GB
+[2025-11-22 19:56:44] [显存监控] 已分配=32.44GB, 已保留=46.46GB, 空闲=14.97GB
+wiki desc: Description for Nissan_240SX_Coupe_1998 category.
+推理前显存: 已分配=32.44GB, 已保留=32.81GB, 剩余=14.96GB
+[2025-11-22 19:56:47] [显存监控] 已分配=32.48GB, 已保留=33.18GB, 空闲=14.92GB
+[2025-11-22 19:56:50] [显存监控] 已分配=32.49GB, 已保留=33.18GB, 空闲=14.92GB
+推理后显存: 已分配=32.44GB, 已保留=33.18GB, 剩余=14.97GB
+MLLM description: The Nissan_240SX_Coupe_1998 is a sleek, two-door coupe with a sporty design. Its distinctive physical features include a long hood, short rear deck, and a low-slung profile. The car's color pattern is a solid, metallic black, which contrasts sharply against the natural backdrop in Image 1. The size and proportions are compact yet elegant, with a balanced stance and aerodynamic lines. The behavioral characteristic of this car would be its performance capabilities, as it was designed for speed and agility. Unique identifying traits include the "240SX" badge on the rear, the specific headlight shape, and the overall silhouette that sets it apart from other coupes of the era.
+类别 Nissan_240SX_Coupe_1998 文本特征维度: (512,)
+描述: The Nissan_240SX_Coupe_1998 is a sleek, two-door coupe with a sporty design. Its distinctive physica...
+处理类别: Jeep_Wrangler_SUV_2012
+[2025-11-22 19:56:53] [显存监控] 已分配=32.44GB, 已保留=33.18GB, 空闲=14.97GB
+[2025-11-22 19:56:56] [显存监控] 已分配=32.44GB, 已保留=33.18GB, 空闲=14.97GB
+[2025-11-22 19:56:59] [显存监控] 已分配=32.44GB, 已保留=33.18GB, 空闲=14.97GB
+[2025-11-22 19:57:02] [显存监控] 已分配=32.44GB, 已保留=33.18GB, 空闲=14.97GB
+wiki desc: Description for Jeep_Wrangler_SUV_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.81GB, 剩余=14.94GB
+[2025-11-22 19:57:05] [显存监控] 已分配=32.74GB, 已保留=38.62GB, 空闲=14.66GB
+[2025-11-22 19:57:08] [显存监控] 已分配=32.65GB, 已保留=38.62GB, 空闲=14.75GB
+[2025-11-22 19:57:11] [显存监控] 已分配=32.66GB, 已保留=38.62GB, 空闲=14.74GB
+[2025-11-22 19:57:14] [显存监控] 已分配=32.66GB, 已保留=38.62GB, 空闲=14.74GB
+[2025-11-22 19:57:17] [显存监控] 已分配=32.67GB, 已保留=38.62GB, 空闲=14.74GB
+[2025-11-22 19:57:20] [显存监控] 已分配=32.67GB, 已保留=38.62GB, 空闲=14.73GB
+推理后显存: 已分配=32.44GB, 已保留=38.62GB, 剩余=14.97GB
+  6%|▌         | 12/196 [04:40<1:09:52, 22.79s/it]  7%|▋         | 13/196 [04:54<1:01:35, 20.20s/it]  7%|▋         | 14/196 [05:17<1:04:02, 21.11s/it]  8%|▊         | 15/196 [05:45<1:09:49, 23.15s/it]MLLM description: The Jeep Wrangler SUV 2012 is a compact off-road vehicle known for its rugged design and versatility. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Jeep Wrangler SUV 2012 is characterized by its boxy shape, large wheels, and prominent front grille with vertical slats. It has a raised suspension, allowing it to handle rough terrain effectively. The vehicle also features a spare tire mounted on the rear door, which is a hallmark of the Wrangler model.
+
+2. **Color Patterns and Markings**: The color patterns in the images vary, with one being orange, another green, and the third silver. These colors are bold and eye-catching, reflecting the adventurous spirit associated with the Wrangler brand. The vehicles appear clean and well-maintained, with no visible damage or wear.
+
+3. **Size and Proportions**: The Wrangler SUV 2012 is relatively small compared to full-sized SUVs, making it more maneuverable and easier to park. Despite its compact size, it offers a spacious interior and cargo area, thanks to its modular design. The proportions are balanced, with a short hood and a long wheelbase, providing good visibility and stability.
+
+4.
+类别 Jeep_Wrangler_SUV_2012 文本特征维度: (512,)
+描述: The Jeep Wrangler SUV 2012 is a compact off-road vehicle known for its rugged design and versatility...
+处理类别: Chevrolet_Silverado_1500_Extended_Cab_2012
+[2025-11-22 19:57:23] [显存监控] 已分配=32.44GB, 已保留=38.62GB, 空闲=14.97GB
+[2025-11-22 19:57:26] [显存监控] 已分配=32.44GB, 已保留=38.62GB, 空闲=14.97GB
+[2025-11-22 19:57:29] [显存监控] 已分配=32.44GB, 已保留=38.62GB, 空闲=14.97GB
+[2025-11-22 19:57:32] [显存监控] 已分配=32.44GB, 已保留=38.62GB, 空闲=14.97GB
+wiki desc: Description for Chevrolet_Silverado_1500_Extended_Cab_2012 category.
+图像过大 (2304x1728)，缩小到 (1536x1152) 以节省显存
+推理前显存: 已分配=32.48GB, 已保留=32.87GB, 剩余=14.92GB
+[2025-11-22 19:57:35] [显存监控] 已分配=32.69GB, 已保留=33.04GB, 空闲=14.71GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 1.63 GiB. GPU 0 has a total capacity of 47.40 GiB of which 194.31 MiB is free. Including non-PyTorch memory, this process has 47.20 GiB memory in use. Of the allocated memory 46.50 GiB is allocated by PyTorch, and 403.97 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Chevrolet_Silverado_1500_Extended_Cab_2012 文本特征维度: (512,)
+描述: Description for Chevrolet_Silverado_1500_Extended_Cab_2012 category....
+处理类别: Honda_Accord_Coupe_2012
+[2025-11-22 19:57:38] [显存监控] 已分配=32.44GB, 已保留=46.89GB, 空闲=14.97GB
+[2025-11-22 19:57:41] [显存监控] 已分配=32.44GB, 已保留=46.89GB, 空闲=14.97GB
+[2025-11-22 19:57:44] [显存监控] 已分配=32.44GB, 已保留=46.89GB, 空闲=14.97GB
+wiki desc: Description for Honda_Accord_Coupe_2012 category.
+推理前显存: 已分配=32.44GB, 已保留=32.83GB, 剩余=14.96GB
+[2025-11-22 19:57:47] [显存监控] 已分配=32.49GB, 已保留=33.42GB, 空闲=14.91GB
+[2025-11-22 19:57:50] [显存监控] 已分配=32.51GB, 已保留=33.42GB, 空闲=14.89GB
+[2025-11-22 19:57:53] [显存监控] 已分配=32.51GB, 已保留=33.42GB, 空闲=14.89GB
+[2025-11-22 19:57:56] [显存监控] 已分配=32.51GB, 已保留=33.42GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.42GB, 剩余=14.97GB
+MLLM description: The Honda Accord Coupe 2012 is a sleek, two-door coupe with a sporty yet elegant design. Its distinctive physical features include a long hood, short rear deck, and a low-slung profile. The front end showcases a prominent grille with the Honda emblem, flanked by sharp, angular headlights. The side profile reveals smooth lines, a gently sloping roofline, and alloy wheels that enhance its dynamic appearance. The rear features a compact design with integrated taillights and a subtle spoiler.
+
+In terms of color patterns and markings, the car in image 1 appears to have a metallic gray finish, while the one in image 2 has a darker gray or silver tone. Both cars exhibit a clean and polished look, with no visible blemishes or damage.
+
+The size and proportions of the Honda Accord Coupe are compact yet spacious enough to accommodate four passengers comfortably. It's designed for urban driving, offering a balance between style and practicality.
+
+Behaviorally, as a vehicle, it would exhibit typical car behaviors such as acceleration, braking, steering, and handling. However, these actions are not depicted in the images.
+
+Unique identifying traits include the coupe body style, the specific grille design, the shape of the headlights, and the overall silhouette. These features
+类别 Honda_Accord_Coupe_2012 文本特征维度: (512,)
+描述: The Honda Accord Coupe 2012 is a sleek, two-door coupe with a sporty yet elegant design. Its distinc...
+处理类别: Ford_Freestar_Minivan_2007
+[2025-11-22 19:57:59] [显存监控] 已分配=32.44GB, 已保留=33.42GB, 空闲=14.97GB
+[2025-11-22 19:58:02] [显存监控] 已分配=32.44GB, 已保留=33.42GB, 空闲=14.97GB
+[2025-11-22 19:58:05] [显存监控] 已分配=32.44GB, 已保留=33.42GB, 空闲=14.97GB
+[2025-11-22 19:58:08] [显存监控] 已分配=32.44GB, 已保留=33.42GB, 空闲=14.97GB
+wiki desc: Description for Ford_Freestar_Minivan_2007 category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.94GB
+[2025-11-22 19:58:11] [显存监控] 已分配=32.67GB, 已保留=36.30GB, 空闲=14.74GB
+[2025-11-22 19:58:14] [显存监控] 已分配=32.60GB, 已保留=36.30GB, 空闲=14.80GB
+[2025-11-22 19:58:17] [显存监控] 已分配=32.61GB, 已保留=36.30GB, 空闲=14.79GB
+[2025-11-22 19:58:20] [显存监控] 已分配=32.62GB, 已保留=36.30GB, 空闲=14.78GB
+[2025-11-22 19:58:23] [显存监控] 已分配=32.62GB, 已保留=36.30GB, 空闲=14.78GB
+[2025-11-22 19:58:26] [显存监控] 已分配=32.63GB, 已保留=36.30GB, 空闲=14.77GB
+推理后显存: 已分配=32.44GB, 已保留=36.30GB, 剩余=14.97GB
+MLLM description: The Ford Freestar Minivan 2007 is a large family vehicle with a boxy shape, designed to accommodate multiple passengers and cargo. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Freestar has a prominent front grille with the Ford logo at its center, flanked by rectangular headlights. The body is long and wide, with a high roofline and a slightly sloping rear end. It features sliding doors on both sides, which are characteristic of minivans, allowing easy access to the interior.
+
+2. **Color Patterns and Markings**: The Freestar in the first image is painted in a light blue color, while the second image shows a maroon-colored model. The third image displays a grayish-silver variant. These colors are typical for minivans, offering a range of options for buyers.
+
+3. **Size and Proportions**: The Freestar is a mid-size minivan, larger than a compact car but smaller than an SUV. Its length is considerable, providing ample space inside for passengers and luggage. The proportions are balanced, with a strong emphasis on functionality over aesthetics.
+
+4. **Behavioral Characteristics**: As a minivan, the Freestar is designed for practicality and comfort. It is likely
+类别 Ford_Freestar_Minivan_2007 文本特征维度: (512,)
+描述: The Ford Freestar Minivan 2007 is a large family vehicle with a boxy shape, designed to accommodate ...
+处理类别: FIAT_500_Abarth_2012
+[2025-11-22 19:58:29] [显存监控] 已分配=32.44GB, 已保留=36.30GB, 空闲=14.97GB
+[2025-11-22 19:58:32] [显存监控] 已分配=32.44GB, 已保留=36.30GB, 空闲=14.97GB
+[2025-11-22 19:58:35] [显存监控] 已分配=32.44GB, 已保留=36.30GB, 空闲=14.97GB
+wiki desc: Description for FIAT_500_Abarth_2012 category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+  8%|▊         | 16/196 [06:10<1:10:55, 23.64s/it]  9%|▊         | 17/196 [06:22<59:56, 20.09s/it]    9%|▉         | 18/196 [06:52<1:08:41, 23.16s/it] 10%|▉         | 19/196 [07:06<1:00:23, 20.47s/it][2025-11-22 19:58:38] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-22 19:58:41] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-22 19:58:44] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-22 19:58:47] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-22 19:58:50] [显存监控] 已分配=32.57GB, 已保留=34.19GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.19GB, 剩余=14.97GB
+MLLM description: The FIAT_500_Abarth_2012 is a compact, sporty hatchback with a distinctive design. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The car has a low-slung profile, emphasizing its sporty character. It features a prominent front grille with the Abarth badge, a sleek aerodynamic body, and a rear spoiler for added downforce.
+
+2. **Color Patterns and Markings**: The car is predominantly black with red accents, including a red stripe along the side, red side mirrors, and red brake calipers. These vibrant details contrast sharply against the dark body, making it visually striking.
+
+3. **Size and Proportions**: The FIAT_500_Abarth_2012 is compact in size, designed to maximize agility and handling. Its proportions are balanced, with short overhangs and a wide stance, enhancing its sporty appearance.
+
+4. **Behavioral Characteristics**: While not directly observable in the images, the Abarth model is known for its performance-oriented tuning, which includes a more powerful engine compared to standard models. This suggests a higher top speed and acceleration capability.
+
+5. **Unique Identifying Traits**: The A
+类别 FIAT_500_Abarth_2012 文本特征维度: (512,)
+描述: The FIAT_500_Abarth_2012 is a compact, sporty hatchback with a distinctive design. Here's a breakdow...
+处理类别: Ford_Edge_SUV_2012
+[2025-11-22 19:58:53] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+[2025-11-22 19:58:56] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+[2025-11-22 19:58:59] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+wiki desc: Description for Ford_Edge_SUV_2012 category.
+图像过大 (1598x1104)，缩小到 (1536x1061) 以节省显存
+[2025-11-22 19:59:02] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+推理前显存: 已分配=32.48GB, 已保留=32.91GB, 剩余=14.92GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 1.64 GiB. GPU 0 has a total capacity of 47.40 GiB of which 150.31 MiB is free. Including non-PyTorch memory, this process has 47.25 GiB memory in use. Of the allocated memory 46.55 GiB is allocated by PyTorch, and 396.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Ford_Edge_SUV_2012 文本特征维度: (512,)
+描述: Description for Ford_Edge_SUV_2012 category....
+处理类别: AM_General_Hummer_SUV_2000
+[2025-11-22 19:59:05] [显存监控] 已分配=32.44GB, 已保留=46.94GB, 空闲=14.97GB
+[2025-11-22 19:59:08] [显存监控] 已分配=32.44GB, 已保留=46.94GB, 空闲=14.97GB
+[2025-11-22 19:59:11] [显存监控] 已分配=32.44GB, 已保留=46.94GB, 空闲=14.97GB
+[2025-11-22 19:59:14] [显存监控] 已分配=32.44GB, 已保留=46.94GB, 空闲=14.97GB
+wiki desc: Description for AM_General_Hummer_SUV_2000 category.
+推理前显存: 已分配=32.46GB, 已保留=32.83GB, 剩余=14.94GB
+[2025-11-22 19:59:17] [显存监控] 已分配=32.57GB, 已保留=32.92GB, 空闲=14.84GB
+[2025-11-22 19:59:20] [显存监控] 已分配=32.62GB, 已保留=36.78GB, 空闲=14.79GB
+[2025-11-22 19:59:23] [显存监控] 已分配=32.62GB, 已保留=36.78GB, 空闲=14.78GB
+[2025-11-22 19:59:26] [显存监控] 已分配=32.62GB, 已保留=36.78GB, 空闲=14.78GB
+[2025-11-22 19:59:29] [显存监控] 已分配=32.68GB, 已保留=36.78GB, 空闲=14.72GB
+[2025-11-22 19:59:32] [显存监控] 已分配=32.64GB, 已保留=36.78GB, 空闲=14.76GB
+推理后显存: 已分配=32.44GB, 已保留=36.78GB, 剩余=14.97GB
+MLLM description: The AM_General_Hummer_SUV_2000 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The Hummer SUVs are characterized by their boxy shape, large tires, and prominent front grille with vertical slats. The vehicle in image 1 has a bright yellow color, while the one in image 2 is dark green with a rugged appearance, suggesting it might have been used off-road or in challenging terrains.
+
+2. **Color Patterns and Markings**: The first vehicle in image 1 is uniformly bright yellow, while the second vehicle in image 2 has a dark green body with a lighter-colored interior. The third vehicle in image 3 is white with black accents, including a black roof and black wheels.
+
+3. **Size and Proportions**: All three vehicles share a large size typical of SUVs, with a high ground clearance and a robust build. The vehicles appear to be of similar proportions, indicating they belong to the same model family.
+
+4. **Behavioral Characteristics**: As these are vehicles, their behavior is not directly observable in the images. However, their design suggests they are built for off-road capabilities, comfort, and utility, which could imply a certain level of ruggedness and durability.
+
+5.
+类别 AM_General_Hummer_SUV_2000 文本特征维度: (512,)
+描述: The AM_General_Hummer_SUV_2000 exhibits several distinctive features:
+
+1. **Distinctive Physical Fea...
+处理类别: Jeep_Compass_SUV_2012
+[2025-11-22 19:59:35] [显存监控] 已分配=32.44GB, 已保留=36.78GB, 空闲=14.97GB
+[2025-11-22 19:59:38] [显存监控] 已分配=32.44GB, 已保留=36.78GB, 空闲=14.97GB
+[2025-11-22 19:59:41] [显存监控] 已分配=32.44GB, 已保留=36.78GB, 空闲=14.97GB
+[2025-11-22 19:59:44] [显存监控] 已分配=32.44GB, 已保留=36.78GB, 空闲=14.97GB
+wiki desc: Description for Jeep_Compass_SUV_2012 category.
+图像过大 (1920x1280)，缩小到 (1536x1024) 以节省显存
+推理前显存: 已分配=32.49GB, 已保留=32.85GB, 剩余=14.92GB
+[2025-11-22 19:59:47] [显存监控] 已分配=32.71GB, 已保留=33.08GB, 空闲=14.69GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 8.04 GiB. GPU 0 has a total capacity of 47.40 GiB of which 5.06 GiB is free. Including non-PyTorch memory, this process has 42.33 GiB memory in use. Of the allocated memory 41.65 GiB is allocated by PyTorch, and 371.78 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Jeep_Compass_SUV_2012 文本特征维度: (512,)
+描述: Description for Jeep_Compass_SUV_2012 category....
+处理类别: Dodge_Durango_SUV_2012
+[2025-11-22 19:59:50] [显存监控] 已分配=32.44GB, 已保留=42.02GB, 空闲=14.97GB
+[2025-11-22 19:59:53] [显存监控] 已分配=32.44GB, 已保留=42.02GB, 空闲=14.97GB
+[2025-11-22 19:59:56] [显存监控] 已分配=32.44GB, 已保留=42.02GB, 空闲=14.97GB
+wiki desc: Description for Dodge_Durango_SUV_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.82GB, 剩余=14.94GB
+[2025-11-22 19:59:59] [显存监控] 已分配=32.71GB, 已保留=37.41GB, 空闲=14.70GB
+[2025-11-22 20:00:02] [显存监控] 已分配=32.63GB, 已保留=37.41GB, 空闲=14.77GB
+[2025-11-22 20:00:05] [显存监控] 已分配=32.63GB, 已保留=37.41GB, 空闲=14.77GB
+[2025-11-22 20:00:08] [显存监控] 已分配=32.64GB, 已保留=37.41GB, 空闲=14.76GB
+[2025-11-22 20:00:11] [显存监控] 已分配=32.64GB, 已保留=37.41GB, 空闲=14.76GB
+[2025-11-22 20:00:14] [显存监控] 已分配=32.65GB, 已保留=37.41GB, 空闲=14.75GB
+推理后显存: 已分配=32.44GB, 已保留=37.41GB, 剩余=14.97GB
+ 10%|█         | 20/196 [07:34<1:06:18, 22.61s/it] 11%|█         | 21/196 [07:46<56:36, 19.41s/it]   11%|█         | 22/196 [07:59<51:06, 17.63s/it] 12%|█▏        | 23/196 [08:27<59:52, 20.77s/it]MLLM description: The Dodge Durango SUV 2012 is a large, robust vehicle with a boxy yet elegant design. Its distinctive features include a prominent grille with a chrome finish, sleek headlights, and a bold front bumper. The side profile showcases smooth lines, a high roofline, and large wheels with multi-spoke alloy rims. The rear design is equally striking, featuring a wide stance, a prominent rear bumper, and dual exhaust outlets.
+
+The color patterns in the images vary, with the first image showing a silver metallic finish, the second image displaying a white exterior, and the third image presenting a black exterior. These colors highlight the versatility of the Durango's design and appeal to different consumer preferences.
+
+The size and proportions of the Durango are substantial, making it an ideal choice for families or those seeking ample space for cargo. It is larger than most mid-size SUVs, offering a comfortable ride and ample seating capacity.
+
+There are no behavioral characteristics mentioned as the images are static representations of the vehicle. However, the Durango's design suggests a focus on functionality, comfort, and style, which are likely reflected in its driving experience.
+
+The unique identifying traits of the Durango 2012 include its distinctive grille, headlight shape, and overall body structure
+类别 Dodge_Durango_SUV_2012 文本特征维度: (512,)
+描述: The Dodge Durango SUV 2012 is a large, robust vehicle with a boxy yet elegant design. Its distinctiv...
+处理类别: Bugatti_Veyron_16.4_Convertible_2009
+[2025-11-22 20:00:17] [显存监控] 已分配=32.44GB, 已保留=37.41GB, 空闲=14.97GB
+[2025-11-22 20:00:20] [显存监控] 已分配=32.44GB, 已保留=37.41GB, 空闲=14.97GB
+[2025-11-22 20:00:23] [显存监控] 已分配=32.44GB, 已保留=37.41GB, 空闲=14.97GB
+wiki desc: Description for Bugatti_Veyron_16.4_Convertible_2009 category.
+[2025-11-22 20:00:26] [显存监控] 已分配=32.44GB, 已保留=37.41GB, 空闲=14.97GB
+推理前显存: 已分配=32.49GB, 已保留=32.86GB, 剩余=14.91GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 8.37 GiB. GPU 0 has a total capacity of 47.40 GiB of which 4.71 GiB is free. Including non-PyTorch memory, this process has 42.69 GiB memory in use. Of the allocated memory 42.02 GiB is allocated by PyTorch, and 369.42 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Bugatti_Veyron_16.4_Convertible_2009 文本特征维度: (512,)
+描述: Description for Bugatti_Veyron_16.4_Convertible_2009 category....
+处理类别: Chevrolet_Impala_Sedan_2007
+[2025-11-22 20:00:29] [显存监控] 已分配=32.44GB, 已保留=42.38GB, 空闲=14.97GB
+[2025-11-22 20:00:32] [显存监控] 已分配=32.44GB, 已保留=42.38GB, 空闲=14.97GB
+[2025-11-22 20:00:35] [显存监控] 已分配=32.44GB, 已保留=42.38GB, 空闲=14.97GB
+wiki desc: Description for Chevrolet_Impala_Sedan_2007 category.
+图像过大 (4608x3456)，缩小到 (1536x1152) 以节省显存
+[2025-11-22 20:00:38] [显存监控] 已分配=32.44GB, 已保留=42.38GB, 空闲=14.97GB
+图像过大 (1600x1200)，缩小到 (1536x1152) 以节省显存
+推理前显存: 已分配=32.52GB, 已保留=32.91GB, 剩余=14.88GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 22.91 GiB. GPU 0 has a total capacity of 47.40 GiB of which 11.47 GiB is free. Including non-PyTorch memory, this process has 35.92 GiB memory in use. Of the allocated memory 35.24 GiB is allocated by PyTorch, and 379.34 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Chevrolet_Impala_Sedan_2007 文本特征维度: (512,)
+描述: Description for Chevrolet_Impala_Sedan_2007 category....
+处理类别: Chevrolet_Monte_Carlo_Coupe_2007
+[2025-11-22 20:00:41] [显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+[2025-11-22 20:00:44] [显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+[2025-11-22 20:00:47] [显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+[2025-11-22 20:00:50] [显存监控] 已分配=32.44GB, 已保留=35.61GB, 空闲=14.97GB
+wiki desc: Description for Chevrolet_Monte_Carlo_Coupe_2007 category.
+推理前显存: 已分配=32.46GB, 已保留=32.85GB, 剩余=14.94GB
+[2025-11-22 20:00:53] [显存监控] 已分配=32.67GB, 已保留=36.58GB, 空闲=14.73GB
+[2025-11-22 20:00:56] [显存监控] 已分配=32.61GB, 已保留=36.58GB, 空闲=14.79GB
+[2025-11-22 20:00:59] [显存监控] 已分配=32.62GB, 已保留=36.58GB, 空闲=14.78GB
+[2025-11-22 20:01:02] [显存监控] 已分配=32.62GB, 已保留=36.58GB, 空闲=14.78GB
+[2025-11-22 20:01:05] [显存监控] 已分配=32.63GB, 已保留=36.58GB, 空闲=14.77GB
+[2025-11-22 20:01:08] [显存监控] 已分配=32.64GB, 已保留=36.58GB, 空闲=14.77GB
+推理后显存: 已分配=32.44GB, 已保留=36.58GB, 剩余=14.97GB
+MLLM description: The Chevrolet Monte Carlo Coupe 2007 is a sleek two-door coupe with a sporty design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car has a long hood and short rear deck, typical of coupes. It features a prominent front grille, sharp headlights, and a distinctive rear spoiler. The body lines are smooth and flowing, emphasizing its aerodynamic profile.
+
+2. **Color Patterns and Markings**: The car in the first image is silver with a black roof and black trim around the windows. The second image shows a red car with a white stripe running along the side. The third image displays a blue car with silver rims and trim. These color variations highlight the versatility of the model.
+
+3. **Size and Proportions**: The Monte Carlo Coupe is mid-sized compared to sedans, offering a balance between comfort and performance. Its proportions are compact yet elegant, with a low-slung stance that enhances its sporty appeal.
+
+4. **Behavioral Characteristics**: As a vehicle, it would exhibit typical driving behavior associated with coupes, such as agile handling and responsive acceleration. However, the specific behavioral characteristics cannot be determined visually.
+
+5. **Unique Identifying Traits**: The Monte Carlo Coupe is easily identifiable by its
+类别 Chevrolet_Monte_Carlo_Coupe_2007 文本特征维度: (512,)
+描述: The Chevrolet Monte Carlo Coupe 2007 is a sleek two-door coupe with a sporty design. Here's a detail...
+处理类别: Ford_F-150_Regular_Cab_2007
+[2025-11-22 20:01:11] [显存监控] 已分配=32.44GB, 已保留=36.58GB, 空闲=14.97GB
+[2025-11-22 20:01:14] [显存监控] 已分配=32.44GB, 已保留=36.58GB, 空闲=14.97GB
+[2025-11-22 20:01:17] [显存监控] 已分配=32.44GB, 已保留=36.58GB, 空闲=14.97GB
+wiki desc: Description for Ford_F-150_Regular_Cab_2007 category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:01:20] [显存监控] 已分配=32.50GB, 已保留=33.49GB, 空闲=14.91GB
+[2025-11-22 20:01:23] [显存监控] 已分配=32.51GB, 已保留=33.49GB, 空闲=14.89GB
+[2025-11-22 20:01:26] [显存监控] 已分配=32.51GB, 已保留=33.49GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.49GB, 剩余=14.97GB
+ 12%|█▏        | 24/196 [08:46<57:52, 20.19s/it] 13%|█▎        | 25/196 [09:05<56:25, 19.80s/it] 13%|█▎        | 26/196 [09:18<50:01, 17.66s/it] 14%|█▍        | 27/196 [09:46<58:22, 20.72s/it]MLLM description: The Ford F-150 Regular Cab 2007 is a mid-size pickup truck with a distinctive rectangular shape and a relatively compact size compared to full-size trucks. It has a boxy design with a prominent front grille featuring the Ford logo, rectangular headlights, and a chrome accent. The truck's body is painted in a solid color, either red or black, with no visible patterns or markings. The wheels are standard-sized, with a simple design, and the tires appear to be all-season. The truck is parked on grass and dirt terrain, suggesting its capability for both urban and off-road use. Its unique identifying traits include the combination of a regular cab configuration, which provides seating for two passengers, and the 2007 model year, which sets it apart from later models.
+类别 Ford_F-150_Regular_Cab_2007 文本特征维度: (512,)
+描述: The Ford F-150 Regular Cab 2007 is a mid-size pickup truck with a distinctive rectangular shape and ...
+处理类别: Chevrolet_Malibu_Sedan_2007
+[2025-11-22 20:01:29] [显存监控] 已分配=32.44GB, 已保留=33.49GB, 空闲=14.97GB
+[2025-11-22 20:01:32] [显存监控] 已分配=32.44GB, 已保留=33.49GB, 空闲=14.97GB
+[2025-11-22 20:01:35] [显存监控] 已分配=32.44GB, 已保留=33.49GB, 空闲=14.97GB
+wiki desc: Description for Chevrolet_Malibu_Sedan_2007 category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:01:38] [显存监控] 已分配=32.49GB, 已保留=32.84GB, 空闲=14.91GB
+[2025-11-22 20:01:41] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+[2025-11-22 20:01:44] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.84GB, 剩余=14.97GB
+MLLM description: The Chevrolet Malibu Sedan 2007 is a mid-size sedan with a sleek and aerodynamic design. Its distinctive physical features include a long hood, short rear deck, and a prominent grille with a chrome accent. The car's color pattern is a solid black, which contrasts with its silver alloy wheels and chrome accents. The size and proportions of the vehicle are balanced, with a long wheelbase and a wide stance, giving it a stable and comfortable ride. The Malibu Sedan 2007 is known for its smooth handling and fuel efficiency, making it an ideal choice for everyday driving. Its unique identifying traits include the Chevrolet emblem on the front grille, the Malibu badge on the side, and the overall shape and design of the car.
+类别 Chevrolet_Malibu_Sedan_2007 文本特征维度: (512,)
+描述: The Chevrolet Malibu Sedan 2007 is a mid-size sedan with a sleek and aerodynamic design. Its distinc...
+处理类别: BMW_M6_Convertible_2010
+[2025-11-22 20:01:47] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+[2025-11-22 20:01:50] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+[2025-11-22 20:01:53] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+[2025-11-22 20:01:56] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+wiki desc: Description for BMW_M6_Convertible_2010 category.
+推理前显存: 已分配=32.49GB, 已保留=32.84GB, 剩余=14.92GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 7.94 GiB. GPU 0 has a total capacity of 47.40 GiB of which 5.13 GiB is free. Including non-PyTorch memory, this process has 42.26 GiB memory in use. Of the allocated memory 41.55 GiB is allocated by PyTorch, and 413.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[2025-11-22 20:01:59] [显存监控] 已分配=33.05GB, 已保留=41.95GB, 空闲=14.35GB
+类别 BMW_M6_Convertible_2010 文本特征维度: (512,)
+描述: Description for BMW_M6_Convertible_2010 category....
+处理类别: Hyundai_Sonata_Sedan_2012
+[2025-11-22 20:02:02] [显存监控] 已分配=32.44GB, 已保留=41.95GB, 空闲=14.97GB
+[2025-11-22 20:02:05] [显存监控] 已分配=32.44GB, 已保留=41.95GB, 空闲=14.97GB
+[2025-11-22 20:02:08] [显存监控] 已分配=32.44GB, 已保留=41.95GB, 空闲=14.97GB
+[2025-11-22 20:02:11] [显存监控] 已分配=32.44GB, 已保留=41.95GB, 空闲=14.97GB
+wiki desc: Description for Hyundai_Sonata_Sedan_2012 category.
+推理前显存: 已分配=32.47GB, 已保留=32.82GB, 剩余=14.93GB
+[2025-11-22 20:02:14] [显存监控] 已分配=32.62GB, 已保留=32.97GB, 空闲=14.78GB
+[2025-11-22 20:02:17] [显存监控] 已分配=32.81GB, 已保留=41.05GB, 空闲=14.59GB
+[2025-11-22 20:02:20] [显存监控] 已分配=32.69GB, 已保留=41.05GB, 空闲=14.71GB
+[2025-11-22 20:02:23] [显存监控] 已分配=32.69GB, 已保留=41.05GB, 空闲=14.71GB
+[2025-11-22 20:02:26] [显存监控] 已分配=32.70GB, 已保留=41.05GB, 空闲=14.70GB
+推理后显存: 已分配=32.44GB, 已保留=41.05GB, 剩余=14.97GB
+MLLM description: The Hyundai Sonata Sedan 2012 is a mid-size sedan with a sleek and modern design. Its distinctive physical features include a prominent grille with the Hyundai emblem, sharp headlights, and a smooth, aerodynamic body shape. The car's color pattern is a metallic gray, which gives it a sophisticated and elegant appearance. The size and proportions of the Sonata are balanced, with a long hood and short rear deck, providing ample interior space. The Sonata is known for its smooth ride and efficient performance, making it an ideal choice for daily commuting or longer road trips. Its unique identifying traits include the Hyundai emblem on the grille, the sharp lines of the headlights, and the overall sleek and modern design.
+类别 Hyundai_Sonata_Sedan_2012 文本特征维度: (512,)
+描述: The Hyundai Sonata Sedan 2012 is a mid-size sedan with a sleek and modern design. Its distinctive ph...
+处理类别: Hyundai_Veracruz_SUV_2012
+[2025-11-22 20:02:29] [显存监控] 已分配=32.44GB, 已保留=41.05GB, 空闲=14.97GB
+[2025-11-22 20:02:32] [显存监控] 已分配=32.44GB, 已保留=41.05GB, 空闲=14.97GB
+[2025-11-22 20:02:35] [显存监控] 已分配=32.44GB, 已保留=41.05GB, 空闲=14.97GB
+wiki desc: Description for Hyundai_Veracruz_SUV_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-22 20:02:38] [显存监控] 已分配=32.66GB, 已保留=36.11GB, 空闲=14.74GB
+[2025-11-22 20:02:41] [显存监控] 已分配=32.60GB, 已保留=36.11GB, 空闲=14.80GB
+[2025-11-22 20:02:44] [显存监控] 已分配=32.61GB, 已保留=36.11GB, 空闲=14.80GB
+[2025-11-22 20:02:47] [显存监控] 已分配=32.61GB, 已保留=36.11GB, 空闲=14.79GB
+[2025-11-22 20:02:50] [显存监控] 已分配=32.62GB, 已保留=36.11GB, 空闲=14.78GB
+[2025-11-22 20:02:53] [显存监控] 已分配=32.63GB, 已保留=36.11GB, 空闲=14.78GB
+推理后显存: 已分配=32.44GB, 已保留=36.11GB, 剩余=14.97GB
+ 14%|█▍        | 28/196 [10:12<1:03:05, 22.53s/it] 15%|█▍        | 29/196 [10:25<53:58, 19.39s/it]   15%|█▌        | 30/196 [10:52<1:00:10, 21.75s/it] 16%|█▌        | 31/196 [11:17<1:02:45, 22.82s/it]MLLM description: The Hyundai Veracruz SUV 2012 is a mid-size crossover SUV with a boxy yet elegant design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Veracruz has a prominent grille with a chrome accent, sleek headlights, and a robust front bumper. The side profile showcases a smooth, flowing line with subtle curves, and the rear features a clean, integrated design with a slightly raised roofline.
+
+2. **Color Patterns and Markings**: The images show the Veracruz in three different colors: black, beige, and white. Each color variant highlights the vehicle's design and adds to its appeal. The black model has a glossy finish, while the beige and white models have a more subdued appearance.
+
+3. **Size and Proportions**: The Veracruz is a mid-size SUV, offering ample space for passengers and cargo. Its dimensions are balanced, with a long wheelbase and a short overhang, providing a comfortable ride and good visibility.
+
+4. **Behavioral Characteristics**: As an SUV, the Veracruz is designed for both on-road and off-road driving. It offers a comfortable ride, good fuel efficiency, and a spacious interior. The Veracruz is also known for its reliability and durability
+类别 Hyundai_Veracruz_SUV_2012 文本特征维度: (512,)
+描述: The Hyundai Veracruz SUV 2012 is a mid-size crossover SUV with a boxy yet elegant design. Here's a d...
+处理类别: Chevrolet_Sonic_Sedan_2012
+[2025-11-22 20:02:56] [显存监控] 已分配=32.44GB, 已保留=36.11GB, 空闲=14.97GB
+[2025-11-22 20:02:59] [显存监控] 已分配=32.44GB, 已保留=36.11GB, 空闲=14.97GB
+[2025-11-22 20:03:02] [显存监控] 已分配=32.44GB, 已保留=36.11GB, 空闲=14.97GB
+wiki desc: Description for Chevrolet_Sonic_Sedan_2012 category.
+推理前显存: 已分配=32.49GB, 已保留=32.85GB, 剩余=14.91GB
+[2025-11-22 20:03:05] [显存监控] 已分配=32.73GB, 已保留=33.09GB, 空闲=14.67GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 8.96 GiB. GPU 0 has a total capacity of 47.40 GiB of which 4.07 GiB is free. Including non-PyTorch memory, this process has 43.33 GiB memory in use. Of the allocated memory 42.67 GiB is allocated by PyTorch, and 355.57 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Chevrolet_Sonic_Sedan_2012 文本特征维度: (512,)
+描述: Description for Chevrolet_Sonic_Sedan_2012 category....
+处理类别: Lamborghini_Diablo_Coupe_2001
+[2025-11-22 20:03:08] [显存监控] 已分配=32.44GB, 已保留=43.02GB, 空闲=14.97GB
+[2025-11-22 20:03:11] [显存监控] 已分配=32.44GB, 已保留=43.02GB, 空闲=14.97GB
+[2025-11-22 20:03:14] [显存监控] 已分配=32.44GB, 已保留=43.02GB, 空闲=14.97GB
+wiki desc: Description for Lamborghini_Diablo_Coupe_2001 category.
+[2025-11-22 20:03:17] [显存监控] 已分配=32.44GB, 已保留=43.02GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.82GB, 剩余=14.95GB
+[2025-11-22 20:03:20] [显存监控] 已分配=32.58GB, 已保留=35.47GB, 空闲=14.82GB
+[2025-11-22 20:03:23] [显存监控] 已分配=32.59GB, 已保留=35.47GB, 空闲=14.81GB
+[2025-11-22 20:03:26] [显存监控] 已分配=32.60GB, 已保留=35.47GB, 空闲=14.81GB
+[2025-11-22 20:03:29] [显存监控] 已分配=32.60GB, 已保留=35.47GB, 空闲=14.80GB
+[2025-11-22 20:03:32] [显存监控] 已分配=32.61GB, 已保留=35.47GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.47GB, 剩余=14.97GB
+MLLM description: The Lamborghini Diablo Coupe 2001 is a high-performance sports car known for its distinctive design and aggressive styling. Here's a detailed description of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The Diablo Coupe features a low-slung, aerodynamic body with sharp lines and pronounced curves. Its front end showcases a prominent grille with the iconic Lamborghini logo, flanked by large, angular headlights. The side profile reveals a sleek, fastback silhouette with a long hood and short rear deck, emphasizing its performance-oriented design.
+
+2. **Color Patterns and Markings**: The car in the first image is painted in a vibrant orange color, while the second image shows it in a bright yellow hue. Both cars have a glossy finish that reflects light, enhancing their sporty appearance. The third image depicts a similar model in a darker shade, possibly black or dark gray, with a more subdued lighting effect due to nighttime conditions.
+
+3. **Size and Proportions**: The Diablo Coupe is a mid-engine, rear-wheel-drive sports car with a compact yet muscular build. It has a relatively small cabin compared to its overall size, which contributes to its agile handling and high-speed performance. The proportions are balanced, with a wide stance and a low center of
+类别 Lamborghini_Diablo_Coupe_2001 文本特征维度: (512,)
+描述: The Lamborghini Diablo Coupe 2001 is a high-performance sports car known for its distinctive design ...
+处理类别: Buick_Regal_GS_2012
+[2025-11-22 20:03:35] [显存监控] 已分配=32.44GB, 已保留=35.47GB, 空闲=14.97GB
+[2025-11-22 20:03:38] [显存监控] 已分配=32.44GB, 已保留=35.47GB, 空闲=14.97GB
+[2025-11-22 20:03:41] [显存监控] 已分配=32.44GB, 已保留=35.47GB, 空闲=14.97GB
+wiki desc: Description for Buick_Regal_GS_2012 category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-22 20:03:44] [显存监控] 已分配=32.59GB, 已保留=34.63GB, 空闲=14.81GB
+[2025-11-22 20:03:47] [显存监控] 已分配=32.56GB, 已保留=34.63GB, 空闲=14.84GB
+[2025-11-22 20:03:50] [显存监控] 已分配=32.57GB, 已保留=34.63GB, 空闲=14.83GB
+[2025-11-22 20:03:53] [显存监控] 已分配=32.58GB, 已保留=34.63GB, 空闲=14.83GB
+[2025-11-22 20:03:56] [显存监控] 已分配=32.58GB, 已保留=34.63GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.63GB, 剩余=14.97GB
+MLLM description: The Buick Regal GS 2012 is a mid-size luxury sedan with a sleek and sporty design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The car has a long hood, short rear deck, and a low-slung profile, giving it a dynamic appearance. It features a prominent grille with the Buick emblem in the center, flanked by sharp LED headlights. The front bumper includes large air intakes, enhancing its aggressive stance. The side profile showcases a set of multi-spoke alloy wheels, and the car has a fastback roofline that slopes down towards the rear.
+
+2. **Color Patterns and Markings**: The car can come in various colors, including white, silver, and black. In the images, the car appears to be white or silver, which highlights its elegant lines and curves. There are no visible markings or logos other than the Buick emblem.
+
+3. **Size and Proportions**: The car is compact yet spacious, with a length of approximately 189 inches and a width of around 76 inches. The proportions are balanced, with a long wheelbase providing ample interior space. The car's height is relatively low, contributing to its sporty look
+类别 Buick_Regal_GS_2012 文本特征维度: (512,)
+描述: The Buick Regal GS 2012 is a mid-size luxury sedan with a sleek and sporty design. Here's a detailed...
+处理类别: BMW_M5_Sedan_2010
+[2025-11-22 20:03:59] [显存监控] 已分配=32.44GB, 已保留=34.63GB, 空闲=14.97GB
+[2025-11-22 20:04:02] [显存监控] 已分配=32.44GB, 已保留=34.63GB, 空闲=14.97GB
+[2025-11-22 20:04:05] [显存监控] 已分配=32.44GB, 已保留=34.63GB, 空闲=14.97GB
+[2025-11-22 20:04:08] [显存监控] 已分配=32.44GB, 已保留=34.63GB, 空闲=14.97GB
+wiki desc: Description for BMW_M5_Sedan_2010 category.
+推理前显存: 已分配=32.48GB, 已保留=32.82GB, 剩余=14.93GB
+[2025-11-22 20:04:11] [显存监控] 已分配=32.91GB, 已保留=45.22GB, 空闲=14.49GB
+[2025-11-22 20:04:14] [显存监控] 已分配=32.74GB, 已保留=45.22GB, 空闲=14.66GB
+ 16%|█▋        | 32/196 [11:50<1:10:24, 25.76s/it] 17%|█▋        | 33/196 [12:15<1:09:43, 25.67s/it] 17%|█▋        | 34/196 [12:37<1:06:10, 24.51s/it] 18%|█▊        | 35/196 [12:49<55:58, 20.86s/it]  [2025-11-22 20:04:17] [显存监控] 已分配=32.74GB, 已保留=45.22GB, 空闲=14.66GB
+[2025-11-22 20:04:20] [显存监控] 已分配=32.75GB, 已保留=45.22GB, 空闲=14.65GB
+[2025-11-22 20:04:23] [显存监控] 已分配=32.75GB, 已保留=45.22GB, 空闲=14.65GB
+[2025-11-22 20:04:26] [显存监控] 已分配=32.76GB, 已保留=45.22GB, 空闲=14.64GB
+[2025-11-22 20:04:29] [显存监控] 已分配=32.76GB, 已保留=45.22GB, 空闲=14.64GB
+推理后显存: 已分配=32.44GB, 已保留=45.22GB, 剩余=14.97GB
+MLLM description: The BMW M5 Sedan 2010 is a high-performance luxury vehicle characterized by its sleek and sporty design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The car exhibits a long, low profile with a wide stance, emphasizing its performance-oriented nature. It has a prominent rear spoiler, dual exhaust pipes, and a large rear diffuser, all contributing to its aerodynamic efficiency and aggressive appearance.
+
+2. **Color Patterns and Markings**: The car in the images is primarily silver or metallic gray, with a glossy finish that reflects light. The BMW logo is prominently displayed on the trunk lid, and the "M5" badge is visible on the rear quarter panel, signifying its high-performance status. The side mirrors have a black finish, contrasting with the silver body.
+
+3. **Size and Proportions**: The M5 Sedan is a mid-size sedan, slightly longer than a standard sedan but not as large as an SUV. Its proportions are balanced, with a long hood and short deck, typical of high-performance vehicles. The wheels are large and wide, enhancing its sporty look.
+
+4. **Behavioral Characteristics**: As a high-performance vehicle, the M5 Sedan is designed for speed
+类别 BMW_M5_Sedan_2010 文本特征维度: (512,)
+描述: The BMW M5 Sedan 2010 is a high-performance luxury vehicle characterized by its sleek and sporty des...
+处理类别: Ferrari_458_Italia_Convertible_2012
+[2025-11-22 20:04:32] [显存监控] 已分配=32.44GB, 已保留=45.22GB, 空闲=14.97GB
+[2025-11-22 20:04:35] [显存监控] 已分配=32.44GB, 已保留=45.22GB, 空闲=14.97GB
+[2025-11-22 20:04:38] [显存监控] 已分配=32.44GB, 已保留=45.22GB, 空闲=14.97GB
+wiki desc: Description for Ferrari_458_Italia_Convertible_2012 category.
+[2025-11-22 20:04:41] [显存监控] 已分配=32.44GB, 已保留=45.22GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.81GB, 剩余=14.95GB
+[2025-11-22 20:04:44] [显存监控] 已分配=32.56GB, 已保留=34.74GB, 空闲=14.84GB
+[2025-11-22 20:04:47] [显存监控] 已分配=32.57GB, 已保留=34.74GB, 空闲=14.83GB
+[2025-11-22 20:04:50] [显存监控] 已分配=32.58GB, 已保留=34.74GB, 空闲=14.82GB
+[2025-11-22 20:04:53] [显存监控] 已分配=32.58GB, 已保留=34.74GB, 空闲=14.82GB
+[2025-11-22 20:04:56] [显存监控] 已分配=32.59GB, 已保留=34.74GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.74GB, 剩余=14.97GB
+MLLM description: The Ferrari_458_Italia_Convertible_2012 is a sleek, mid-engine sports car with a distinctive design. Its most notable feature is its low-slung profile, emphasized by the long hood and short rear deck. The car's proportions are sporty and aggressive, with a wide stance and a low center of gravity. The front end showcases a prominent grille with the iconic Ferrari prancing horse emblem, flanked by sharp LED headlights. The side profile reveals a long, flowing roofline that transitions into a sharply raked rear end, accentuated by large air intakes and a prominent rear diffuser. The convertible top is neatly stowed away when retracted.
+
+The color pattern is a vibrant red, which is a signature color for Ferrari. The car's body is finished in a glossy paint job, reflecting light and emphasizing its curves. The wheels are large, multi-spoke alloy rims, painted in a contrasting color to the body, adding to the car's dynamic appearance. The rear of the car features a prominent spoiler and quad exhaust outlets, contributing to its sporty aesthetic.
+
+The Ferrari_458_Italia_Convertible_2012 is designed for performance, with a powerful V8 engine and advanced aer
+类别 Ferrari_458_Italia_Convertible_2012 文本特征维度: (512,)
+描述: The Ferrari_458_Italia_Convertible_2012 is a sleek, mid-engine sports car with a distinctive design....
+处理类别: Volkswagen_Golf_Hatchback_2012
+[2025-11-22 20:04:59] [显存监控] 已分配=32.44GB, 已保留=34.74GB, 空闲=14.97GB
+[2025-11-22 20:05:02] [显存监控] 已分配=32.44GB, 已保留=34.74GB, 空闲=14.97GB
+[2025-11-22 20:05:05] [显存监控] 已分配=32.44GB, 已保留=34.74GB, 空闲=14.97GB
+wiki desc: Description for Volkswagen_Golf_Hatchback_2012 category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:05:08] [显存监控] 已分配=32.47GB, 已保留=33.12GB, 空闲=14.93GB
+[2025-11-22 20:05:11] [显存监控] 已分配=32.48GB, 已保留=33.13GB, 空闲=14.92GB
+[2025-11-22 20:05:14] [显存监控] 已分配=32.49GB, 已保留=33.13GB, 空闲=14.91GB
+[2025-11-22 20:05:17] [显存监控] 已分配=32.50GB, 已保留=33.14GB, 空闲=14.90GB
+推理后显存: 已分配=32.44GB, 已保留=33.14GB, 剩余=14.97GB
+MLLM description: The Volkswagen Golf Hatchback 2012 is a compact car with a distinctive five-door design. Its body is compact yet spacious, with a balanced proportion between length and height. The front end features a prominent grille with the Volkswagen logo, flanked by sleek headlights. The side profile showcases smooth lines and a subtle curve along the roofline, giving it a sporty appearance. The rear end has a clean and simple design, with integrated taillights and a slight upward curve to the boot lid.
+
+In terms of color patterns, the first image shows a white car, while the second image displays a silver car. The third image presents a gray car. These variations in color can help differentiate the car visually.
+
+The behavioral characteristics of the car are not directly observable in the images, as they pertain to its performance and driving experience, which cannot be inferred from static images.
+
+Unique identifying traits include the car's specific model year, the shape of the grille, the placement of the headlights, and the overall design elements like the curves and lines. These traits, combined with the color variations, make the Volkswagen Golf Hatchback 2012 distinct from other similar models.
+类别 Volkswagen_Golf_Hatchback_2012 文本特征维度: (512,)
+描述: The Volkswagen Golf Hatchback 2012 is a compact car with a distinctive five-door design. Its body is...
+处理类别: Mitsubishi_Lancer_Sedan_2012
+[2025-11-22 20:05:20] [显存监控] 已分配=32.44GB, 已保留=33.14GB, 空闲=14.97GB
+[2025-11-22 20:05:23] [显存监控] 已分配=32.44GB, 已保留=33.14GB, 空闲=14.97GB
+[2025-11-22 20:05:26] [显存监控] 已分配=32.44GB, 已保留=33.14GB, 空闲=14.97GB
+wiki desc: Description for Mitsubishi_Lancer_Sedan_2012 category.
+图像过大 (1920x1080)，缩小到 (1536x864) 以节省显存
+[2025-11-22 20:05:29] [显存监控] 已分配=32.44GB, 已保留=33.14GB, 空闲=14.97GB
+推理前显存: 已分配=32.50GB, 已保留=32.95GB, 剩余=14.90GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 12.31 GiB. GPU 0 has a total capacity of 47.40 GiB of which 316.31 MiB is free. Including non-PyTorch memory, this process has 47.08 GiB memory in use. Of the allocated memory 46.38 GiB is allocated by PyTorch, and 404.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Mitsubishi_Lancer_Sedan_2012 文本特征维度: (512,)
+描述: Description for Mitsubishi_Lancer_Sedan_2012 category....
+处理类别: Ford_E-Series_Wagon_Van_2012
+[2025-11-22 20:05:32] [显存监控] 已分配=32.44GB, 已保留=46.77GB, 空闲=14.97GB
+[2025-11-22 20:05:35] [显存监控] 已分配=32.44GB, 已保留=46.77GB, 空闲=14.97GB
+ 18%|█▊        | 36/196 [13:08<54:05, 20.28s/it] 19%|█▉        | 37/196 [13:40<1:02:58, 23.76s/it] 19%|█▉        | 38/196 [14:07<1:04:53, 24.65s/it] 20%|█▉        | 39/196 [14:27<1:00:49, 23.25s/it][2025-11-22 20:05:38] [显存监控] 已分配=32.44GB, 已保留=46.77GB, 空闲=14.97GB
+[2025-11-22 20:05:41] [显存监控] 已分配=32.44GB, 已保留=46.77GB, 空闲=14.97GB
+wiki desc: Description for Ford_E-Series_Wagon_Van_2012 category.
+推理前显存: 已分配=32.45GB, 已保留=32.85GB, 剩余=14.96GB
+[2025-11-22 20:05:44] [显存监控] 已分配=32.56GB, 已保留=33.94GB, 空闲=14.85GB
+[2025-11-22 20:05:47] [显存监控] 已分配=32.56GB, 已保留=33.94GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.94GB, 剩余=14.97GB
+MLLM description: The Ford_E-Series_Wagon_Van_2012 is a large, boxy van with a high roof and a prominent front grille. It has a white exterior with black trim around the windows and wheels. The vehicle appears to have a standard size for its class, with a long wheelbase and a wide body. The van's design suggests it is built for passenger transport, with multiple sliding doors on the side for easy access. There are no visible behavioral characteristics as it is an inanimate object. The unique identifying traits include the Ford logo on the front grille, the sliding doors, and the overall shape and size of the vehicle.
+类别 Ford_E-Series_Wagon_Van_2012 文本特征维度: (512,)
+描述: The Ford_E-Series_Wagon_Van_2012 is a large, boxy van with a high roof and a prominent front grille....
+处理类别: Toyota_4Runner_SUV_2012
+[2025-11-22 20:05:50] [显存监控] 已分配=32.44GB, 已保留=33.94GB, 空闲=14.97GB
+[2025-11-22 20:05:53] [显存监控] 已分配=32.44GB, 已保留=33.94GB, 空闲=14.97GB
+[2025-11-22 20:05:56] [显存监控] 已分配=32.44GB, 已保留=33.94GB, 空闲=14.97GB
+[2025-11-22 20:05:59] [显存监控] 已分配=32.44GB, 已保留=33.94GB, 空闲=14.97GB
+wiki desc: Description for Toyota_4Runner_SUV_2012 category.
+推理前显存: 已分配=32.47GB, 已保留=32.85GB, 剩余=14.93GB
+[2025-11-22 20:06:02] [显存监控] 已分配=32.87GB, 已保留=43.55GB, 空闲=14.53GB
+[2025-11-22 20:06:05] [显存监控] 已分配=32.72GB, 已保留=43.55GB, 空闲=14.68GB
+[2025-11-22 20:06:08] [显存监控] 已分配=32.72GB, 已保留=43.56GB, 空闲=14.68GB
+[2025-11-22 20:06:11] [显存监控] 已分配=32.73GB, 已保留=43.56GB, 空闲=14.67GB
+[2025-11-22 20:06:14] [显存监控] 已分配=32.73GB, 已保留=43.56GB, 空闲=14.67GB
+[2025-11-22 20:06:17] [显存监控] 已分配=32.74GB, 已保留=43.56GB, 空闲=14.66GB
+[2025-11-22 20:06:20] [显存监控] 已分配=32.74GB, 已保留=43.56GB, 空闲=14.66GB
+推理后显存: 已分配=32.44GB, 已保留=43.56GB, 剩余=14.97GB
+MLLM description: The Toyota 4Runner SUV 2012 is a mid-size SUV with a robust and rugged design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The 4Runner has a boxy yet angular body shape, with a prominent front grille featuring the Toyota emblem. It has a high ground clearance, making it suitable for off-road adventures. The vehicle also includes a roof rack, which adds to its adventurous appeal.
+
+2. **Color Patterns and Markings**: The SUV in the images appears to have a metallic gray or silver color, giving it a sleek and modern look. There are no visible markings or logos other than the Toyota emblem on the grille.
+
+3. **Size and Proportions**: The 4Runner is larger than a compact SUV but smaller than an SUV like the Ford Explorer. It has a long wheelbase and a wide stance, providing ample interior space for passengers and cargo. The height of the vehicle is relatively low, enhancing its stability and maneuverability.
+
+4. **Behavioral Characteristics**: As a 4Runner, it is designed for both on-road and off-road driving. Its all-wheel-drive system allows it to handle various terrains, including dirt roads, mud, and snow. The vehicle
+类别 Toyota_4Runner_SUV_2012 文本特征维度: (512,)
+描述: The Toyota 4Runner SUV 2012 is a mid-size SUV with a robust and rugged design. Here's a detailed des...
+处理类别: BMW_X6_SUV_2012
+[2025-11-22 20:06:23] [显存监控] 已分配=32.44GB, 已保留=43.56GB, 空闲=14.97GB
+[2025-11-22 20:06:26] [显存监控] 已分配=32.44GB, 已保留=43.56GB, 空闲=14.97GB
+[2025-11-22 20:06:29] [显存监控] 已分配=32.44GB, 已保留=43.56GB, 空闲=14.97GB
+wiki desc: Description for BMW_X6_SUV_2012 category.
+推理前显存: 已分配=32.46GB, 已保留=32.82GB, 剩余=14.94GB
+[2025-11-22 20:06:32] [显存监控] 已分配=32.67GB, 已保留=36.29GB, 空闲=14.74GB
+[2025-11-22 20:06:35] [显存监控] 已分配=32.60GB, 已保留=36.29GB, 空闲=14.80GB
+[2025-11-22 20:06:38] [显存监控] 已分配=32.61GB, 已保留=36.29GB, 空闲=14.79GB
+[2025-11-22 20:06:41] [显存监控] 已分配=32.62GB, 已保留=36.29GB, 空闲=14.79GB
+[2025-11-22 20:06:44] [显存监控] 已分配=32.62GB, 已保留=36.29GB, 空闲=14.78GB
+[2025-11-22 20:06:47] [显存监控] 已分配=32.63GB, 已保留=36.29GB, 空闲=14.77GB
+推理后显存: 已分配=32.44GB, 已保留=36.29GB, 剩余=14.97GB
+MLLM description: The BMW X6 SUV 2012 is a mid-size luxury crossover SUV known for its distinctive design and performance. Here's a detailed description of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The X6 features a sleek, aerodynamic profile with a prominent kidney grille, sharp LED headlights, and a bold front bumper. The side profile showcases muscular wheel arches, a sloping roofline, and a robust stance. The rear design includes a wide, horizontal taillight cluster and a diffuser-like bumper.
+
+2. **Color Patterns and Markings**: The color options include metallic shades like black, white, and red, as seen in the provided images. The black model has a glossy finish, while the white and red models have a more subdued appearance. The car also features chrome accents on the grille, door handles, and window trims, enhancing its premium look.
+
+3. **Size and Proportions**: The X6 is larger than most compact SUVs, offering ample interior space and cargo capacity. Its proportions are balanced, with a long hood, short overhangs, and a wide stance. The vehicle measures approximately 4.8 meters in length, 1.9 meters in width, and 1.7 meters
+类别 BMW_X6_SUV_2012 文本特征维度: (512,)
+描述: The BMW X6 SUV 2012 is a mid-size luxury crossover SUV known for its distinctive design and performa...
+处理类别: Buick_Rainier_SUV_2007
+[2025-11-22 20:06:50] [显存监控] 已分配=32.44GB, 已保留=36.29GB, 空闲=14.97GB
+[2025-11-22 20:06:53] [显存监控] 已分配=32.44GB, 已保留=36.29GB, 空闲=14.97GB
+[2025-11-22 20:06:56] [显存监控] 已分配=32.44GB, 已保留=36.29GB, 空闲=14.97GB
+wiki desc: Description for Buick_Rainier_SUV_2007 category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-22 20:06:59] [显存监控] 已分配=32.59GB, 已保留=34.61GB, 空闲=14.81GB
+[2025-11-22 20:07:02] [显存监控] 已分配=32.56GB, 已保留=34.61GB, 空闲=14.84GB
+[2025-11-22 20:07:05] [显存监控] 已分配=32.57GB, 已保留=34.61GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.61GB, 剩余=14.97GB
+MLLM description: The Buick Rainier SUV 2007 is a mid-size crossover SUV with a boxy yet elegant design. Its distinctive physical features include a prominent grille with a chrome accent, sleek headlights, and a robust front bumper. The vehicle's color pattern is a metallic silver or gray, which gives it a sophisticated appearance. The size and proportions are balanced, with a long hood and short overhangs, providing ample space inside. The SUV has a commanding presence due to its elevated ride height and large wheels. It is not designed for high-speed performance but rather for practicality and comfort. The unique identifying traits include the Buick logo on the grille, the "CXL" badge on the rear, and the overall shape of the vehicle.
+类别 Buick_Rainier_SUV_2007 文本特征维度: (512,)
+描述: The Buick Rainier SUV 2007 is a mid-size crossover SUV with a boxy yet elegant design. Its distincti...
+处理类别: Audi_S4_Sedan_2007
+[2025-11-22 20:07:08] [显存监控] 已分配=32.44GB, 已保留=34.61GB, 空闲=14.97GB

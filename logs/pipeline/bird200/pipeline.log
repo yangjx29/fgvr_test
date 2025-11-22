@@ -1,0 +1,1681 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: bird (num_classes=200)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/bird200/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/CUB_200_2011/CUB_200_2011/images_discovery_all_10  # 测试数据目录
+Results Out: ./results/bird_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: bird (bird200)
+类别数: 200
+实验目录: ./experiments/bird200
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-22 19:46:34 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/bird200_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/bird200/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/CUB_200_2011/CUB_200_2011/',
+ 'dataset_name': 'bird',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/bird200',
+ 'expt_dir_describe': './experiments/bird200/describe',
+ 'expt_dir_gallery': './experiments/bird200/gallery',
+ 'expt_dir_grouping': './experiments/bird200/grouping',
+ 'expt_dir_guess': './experiments/bird200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/bird200/gallery/bird_image_descriptions_attn',
+ 'path_identify_answers': './experiments/bird200/identify',
+ 'path_llm_gussed_names': './experiments/bird200/guess/bird_llm_gussed_names',
+ 'path_llm_prompts': './experiments/bird200/describe/bird_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/bird200/guess/bird_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/bird200/guess/bird_llm_replies_raw',
+ 'path_references': './experiments/bird200/gallery/bird_image_references',
+ 'path_regions': './experiments/bird200/gallery/bird_image_regions',
+ 'path_vqa_answers': './experiments/bird200/describe/bird_attributes_pairs',
+ 'path_vqa_questions': './experiments/bird200/describe/bird_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "bird200",
+    "num_classes": 200,
+    "config_file": "bird200_all.yml",
+    "data_dir": "CUB_200_2011",
+    "experiment_dir": "bird200",
+    "stats_file": "bird200/knowledge_base/stats.json",
+    "special_subdir": "CUB_200_2011",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/bird200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/bird200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.88s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.19s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.25s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.28s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.76s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.95s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-22 19:46:44
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'special_subdir', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/bird200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/bird200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-22 19:48:06
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7b57a81bc4c0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7b57a7c415e0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/bird200/knowledge_base
+使用数据集: bird, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-22 19:48:06] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 200 个类别, dog datasets:200
+从 ./experiments/bird200/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/bird200/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/bird200/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 200 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/200 [00:00<?, ?it/s]  0%|          | 1/200 [00:00<00:58,  3.39it/s]  2%|▏         | 4/200 [00:00<00:17, 11.40it/s]  4%|▎         | 7/200 [00:00<00:11, 16.24it/s]  5%|▌         | 10/200 [00:00<00:09, 19.47it/s]  6%|▋         | 13/200 [00:00<00:08, 21.24it/s]  8%|▊         | 16/200 [00:00<00:08, 22.56it/s] 10%|▉         | 19/200 [00:00<00:07, 23.71it/s] 11%|█         | 22/200 [00:01<00:07, 23.67it/s] 12%|█▎        | 25/200 [00:01<00:07, 24.50it/s] 14%|█▍        | 28/200 [00:01<00:06, 24.84it/s] 16%|█▌        | 31/200 [00:01<00:06, 25.41it/s] 17%|█▋        | 34/200 [00:01<00:06, 25.87it/s] 18%|█▊        | 37/200 [00:01<00:06, 25.89it/s] 20%|██        | 40/200 [00:01<00:06, 26.00it/s] 22%|██▏       | 43/200 [00:01<00:06, 25.86it/s] 23%|██▎       | 46/200 [00:02<00:05, 26.28it/s] 24%|██▍       | 49/200 [00:02<00:05, 26.04it/s] 26%|██▌       | 52/200 [00:02<00:05, 26.06it/s] 28%|██▊       | 55/200 [00:02<00:05, 25.65it/s] 29%|██▉       | 58/200 [00:02<00:05, 25.95it/s] 30%|███       | 61/200 [00:02<00:05, 25.91it/s] 32%|███▏      | 64/200 [00:02<00:05, 25.71it/s] 34%|███▎      | 67/200 [00:02<00:05, 25.99it/s] 35%|███▌      | 70/200 [00:02<00:04, 26.05it/s] 36%|███▋      | 73/200 [00:03<00:04, 26.18it/s] 38%|███▊      | 76/200 [00:03<00:04, 26.08it/s] 40%|███▉      | 79/200 [00:03<00:04, 26.03it/s] 41%|████      | 82/200 [00:03<00:04, 25.85it/s] 42%|████▎     | 85/200 [00:03<00:04, 25.64it/s] 44%|████▍     | 88/200 [00:03<00:04, 26.00it/s] 46%|████▌     | 91/200 [00:03<00:04, 26.21it/s] 47%|████▋     | 94/200 [00:03<00:04, 26.01it/s] 48%|████▊     | 97/200 [00:04<00:03, 26.04it/s]处理类别: Grasshopper_Sparrow
+类别 Grasshopper_Sparrow 图像特征维度: (512,)
+处理类别: White_eyed_Vireo
+类别 White_eyed_Vireo 图像特征维度: (512,)
+处理类别: Western_Meadowlark
+类别 Western_Meadowlark 图像特征维度: (512,)
+处理类别: Red_headed_Woodpecker
+类别 Red_headed_Woodpecker 图像特征维度: (512,)
+处理类别: Brewer_Sparrow
+类别 Brewer_Sparrow 图像特征维度: (512,)
+处理类别: White_breasted_Kingfisher
+类别 White_breasted_Kingfisher 图像特征维度: (512,)
+处理类别: Orchard_Oriole
+类别 Orchard_Oriole 图像特征维度: (512,)
+处理类别: Nelson_Sharp_tailed_Sparrow
+类别 Nelson_Sharp_tailed_Sparrow 图像特征维度: (512,)
+处理类别: Myrtle_Warbler
+类别 Myrtle_Warbler 图像特征维度: (512,)
+处理类别: California_Gull
+类别 California_Gull 图像特征维度: (512,)
+处理类别: Brown_Creeper
+类别 Brown_Creeper 图像特征维度: (512,)
+处理类别: Pied_Kingfisher
+类别 Pied_Kingfisher 图像特征维度: (512,)
+处理类别: Least_Flycatcher
+类别 Least_Flycatcher 图像特征维度: (512,)
+处理类别: Indigo_Bunting
+类别 Indigo_Bunting 图像特征维度: (512,)
+处理类别: Gray_Kingbird
+类别 Gray_Kingbird 图像特征维度: (512,)
+处理类别: Bewick_Wren
+类别 Bewick_Wren 图像特征维度: (512,)
+处理类别: Golden_winged_Warbler
+类别 Golden_winged_Warbler 图像特征维度: (512,)
+处理类别: Marsh_Wren
+类别 Marsh_Wren 图像特征维度: (512,)
+处理类别: Chipping_Sparrow
+类别 Chipping_Sparrow 图像特征维度: (512,)
+处理类别: Scarlet_Tanager
+类别 Scarlet_Tanager 图像特征维度: (512,)
+处理类别: Sage_Thrasher
+类别 Sage_Thrasher 图像特征维度: (512,)
+处理类别: Brown_Pelican
+类别 Brown_Pelican 图像特征维度: (512,)
+处理类别: Kentucky_Warbler
+类别 Kentucky_Warbler 图像特征维度: (512,)
+处理类别: Glaucous_winged_Gull
+类别 Glaucous_winged_Gull 图像特征维度: (512,)
+处理类别: Rhinoceros_Auklet
+类别 Rhinoceros_Auklet 图像特征维度: (512,)
+处理类别: Ringed_Kingfisher
+类别 Ringed_Kingfisher 图像特征维度: (512,)
+处理类别: Belted_Kingfisher
+类别 Belted_Kingfisher 图像特征维度: (512,)
+处理类别: Pine_Grosbeak
+类别 Pine_Grosbeak 图像特征维度: (512,)
+处理类别: Mockingbird
+类别 Mockingbird 图像特征维度: (512,)
+处理类别: Red_legged_Kittiwake
+类别 Red_legged_Kittiwake 图像特征维度: (512,)
+处理类别: Winter_Wren
+类别 Winter_Wren 图像特征维度: (512,)
+处理类别: Horned_Grebe
+类别 Horned_Grebe 图像特征维度: (512,)
+处理类别: Red_faced_Cormorant
+类别 Red_faced_Cormorant 图像特征维度: (512,)
+处理类别: Baird_Sparrow
+类别 Baird_Sparrow 图像特征维度: (512,)
+处理类别: Field_Sparrow
+类别 Field_Sparrow 图像特征维度: (512,)
+处理类别: Yellow_breasted_Chat
+类别 Yellow_breasted_Chat 图像特征维度: (512,)
+处理类别: Le_Conte_Sparrow
+类别 Le_Conte_Sparrow 图像特征维度: (512,)
+处理类别: Nighthawk
+类别 Nighthawk 图像特征维度: (512,)
+处理类别: Cliff_Swallow
+类别 Cliff_Swallow 图像特征维度: (512,)
+处理类别: Yellow_bellied_Flycatcher
+类别 Yellow_bellied_Flycatcher 图像特征维度: (512,)
+处理类别: Hooded_Merganser
+类别 Hooded_Merganser 图像特征维度: (512,)
+处理类别: Mallard
+类别 Mallard 图像特征维度: (512,)
+处理类别: House_Wren
+类别 House_Wren 图像特征维度: (512,)
+处理类别: Henslow_Sparrow
+类别 Henslow_Sparrow 图像特征维度: (512,)
+处理类别: Pine_Warbler
+类别 Pine_Warbler 图像特征维度: (512,)
+处理类别: Great_Grey_Shrike
+类别 Great_Grey_Shrike 图像特征维度: (512,)
+处理类别: American_Redstart
+类别 American_Redstart 图像特征维度: (512,)
+处理类别: Ruby_throated_Hummingbird
+类别 Ruby_throated_Hummingbird 图像特征维度: (512,)
+处理类别: Cardinal
+类别 Cardinal 图像特征维度: (512,)
+处理类别: Tree_Swallow
+类别 Tree_Swallow 图像特征维度: (512,)
+处理类别: Yellow_headed_Blackbird
+类别 Yellow_headed_Blackbird 图像特征维度: (512,)
+处理类别: Least_Auklet
+类别 Least_Auklet 图像特征维度: (512,)
+处理类别: White_crowned_Sparrow
+类别 White_crowned_Sparrow 图像特征维度: (512,)
+处理类别: Purple_Finch
+[2025-11-22 19:48:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.96GB
+类别 Purple_Finch 图像特征维度: (512,)
+处理类别: Black_and_white_Warbler
+类别 Black_and_white_Warbler 图像特征维度: (512,)
+处理类别: Sooty_Albatross
+类别 Sooty_Albatross 图像特征维度: (512,)
+处理类别: Dark_eyed_Junco
+类别 Dark_eyed_Junco 图像特征维度: (512,)
+处理类别: Parakeet_Auklet
+类别 Parakeet_Auklet 图像特征维度: (512,)
+处理类别: Hooded_Oriole
+类别 Hooded_Oriole 图像特征维度: (512,)
+处理类别: Scissor_tailed_Flycatcher
+类别 Scissor_tailed_Flycatcher 图像特征维度: (512,)
+处理类别: Blue_Jay
+类别 Blue_Jay 图像特征维度: (512,)
+处理类别: Pigeon_Guillemot
+类别 Pigeon_Guillemot 图像特征维度: (512,)
+处理类别: Blue_winged_Warbler
+类别 Blue_winged_Warbler 图像特征维度: (512,)
+处理类别: Orange_crowned_Warbler
+类别 Orange_crowned_Warbler 图像特征维度: (512,)
+处理类别: Western_Grebe
+类别 Western_Grebe 图像特征维度: (512,)
+处理类别: Vermilion_Flycatcher
+类别 Vermilion_Flycatcher 图像特征维度: (512,)
+处理类别: Common_Tern
+类别 Common_Tern 图像特征维度: (512,)
+处理类别: Rufous_Hummingbird
+类别 Rufous_Hummingbird 图像特征维度: (512,)
+处理类别: Red_winged_Blackbird
+类别 Red_winged_Blackbird 图像特征维度: (512,)
+处理类别: Seaside_Sparrow
+类别 Seaside_Sparrow 图像特征维度: (512,)
+处理类别: Prothonotary_Warbler
+类别 Prothonotary_Warbler 图像特征维度: (512,)
+处理类别: Philadelphia_Vireo
+类别 Philadelphia_Vireo 图像特征维度: (512,)
+处理类别: Bobolink
+类别 Bobolink 图像特征维度: (512,)
+处理类别: Wilson_Warbler
+类别 Wilson_Warbler 图像特征维度: (512,)
+处理类别: White_necked_Raven
+类别 White_necked_Raven 图像特征维度: (512,)
+处理类别: Rusty_Blackbird
+类别 Rusty_Blackbird 图像特征维度: (512,)
+处理类别: Elegant_Tern
+类别 Elegant_Tern 图像特征维度: (512,)
+处理类别: Green_Kingfisher
+类别 Green_Kingfisher 图像特征维度: (512,)
+处理类别: Cedar_Waxwing
+类别 Cedar_Waxwing 图像特征维度: (512,)
+处理类别: Red_cockaded_Woodpecker
+类别 Red_cockaded_Woodpecker 图像特征维度: (512,)
+处理类别: Mourning_Warbler
+类别 Mourning_Warbler 图像特征维度: (512,)
+处理类别: Gadwall
+类别 Gadwall 图像特征维度: (512,)
+处理类别: Lazuli_Bunting
+类别 Lazuli_Bunting 图像特征维度: (512,)
+处理类别: Green_Jay
+类别 Green_Jay 图像特征维度: (512,)
+处理类别: Yellow_billed_Cuckoo
+类别 Yellow_billed_Cuckoo 图像特征维度: (512,)
+处理类别: Cerulean_Warbler
+类别 Cerulean_Warbler 图像特征维度: (512,)
+处理类别: Harris_Sparrow
+类别 Harris_Sparrow 图像特征维度: (512,)
+处理类别: Bay_breasted_Warbler
+类别 Bay_breasted_Warbler 图像特征维度: (512,)
+处理类别: Black_Tern
+类别 Black_Tern 图像特征维度: (512,)
+处理类别: Black_throated_Blue_Warbler
+类别 Black_throated_Blue_Warbler 图像特征维度: (512,)
+处理类别: Pelagic_Cormorant
+类别 Pelagic_Cormorant 图像特征维度: (512,)
+处理类别: Northern_Fulmar
+类别 Northern_Fulmar 图像特征维度: (512,)
+处理类别: Geococcyx
+类别 Geococcyx 图像特征维度: (512,)
+处理类别: Brewer_Blackbird
+类别 Brewer_Blackbird 图像特征维度: (512,)
+处理类别: Brandt_Cormorant
+类别 Brandt_Cormorant 图像特征维度: (512,)
+处理类别: Barn_Swallow
+类别 Barn_Swallow 图像特征维度: (512,)
+处理类别: Red_bellied_Woodpecker
+类别 Red_bellied_Woodpecker 图像特征维度: (512,)
+处理类别: Black_capped_Vireo
+类别 Black_capped_Vireo 图像特征维度: (512,)
+处理类别: Cactus_Wren
+类别 Cactus_Wren 图像特征维度: (512,)
+处理类别: Olive_sided_Flycatcher
+ 50%|█████     | 100/200 [00:04<00:03, 26.19it/s] 52%|█████▏    | 103/200 [00:04<00:03, 26.28it/s] 53%|█████▎    | 106/200 [00:04<00:03, 25.95it/s] 55%|█████▍    | 109/200 [00:04<00:03, 25.65it/s] 56%|█████▌    | 112/200 [00:04<00:03, 25.76it/s] 57%|█████▊    | 115/200 [00:04<00:03, 26.21it/s] 59%|█████▉    | 118/200 [00:04<00:03, 26.07it/s] 60%|██████    | 121/200 [00:04<00:03, 25.89it/s] 62%|██████▏   | 124/200 [00:05<00:02, 26.15it/s] 64%|██████▎   | 127/200 [00:05<00:02, 26.24it/s] 65%|██████▌   | 130/200 [00:05<00:02, 26.10it/s] 66%|██████▋   | 133/200 [00:05<00:02, 26.35it/s] 68%|██████▊   | 136/200 [00:05<00:02, 26.26it/s] 70%|██████▉   | 139/200 [00:05<00:02, 26.02it/s] 71%|███████   | 142/200 [00:05<00:02, 26.20it/s] 72%|███████▎  | 145/200 [00:05<00:02, 25.90it/s] 74%|███████▍  | 148/200 [00:05<00:01, 26.54it/s] 76%|███████▌  | 151/200 [00:06<00:01, 26.25it/s] 77%|███████▋  | 154/200 [00:06<00:01, 26.23it/s] 78%|███████▊  | 157/200 [00:06<00:01, 25.92it/s] 80%|████████  | 160/200 [00:06<00:01, 26.23it/s] 82%|████████▏ | 163/200 [00:06<00:01, 26.09it/s] 83%|████████▎ | 166/200 [00:06<00:01, 26.23it/s] 84%|████████▍ | 169/200 [00:06<00:01, 26.08it/s] 86%|████████▌ | 172/200 [00:06<00:01, 26.29it/s] 88%|████████▊ | 175/200 [00:06<00:00, 26.29it/s] 89%|████████▉ | 178/200 [00:07<00:00, 26.01it/s] 90%|█████████ | 181/200 [00:07<00:00, 25.63it/s] 92%|█████████▏| 184/200 [00:07<00:00, 25.64it/s] 94%|█████████▎| 187/200 [00:07<00:00, 26.18it/s] 95%|█████████▌| 190/200 [00:07<00:00, 26.61it/s] 96%|█████████▋| 193/200 [00:07<00:00, 26.12it/s] 98%|█████████▊| 196/200 [00:07<00:00, 26.04it/s]100%|█████████▉| 199/200 [00:07<00:00, 25.80it/s]类别 Olive_sided_Flycatcher 图像特征维度: (512,)
+处理类别: Mangrove_Cuckoo
+类别 Mangrove_Cuckoo 图像特征维度: (512,)
+处理类别: Fox_Sparrow
+类别 Fox_Sparrow 图像特征维度: (512,)
+处理类别: Song_Sparrow
+类别 Song_Sparrow 图像特征维度: (512,)
+处理类别: Black_throated_Sparrow
+类别 Black_throated_Sparrow 图像特征维度: (512,)
+处理类别: American_Crow
+类别 American_Crow 图像特征维度: (512,)
+处理类别: Sayornis
+类别 Sayornis 图像特征维度: (512,)
+处理类别: Pileated_Woodpecker
+类别 Pileated_Woodpecker 图像特征维度: (512,)
+处理类别: Tree_Sparrow
+类别 Tree_Sparrow 图像特征维度: (512,)
+处理类别: Pied_billed_Grebe
+类别 Pied_billed_Grebe 图像特征维度: (512,)
+处理类别: Hooded_Warbler
+类别 Hooded_Warbler 图像特征维度: (512,)
+处理类别: Artic_Tern
+类别 Artic_Tern 图像特征维度: (512,)
+处理类别: Ovenbird
+类别 Ovenbird 图像特征维度: (512,)
+处理类别: Carolina_Wren
+类别 Carolina_Wren 图像特征维度: (512,)
+处理类别: Worm_eating_Warbler
+类别 Worm_eating_Warbler 图像特征维度: (512,)
+处理类别: Summer_Tanager
+类别 Summer_Tanager 图像特征维度: (512,)
+处理类别: Green_Violetear
+类别 Green_Violetear 图像特征维度: (512,)
+处理类别: Horned_Puffin
+类别 Horned_Puffin 图像特征维度: (512,)
+处理类别: Cape_Glossy_Starling
+类别 Cape_Glossy_Starling 图像特征维度: (512,)
+处理类别: Shiny_Cowbird
+类别 Shiny_Cowbird 图像特征维度: (512,)
+处理类别: Western_Gull
+类别 Western_Gull 图像特征维度: (512,)
+处理类别: White_throated_Sparrow
+类别 White_throated_Sparrow 图像特征维度: (512,)
+处理类别: European_Goldfinch
+类别 European_Goldfinch 图像特征维度: (512,)
+处理类别: Warbling_Vireo
+类别 Warbling_Vireo 图像特征维度: (512,)
+处理类别: Blue_Grosbeak
+类别 Blue_Grosbeak 图像特征维度: (512,)
+处理类别: Bronzed_Cowbird
+类别 Bronzed_Cowbird 图像特征维度: (512,)
+处理类别: Ivory_Gull
+类别 Ivory_Gull 图像特征维度: (512,)
+处理类别: Whip_poor_Will
+类别 Whip_poor_Will 图像特征维度: (512,)
+处理类别: Gray_Catbird
+类别 Gray_Catbird 图像特征维度: (512,)
+处理类别: Least_Tern
+类别 Least_Tern 图像特征维度: (512,)
+处理类别: Rock_Wren
+类别 Rock_Wren 图像特征维度: (512,)
+处理类别: Nashville_Warbler
+类别 Nashville_Warbler 图像特征维度: (512,)
+处理类别: Frigatebird
+[2025-11-22 19:48:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 Frigatebird 图像特征维度: (512,)
+处理类别: Caspian_Tern
+类别 Caspian_Tern 图像特征维度: (512,)
+处理类别: Savannah_Sparrow
+类别 Savannah_Sparrow 图像特征维度: (512,)
+处理类别: Clay_colored_Sparrow
+类别 Clay_colored_Sparrow 图像特征维度: (512,)
+处理类别: Tropical_Kingbird
+类别 Tropical_Kingbird 图像特征维度: (512,)
+处理类别: Fish_Crow
+类别 Fish_Crow 图像特征维度: (512,)
+处理类别: Evening_Grosbeak
+类别 Evening_Grosbeak 图像特征维度: (512,)
+处理类别: Bank_Swallow
+类别 Bank_Swallow 图像特征维度: (512,)
+处理类别: Anna_Hummingbird
+类别 Anna_Hummingbird 图像特征维度: (512,)
+处理类别: Northern_Waterthrush
+类别 Northern_Waterthrush 图像特征维度: (512,)
+处理类别: Spotted_Catbird
+类别 Spotted_Catbird 图像特征维度: (512,)
+处理类别: Red_breasted_Merganser
+类别 Red_breasted_Merganser 图像特征维度: (512,)
+处理类别: Brown_Thrasher
+类别 Brown_Thrasher 图像特征维度: (512,)
+处理类别: Great_Crested_Flycatcher
+类别 Great_Crested_Flycatcher 图像特征维度: (512,)
+处理类别: Pacific_Loon
+类别 Pacific_Loon 图像特征维度: (512,)
+处理类别: Pomarine_Jaeger
+类别 Pomarine_Jaeger 图像特征维度: (512,)
+处理类别: Slaty_backed_Gull
+类别 Slaty_backed_Gull 图像特征维度: (512,)
+处理类别: Common_Yellowthroat
+类别 Common_Yellowthroat 图像特征维度: (512,)
+处理类别: American_Pipit
+类别 American_Pipit 图像特征维度: (512,)
+处理类别: Rose_breasted_Grosbeak
+类别 Rose_breasted_Grosbeak 图像特征维度: (512,)
+处理类别: Chuck_will_Widow
+类别 Chuck_will_Widow 图像特征维度: (512,)
+处理类别: Lincoln_Sparrow
+类别 Lincoln_Sparrow 图像特征维度: (512,)
+处理类别: Tennessee_Warbler
+类别 Tennessee_Warbler 图像特征维度: (512,)
+处理类别: Palm_Warbler
+类别 Palm_Warbler 图像特征维度: (512,)
+处理类别: Long_tailed_Jaeger
+类别 Long_tailed_Jaeger 图像特征维度: (512,)
+处理类别: Florida_Jay
+类别 Florida_Jay 图像特征维度: (512,)
+处理类别: Chestnut_sided_Warbler
+类别 Chestnut_sided_Warbler 图像特征维度: (512,)
+处理类别: American_Three_toed_Woodpecker
+类别 American_Three_toed_Woodpecker 图像特征维度: (512,)
+处理类别: Painted_Bunting
+类别 Painted_Bunting 图像特征维度: (512,)
+处理类别: Boat_tailed_Grackle
+类别 Boat_tailed_Grackle 图像特征维度: (512,)
+处理类别: Eastern_Towhee
+类别 Eastern_Towhee 图像特征维度: (512,)
+处理类别: Black_billed_Cuckoo
+类别 Black_billed_Cuckoo 图像特征维度: (512,)
+处理类别: Crested_Auklet
+类别 Crested_Auklet 图像特征维度: (512,)
+处理类别: Canada_Warbler
+类别 Canada_Warbler 图像特征维度: (512,)
+处理类别: Laysan_Albatross
+类别 Laysan_Albatross 图像特征维度: (512,)
+处理类别: White_breasted_Nuthatch
+类别 White_breasted_Nuthatch 图像特征维度: (512,)
+处理类别: Clark_Nutcracker
+类别 Clark_Nutcracker 图像特征维度: (512,)
+处理类别: Heermann_Gull
+类别 Heermann_Gull 图像特征维度: (512,)
+处理类别: Baltimore_Oriole
+类别 Baltimore_Oriole 图像特征维度: (512,)
+处理类别: Yellow_throated_Vireo
+类别 Yellow_throated_Vireo 图像特征维度: (512,)
+处理类别: Bohemian_Waxwing
+类别 Bohemian_Waxwing 图像特征维度: (512,)
+处理类别: Loggerhead_Shrike
+类别 Loggerhead_Shrike 图像特征维度: (512,)
+处理类别: Herring_Gull
+类别 Herring_Gull 图像特征维度: (512,)
+处理类别: Common_Raven
+类别 Common_Raven 图像特征维度: (512,)
+处理类别: Louisiana_Waterthrush
+类别 Louisiana_Waterthrush 图像特征维度: (512,)
+处理类别: Forsters_Tern
+类别 Forsters_Tern 图像特征维度: (512,)
+处理类别: Red_eyed_Vireo
+类别 Red_eyed_Vireo 图像特征维度: (512,)
+处理类别: White_Pelican
+类别 White_Pelican 图像特征维度: (512,)
+处理类别: Groove_billed_Ani
+类别 Groove_billed_Ani 图像特征维度: (512,)
+处理类别: Horned_Lark
+类别 Horned_Lark 图像特征维度: (512,)
+处理类别: Vesper_Sparrow
+类别 Vesper_Sparrow 图像特征维度: (512,)
+处理类别: Gray_crowned_Rosy_Finch
+类别 Gray_crowned_Rosy_Finch 图像特征维度: (512,)
+处理类别: Green_tailed_Towhee
+类别 Green_tailed_Towhee 图像特征维度: (512,)
+处理类别: Swainson_Warbler
+类别 Swainson_Warbler 图像特征维度: (512,)
+处理类别: Scott_Oriole
+类别 Scott_Oriole 图像特征维度: (512,)
+处理类别: Black_footed_Albatross
+类别 Black_footed_Albatross 图像特征维度: (512,)
+处理类别: Western_Wood_Pewee
+类别 Western_Wood_Pewee 图像特征维度: (512,)
+处理类别: Ring_billed_Gull
+类别 Ring_billed_Gull 图像特征维度: (512,)
+处理类别: Acadian_Flycatcher
+类别 Acadian_Flycatcher 图像特征维度: (512,)
+处理类别: Cape_May_Warbler
+类别 Cape_May_Warbler 图像特征维度: (512,)
+处理类别: Yellow_Warbler
+类别 Yellow_Warbler 图像特征维度: (512,)
+处理类别: Prairie_Warbler
+类别 Prairie_Warbler 图像特征维度: (512,)
+处理类别: Downy_Woodpecker
+类别 Downy_Woodpecker 图像特征维度: (512,)
+处理类别: Blue_headed_Vireo
+类别 Blue_headed_Vireo 图像特征维度: (512,)
+处理类别: House_Sparrow
+类别 House_Sparrow 图像特征维度: (512,)
+处理类别: Magnolia_Warbler
+类别 Magnolia_Warbler 图像特征维度: (512,)
+处理类别: Eared_Grebe
+类别 Eared_Grebe 图像特征维度: (512,)
+处理类别: American_Goldfinch
+类别 American_Goldfinch 图像特征维度: (512,)
+100%|██████████| 200/200 [00:07<00:00, 25.14it/s]
+处理类别: Northern_Flicker
+类别 Northern_Flicker 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/200 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+  0%|          | 1/200 [00:27<1:30:08, 27.18s/it]  1%|          | 2/200 [00:53<1:28:36, 26.85s/it]  2%|▏         | 3/200 [01:19<1:26:04, 26.21s/it]处理类别: Grasshopper_Sparrow
+[2025-11-22 19:48:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 19:48:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 19:48:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-22 19:48:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for Grasshopper_Sparrow category.
+[2025-11-22 19:48:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:48:30] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:48:33] [显存监控] 已分配=32.58GB, 已保留=34.12GB, 空闲=14.82GB
+[2025-11-22 19:48:36] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:48:39] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.12GB, 剩余=14.97GB
+MLLM description: The Grasshopper Sparrow is a small bird with a slender body, short tail, and relatively long legs. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Grasshopper Sparrow has a compact body with a rounded head and a short, conical bill. Its eyes are dark and round, giving it an alert appearance.
+
+2. **Color Patterns and Markings**: The plumage of the Grasshopper Sparrow is predominantly brownish-gray, with streaks and spots on the back and wings. The underparts are pale, often with faint streaking. The head typically has a yellow stripe above the eye, which is a key identifying feature. The legs are pinkish or reddish-pink, and the feet are strong and well-adapted for perching on grass stems.
+
+3. **Size and Proportions**: The Grasshopper Sparrow is small, measuring approximately 6-7 inches in length. It has a short tail and proportionally long legs, which help it navigate through dense grasses.
+
+4. **Behavioral Characteristics**: Grasshopper Sparrows are ground-dwelling birds that spend most of their time foraging for insects and seeds in grasslands and prairies.
+类别 Grasshopper_Sparrow 文本特征维度: (512,)
+描述: The Grasshopper Sparrow is a small bird with a slender body, short tail, and relatively long legs. H...
+处理类别: White_eyed_Vireo
+[2025-11-22 19:48:42] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:48:45] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:48:48] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:48:51] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:48:54] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for White_eyed_Vireo category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:48:57] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 19:49:00] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 19:49:03] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 19:49:06] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.31GB, 剩余=14.97GB
+MLLM description: The White-eyed Vireo is a small passerine bird with several distinctive features:
+
+1. **Distinctive Physical Features**: The White-eyed Vireo has a slender body, a short, slightly curved bill, and a compact head. Its eyes are large and white, giving it its common name.
+
+2. **Color Patterns and Markings**: The bird's plumage is primarily olive-green on the upperparts, including the back, wings, and tail. The underparts are pale yellowish-white, and there is a distinct black stripe across the chest. The wing bars are also black, contrasting sharply against the olive-green background. The eye ring is bright white, encircling the eye, which is another key feature.
+
+3. **Size and Proportions**: The White-eyed Vireo is relatively small, measuring approximately 10-12 cm in length. It has a short, pointed bill and a proportionally long tail.
+
+4. **Behavioral Characteristics**: This species is typically found in deciduous forests, where it perches on branches or twigs, often in the middle to upper canopy. It is known for its habit of singing from a high vantage point, often using a single branch as a song post. The song is a
+类别 White_eyed_Vireo 文本特征维度: (512,)
+描述: The White-eyed Vireo is a small passerine bird with several distinctive features:
+
+1. **Distinctive ...
+处理类别: Western_Meadowlark
+[2025-11-22 19:49:09] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 19:49:12] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 19:49:15] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 19:49:18] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+wiki desc: Description for Western_Meadowlark category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:49:21] [显存监控] 已分配=33.07GB, 已保留=34.30GB, 空闲=14.33GB
+[2025-11-22 19:49:24] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 19:49:27] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 19:49:30] [显存监控] 已分配=32.57GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 19:49:33] [显存监控] 已分配=32.58GB, 已保留=34.30GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.30GB, 剩余=14.97GB
+MLLM description: The Western Meadowlark is a medium-sized bird with a robust body, short tail, and strong legs. Its most distinctive feature is its bright yellow breast and belly, contrasted by a black bib and streaks on the chest and flanks. The head has a bold black stripe over the eye and a white supercilium (eyebrow) that extends to the back of the neck. The wings are brownish-gray with dark bars, and the tail is short and rounded. The beak is long, pointed, and slightly curved downward, ideal for probing the ground for insects.
+
+Behaviorally, Western Meadowlarks are ground-dwelling birds that often forage in open fields, grasslands, and agricultural areas. They are known for their melodious songs, which are used for territorial defense and attracting mates. These birds are social and can be found in small flocks during migration or winter months.
+
+In summary, the Western Meadowlark is characterized by its bright yellow underparts, black bib, and streaked chest and flanks, along with its robust build and long, pointed beak. Its unique combination of coloration and behavior makes it easily identifiable among other similar species.
+类别 Western_Meadowlark 文本特征维度: (512,)
+描述: The Western Meadowlark is a medium-sized bird with a robust body, short tail, and strong legs. Its m...
+处理类别: Red_headed_Woodpecker
+[2025-11-22 19:49:36] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 19:49:39] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 19:49:42] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Red_headed_Woodpecker category.
+[2025-11-22 19:49:45] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:49:48] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:49:51] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:49:54] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:49:57] [显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.12GB, 剩余=14.97GB
+  2%|▏         | 4/200 [01:45<1:25:04, 26.04s/it]  2%|▎         | 5/200 [02:13<1:27:57, 27.07s/it]  3%|▎         | 6/200 [02:39<1:25:49, 26.54s/it]MLLM description: The Red-headed Woodpecker is a distinctive bird with several unique features:
+
+1. **Distinctive Physical Features**: The Red-headed Woodpecker has a robust body with a strong, straight bill. Its head is predominantly red, while its back, wings, and tail are black. The underparts are white, creating a striking contrast.
+
+2. **Color Patterns and Markings**: The most notable feature is the bright red head, which is a distinguishing characteristic. The black and white plumage on the rest of the body further enhances its appearance. The wings have a pattern of black and white bars, and the tail is black with white tips.
+
+3. **Size and Proportions**: The Red-headed Woodpecker is medium-sized, with a length ranging from 7.9 to 8.7 inches (20 to 22 cm). It has a relatively short neck and a long tail, which it often uses for balance when perched or climbing.
+
+4. **Behavioral Characteristics**: These birds are known for their drumming behavior, where they peck rapidly on trees to create a resonant sound. They also use their bills to probe tree bark in search of insects, which form a significant part of their diet. They are often seen clinging vertically
+类别 Red_headed_Woodpecker 文本特征维度: (512,)
+描述: The Red-headed Woodpecker is a distinctive bird with several unique features:
+
+1. **Distinctive Phys...
+处理类别: Brewer_Sparrow
+[2025-11-22 19:50:00] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:50:03] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:50:06] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:50:09] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:50:12] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Brewer_Sparrow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:50:15] [显存监控] 已分配=32.62GB, 已保留=34.05GB, 空闲=14.78GB
+[2025-11-22 19:50:18] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 19:50:21] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 19:50:24] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 19:50:27] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.05GB, 剩余=14.97GB
+MLLM description: The Brewer Sparrow is a small passerine bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The Brewer Sparrow has a compact body with a short, conical beak suited for seed-eating. Its legs are relatively short.
+
+2. **Color Patterns and Markings**: The plumage is predominantly brownish-gray, with streaking on the upperparts and a lighter underside. The head often displays a pale supercilium (eyebrow-like stripe) and a dark eye line. The tail is short and square-tipped.
+
+3. **Size and Proportions**: The Brewer Sparrow is small in size, typically measuring around 12-14 cm in length. It has a proportionally long tail compared to its body.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Brewer Sparrows are known to be active foragers, often hopping or running on the ground to search for seeds. They are also social birds, often found in flocks during migration.
+
+5. **Unique Identifying Traits**: The combination of its coloration, size, and habitat preference (grasslands and shrublands) distinguishes the Brewer Sparrow from other sparrow species. Additionally, the pale supercilium and
+类别 Brewer_Sparrow 文本特征维度: (512,)
+描述: The Brewer Sparrow is a small passerine bird with the following distinctive features:
+
+1. **Distinct...
+处理类别: White_breasted_Kingfisher
+[2025-11-22 19:50:30] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 19:50:33] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 19:50:36] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 19:50:39] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for White_breasted_Kingfisher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:50:42] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:50:45] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:50:48] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:50:51] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.24GB, 剩余=14.97GB
+MLLM description: The White-breasted Kingfisher is a small to medium-sized bird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The White-breasted Kingfisher has a robust body with a short neck and a large head. Its most notable feature is its long, pointed, and slightly curved bill, which is typically bright red or orange in color.
+
+2. **Color Patterns and Markings**: The bird displays a striking contrast between its plumage. The upper parts, including the back, wings, and tail, are a rich blue, while the underparts are predominantly white, with a distinct white patch on the throat and chest. The head is brownish, often with a darker cap.
+
+3. **Size and Proportions**: The White-breasted Kingfisher is relatively small compared to other kingfishers, with an average length of around 18-20 cm. It has a short, thick neck and a broad, rounded body. Its wings are short and rounded, and its legs are short and strong, adapted for perching on branches.
+
+4. **Behavioral Characteristics**: These birds are known for their diving behavior when hunting fish and aquatic insects. They perch on branches above water bodies and plunge into the
+类别 White_breasted_Kingfisher 文本特征维度: (512,)
+描述: The White-breasted Kingfisher is a small to medium-sized bird with a distinctive appearance. Here's ...
+处理类别: Orchard_Oriole
+[2025-11-22 19:50:54] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:50:57] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:51:00] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:51:03] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for Orchard_Oriole category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:51:06] [显存监控] 已分配=32.57GB, 已保留=34.17GB, 空闲=14.83GB
+[2025-11-22 19:51:09] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:51:12] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:51:15] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:51:18] [显存监控] 已分配=32.57GB, 已保留=34.17GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.17GB, 剩余=14.97GB
+  4%|▎         | 7/200 [03:05<1:24:46, 26.35s/it]  4%|▍         | 8/200 [03:36<1:29:10, 27.87s/it]  4%|▍         | 9/200 [04:03<1:27:38, 27.53s/it]MLLM description: The Orchard Oriole is a medium-sized bird with a slender body and long tail. Its most distinctive feature is its black head, back, and wings, contrasting sharply with its rusty-orange breast and belly. The wings have a mix of dark brown and gray feathers, creating a mottled pattern. The tail is long and slightly forked.
+
+In terms of color patterns and markings, the Orchard Oriole's plumage is strikingly vibrant. The black head and back provide a strong contrast to the orange underparts, while the wings' mottled pattern adds depth and texture to its appearance. The bird's eyes are dark and expressive, and it has a short, pointed beak suited for catching insects.
+
+The size and proportions of the Orchard Oriole are relatively small compared to larger songbirds like crows or ravens. It has a compact body and a long tail, which helps it maneuver in dense vegetation.
+
+Behaviorally, the Orchard Oriole is known for its acrobatic feeding habits, often seen flipping and turning in mid-air as it catches insects in flight. They also feed on fruits, particularly those with high sugar content, such as oranges and berries. In the provided images, the bird is seen perched on a branch, an orange half, and
+类别 Orchard_Oriole 文本特征维度: (512,)
+描述: The Orchard Oriole is a medium-sized bird with a slender body and long tail. Its most distinctive fe...
+处理类别: Nelson_Sharp_tailed_Sparrow
+[2025-11-22 19:51:21] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:51:24] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:51:27] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:51:30] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:51:33] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:51:36] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+wiki desc: Description for Nelson_Sharp_tailed_Sparrow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:51:39] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:51:42] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:51:45] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:51:48] [显存监控] 已分配=32.57GB, 已保留=34.24GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.24GB, 剩余=14.97GB
+MLLM description: The Nelson's Sharp-tailed Sparrow is a small passerine bird with a slender build and a short, conical bill. Its most distinctive feature is its sharp, pointed tail, which gives it its common name. 
+
+In terms of color patterns and markings, the Nelson's Sharp-tailed Sparrow has a brownish-gray back and wings, with a lighter underside. Its head is marked with a black stripe above the eye and a white eyebrow stripe. The throat and breast are buff-colored, often with streaking. The legs and feet are pinkish-brown.
+
+The size and proportions of the Nelson's Sharp-tailed Sparrow are relatively small, with an average length of about 12 cm. It has a short, thick bill and a compact body.
+
+Behaviorally, the Nelson's Sharp-tailed Sparrow is typically found in grasslands, shrublands, and marshes. It is a ground-dwelling species, often foraging for insects and seeds on the ground or low vegetation. It is also known to be a secretive bird, often difficult to spot due to its cryptic plumage and preference for dense cover.
+
+Unique identifying traits include its sharp tail, brownish-gray back and wings, buff-colored underparts, and black stripe above the
+[2025-11-22 19:51:51] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+类别 Nelson_Sharp_tailed_Sparrow 文本特征维度: (512,)
+描述: The Nelson's Sharp-tailed Sparrow is a small passerine bird with a slender build and a short, conica...
+处理类别: Myrtle_Warbler
+[2025-11-22 19:51:54] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:51:57] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:52:00] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:52:03] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for Myrtle_Warbler category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:52:06] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:52:09] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:52:12] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:52:15] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.12GB, 剩余=14.97GB
+MLLM description: The Myrtle Warbler is a small songbird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The Myrtle Warbler has a slender body, a short, pointed bill, and relatively long legs. Its feet are strong and sharp, adapted for perching.
+
+2. **Color Patterns and Markings**: The bird displays a mix of brown, yellow, and white in its plumage. The head is brownish with a black eye line and a pale supercilium (eyebrow-like stripe). The underparts are white with streaks of brown, and the wings have bold black and white bars. The tail is dark with a white tip.
+
+3. **Size and Proportions**: The Myrtle Warbler is small, measuring approximately 4.7–5.9 inches in length. It has a compact body with a short neck and a proportionally long tail.
+
+4. **Behavioral Characteristics**: Myrtle Warblers are known for their active and agile behavior. They are often seen foraging on the ground or low branches, using their sharp bills to probe into crevices and under bark for insects. They also exhibit a variety of vocalizations, including a series of high-pitched, trilled notes.
+
+5. **
+类别 Myrtle_Warbler 文本特征维度: (512,)
+描述: The Myrtle Warbler is a small songbird with the following distinctive features:
+
+1. **Distinctive Ph...
+处理类别: California_Gull
+[2025-11-22 19:52:18] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:52:21] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:52:24] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:52:27] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:52:30] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for California_Gull category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:52:33] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:52:36] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:52:39] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:52:42] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.45GB, 剩余=14.97GB
+  5%|▌         | 10/200 [04:30<1:26:32, 27.33s/it]  6%|▌         | 11/200 [04:54<1:23:22, 26.47s/it]  6%|▌         | 12/200 [05:20<1:22:04, 26.19s/it]MLLM description: The California Gull is a medium-sized gull with a slender build and long wings. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The California Gull has a slender body, long wings, and a relatively small head compared to its body size. Its legs are pinkish-orange, and it has a yellow bill with a black tip.
+
+2. **Color Patterns and Markings**: The California Gull displays a white underbelly and a gray back and wings. The wingtips are black, contrasting sharply with the lighter feathers. The head is also white, and the tail is gray with a white underside.
+
+3. **Size and Proportions**: The California Gull is smaller than some other gulls like the Herring Gull or the Ring-billed Gull. It measures approximately 16-18 inches in length and has a wingspan of about 37-40 inches.
+
+4. **Behavioral Characteristics**: California Gulls are often seen in coastal areas, near water bodies, and in urban environments. They are known for their adaptability and can be found in various habitats, including beaches, marshes, and even city parks. They are social birds and often gather in flocks.
+
+
+类别 California_Gull 文本特征维度: (512,)
+描述: The California Gull is a medium-sized gull with a slender build and long wings. Here's a detailed de...
+处理类别: Brown_Creeper
+[2025-11-22 19:52:45] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:52:48] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:52:51] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:52:54] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Brown_Creeper category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:52:57] [显存监控] 已分配=32.57GB, 已保留=34.30GB, 空闲=14.83GB
+[2025-11-22 19:53:00] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 19:53:03] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 19:53:06] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.30GB, 剩余=14.97GB
+MLLM description: The Brown Creeper is a small, slender bird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Brown Creeper has a long, thin, slightly curved bill, which it uses to probe into crevices in tree bark for insects. Its legs are short and strong, adapted for clinging to tree trunks.
+
+2. **Color Patterns and Markings**: The bird's plumage is predominantly brown, with darker streaks and spots on its back and wings, and lighter, speckled underparts. Its head often appears darker than the rest of its body, with a pale stripe above the eye. The tail is short and square-tipped.
+
+3. **Size and Proportions**: The Brown Creeper is relatively small, measuring about 6-7 inches in length. It has a compact body and a long tail, which it often holds upright when perched.
+
+4. **Behavioral Characteristics**: This species is known for its unique climbing behavior. It climbs trees headfirst, using its stiff tail feathers as a counterbalance. It often moves slowly and deliberately, pausing frequently to probe into crevices for food.
+
+5. **Unique Identifying Traits**: The Brown Creeper's most distinguishing feature is
+[2025-11-22 19:53:09] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+类别 Brown_Creeper 文本特征维度: (512,)
+描述: The Brown Creeper is a small, slender bird with a distinctive appearance. Here's a detailed descript...
+处理类别: Pied_Kingfisher
+[2025-11-22 19:53:12] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 19:53:15] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 19:53:18] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Pied_Kingfisher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:53:21] [显存监控] 已分配=32.56GB, 已保留=33.99GB, 空闲=14.84GB
+[2025-11-22 19:53:24] [显存监控] 已分配=32.58GB, 已保留=34.45GB, 空闲=14.82GB
+[2025-11-22 19:53:27] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:53:30] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:53:33] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.45GB, 剩余=14.97GB
+MLLM description: The Pied Kingfisher is a small to medium-sized bird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Pied Kingfisher has a robust body with a short neck and a long, pointed bill. Its legs are short and strong, adapted for perching.
+
+2. **Color Patterns and Markings**: The bird displays a striking black-and-white plumage. The head, neck, and upper parts are black, while the underparts are white. The wings and tail are also black, with white bars or spots. The bill is black, and the eyes are dark.
+
+3. **Size and Proportions**: The Pied Kingfisher is relatively small, measuring around 20-26 cm in length. It has a compact body with a broad chest and a short tail.
+
+4. **Behavioral Characteristics**: These birds are known for their diving behavior when hunting fish. They perch on branches or rocks near water bodies and dive into the water to catch fish. They often fly low over the water before plunging into it to grab prey.
+
+5. **Unique Identifying Traits**: The Pied Kingfisher's unique combination of black-and-white plumage, long pointed bill, and diving behavior make it easily
+类别 Pied_Kingfisher 文本特征维度: (512,)
+描述: The Pied Kingfisher is a small to medium-sized bird with a distinctive appearance. Here's a detailed...
+处理类别: Least_Flycatcher
+[2025-11-22 19:53:36] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:53:39] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:53:42] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:53:45] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Least_Flycatcher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:53:48] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:53:51] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:53:54] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:53:57] [显存监控] 已分配=32.57GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 19:54:00] [显存监控] 已分配=32.58GB, 已保留=34.24GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.24GB, 剩余=14.97GB
+MLLM description: The Least Flycatcher is a small passerine bird with a slender body, short tail, and a slightly decurved bill. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Least Flycatcher has a compact body with a rounded head and a short, straight bill. Its eyes are dark and round, giving it an alert appearance.
+
+2. **Color Patterns and Markings**: The Least Flycatcher displays a mottled brown and gray plumage on its back and wings, which provides excellent camouflage in its natural habitat. Its underparts are white or pale buff, contrasting with the darker upper parts. The tail is short and square-tipped, and the wingtips are blackish, often appearing as a distinct contrast against the lighter wing feathers.
+
+3. **Size and Proportions**: This species is relatively small, measuring approximately 10-12 cm in length. It has a short, thick neck and a proportionally long tail, which is characteristic of flycatchers.
+
+4. **Behavioral Characteristics**: Least Flycatchers are known for their habit of perching on exposed branches or wires, often in open areas such as fields, meadows, and along roadsides. They are insectivorous
+  6%|▋         | 13/200 [05:46<1:21:17, 26.08s/it]  7%|▋         | 14/200 [06:10<1:19:28, 25.64s/it]  8%|▊         | 15/200 [06:36<1:19:29, 25.78s/it]  8%|▊         | 16/200 [07:01<1:18:07, 25.48s/it]类别 Least_Flycatcher 文本特征维度: (512,)
+描述: The Least Flycatcher is a small passerine bird with a slender body, short tail, and a slightly decur...
+处理类别: Indigo_Bunting
+[2025-11-22 19:54:03] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:54:06] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 19:54:09] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for Indigo_Bunting category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:54:12] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 19:54:15] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 19:54:18] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 19:54:21] [显存监控] 已分配=32.59GB, 已保留=34.37GB, 空闲=14.82GB
+[2025-11-22 19:54:24] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.37GB, 剩余=14.97GB
+MLLM description: The Indigo Bunting is a small passerine bird with a compact body and short tail. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Indigo Bunting has a robust yet slender build, with a short, conical bill suited for seed-eating. Its legs are relatively short and strong.
+
+2. **Color Patterns and Markings**: The male Indigo Bunting is known for its deep indigo-blue plumage, which covers most of its body, including the head, back, wings, and tail. The underparts are a lighter shade of blue, often appearing almost purplish. The female and juvenile birds have a more subdued coloration, with olive-green upperparts and a pale underside. Both sexes have a white eye ring and a black mask around the eyes.
+
+3. **Size and Proportions**: The Indigo Bunting measures approximately 16-18 cm in length, with a wingspan of about 20-23 cm. It is one of the smallest buntings in North America.
+
+4. **Behavioral Characteristics**: Indigo Buntings are primarily seed-eaters, feeding on seeds from grasses, weeds, and wildflowers. They are also known to eat
+类别 Indigo_Bunting 文本特征维度: (512,)
+描述: The Indigo Bunting is a small passerine bird with a compact body and short tail. Here's a detailed d...
+处理类别: Gray_Kingbird
+[2025-11-22 19:54:27] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 19:54:30] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 19:54:33] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 19:54:36] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+wiki desc: Description for Gray_Kingbird category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:54:39] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 19:54:42] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 19:54:45] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 19:54:48] [显存监控] 已分配=32.58GB, 已保留=34.37GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.37GB, 剩余=14.97GB
+MLLM description: The Gray Kingbird is a medium-sized bird with a slender body, long tail, and pointed wings. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Gray Kingbird has a robust yet streamlined body, with a short neck and a relatively large head. Its beak is straight and slightly curved at the tip, ideal for catching insects.
+
+2. **Color Patterns and Markings**: The bird's plumage is predominantly grayish-brown on the upper parts, including the back, wings, and tail. The underparts are white or pale gray, creating a contrast against the darker upper parts. The face often displays a black mask-like stripe extending from the bill to behind the eye, which helps in distinguishing it from other kingbirds.
+
+3. **Size and Proportions**: The Gray Kingbird measures approximately 7-8 inches in length, with a wingspan of about 10-12 inches. It is slightly larger than a sparrow but smaller than a robin.
+
+4. **Behavioral Characteristics**: These birds are known for their acrobatic flying skills, often seen diving and swooping to catch insects mid-air. They are also territorial and will defend their nesting areas vigorously. They are active during the
+[2025-11-22 19:54:52] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+类别 Gray_Kingbird 文本特征维度: (512,)
+描述: The Gray Kingbird is a medium-sized bird with a slender body, long tail, and pointed wings. Here's a...
+处理类别: Bewick_Wren
+[2025-11-22 19:54:55] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 19:54:58] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 19:55:01] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+wiki desc: Description for Bewick_Wren category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:55:04] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:55:07] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:55:10] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:55:13] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:55:16] [显存监控] 已分配=32.57GB, 已保留=34.17GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.17GB, 剩余=14.97GB
+MLLM description: The Bewick's Wren is a small passerine bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The Bewick's Wren has a slender body, a long tail, and a short, slightly curved bill. Its legs are relatively short.
+
+2. **Color Patterns and Markings**: The plumage is predominantly brownish-gray, with darker streaks on the back and wings. The underparts are lighter, often with faint streaking. The head typically has a pale supercilium (eyebrow stripe) and a dark cap. The sexes are similar in appearance.
+
+3. **Size and Proportions**: The Bewick's Wren is small, measuring approximately 10-12 cm in length. It has a compact body and a long tail, which it often holds upright.
+
+4. **Behavioral Characteristics**: This species is known for its active and restless behavior. It is often seen foraging on the ground or low in shrubs and trees, using its long tail for balance. It is also known to be a good mimic, imitating the calls of other birds.
+
+5. **Unique Identifying Traits**: The Bewick's Wren's most distinguishing feature is its long tail, which it frequently flicks
+类别 Bewick_Wren 文本特征维度: (512,)
+描述: The Bewick's Wren is a small passerine bird with the following distinctive features:
+
+1. **Distincti...
+处理类别: Golden_winged_Warbler
+[2025-11-22 19:55:19] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:55:22] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:55:25] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:55:28] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+wiki desc: Description for Golden_winged_Warbler category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 19:55:31] [显存监控] 已分配=32.51GB, 已保留=33.54GB, 空闲=14.89GB
+[2025-11-22 19:55:34] [显存监控] 已分配=32.51GB, 已保留=33.54GB, 空闲=14.89GB
+[2025-11-22 19:55:37] [显存监控] 已分配=32.51GB, 已保留=33.54GB, 空闲=14.89GB
+[2025-11-22 19:55:40] [显存监控] 已分配=32.55GB, 已保留=33.54GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.54GB, 剩余=14.97GB
+  8%|▊         | 17/200 [07:27<1:17:48, 25.51s/it]  9%|▉         | 18/200 [07:53<1:18:26, 25.86s/it] 10%|▉         | 19/200 [08:18<1:16:51, 25.48s/it]MLLM description: The Golden-winged Warbler is a small songbird with the following distinctive features:
+
+1. **Distinctive Physical Features:** The Golden-winged Warbler has a slender body, a short, pointed bill, and relatively long tail feathers. Its legs are thin and strong.
+
+2. **Color Patterns and Markings:** The male Golden-winged Warbler has a bright yellow crown and wing bars, which contrast sharply with its grayish-brown back and wings. The underparts are white with faint streaking on the flanks. The female and juvenile birds have a more subdued coloration, with olive-green upperparts and a pale yellow throat and breast.
+
+3. **Size and Proportions:** The Golden-winged Warbler measures approximately 4.7–5.9 inches in length, with a wingspan of about 6.3–7.1 inches. It is one of the smallest warblers in North America.
+
+4. **Behavioral Characteristics:** This species is primarily a forest-dwelling bird, often found in deciduous forests, especially those with a mix of open areas and dense understory. It is an insectivore, feeding on a variety of insects and spiders. The Golden-winged Warbler is known for its distinctive song,
+类别 Golden_winged_Warbler 文本特征维度: (512,)
+描述: The Golden-winged Warbler is a small songbird with the following distinctive features:
+
+1. **Distinc...
+处理类别: Marsh_Wren
+[2025-11-22 19:55:43] [显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+[2025-11-22 19:55:46] [显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+[2025-11-22 19:55:49] [显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+[2025-11-22 19:55:52] [显存监控] 已分配=32.44GB, 已保留=33.54GB, 空闲=14.97GB
+wiki desc: Description for Marsh_Wren category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:55:55] [显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.83GB
+[2025-11-22 19:55:58] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:56:01] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:56:04] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:56:07] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.12GB, 剩余=14.97GB
+MLLM description: The Marsh Wren is a small bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The Marsh Wren has a compact body, short tail, and a slender bill. Its legs are relatively long compared to its body size.
+
+2. **Color Patterns and Markings**: The bird's plumage is typically brownish-gray above, with darker streaks on the back and wings. The underparts are pale gray or white, often with faint streaking. The head may have a dark stripe through the eye, and the throat can appear slightly darker than the rest of the underparts.
+
+3. **Size and Proportions**: The Marsh Wren is small, measuring about 6-7 inches in length. It is one of the smallest wrens in North America.
+
+4. **Behavioral Characteristics**: Marsh Wrens are known for their active and energetic behavior. They are territorial and will defend their nests vigorously. They build intricate, dome-shaped nests in dense vegetation, often near water. The birds are also known for their loud, complex songs, which they use to communicate and establish territory.
+
+5. **Unique Identifying Traits**: The Marsh Wren's unique identifying traits include its small size, brownish-gray coloration, and the intricate nest
+类别 Marsh_Wren 文本特征维度: (512,)
+描述: The Marsh Wren is a small bird with the following distinctive features:
+
+1. **Distinctive Physical F...
+处理类别: Chipping_Sparrow
+[2025-11-22 19:56:10] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:56:13] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:56:16] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:56:19] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Chipping_Sparrow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:56:22] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:56:25] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:56:28] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 19:56:31] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.45GB, 剩余=14.97GB
+MLLM description: The Chipping Sparrow is a small passerine bird with several distinctive features:
+
+1. **Distinctive Physical Features**: The Chipping Sparrow has a compact body, short tail, and a conical beak adapted for seed-eating. Its legs are relatively short.
+
+2. **Color Patterns and Markings**: The bird's plumage is primarily brownish-gray with streaks on its back and wings, and a lighter underside. It has a reddish-brown cap on its head, which is more prominent in males during breeding season. The eyes are dark, and the beak is pale yellowish or grayish.
+
+3. **Size and Proportions**: The Chipping Sparrow is small, measuring approximately 12-14 cm in length. It is slightly larger than a House Sparrow but smaller than a Song Sparrow.
+
+4. **Behavioral Characteristics**: Chipping Sparrows are ground-dwelling birds that feed on seeds, insects, and other small invertebrates. They are often seen hopping around on the ground or perching on low branches. They are active throughout the year and can be found in a variety of habitats, including gardens, parks, and open woodlands.
+
+5. **Unique Identifying Traits**: The redd
+类别 Chipping_Sparrow 文本特征维度: (512,)
+描述: The Chipping Sparrow is a small passerine bird with several distinctive features:
+
+1. **Distinctive ...
+处理类别: Scarlet_Tanager
+[2025-11-22 19:56:34] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:56:37] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:56:40] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 19:56:43] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Scarlet_Tanager category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:56:46] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:56:49] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:56:52] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:56:55] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-22 19:56:58] [显存监控] 已分配=32.58GB, 已保留=34.17GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.17GB, 剩余=14.97GB
+ 10%|█         | 20/200 [08:43<1:15:54, 25.30s/it] 10%|█         | 21/200 [09:12<1:19:15, 26.56s/it] 11%|█         | 22/200 [09:38<1:17:36, 26.16s/it]MLLM description: The Scarlet Tanager is a vibrant bird with several distinctive features:
+
+1. **Distinctive Physical Features**: The Scarlet Tanager has a robust body with a short, thick neck and a strong, conical beak suited for seed-eating. Its legs are relatively short.
+
+2. **Color Patterns and Markings**: The most striking feature is its bright red plumage covering the head, neck, breast, and belly. The wings and tail are black, creating a sharp contrast against the red. The male is more vividly colored than the female, which has a duller red and more olive-green tones.
+
+3. **Size and Proportions**: The Scarlet Tanager is medium-sized, measuring approximately 7-8 inches in length. It has a compact body with a broad chest and a short tail.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, the Scarlet Tanager is known to be active and agile in flight, often seen perched on branches or feeding on berries and seeds. They are solitary birds during the breeding season, but may form flocks outside of it.
+
+5. **Unique Identifying Traits**: The combination of the bright red coloration, black wings and tail, and the overall shape of the bird make it easily
+类别 Scarlet_Tanager 文本特征维度: (512,)
+描述: The Scarlet Tanager is a vibrant bird with several distinctive features:
+
+1. **Distinctive Physical ...
+处理类别: Sage_Thrasher
+[2025-11-22 19:57:01] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:57:04] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:57:07] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:57:10] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-22 19:57:13] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+wiki desc: Description for Sage_Thrasher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:57:16] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-22 19:57:19] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-22 19:57:22] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-22 19:57:25] [显存监控] 已分配=32.58GB, 已保留=34.36GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.36GB, 剩余=14.97GB
+MLLM description: The Sage Thrasher is a medium-sized bird with a slender body, long tail, and relatively short wings. Its plumage is predominantly grayish-brown, with darker streaks on its back and wings, and lighter underparts. The head has a pale supercilium (eyebrow stripe) and a dark eye line. The beak is long, slightly curved, and pointed, which is characteristic of insectivorous birds. The legs are strong and dark-colored.
+
+Behaviorally, Sage Thrashers are known to be active during the day, often foraging on the ground or low in shrubs and trees. They have a distinctive call that sounds like "chick-a-dee-dee-dee," which is used for communication and territorial defense.
+
+Key identifying traits include the combination of the grayish-brown coloration, the pale supercilium, and the long, slightly curved beak. These features help distinguish the Sage Thrasher from other thrasher species, such as the Brown Thrasher, which has a more robust build and a shorter, thicker beak. Additionally, the Sage Thrasher's habitat preference for arid and semi-arid regions further aids in its identification.
+类别 Sage_Thrasher 文本特征维度: (512,)
+描述: The Sage Thrasher is a medium-sized bird with a slender body, long tail, and relatively short wings....
+处理类别: Brown_Pelican
+[2025-11-22 19:57:28] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[2025-11-22 19:57:31] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[2025-11-22 19:57:34] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[2025-11-22 19:57:37] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+wiki desc: Description for Brown_Pelican category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:57:40] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[2025-11-22 19:57:43] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[2025-11-22 19:57:46] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[2025-11-22 19:57:49] [显存监控] 已分配=32.58GB, 已保留=34.43GB, 空闲=14.83GB
+[2025-11-22 19:57:52] [显存监控] 已分配=32.58GB, 已保留=34.43GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.43GB, 剩余=14.97GB
+MLLM description: The Brown Pelican is a large seabird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Brown Pelican has a large, long, and slightly curved bill with a wide gape, which it uses to scoop up fish. Its eyes are small and located on the sides of its head, giving it a wide field of vision.
+
+2. **Color Patterns and Markings**: The plumage of the Brown Pelican is predominantly grayish-brown, with darker feathers on the back and wings. The head and neck are white, contrasting sharply with the rest of the body. The bill is dark gray or black, and the legs and feet are yellowish-orange.
+
+3. **Size and Proportions**: The Brown Pelican is one of the largest pelicans, with a wingspan that can reach up to 7 feet. It has a robust body, short neck, and powerful legs adapted for swimming and diving.
+
+4. **Behavioral Characteristics**: Brown Pelicans are known for their diving behavior, where they plunge into the water to catch fish. They also have a unique feeding technique called "pelican fishing," where they scoop up fish in their large bills. They are often seen in flocks near coastal areas
+类别 Brown_Pelican 文本特征维度: (512,)
+描述: The Brown Pelican is a large seabird with a distinctive appearance. Here's a detailed description:
+
+...
+处理类别: Kentucky_Warbler
+[2025-11-22 19:57:55] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[2025-11-22 19:57:58] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[2025-11-22 19:58:01] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[2025-11-22 19:58:04] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+wiki desc: Description for Kentucky_Warbler category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:58:07] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 19:58:10] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 19:58:13] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 19:58:16] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.05GB, 剩余=14.97GB
+MLLM description: The Kentucky Warbler is a small, slender bird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Kentucky Warbler has a slender body, a short, pointed bill, and relatively long legs. Its tail is slightly rounded.
+
+2. **Color Patterns and Markings**: The bird displays a bright yellow underside, contrasting with its olive-green upperparts. It has a black cap on its head, which extends into a thin stripe over the eye, giving it a mask-like appearance. The throat is black, and there is a white spot at the base of the bill. The wing has a bold black and white pattern, and the tail is dark with a white tip.
+
+3. **Size and Proportions**: The Kentucky Warbler is small, measuring approximately 4.7 inches in length. It has a wingspan of about 6.3 inches and weighs around 0.4 ounces.
+
+4. **Behavioral Characteristics**: Kentucky Warblers are active and often seen foraging on the ground or low in shrubs and trees. They are known to be insectivorous, feeding primarily on insects and spiders. They are also known to migrate, traveling long distances between their breeding and wintering grounds.
+
+5. **
+类别 Kentucky_Warbler 文本特征维度: (512,)
+ 12%|█▏        | 23/200 [10:03<1:16:47, 26.03s/it] 12%|█▏        | 24/200 [10:28<1:15:12, 25.64s/it] 12%|█▎        | 25/200 [10:52<1:13:38, 25.25s/it] 13%|█▎        | 26/200 [11:17<1:12:57, 25.16s/it]描述: The Kentucky Warbler is a small, slender bird with a distinctive appearance. Here's a detailed descr...
+处理类别: Glaucous_winged_Gull
+[2025-11-22 19:58:19] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 19:58:22] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 19:58:25] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 19:58:28] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Glaucous_winged_Gull category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:58:31] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:58:34] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:58:37] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:58:40] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 19:58:43] [显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.12GB, 剩余=14.97GB
+MLLM description: The Glaucous-winged Gull is a medium-sized gull with a slender build and long wings. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Glaucous-winged Gull has a slender body, long wings, and a relatively small head compared to its body size. Its legs are pinkish-orange, and it has a yellow bill with a black tip.
+
+2. **Color Patterns and Markings**: The bird's plumage is predominantly white, with gray wingtips and a gray back. The wingtips are particularly noticeable when the bird is in flight. The head is also white, and the bill is yellow with a black tip. The legs are pinkish-orange.
+
+3. **Size and Proportions**: The Glaucous-winged Gull is smaller than some other gulls like the Herring Gull or the Great Black-backed Gull. It has a compact body and long wings, which give it an elegant appearance.
+
+4. **Behavioral Characteristics**: The Glaucous-winged Gull is often seen perched on rocks, cliffs, or beaches, and it can also be found flying over water bodies. It is known for its scavenging behavior, often
+类别 Glaucous_winged_Gull 文本特征维度: (512,)
+描述: The Glaucous-winged Gull is a medium-sized gull with a slender build and long wings. Here's a detail...
+处理类别: Rhinoceros_Auklet
+[2025-11-22 19:58:46] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:58:49] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 19:58:52] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Rhinoceros_Auklet category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 19:58:55] [显存监控] 已分配=32.56GB, 已保留=34.08GB, 空闲=14.85GB
+[2025-11-22 19:58:58] [显存监控] 已分配=32.56GB, 已保留=34.08GB, 空闲=14.85GB
+[2025-11-22 19:59:01] [显存监控] 已分配=32.56GB, 已保留=34.08GB, 空闲=14.85GB
+[2025-11-22 19:59:04] [显存监控] 已分配=32.56GB, 已保留=34.08GB, 空闲=14.85GB
+[2025-11-22 19:59:07] [显存监控] 已分配=32.56GB, 已保留=34.08GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=34.08GB, 剩余=14.97GB
+MLLM description: The Rhinoceros Auklet is a small seabird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Rhinoceros Auklet has a robust body with a short neck and a large head. Its bill is thick and slightly curved, with a yellow-orange tip. The eyes are dark and prominent.
+
+2. **Color Patterns and Markings**: The bird's plumage is predominantly dark gray or black, with a lighter underside. The head often displays a white stripe above the eye, which can vary in intensity. The wings have a darker coloration, and the tail is short and square-shaped.
+
+3. **Size and Proportions**: The Rhinoceros Auklet is relatively small compared to other auk species, with an average length of about 20-25 cm. It has a compact body and short wings, adapted for diving and swimming.
+
+4. **Behavioral Characteristics**: This species is highly aquatic, spending most of its time in the water. It is known for its diving abilities, often plunging into the ocean to catch fish and squid. The Rhinoceros Auklet is also a strong flier, capable of rapid dives and quick turns in the
+类别 Rhinoceros_Auklet 文本特征维度: (512,)
+描述: The Rhinoceros Auklet is a small seabird with a distinctive appearance. Here's a detailed descriptio...
+处理类别: Ringed_Kingfisher
+[2025-11-22 19:59:10] [显存监控] 已分配=32.44GB, 已保留=34.08GB, 空闲=14.97GB
+[2025-11-22 19:59:13] [显存监控] 已分配=32.44GB, 已保留=34.08GB, 空闲=14.97GB
+[2025-11-22 19:59:16] [显存监控] 已分配=32.44GB, 已保留=34.08GB, 空闲=14.97GB
+wiki desc: Description for Ringed_Kingfisher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:59:19] [显存监控] 已分配=32.58GB, 已保留=34.13GB, 空闲=14.82GB
+[2025-11-22 19:59:22] [显存监控] 已分配=32.58GB, 已保留=34.13GB, 空闲=14.82GB
+[2025-11-22 19:59:25] [显存监控] 已分配=32.56GB, 已保留=34.13GB, 空闲=14.84GB
+[2025-11-22 19:59:28] [显存监控] 已分配=32.56GB, 已保留=34.13GB, 空闲=14.84GB
+[2025-11-22 19:59:31] [显存监控] 已分配=32.57GB, 已保留=34.13GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.13GB, 剩余=14.97GB
+MLLM description: The Ringed Kingfisher is a medium-sized bird with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Ringed Kingfisher has a long, pointed bill, which is slightly curved downwards. Its eyes are large and dark, giving it an alert expression.
+
+2. **Color Patterns and Markings**: The bird displays a striking color pattern. Its head, neck, and upperparts are blue-grey, while its underparts are a rusty orange-brown. The wings and tail are dark grey, and the legs and feet are black. The most notable feature is the white ring around the neck, which gives the species its name.
+
+3. **Size and Proportions**: The Ringed Kingfisher is approximately 20-25 cm in length, with a wingspan of about 30-35 cm. It has a robust body, short tail, and relatively long legs.
+
+4. **Behavioral Characteristics**: Ringed Kingfishers are known to perch on branches or wires near water bodies, scanning for fish. They dive into the water to catch their prey and then return to their perch to eat. They are also known to engage in aerial acrobatics when hunting.
+
+5. **Unique
+类别 Ringed_Kingfisher 文本特征维度: (512,)
+描述: The Ringed Kingfisher is a medium-sized bird with a distinctive appearance. Here's a detailed descri...
+处理类别: Belted_Kingfisher
+[2025-11-22 19:59:34] [显存监控] 已分配=32.44GB, 已保留=34.13GB, 空闲=14.97GB
+[2025-11-22 19:59:37] [显存监控] 已分配=32.44GB, 已保留=34.13GB, 空闲=14.97GB
+[2025-11-22 19:59:40] [显存监控] 已分配=32.44GB, 已保留=34.13GB, 空闲=14.97GB
+[2025-11-22 19:59:43] [显存监控] 已分配=32.44GB, 已保留=34.13GB, 空闲=14.97GB
+wiki desc: Description for Belted_Kingfisher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 19:59:46] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 19:59:49] [显存监控] 已分配=32.56GB, 已保留=34.50GB, 空闲=14.84GB
+[2025-11-22 19:59:52] [显存监控] 已分配=32.57GB, 已保留=34.50GB, 空闲=14.83GB
+[2025-11-22 19:59:55] [显存监控] 已分配=32.58GB, 已保留=34.50GB, 空闲=14.83GB
+[2025-11-22 19:59:58] [显存监控] 已分配=32.58GB, 已保留=34.50GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.50GB, 剩余=14.97GB
+ 14%|█▎        | 27/200 [11:44<1:13:34, 25.52s/it] 14%|█▍        | 28/200 [12:08<1:12:27, 25.27s/it] 14%|█▍        | 29/200 [12:33<1:11:46, 25.18s/it] 15%|█▌        | 30/200 [12:58<1:10:34, 24.91s/it]MLLM description: The Belted Kingfisher is a medium-sized bird with a distinctive crest, long tail, and sharp, pointed bill. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The most notable feature is its crested head, which is upright and gives it a regal appearance. Its eyes are large and piercing, and its bill is long, straight, and sharp, adapted for catching fish.
+
+2. **Color Patterns and Markings**: The Belted Kingfisher has a grey-blue back, wings, and tail, contrasting with a white underbelly. A broad black band, known as the "belt," runs across the chest, separating the blue upperparts from the white lower parts. The face is white with a black cap and a thin black line extending from the eye to the back of the head. The legs and feet are strong and dark.
+
+3. **Size and Proportions**: The bird is approximately 10-12 inches in length, with a wingspan of about 18-20 inches. It has a robust body, short neck, and a long tail that often extends beyond the perch.
+
+4. **Behavioral Characteristics**: Belted Kingfishers are known for their diving behavior when hunting fish.
+类别 Belted_Kingfisher 文本特征维度: (512,)
+描述: The Belted Kingfisher is a medium-sized bird with a distinctive crest, long tail, and sharp, pointed...
+处理类别: Pine_Grosbeak
+[2025-11-22 20:00:01] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 20:00:04] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+[2025-11-22 20:00:07] [显存监控] 已分配=32.44GB, 已保留=34.50GB, 空闲=14.97GB
+wiki desc: Description for Pine_Grosbeak category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:00:10] [显存监控] 已分配=32.56GB, 已保留=33.97GB, 空闲=14.84GB
+[2025-11-22 20:00:13] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[2025-11-22 20:00:16] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[2025-11-22 20:00:19] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+[2025-11-22 20:00:22] [显存监控] 已分配=32.56GB, 已保留=34.43GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.43GB, 剩余=14.97GB
+MLLM description: The Pine Grosbeak is a medium-sized finch with a robust body and short tail. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Pine Grosbeak has a thick, conical beak suited for cracking seeds, which is a key feature distinguishing it from other finches. Its legs are strong and dark-colored.
+
+2. **Color Patterns and Markings**: The bird displays a striking coloration. The head is typically a rich reddish-brown, while the back and wings have a mix of gray and brown streaks. The underparts are white or pale gray, often with faint streaking. The wing bars are prominent, appearing as distinct white stripes against the darker feathers. The tail is long and slightly rounded.
+
+3. **Size and Proportions**: The Pine Grosbeak is about 7-8 inches in length, with a wingspan of around 10-12 inches. It is larger than many other finches, making it easily recognizable.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Pine Grosbeaks are known to be seed-eaters, feeding primarily on pine seeds. They also consume fruits, berries, and insects. They are social birds
+类别 Pine_Grosbeak 文本特征维度: (512,)
+描述: The Pine Grosbeak is a medium-sized finch with a robust body and short tail. Here's a detailed descr...
+处理类别: Mockingbird
+[2025-11-22 20:00:25] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[2025-11-22 20:00:28] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[2025-11-22 20:00:31] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+[2025-11-22 20:00:34] [显存监控] 已分配=32.44GB, 已保留=34.43GB, 空闲=14.97GB
+wiki desc: Description for Mockingbird category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:00:37] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:00:40] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:00:43] [显存监控] 已分配=32.59GB, 已保留=34.30GB, 空闲=14.81GB
+[2025-11-22 20:00:46] [显存监控] 已分配=32.57GB, 已保留=34.30GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.30GB, 剩余=14.97GB
+MLLM description: The Mockingbird is a medium-sized bird with a slender body, long tail, and a relatively short, pointed beak. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Mockingbird has a slender build with a long tail that often extends beyond the perch it's sitting on. Its legs are thin and strong, allowing it to perch securely.
+
+2. **Color Patterns and Markings**: The Mockingbird typically has a grayish-brown back and wings, contrasting with a lighter underside. The head is usually a lighter shade than the back, sometimes with a white or pale patch on the throat. The tail is dark with white tips, which can be seen when the bird is perched.
+
+3. **Size and Proportions**: The Mockingbird is about 7-8 inches in length, with a wingspan of around 10-12 inches. It is proportionally slender, with a long tail and relatively short legs.
+
+4. **Behavioral Characteristics**: Mockingbirds are known for their mimicry abilities, imitating the songs of other birds and even human-made sounds. They are also territorial and will defend their nests vigorously against intruders. They are active during the day and
+类别 Mockingbird 文本特征维度: (512,)
+描述: The Mockingbird is a medium-sized bird with a slender body, long tail, and a relatively short, point...
+处理类别: Red_legged_Kittiwake
+[2025-11-22 20:00:49] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:00:52] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:00:55] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:00:58] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Red_legged_Kittiwake category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:01:01] [显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.85GB
+[2025-11-22 20:01:04] [显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.85GB
+[2025-11-22 20:01:07] [显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.85GB
+[2025-11-22 20:01:10] [显存监控] 已分配=32.56GB, 已保留=34.06GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=34.06GB, 剩余=14.97GB
+MLLM description: The Red-legged Kittiwake is a seabird characterized by its distinctive physical features, color patterns, size, and unique identifying traits.
+
+1. **Distinctive Physical Features:** The Red-legged Kittiwake has a slender body with a long, pointed beak, which is yellowish in color. Its legs are bright red, a feature that sets it apart from other gulls. The bird's wings are grayish with black tips, and its tail is short and square-shaped.
+
+2. **Color Patterns and Markings:** The bird's plumage is predominantly white, with gray wings and a black-tipped tail. The head and neck are also white, and the beak is yellow. The legs are bright red, providing a striking contrast to the rest of the bird's body.
+
+3. **Size and Proportions:** The Red-legged Kittiwake is relatively small compared to other gulls, with an average length of around 16-18 inches. It has a wingspan of approximately 30-36 inches, making it a compact and agile bird.
+
+4. **Behavioral Characteristics:** The Red-legged Kittiwake is a colonial breeder, often found nesting in large colonies on rocky cliffs or islands. They are known for their
+[2025-11-22 20:01:13] [显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+类别 Red_legged_Kittiwake 文本特征维度: (512,)
+描述: The Red-legged Kittiwake is a seabird characterized by its distinctive physical features, color patt...
+处理类别: Winter_Wren
+ 16%|█▌        | 31/200 [13:24<1:11:23, 25.35s/it] 16%|█▌        | 32/200 [13:50<1:11:09, 25.41s/it] 16%|█▋        | 33/200 [14:14<1:09:31, 24.98s/it][2025-11-22 20:01:16] [显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+[2025-11-22 20:01:19] [显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+[2025-11-22 20:01:22] [显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+[2025-11-22 20:01:25] [显存监控] 已分配=32.44GB, 已保留=34.06GB, 空闲=14.97GB
+wiki desc: Description for Winter_Wren category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:01:28] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 20:01:31] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 20:01:34] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 20:01:37] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.24GB, 剩余=14.97GB
+MLLM description: The Winter Wren is a small, compact bird with a rounded body and short tail. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Winter Wren has a robust yet petite build, with a short, stout bill that is slightly curved at the tip. Its eyes are dark and alert.
+
+2. **Color Patterns and Markings**: The Winter Wren displays a mottled brown plumage, which provides excellent camouflage in its woodland habitat. The upperparts, including the back, wings, and tail, are darker than the underparts, which are lighter and speckled with brown. The head often has a pale stripe above the eye, and the throat may have a faint white patch.
+
+3. **Size and Proportions**: The Winter Wren is one of the smallest wrens, measuring about 6-7 inches in length. It has a proportionally long tail relative to its body size, which it often holds upright when perched.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, Winter Wrens are known for their active and energetic behavior. They are territorial and will sing loudly to defend their territory. They are also known for their intricate nests, which they build in dense
+类别 Winter_Wren 文本特征维度: (512,)
+描述: The Winter Wren is a small, compact bird with a rounded body and short tail. Here's a detailed descr...
+处理类别: Horned_Grebe
+[2025-11-22 20:01:40] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 20:01:43] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 20:01:46] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 20:01:49] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for Horned_Grebe category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:01:52] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:01:55] [显存监控] 已分配=32.57GB, 已保留=34.30GB, 空闲=14.83GB
+[2025-11-22 20:01:58] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:02:01] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:02:04] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.30GB, 剩余=14.97GB
+MLLM description: The Horned Grebe is a distinctive waterbird characterized by its unique physical features and color patterns. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The most notable feature of the Horned Grebe is its prominent "horn-like" tuft of feathers on top of its head, which gives it its name. This tuft is typically black with a red spot at the base.
+
+2. **Color Patterns and Markings**: The bird has a dark brown or black body with a white or light-colored throat and neck. Its wings have a mix of dark and light feathers, creating a mottled appearance. The underside of the tail is white, contrasting with the darker upper parts of the body. The legs are short and orange-red in color.
+
+3. **Size and Proportions**: The Horned Grebe is relatively small compared to other grebes, with an average length of about 30-35 cm. It has a compact body, a short neck, and a large head, which is characteristic of grebes.
+
+4. **Behavioral Characteristics**: These birds are primarily aquatic, spending much of their time swimming and diving in search of food. They are known for their elaborate courtship displays, which involve posturing, bob
+类别 Horned_Grebe 文本特征维度: (512,)
+描述: The Horned Grebe is a distinctive waterbird characterized by its unique physical features and color ...
+处理类别: Red_faced_Cormorant
+[2025-11-22 20:02:07] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:02:10] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:02:13] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Red_faced_Cormorant category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:02:16] [显存监控] 已分配=32.51GB, 已保留=33.85GB, 空闲=14.89GB
+[2025-11-22 20:02:19] [显存监控] 已分配=32.55GB, 已保留=33.85GB, 空闲=14.85GB
+[2025-11-22 20:02:22] [显存监控] 已分配=32.55GB, 已保留=33.85GB, 空闲=14.85GB
+[2025-11-22 20:02:25] [显存监控] 已分配=32.56GB, 已保留=33.85GB, 空闲=14.85GB
+[2025-11-22 20:02:28] [显存监控] 已分配=32.55GB, 已保留=33.85GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.85GB, 剩余=14.97GB
+MLLM description: The Red-faced Cormorant is a distinctive seabird characterized by its striking appearance. Here's a detailed description of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The Red-faced Cormorant has a robust body with a streamlined shape, ideal for diving into water. Its head is large in proportion to its body, with a prominent crest of feathers that stand upright when the bird is alert.
+
+2. **Color Patterns and Markings**: The most notable feature is the bright red face, which contrasts sharply with the dark plumage covering the rest of its body. The neck and back are black, while the wings and tail are dark gray or black. The beak is long, slender, and slightly curved downward, appearing yellowish-orange at the base and dark at the tip. The eyes are small and dark.
+
+3. **Size and Proportions**: The Red-faced Cormorant is medium-sized, with an average length of about 60-70 cm. It has a relatively short neck compared to its body size, and its wings are broad and rounded, aiding in efficient flight over water.
+
+4. **Behavioral Characteristics**: While not explicitly shown in the images, Red-faced Cormorants are known to be excellent divers, often diving
+类别 Red_faced_Cormorant 文本特征维度: (512,)
+描述: The Red-faced Cormorant is a distinctive seabird characterized by its striking appearance. Here's a ...
+处理类别: Baird_Sparrow
+[2025-11-22 20:02:31] [显存监控] 已分配=32.44GB, 已保留=33.85GB, 空闲=14.97GB
+[2025-11-22 20:02:34] [显存监控] 已分配=32.44GB, 已保留=33.85GB, 空闲=14.97GB
+[2025-11-22 20:02:37] [显存监控] 已分配=32.44GB, 已保留=33.85GB, 空闲=14.97GB
+wiki desc: Description for Baird_Sparrow category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:02:40] [显存监控] 已分配=32.52GB, 已保留=33.86GB, 空闲=14.89GB
+[2025-11-22 20:02:43] [显存监控] 已分配=32.55GB, 已保留=33.86GB, 空闲=14.85GB
+[2025-11-22 20:02:46] [显存监控] 已分配=32.55GB, 已保留=33.86GB, 空闲=14.85GB
+[2025-11-22 20:02:49] [显存监控] 已分配=32.56GB, 已保留=33.86GB, 空闲=14.85GB
+[2025-11-22 20:02:52] [显存监控] 已分配=32.56GB, 已保留=33.86GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.86GB, 剩余=14.97GB
+ 17%|█▋        | 34/200 [14:38<1:08:24, 24.73s/it] 18%|█▊        | 35/200 [15:02<1:07:58, 24.72s/it] 18%|█▊        | 36/200 [15:27<1:07:35, 24.73s/it] 18%|█▊        | 37/200 [15:48<1:03:41, 23.45s/it]MLLM description: The Baird's Sparrow is a small bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: Baird's Sparrows have a compact body with short, rounded wings and a short tail. Their head is rounded with a short, conical bill.
+
+2. **Color Patterns and Markings**: They exhibit a mottled brown plumage with streaks and spots, which provides excellent camouflage in grassy habitats. The underparts are pale, often with faint streaking. The wings and tail are darker, with some white or buffy edges.
+
+3. **Size and Proportions**: Baird's Sparrows are relatively small, measuring around 6-7 inches in length. They have a slender build, with a proportionally long tail compared to their body size.
+
+4. **Behavioral Characteristics**: These birds are ground-dwelling and spend most of their time foraging in grasslands, meadows, and open woodlands. They are active during the day and are often seen hopping or running through vegetation. They are known for their soft, warbling song, which can be heard during breeding season.
+
+5. **Unique Identifying Traits**: Baird's Sparrows are easily distinguished by their unique coloration and habitat preference. They
+类别 Baird_Sparrow 文本特征维度: (512,)
+描述: The Baird's Sparrow is a small bird with the following distinctive features:
+
+1. **Distinctive Physi...
+处理类别: Field_Sparrow
+[2025-11-22 20:02:55] [显存监控] 已分配=32.44GB, 已保留=33.86GB, 空闲=14.97GB
+[2025-11-22 20:02:58] [显存监控] 已分配=32.44GB, 已保留=33.86GB, 空闲=14.97GB
+[2025-11-22 20:03:01] [显存监控] 已分配=32.44GB, 已保留=33.86GB, 空闲=14.97GB
+wiki desc: Description for Field_Sparrow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:03:04] [显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.83GB
+[2025-11-22 20:03:07] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 20:03:10] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 20:03:13] [显存监控] 已分配=32.56GB, 已保留=34.12GB, 空闲=14.84GB
+[2025-11-22 20:03:16] [显存监控] 已分配=32.57GB, 已保留=34.12GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.12GB, 剩余=14.97GB
+MLLM description: The Field Sparrow is a small passerine bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The Field Sparrow has a compact body with a short, conical beak suited for seed-eating. Its legs are short and strong, enabling it to perch securely on branches.
+
+2. **Color Patterns and Markings**: The Field Sparrow displays a mix of brown, gray, and white plumage. The head typically has a reddish-brown cap, while the back and wings are streaked with brown and gray. The underparts are pale, often with faint streaking on the flanks. The tail is long and slightly rounded.
+
+3. **Size and Proportions**: The Field Sparrow is relatively small, measuring approximately 12-14 cm in length. It has a proportionally short tail compared to its body size.
+
+4. **Behavioral Characteristics**: Field Sparrows are ground-dwelling birds that forage for seeds and insects. They are active during the day and are often seen hopping or running on the ground. They are social and can form flocks outside of breeding season.
+
+5. **Unique Identifying Traits**: The reddish-brown cap on the head, combined with the streaked back and
+类别 Field_Sparrow 文本特征维度: (512,)
+描述: The Field Sparrow is a small passerine bird with the following distinctive features:
+
+1. **Distincti...
+处理类别: Yellow_breasted_Chat
+[2025-11-22 20:03:19] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 20:03:22] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+[2025-11-22 20:03:25] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+wiki desc: Description for Yellow_breasted_Chat category.
+[2025-11-22 20:03:28] [显存监控] 已分配=32.44GB, 已保留=34.12GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:03:31] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 20:03:34] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 20:03:37] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 20:03:40] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.05GB, 剩余=14.97GB
+MLLM description: The Yellow-breasted Chat is a medium-sized bird with a slender body and long tail. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The Yellow-breasted Chat has a slender body, a long tail, and a relatively short, pointed bill. Its legs are thin and strong.
+
+2. **Color Patterns and Markings**: The bird displays a bright yellow breast and belly, contrasting with its grayish-brown back, wings, and head. The head also features a black mask-like stripe extending from the eye to the nape. The tail is grayish-brown with a white tip.
+
+3. **Size and Proportions**: The Yellow-breasted Chat measures approximately 7-8 inches in length, with a wingspan of about 10 inches. It is slightly larger than a sparrow.
+
+4. **Behavioral Characteristics**: This species is known for its complex and varied song, often described as mimicking other birds or sounds. It is active during the day and can be found in a variety of habitats, including shrublands, edges of forests, and gardens.
+
+5. **Unique Identifying Traits**: The combination of the bright yellow breast, grayish-brown back, and black facial mask makes the
+类别 Yellow_breasted_Chat 文本特征维度: (512,)
+描述: The Yellow-breasted Chat is a medium-sized bird with a slender body and long tail. Here's a detailed...
+处理类别: Le_Conte_Sparrow
+[2025-11-22 20:03:43] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 20:03:46] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 20:03:49] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 20:03:52] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Le_Conte_Sparrow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:03:55] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 20:03:58] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-22 20:04:01] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.24GB, 剩余=14.97GB
+MLLM description: The Le Conte's Sparrow is a small songbird with a slender build and a short, conical bill. Its most distinctive feature is its head pattern, which includes a black cap, a white supercilium (eyebrow stripe), and a black bib. The upperparts are brownish-gray, while the underparts are pale yellowish-white. The wings have dark bars, and the tail is short and rounded. The bird has a short, thick tail and a short, conical bill. It is often seen perched on grasses or low shrubs in open habitats such as fields, meadows, and marshes. Le Conte's Sparrows are known to be active during the day and are often heard singing their distinctive "chirp" call. They are primarily insectivorous, feeding on insects and seeds.
+类别 Le_Conte_Sparrow 文本特征维度: (512,)
+描述: The Le Conte's Sparrow is a small songbird with a slender build and a short, conical bill. Its most ...
+处理类别: Nighthawk
+[2025-11-22 20:04:04] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 20:04:07] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 20:04:10] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-22 20:04:13] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for Nighthawk category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+ 19%|█▉        | 38/200 [16:12<1:04:14, 23.79s/it] 20%|█▉        | 39/200 [16:37<1:04:32, 24.05s/it] 20%|██        | 40/200 [17:04<1:06:55, 25.09s/it][2025-11-22 20:04:16] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 20:04:19] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 20:04:22] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+[2025-11-22 20:04:25] [显存监控] 已分配=32.56GB, 已保留=34.45GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.45GB, 剩余=14.97GB
+MLLM description: The images depict Nighthawks, a species of bird characterized by their distinctive physical features, color patterns, size, and behavior.
+
+1. **Distinctive Physical Features**: Nighthawks have a slender body with long, pointed wings and a forked tail. Their eyes are large and dark, giving them an intense gaze. They also possess a small, sharp beak suited for catching insects in flight.
+
+2. **Color Patterns and Markings**: Nighthawks exhibit a mottled brown, black, and white plumage, which provides excellent camouflage against tree bark or branches. This pattern is especially noticeable on their wings and back, blending seamlessly into their surroundings. Their underparts are lighter, often with a white or pale buff coloration.
+
+3. **Size and Proportions**: Nighthawks are relatively small birds, typically measuring around 7-8 inches in length. Their wingspan can reach up to 16 inches, which is longer than their body length, reflecting their adaptation for flying at high speeds.
+
+4. **Behavioral Characteristics**: Nighthawks are primarily nocturnal, as suggested by their name. They are known for their aerial acrobatics, diving headfirst to catch insects in mid-air. During the day, they roost in
+类别 Nighthawk 文本特征维度: (512,)
+描述: The images depict Nighthawks, a species of bird characterized by their distinctive physical features...
+处理类别: Cliff_Swallow
+[2025-11-22 20:04:28] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 20:04:31] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 20:04:34] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+[2025-11-22 20:04:37] [显存监控] 已分配=32.44GB, 已保留=34.45GB, 空闲=14.97GB
+wiki desc: Description for Cliff_Swallow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:04:40] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 20:04:43] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 20:04:46] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+[2025-11-22 20:04:49] [显存监控] 已分配=32.56GB, 已保留=34.05GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.05GB, 剩余=14.97GB
+MLLM description: The Cliff Swallow is a small bird with a slender body, long pointed wings, and a forked tail. Its distinctive physical features include a short, slightly curved bill, and a crest on its head. 
+
+In terms of color patterns and markings, the Cliff Swallow has a rusty orange throat and chest, which contrasts with its white underparts. Its back and wings are dark brown or blackish, often with a slight iridescence. The head is grayish-brown, and there's a white stripe above the eye.
+
+The size and proportions of the Cliff Swallow make it appear compact and agile. It is relatively small compared to other swallows, with a length of around 10-12 cm and a wingspan of about 20-23 cm.
+
+Behaviorally, Cliff Swallows are known for their aerial acrobatics during courtship displays and feeding. They often fly in V-shaped formations and perform aerial dives to catch insects mid-air. They also build mud nests in cliffs, ledges, or man-made structures, using mud pellets to construct a cup-shaped nest.
+
+Unique identifying traits include the combination of its rusty orange throat, white underparts, and dark brown or blackish back and wings. Additionally, the presence of
+[2025-11-22 20:04:52] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+类别 Cliff_Swallow 文本特征维度: (512,)
+描述: The Cliff Swallow is a small bird with a slender body, long pointed wings, and a forked tail. Its di...
+处理类别: Yellow_bellied_Flycatcher
+[2025-11-22 20:04:55] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 20:04:58] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 20:05:01] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+[2025-11-22 20:05:04] [显存监控] 已分配=32.44GB, 已保留=34.05GB, 空闲=14.97GB
+wiki desc: Description for Yellow_bellied_Flycatcher category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:05:07] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:10] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:13] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:16] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:19] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.31GB, 剩余=14.97GB
+MLLM description: The Yellow-bellied Flycatcher is a small passerine bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The bird has a slender body, a short, slightly curved bill, and a compact head. Its eyes are large and dark, giving it an alert appearance.
+
+2. **Color Patterns and Markings**: The bird's plumage is predominantly olive-green on its back and wings, with a yellowish or buff-colored belly. The wing feathers have distinct black and white bars, which are more prominent in males than females. The tail is short and square-tipped.
+
+3. **Size and Proportions**: The Yellow-bellied Flycatcher is relatively small, measuring approximately 10-12 cm in length. It has a short neck and a proportionally long tail.
+
+4. **Behavioral Characteristics**: This species is known to perch on open branches or wires, often in the middle of the canopy. It is an insectivore, catching insects in flight and also taking them from leaves and twigs. It is typically solitary and territorial during breeding season.
+
+5. **Unique Identifying Traits**: The combination of its olive-green back, yellowish belly, barred wings, and short, square-tipped tail makes the
+类别 Yellow_bellied_Flycatcher 文本特征维度: (512,)
+描述: The Yellow-bellied Flycatcher is a small passerine bird with the following distinctive features:
+
+1....
+处理类别: Hooded_Merganser
+[2025-11-22 20:05:22] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 20:05:25] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 20:05:28] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+wiki desc: Description for Hooded_Merganser category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:05:31] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:34] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:37] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:40] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-22 20:05:43] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.31GB, 剩余=14.97GB
+ 20%|██        | 41/200 [17:29<1:06:02, 24.92s/it] 21%|██        | 42/200 [17:53<1:05:19, 24.81s/it] 22%|██▏       | 43/200 [18:18<1:05:00, 24.84s/it] 22%|██▏       | 44/200 [18:43<1:04:07, 24.66s/it]MLLM description: The Hooded Merganser is a distinctive duck species characterized by its unique physical features and color patterns. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Hooded Merganser has a large, rounded head with a prominent crest that stands upright when the bird is alert. Its bill is long, slender, and slightly upturned at the tip, adapted for catching fish.
+
+2. **Color Patterns and Markings**: The male Hooded Merganser displays a striking plumage with a black head, neck, and back, contrasting sharply with a white throat and chest. The wings have a mix of brown and white feathers, while the tail is dark. The female is more subdued in coloration, with a brownish-gray body, a white throat, and a brown head and neck.
+
+3. **Size and Proportions**: Hooded Mergansers are medium-sized ducks, typically measuring around 18-20 inches in length. They have a robust build, with a broad chest and a relatively short neck.
+
+4. **Behavioral Characteristics**: These ducks are primarily found in freshwater habitats such as lakes, ponds, and slow-moving rivers. They are excellent swimmers and divers, using their sharp bills to catch
+类别 Hooded_Merganser 文本特征维度: (512,)
+描述: The Hooded Merganser is a distinctive duck species characterized by its unique physical features and...
+处理类别: Mallard
+[2025-11-22 20:05:46] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 20:05:49] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-22 20:05:52] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+wiki desc: Description for Mallard category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:05:55] [显存监控] 已分配=32.56GB, 已保留=33.92GB, 空闲=14.84GB
+[2025-11-22 20:05:58] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 20:06:01] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 20:06:04] [显存监控] 已分配=32.56GB, 已保留=34.37GB, 空闲=14.84GB
+[2025-11-22 20:06:07] [显存监控] 已分配=32.59GB, 已保留=34.37GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.37GB, 剩余=14.97GB
+MLLM description: ### Mallard Duck Description
+
+#### 1. **Distinctive Physical Features**
+   - **Beak:** Characterized by its bright orange or yellow color with a black tip, which is more prominent in males.
+   - **Legs:** Typically bright orange or reddish-orange, often appearing webbed.
+   - **Tail:** Short and rounded, with a slight upward curve.
+
+#### 2. **Color Patterns and Markings**
+   - **Males:** Display a vibrant green head, brown body, and white underparts. Their wings have iridescent blue-green speculum feathers bordered by white.
+   - **Females:** Have a mottled brown plumage with a mix of dark and light brown feathers, lacking the iridescent wing markings seen in males. Their beaks are typically duller than those of males.
+
+#### 3. **Size and Proportions**
+   - **Males:** Generally larger and more robust, with a longer neck and broader wingspan.
+   - **Females:** Smaller and more slender compared to males, with a shorter neck and narrower wings.
+
+#### 4. **Behavioral Characteristics**
+   - **Swimming:** Often seen swimming gracefully on water bodies, using their webbed feet to paddle efficiently
+类别 Mallard 文本特征维度: (512,)
+描述: ### Mallard Duck Description
+
+#### 1. **Distinctive Physical Features**
+   - **Beak:** Characterized...
+处理类别: House_Wren
+[2025-11-22 20:06:10] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 20:06:13] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+[2025-11-22 20:06:16] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+wiki desc: Description for House_Wren category.
+[2025-11-22 20:06:19] [显存监控] 已分配=32.44GB, 已保留=34.37GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-22 20:06:22] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:06:25] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:06:28] [显存监控] 已分配=32.56GB, 已保留=34.30GB, 空闲=14.84GB
+[2025-11-22 20:06:31] [显存监控] 已分配=32.59GB, 已保留=34.30GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.30GB, 剩余=14.97GB
+MLLM description: The House Wren is a small bird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The House Wren has a compact body, short tail, and a robust build. Its head is rounded, and it has a short, pointed beak.
+
+2. **Color Patterns and Markings**: The plumage is predominantly brownish-gray, with darker streaks on the back and wings. The underparts are lighter, often with faint streaking. The face is pale, sometimes with a dark stripe extending from the eye to the nape. The legs and feet are dark, and the eyes are dark and expressive.
+
+3. **Size and Proportions**: The House Wren is relatively small, measuring about 6-7 inches in length. It has a short, thick bill and a plump body.
+
+4. **Behavioral Characteristics**: House Wrens are known for their loud, melodious songs, which they sing from exposed perches or while flying. They are territorial and will defend their nests vigorously. They are also known for building intricate, dome-shaped nests using plant materials.
+
+5. **Unique Identifying Traits**: The House Wren's unique trait is its ability to construct elaborate nests, often using natural materials like grasses, tw
+类别 House_Wren 文本特征维度: (512,)
+描述: The House Wren is a small bird with the following distinctive features:
+
+1. **Distinctive Physical F...
+处理类别: Henslow_Sparrow
+[2025-11-22 20:06:34] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:06:37] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:06:40] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+[2025-11-22 20:06:43] [显存监控] 已分配=32.44GB, 已保留=34.30GB, 空闲=14.97GB
+wiki desc: Description for Henslow_Sparrow category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-22 20:06:46] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-22 20:06:49] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-22 20:06:52] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-22 20:06:55] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=34.07GB, 剩余=14.97GB
+MLLM description: The Henslow's Sparrow is a small songbird with the following distinctive features:
+
+1. **Distinctive Physical Features**: The Henslow's Sparrow has a compact body, short tail, and a slightly conical beak. Its legs are relatively short.
+
+2. **Color Patterns and Markings**: The bird displays a streaked brown plumage on its back and wings, contrasting with a lighter underside. It has a pale supercilium (eyebrow stripe) and a dark eye line. The head often shows a buffy wash, especially in males during breeding season.
+
+3. **Size and Proportions**: The Henslow's Sparrow is small, measuring approximately 6-7 inches in length. It has a proportionally short tail compared to its body size.
+
+4. **Behavioral Characteristics**: This species is typically found in grasslands, prairies, and open fields. It is ground-dwelling and feeds primarily on seeds and insects. It is known for its soft, warbling song, which is often heard during the breeding season.
+
+5. **Unique Identifying Traits**: The combination of its streaked plumage, pale supercilium, and short tail distinguishes the Henslow's Sparrow from other
+类别 Henslow_Sparrow 文本特征维度: (512,)
+描述: The Henslow's Sparrow is a small songbird with the following distinctive features:
+
+1. **Distinctive...
+处理类别: Pine_Warbler
+[2025-11-22 20:06:58] [显存监控] 已分配=32.44GB, 已保留=34.07GB, 空闲=14.97GB
+ 22%|██▎       | 45/200 [19:08<1:04:39, 25.03s/it]

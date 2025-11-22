@@ -57,17 +57,28 @@ class FastSlowThinkingSystem:
         self.device = device
         self.cfg = cfg or {}
         self.dataset_info = dataset_info or {}
+
+        print("\n================= 快慢思考系统初始化 =================")
+        print(f"🖥️ 设备: {self.device}")
+        print(f"🤖 MLLM 模型标签: {model_tag}")
+        print(f"🤖 MLLM 模型名称: {model_name}")
+        print(f"🖼️ 图像编码器: {image_encoder_name}")
+        print(f"📄 文本编码器: {text_encoder_name}")
+        print("📚 数据集信息:")
+        print(json.dumps(self.dataset_info, indent=4, ensure_ascii=False))
+        print("====================================================\n")
         
         # 初始化MLLM
-        print("初始化MLLM模型...")
+        print("🚀初始化MLLM模型...")
         self.mllm_bot = MLLMBot(
             model_tag=model_tag,
             model_name=model_name,
             device=device
         )
+        print(f"✅ MLLM 初始化完成, 当前使用精度: {getattr(self.mllm_bot, 'dtype_used', '未知')}")
         
         # 初始化知识库构建器
-        print("初始化知识库构建器...")
+        print("🚀 初始化知识库构建器...")
         self.kb_builder = KnowledgeBaseBuilder(
             image_encoder_name=image_encoder_name,
             text_encoder_name=text_encoder_name,
@@ -75,37 +86,42 @@ class FastSlowThinkingSystem:
             cfg=cfg,
             dataset_info=self.dataset_info
         )
+        print("✅ 知识库构建器初始化完成")
         
         # 初始化快思考模块
-        print("初始化快思考模块...")
+        print("🚀 初始化快思考模块...")
         self.fast_thinking = FastThinkingOptimized(
             knowledge_base_builder=self.kb_builder,
             confidence_threshold=self.cfg.get('confidence_threshold', 0.8),
             similarity_threshold=self.cfg.get('similarity_threshold', 0.7),
             dataset_info=self.dataset_info
         )
+        print("✅ 快思考模块初始化完成")
         
         # 初始化慢思考模块
-        print("初始化慢思考模块...")
+        print("🚀 初始化慢思考模块...")
         self.slow_thinking = SlowThinkingOptimized(
             mllm_bot=self.mllm_bot,
             knowledge_base_builder=self.kb_builder,
             fast_thinking=self.fast_thinking,
             dataset_info=self.dataset_info
         )
+        print("✅ 慢思考模块初始化完成")
         
         # 初始化经验库构建器（可选）
         self.exp_builder = None
         
         # 启动显存监控线程
+        print("⏱️ 启动显存监控线程...")
         self.memory_monitor_stop = threading.Event()
         self.memory_monitor_thread = threading.Thread(
             target=self._monitor_memory,
             daemon=True
         )
         self.memory_monitor_thread.start()
-        
-        print("快慢思考系统初始化完成!")
+
+        print("🎉快慢思考系统初始化完成!")
+        print("====================================================\n")
         
     def __del__(self):
         """析构函数：清理系统资源"""

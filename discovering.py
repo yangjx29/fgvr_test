@@ -23,6 +23,9 @@ from collections import defaultdict
 import numpy as np
 import yaml
 
+import pprint
+import time
+
 
 DEBUG = False  # 设置调试模式为关闭状态
 
@@ -434,9 +437,6 @@ if __name__ == "__main__":
 
     expt_id_suffix = f"_{args.num_per_category}"  # 创建实验ID后缀
 
-    import pprint
-    import time
-
     cuda_ids = os.environ.get("CUDA_VISIBLE_DEVICES", None)
     print(f"当前使用的 GPU 为：{cuda_ids}")
 
@@ -762,8 +762,13 @@ if __name__ == "__main__":
         slow_triggered_correct = 0  # 触发慢思考且正确的数量
         
         # for true_cat, paths in test_samples.items():
+        from datetime import datetime
         from tqdm import tqdm
-        for true_cat, paths in tqdm(test_samples.items(), desc="Processing fast and slow thinking"):
+
+        pbar = tqdm(test_samples.items())
+        for true_cat, paths in pbar:
+            now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            pbar.set_description(f"[{now_str}] Processing fast-slow")
             for path in paths:
                 # 使用完整的快慢思考系统分类
                 result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)

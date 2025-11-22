@@ -59,7 +59,7 @@ class ExperienceBaseBuilder:
         self.dataset_info = dataset_info or {}
         
         # Self-Belief：当前推理策略
-        self.max_strategy_rules = 8
+        self.max_strategy_rules = 8    ### todo 经验条数
         self.strategy_rules = []
         self.next_rule_id = 1
         self.self_belief_core = self.INITIAL_SELF_BELIEF
@@ -73,6 +73,16 @@ class ExperienceBaseBuilder:
         
         # 经验库存储路径
         self.save_dir = None
+
+        # 输出初始化参数信息
+        print("\n================= 经验库构建器初始化 =================")
+        print(f"🖥️ 设备: {self.device}")
+        print(f"🤖 使用的 MLLM 模型: {type(self.mllm_bot).__name__}")
+        print(f"📚 知识库构建器: {type(self.kb_builder).__name__}")
+        print(f"⚡ 快思考模块: {self.fast_thinking}")
+        print(f"🐢 慢思考模块: {self.slow_thinking}")
+        print(f"📦 数据集信息: {self.dataset_info}")
+        print("====================================================\n")
     
     def initialize_self_belief(self, custom_belief: Optional[str] = None):
         """
