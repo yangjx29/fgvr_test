@@ -239,7 +239,7 @@ class MLLMBot:
     def get_name(self):
         return self.model_name
     
-    def _resize_image_if_needed(self, image: Image.Image, max_size: int = 1536) -> Image.Image:
+    def _resize_image_if_needed(self, image: Image.Image, max_size: int = 1750) -> Image.Image:
         """
         如果图像尺寸超过max_size，按比例缩小以防止显存爆炸
         

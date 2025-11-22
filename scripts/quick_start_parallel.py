@@ -28,7 +28,7 @@ ALLOW_SHARED_GPU = True  # 允许与他人共享GPU (仅在EXTREME_MODE=False时
 DEBUG_MODE = True  # 调试模式
 CHECK_INTERVAL = 3  # GPU检查间隔(秒)
 GPU_PROCESS_CHECK_INTERVAL = 2  # GPU进程检查间隔(秒)
-GPU_PROCESS_MAX_WAIT = 60  # 等待GPU进程完成的最大时间(秒)
+GPU_PROCESS_MAX_WAIT = -1  # 等待GPU进程完成的最大时间(秒)，-1代表无限等待
 
 # Commands to execute - Format: (command, memory_gb, gpu_count)
 COMMANDS = [

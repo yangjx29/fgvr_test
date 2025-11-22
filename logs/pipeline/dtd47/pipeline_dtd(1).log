@@ -1,0 +1,1166 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=3  # 使用的GPU编号
+Dataset: dtd (num_classes=47)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/dtd47/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/dtd/images_discovery_all_10  # 测试数据目录
+Results Out: ./results/dtd_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: dtd (dtd47)
+类别数: 47
+实验目录: ./experiments/dtd47
+当前使用的 GPU 为：3
+
+=== Experiment Start Time: 2025-11-23 00:22:16 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/dtd47_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/dtd47/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'use_slow_thinking': None}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/dtd',
+ 'dataset_name': 'dtd',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/dtd47',
+ 'expt_dir_describe': './experiments/dtd47/describe',
+ 'expt_dir_gallery': './experiments/dtd47/gallery',
+ 'expt_dir_grouping': './experiments/dtd47/grouping',
+ 'expt_dir_guess': './experiments/dtd47/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 24,
+ 'num_classes': 47,
+ 'num_novel': 23,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/dtd47/gallery/dtd_image_descriptions_attn',
+ 'path_identify_answers': './experiments/dtd47/identify',
+ 'path_llm_gussed_names': './experiments/dtd47/guess/dtd_llm_gussed_names',
+ 'path_llm_prompts': './experiments/dtd47/describe/dtd_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/dtd47/guess/dtd_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/dtd47/guess/dtd_llm_replies_raw',
+ 'path_references': './experiments/dtd47/gallery/dtd_image_references',
+ 'path_regions': './experiments/dtd47/gallery/dtd_image_regions',
+ 'path_vqa_answers': './experiments/dtd47/describe/dtd_attributes_pairs',
+ 'path_vqa_questions': './experiments/dtd47/describe/dtd_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "dtd47",
+    "num_classes": 47,
+    "config_file": "dtd47_all.yml",
+    "data_dir": "dtd",
+    "experiment_dir": "dtd47",
+    "stats_file": "dtd47/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/dtd47/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/dtd47"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.01s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.25s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.31s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.33s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.80s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.01s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-23 00:22:27
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/dtd47/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/dtd47/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-23 00:23:29
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x721085429550>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x72107a9cfd60>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/dtd47/knowledge_base
+使用数据集: dtd, 类别数: 47
+✅ 慢思考模块初始化完成，类别映射数量: 47
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-23 00:23:29] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 47 个类别, dog datasets:47
+从 ./experiments/dtd47/knowledge_base 加载知识库...
+知识库已从 ./experiments/dtd47/knowledge_base 加载
+知识库加载完成!
+构建知识库...
+训练样本包含 47 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/47 [00:00<?, ?it/s]  2%|▏         | 1/47 [00:00<00:13,  3.40it/s]  9%|▊         | 4/47 [00:00<00:03, 11.48it/s] 15%|█▍        | 7/47 [00:00<00:02, 15.92it/s] 21%|██▏       | 10/47 [00:00<00:01, 18.59it/s] 28%|██▊       | 13/47 [00:00<00:01, 19.86it/s] 34%|███▍      | 16/47 [00:00<00:01, 20.78it/s] 40%|████      | 19/47 [00:01<00:01, 21.70it/s] 47%|████▋     | 22/47 [00:01<00:01, 21.99it/s] 53%|█████▎    | 25/47 [00:01<00:01, 20.83it/s] 60%|█████▉    | 28/47 [00:01<00:00, 20.66it/s] 66%|██████▌   | 31/47 [00:01<00:00, 21.65it/s] 72%|███████▏  | 34/47 [00:01<00:00, 22.69it/s] 79%|███████▊  | 37/47 [00:01<00:00, 21.54it/s] 85%|████████▌ | 40/47 [00:02<00:00, 21.36it/s] 91%|█████████▏| 43/47 [00:02<00:00, 22.01it/s] 98%|█████████▊| 46/47 [00:02<00:00, 22.96it/s]100%|██████████| 47/47 [00:02<00:00, 20.25it/s]
+处理类别: bumpy
+类别 bumpy 图像特征维度: (512,)
+处理类别: crosshatched
+类别 crosshatched 图像特征维度: (512,)
+处理类别: dotted
+类别 dotted 图像特征维度: (512,)
+处理类别: pleated
+类别 pleated 图像特征维度: (512,)
+处理类别: scaly
+类别 scaly 图像特征维度: (512,)
+处理类别: flecked
+类别 flecked 图像特征维度: (512,)
+处理类别: paisley
+类别 paisley 图像特征维度: (512,)
+处理类别: pitted
+类别 pitted 图像特征维度: (512,)
+处理类别: bubbly
+类别 bubbly 图像特征维度: (512,)
+处理类别: woven
+类别 woven 图像特征维度: (512,)
+处理类别: gauzy
+类别 gauzy 图像特征维度: (512,)
+处理类别: studded
+类别 studded 图像特征维度: (512,)
+处理类别: lined
+类别 lined 图像特征维度: (512,)
+处理类别: meshed
+类别 meshed 图像特征维度: (512,)
+处理类别: blotchy
+类别 blotchy 图像特征维度: (512,)
+处理类别: polka-dotted
+类别 polka-dotted 图像特征维度: (512,)
+处理类别: frilly
+类别 frilly 图像特征维度: (512,)
+处理类别: smeared
+类别 smeared 图像特征维度: (512,)
+处理类别: striped
+类别 striped 图像特征维度: (512,)
+处理类别: knitted
+类别 knitted 图像特征维度: (512,)
+处理类别: waffled
+类别 waffled 图像特征维度: (512,)
+处理类别: lacelike
+类别 lacelike 图像特征维度: (512,)
+处理类别: veined
+类别 veined 图像特征维度: (512,)
+处理类别: sprinkled
+类别 sprinkled 图像特征维度: (512,)
+处理类别: porous
+类别 porous 图像特征维度: (512,)
+处理类别: matted
+类别 matted 图像特征维度: (512,)
+处理类别: spiralled
+类别 spiralled 图像特征维度: (512,)
+处理类别: grid
+类别 grid 图像特征维度: (512,)
+处理类别: braided
+类别 braided 图像特征维度: (512,)
+处理类别: freckled
+类别 freckled 图像特征维度: (512,)
+处理类别: swirly
+类别 swirly 图像特征维度: (512,)
+处理类别: crystalline
+类别 crystalline 图像特征维度: (512,)
+处理类别: fibrous
+类别 fibrous 图像特征维度: (512,)
+处理类别: grooved
+类别 grooved 图像特征维度: (512,)
+处理类别: marbled
+类别 marbled 图像特征维度: (512,)
+处理类别: potholed
+类别 potholed 图像特征维度: (512,)
+处理类别: zigzagged
+类别 zigzagged 图像特征维度: (512,)
+处理类别: wrinkled
+类别 wrinkled 图像特征维度: (512,)
+处理类别: cracked
+类别 cracked 图像特征维度: (512,)
+处理类别: honeycombed
+类别 honeycombed 图像特征维度: (512,)
+处理类别: perforated
+类别 perforated 图像特征维度: (512,)
+处理类别: stained
+类别 stained 图像特征维度: (512,)
+处理类别: banded
+类别 banded 图像特征维度: (512,)
+处理类别: interlaced
+类别 interlaced 图像特征维度: (512,)
+处理类别: chequered
+类别 chequered 图像特征维度: (512,)
+处理类别: cobwebbed
+类别 cobwebbed 图像特征维度: (512,)
+处理类别: stratified
+类别 stratified 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/47 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+  2%|▏         | 1/47 [00:23<18:17, 23.87s/it]  4%|▍         | 2/47 [00:48<18:22, 24.50s/it]  6%|▋         | 3/47 [01:14<18:17, 24.94s/it]处理类别: bumpy
+[2025-11-23 00:23:32] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-23 00:23:35] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-23 00:23:38] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-23 00:23:41] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for bumpy category.
+推理前显存: 已分配=32.44GB, 已保留=32.80GB, 剩余=14.96GB
+[2025-11-23 00:23:44] [显存监控] 已分配=32.51GB, 已保留=33.61GB, 空闲=14.89GB
+[2025-11-23 00:23:47] [显存监控] 已分配=32.52GB, 已保留=33.61GB, 空闲=14.89GB
+[2025-11-23 00:23:50] [显存监控] 已分配=32.55GB, 已保留=33.61GB, 空闲=14.85GB
+[2025-11-23 00:23:53] [显存监控] 已分配=32.55GB, 已保留=33.61GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.61GB, 剩余=14.97GB
+MLLM description: The images depict objects with a bumpy texture, characterized by raised, irregular protrusions. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**:  
+   - **Image 1**: Rocks with rounded, smooth surfaces and a natural, earthy appearance. The bumps are relatively large and scattered across the surface.  
+   - **Image 2**: A uniform, gray surface with evenly spaced, circular bumps. These bumps are small and consistent in size and shape.  
+   - **Image 3**: A textured surface resembling metal or stone with larger, more pronounced bumps compared to Image 2. The bumps appear weathered or aged.
+
+2. **Color Patterns and Markings**:  
+   - **Image 1**: Natural colors ranging from light beige to brown, with no distinct markings apart from the texture.  
+   - **Image 2**: A monochromatic gray color with no visible markings or variations.  
+   - **Image 3**: A darker, possibly rusty or metallic color with a slightly rougher texture than the others.
+
+3. **Size and Proportions**:  
+   - **Image 1**: Bumps vary in size, with some being quite large and others smaller, creating a diverse texture.  
+   -
+类别 bumpy 文本特征维度: (512,)
+描述: The images depict objects with a bumpy texture, characterized by raised, irregular protrusions. Here...
+处理类别: crosshatched
+[2025-11-23 00:23:56] [显存监控] 已分配=32.44GB, 已保留=33.61GB, 空闲=14.97GB
+[2025-11-23 00:23:59] [显存监控] 已分配=32.44GB, 已保留=33.61GB, 空闲=14.97GB
+[2025-11-23 00:24:02] [显存监控] 已分配=32.44GB, 已保留=33.61GB, 空闲=14.97GB
+[2025-11-23 00:24:05] [显存监控] 已分配=32.44GB, 已保留=33.61GB, 空闲=14.97GB
+wiki desc: Description for crosshatched category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-23 00:24:08] [显存监控] 已分配=32.52GB, 已保留=33.89GB, 空闲=14.88GB
+[2025-11-23 00:24:11] [显存监控] 已分配=32.56GB, 已保留=33.89GB, 空闲=14.85GB
+[2025-11-23 00:24:14] [显存监控] 已分配=32.56GB, 已保留=33.89GB, 空闲=14.85GB
+[2025-11-23 00:24:17] [显存监控] 已分配=32.56GB, 已保留=33.89GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.89GB, 剩余=14.97GB
+MLLM description: The provided images showcase distinct crosshatched patterns with varying characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1 displays a textured, leather-like material with a structured, grid-like pattern. It appears to be part of a wallet or cardholder, with visible compartments and a striped inner lining.
+   - Image 2 shows a simple, yellow crosshatch on a light blue background, resembling a child's drawing or a basic illustration.
+   - Image 3 presents a more intricate, monochromatic crosshatch pattern in shades of gray, covering a larger area uniformly.
+
+2. **Color Patterns and Markings**:  
+   - Image 1 has a deep blue color with a textured surface, featuring a subtle striped pattern inside one of its sections.
+   - Image 2 is characterized by a bright yellow crosshatch against a pale blue background.
+   - Image 3 consists of a grayscale crosshatch, creating a uniform and detailed texture across the entire frame.
+
+3. **Size and Proportions**:  
+   - Image 1 is rectangular and compact, designed for portability, likely fitting into a wallet or small pouch.
+   - Image 2 is also rectangular but smaller, with a focus on the simplicity of the crosshatch
+[2025-11-23 00:24:21] [显存监控] 已分配=32.44GB, 已保留=33.89GB, 空闲=14.97GB
+类别 crosshatched 文本特征维度: (512,)
+描述: The provided images showcase distinct crosshatched patterns with varying characteristics:
+
+1. **Dist...
+处理类别: dotted
+[2025-11-23 00:24:24] [显存监控] 已分配=32.44GB, 已保留=33.89GB, 空闲=14.97GB
+[2025-11-23 00:24:27] [显存监控] 已分配=32.44GB, 已保留=33.89GB, 空闲=14.97GB
+[2025-11-23 00:24:30] [显存监控] 已分配=32.44GB, 已保留=33.89GB, 空闲=14.97GB
+wiki desc: Description for dotted category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:24:33] [显存监控] 已分配=32.57GB, 已保留=34.85GB, 空闲=14.84GB
+[2025-11-23 00:24:36] [显存监控] 已分配=32.58GB, 已保留=34.85GB, 空闲=14.83GB
+[2025-11-23 00:24:39] [显存监控] 已分配=32.58GB, 已保留=34.85GB, 空闲=14.82GB
+[2025-11-23 00:24:42] [显存监控] 已分配=32.58GB, 已保留=34.85GB, 空闲=14.82GB
+[2025-11-23 00:24:45] [显存监控] 已分配=32.59GB, 已保留=34.85GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.85GB, 剩余=14.97GB
+MLLM description: The images presented showcase distinct dotted patterns with varying characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: Features large, irregularly shaped dots in shades of green, gray, and black, scattered across a white background.  
+   - Image 2: Displays smaller, evenly spaced dots in vibrant pink hues against a stark black backdrop.  
+   - Image 3: Consists of small, uniformly shaped cherries with green leaves, interspersed with white polka dots on a bright blue background.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: Dominated by a mix of green, gray, and black dots on a white base.  
+   - Image 2: Features a high contrast between the vivid pink dots and the deep black background.  
+   - Image 3: Combines soft pink cherries with green leaves on a light blue background, complemented by white polka dots.
+
+3. **Size and Proportions**:  
+   - Image 1: The dots vary in size, creating an organic, less uniform pattern.  
+   - Image 2: The dots are relatively small and evenly distributed, giving a dense, clustered appearance.  
+   - Image 3: The cherries and
+类别 dotted 文本特征维度: (512,)
+描述: The images presented showcase distinct dotted patterns with varying characteristics:
+
+1. **Distincti...
+处理类别: pleated
+[2025-11-23 00:24:48] [显存监控] 已分配=32.44GB, 已保留=34.85GB, 空闲=14.97GB
+[2025-11-23 00:24:51] [显存监控] 已分配=32.44GB, 已保留=34.85GB, 空闲=14.97GB
+[2025-11-23 00:24:54] [显存监控] 已分配=32.44GB, 已保留=34.85GB, 空闲=14.97GB
+wiki desc: Description for pleated category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:24:57] [显存监控] 已分配=32.51GB, 已保留=32.86GB, 空闲=14.89GB
+[2025-11-23 00:25:00] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-23 00:25:03] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-23 00:25:06] [显存监控] 已分配=32.56GB, 已保留=34.17GB, 空闲=14.84GB
+[2025-11-23 00:25:09] [显存监控] 已分配=32.57GB, 已保留=34.17GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.17GB, 剩余=14.97GB
+  9%|▊         | 4/47 [01:38<17:48, 24.85s/it] 11%|█         | 5/47 [02:03<17:17, 24.69s/it] 13%|█▎        | 6/47 [02:30<17:29, 25.60s/it]MLLM description: The images depict three distinct categories of pleated items:
+
+1. **Curtains (Image 1):**  
+   - **Distinctive Physical Features:** These curtains feature a series of evenly spaced vertical folds or pleats, creating a structured and uniform appearance. The fabric appears to have a subtle texture, possibly with a slight sheen, and is gathered at the top, suggesting it's designed for hanging.  
+   - **Color Patterns and Markings:** The color is a solid, warm beige or cream, with no visible patterns or markings apart from the subtle texture of the fabric itself.  
+   - **Size and Proportions:** The size cannot be determined precisely without additional context, but the image suggests they are large enough to cover a window or door, typical of curtain dimensions.  
+   - **Behavioral Characteristics:** Curtains are stationary objects, meant to be hung and pulled open or closed as needed. They do not exhibit movement unless manually adjusted.  
+   - **Unique Identifying Traits:** The pleats are evenly spaced and symmetrical, giving the curtains a formal and elegant look.
+
+2. **Paper Craft (Image 2):**  
+   - **Distinctive Physical Features:** This item consists of multiple layers of colorful paper, folded and arranged
+类别 pleated 文本特征维度: (512,)
+描述: The images depict three distinct categories of pleated items:
+
+1. **Curtains (Image 1):**  
+   - **D...
+处理类别: scaly
+[2025-11-23 00:25:12] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-23 00:25:15] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-23 00:25:18] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+[2025-11-23 00:25:21] [显存监控] 已分配=32.44GB, 已保留=34.17GB, 空闲=14.97GB
+wiki desc: Description for scaly category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:25:24] [显存监控] 已分配=32.56GB, 已保留=34.25GB, 空闲=14.84GB
+[2025-11-23 00:25:27] [显存监控] 已分配=32.56GB, 已保留=34.25GB, 空闲=14.84GB
+[2025-11-23 00:25:30] [显存监控] 已分配=32.56GB, 已保留=34.25GB, 空闲=14.84GB
+[2025-11-23 00:25:33] [显存监控] 已分配=32.56GB, 已保留=34.25GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.25GB, 剩余=14.97GB
+MLLM description: The provided images showcase fish scales with distinct characteristics:
+
+1. **Distinctive Physical Features**: The scales in all three images are overlapping, forming a tightly packed pattern. This is typical of many fish species.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The scales appear dark gray or black, with a uniform coloration and no visible patterns or markings.
+   - Image 2: The scales have a golden-brown hue with darker, almost black, markings creating a checkered or mosaic-like pattern.
+   - Image 3: The scales are light yellowish-gold with a subtle gradient, and the markings are less pronounced compared to Image 2, giving a more uniform appearance.
+
+3. **Size and Proportions**: The scales are relatively small and densely packed, which is common among fish species. The size appears consistent across the images, suggesting they belong to the same species or closely related ones.
+
+4. **Behavioral Characteristics**: Fish scales serve multiple purposes, including protection, thermoregulation, and sensory functions. However, these images do not provide information about the fish's behavior.
+
+5. **Unique Identifying Traits**: The differences in color patterns and markings are the most distinguishing features. These variations can help identify different species
+类别 scaly 文本特征维度: (512,)
+描述: The provided images showcase fish scales with distinct characteristics:
+
+1. **Distinctive Physical F...
+处理类别: flecked
+[2025-11-23 00:25:36] [显存监控] 已分配=32.44GB, 已保留=34.25GB, 空闲=14.97GB
+[2025-11-23 00:25:39] [显存监控] 已分配=32.44GB, 已保留=34.25GB, 空闲=14.97GB
+[2025-11-23 00:25:42] [显存监控] 已分配=32.44GB, 已保留=34.25GB, 空闲=14.97GB
+[2025-11-23 00:25:45] [显存监控] 已分配=32.44GB, 已保留=34.25GB, 空闲=14.97GB
+wiki desc: Description for flecked category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:25:48] [显存监控] 已分配=32.64GB, 已保留=35.59GB, 空闲=14.76GB
+[2025-11-23 00:25:51] [显存监控] 已分配=32.59GB, 已保留=35.59GB, 空闲=14.81GB
+[2025-11-23 00:25:54] [显存监控] 已分配=32.60GB, 已保留=35.59GB, 空闲=14.81GB
+[2025-11-23 00:25:57] [显存监控] 已分配=32.60GB, 已保留=35.59GB, 空闲=14.80GB
+[2025-11-23 00:26:00] [显存监控] 已分配=32.61GB, 已保留=35.59GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.59GB, 剩余=14.97GB
+MLLM description: The images depict three distinct categories of "flecked" textures:
+
+1. **Image 1:** This image shows a surface with a dark, textured appearance. The flecks appear as small, scattered black spots against a lighter background. The texture is rough and uneven, with visible scratches and marks. The flecks are irregular in size and shape, contributing to a chaotic and worn look.
+
+2. **Image 2:** This image displays a close-up of a fabric, likely a jacket or coat. The flecks here are smaller and more uniform in size and shape compared to Image 1. They are light-colored specks scattered across a grayish-brown fabric. The flecks create a subtle pattern, giving the material a slightly speckled or mottled appearance. The fabric has a smooth texture, and the flecks are evenly distributed.
+
+3. **Image 3:** This image presents a close-up of a textured surface, possibly a wall or a piece of wood. The flecks are small, dark specks embedded within a light-colored base material. The flecks are more densely packed than in Image 2, creating a speckled effect. The surface appears rough, with the flecks adding to the texture's complexity. The flecks
+类别 flecked 文本特征维度: (512,)
+描述: The images depict three distinct categories of "flecked" textures:
+
+1. **Image 1:** This image shows...
+处理类别: paisley
+[2025-11-23 00:26:03] [显存监控] 已分配=32.44GB, 已保留=35.59GB, 空闲=14.97GB
+[2025-11-23 00:26:06] [显存监控] 已分配=32.44GB, 已保留=35.59GB, 空闲=14.97GB
+[2025-11-23 00:26:09] [显存监控] 已分配=32.44GB, 已保留=35.59GB, 空闲=14.97GB
+[2025-11-23 00:26:12] [显存监控] 已分配=32.44GB, 已保留=35.59GB, 空闲=14.97GB
+wiki desc: Description for paisley category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:26:15] [显存监控] 已分配=32.56GB, 已保留=34.51GB, 空闲=14.84GB
+[2025-11-23 00:26:18] [显存监控] 已分配=32.56GB, 已保留=34.51GB, 空闲=14.84GB
+[2025-11-23 00:26:21] [显存监控] 已分配=32.57GB, 已保留=34.51GB, 空闲=14.84GB
+[2025-11-23 00:26:24] [显存监控] 已分配=32.58GB, 已保留=34.51GB, 空闲=14.83GB
+[2025-11-23 00:26:27] [显存监控] 已分配=32.58GB, 已保留=34.51GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.51GB, 剩余=14.97GB
+ 15%|█▍        | 7/47 [02:55<16:58, 25.46s/it] 17%|█▋        | 8/47 [03:22<16:46, 25.80s/it] 19%|█▉        | 9/47 [03:47<16:15, 25.67s/it]MLLM description: The images showcase different variations of paisley designs, each with unique characteristics:
+
+1. **Distinctive Physical Features**: All three images feature intricate, swirling patterns characteristic of paisley motifs. These patterns are composed of organic, flowing shapes with a central focus point, often resembling a stylized flower or leaf.
+
+2. **Color Patterns and Markings**:
+   - Image 1: Predominantly pink with subtle white and light pink accents in the floral and paisley details.
+   - Image 2: A soft blue background with pastel green, white, and pink hues in the paisley and floral elements. Butterflies are also incorporated into the design.
+   - Image 3: A light blue background with darker blue and white paisley patterns. The design is more monochromatic compared to the others.
+
+3. **Size and Proportions**: The paisley patterns vary in size across the images. In Image 1, the paisleys are larger and more prominent, while in Images 2 and 3, they appear smaller and more densely packed.
+
+4. **Behavioral Characteristics**: Paisley designs do not exhibit any behavioral characteristics as they are static patterns.
+
+5. **Unique Identifying Traits**:
+   - **Image 1**: The solid pink
+类别 paisley 文本特征维度: (512,)
+描述: The images showcase different variations of paisley designs, each with unique characteristics:
+
+1. *...
+处理类别: pitted
+[2025-11-23 00:26:30] [显存监控] 已分配=32.44GB, 已保留=34.51GB, 空闲=14.97GB
+[2025-11-23 00:26:33] [显存监控] 已分配=32.44GB, 已保留=34.51GB, 空闲=14.97GB
+[2025-11-23 00:26:36] [显存监控] 已分配=32.44GB, 已保留=34.51GB, 空闲=14.97GB
+[2025-11-23 00:26:39] [显存监控] 已分配=32.44GB, 已保留=34.51GB, 空闲=14.97GB
+wiki desc: Description for pitted category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:26:42] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-23 00:26:45] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-23 00:26:48] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-23 00:26:51] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+[2025-11-23 00:26:54] [显存监控] 已分配=32.56GB, 已保留=34.36GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.36GB, 剩余=14.97GB
+MLLM description: ### Comprehensive Description of Pitted Objects
+
+#### Image 1: Pitted Metal Surface
+1. **Distinctive Physical Features**: The surface is characterized by numerous small, evenly spaced holes or pits, giving it a perforated appearance. These pits vary slightly in size but maintain a consistent pattern across the surface.
+2. **Color Patterns and Markings**: The surface is predominantly dark brown or black, with the pits appearing as lighter, metallic gray or silver due to the contrast between the material and the holes. There are no distinct color markings apart from the natural variations in the metal's texture.
+3. **Size and Proportions**: The pits are small, ranging from about 1-2 millimeters in diameter, and are distributed uniformly across the surface. The overall size of the object appears substantial, suggesting it could be part of a larger industrial component.
+4. **Behavioral Characteristics**: This image does not depict any behavioral characteristics since it is an inanimate object.
+5. **Unique Identifying Traits**: The uniform distribution of small, round pits is the most distinctive feature. The material's texture and coloration further help in distinguishing it from other surfaces.
+
+---
+
+#### Image 2: Pitted Olives
+1. **Distinctive Physical Features**: The olives
+类别 pitted 文本特征维度: (512,)
+描述: ### Comprehensive Description of Pitted Objects
+
+#### Image 1: Pitted Metal Surface
+1. **Distinctive...
+处理类别: bubbly
+[2025-11-23 00:26:57] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[2025-11-23 00:27:00] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+[2025-11-23 00:27:03] [显存监控] 已分配=32.44GB, 已保留=34.36GB, 空闲=14.97GB
+wiki desc: Description for bubbly category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:27:06] [显存监控] 已分配=32.60GB, 已保留=34.76GB, 空闲=14.80GB
+[2025-11-23 00:27:09] [显存监控] 已分配=32.57GB, 已保留=34.76GB, 空闲=14.83GB
+[2025-11-23 00:27:12] [显存监控] 已分配=32.58GB, 已保留=34.76GB, 空闲=14.83GB
+[2025-11-23 00:27:15] [显存监控] 已分配=32.61GB, 已保留=34.76GB, 空闲=14.79GB
+[2025-11-23 00:27:18] [显存监控] 已分配=32.59GB, 已保留=34.76GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.76GB, 剩余=14.97GB
+MLLM description: The images depict bubbly formations with distinct characteristics:
+
+1. **Distinctive Physical Features**: The bubbles in all three images are spherical or near-spherical, indicating their gas-filled nature. They vary in size, with some being larger and more prominent than others.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The bubbles have a golden-yellow hue, suggesting they might be filled with a liquid like beer or juice. The background is a lighter shade, possibly white or off-white, which contrasts with the bubbles.  
+   - Image 2: The bubbles are clear or transparent, reflecting light and giving them a glass-like appearance. The background is a soft blue, which enhances the translucency of the bubbles.  
+   - Image 3: Similar to Image 2, these bubbles are also clear and reflective, with a slightly darker blue background. The bubbles appear more clustered together compared to Images 1 and 2.
+
+3. **Size and Proportions**:  
+   - Image 1: The bubbles are relatively small and densely packed, creating a frothy texture.  
+   - Image 2: The bubbles are medium-sized and scattered across the frame, with some overlapping.  
+   - Image 3: The bubbles are large
+类别 bubbly 文本特征维度: (512,)
+描述: The images depict bubbly formations with distinct characteristics:
+
+1. **Distinctive Physical Featur...
+处理类别: woven
+[2025-11-23 00:27:21] [显存监控] 已分配=32.44GB, 已保留=34.76GB, 空闲=14.97GB
+[2025-11-23 00:27:24] [显存监控] 已分配=32.44GB, 已保留=34.76GB, 空闲=14.97GB
+[2025-11-23 00:27:27] [显存监控] 已分配=32.44GB, 已保留=34.76GB, 空闲=14.97GB
+[2025-11-23 00:27:30] [显存监控] 已分配=32.44GB, 已保留=34.76GB, 空闲=14.97GB
+wiki desc: Description for woven category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:27:33] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+[2025-11-23 00:27:36] [显存监控] 已分配=32.56GB, 已保留=34.27GB, 空闲=14.84GB
+[2025-11-23 00:27:39] [显存监控] 已分配=32.58GB, 已保留=34.27GB, 空闲=14.82GB
+[2025-11-23 00:27:42] [显存监控] 已分配=32.56GB, 已保留=34.27GB, 空闲=14.84GB
+[2025-11-23 00:27:45] [显存监控] 已分配=32.56GB, 已保留=34.27GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.27GB, 剩余=14.97GB
+ 21%|██▏       | 10/47 [04:14<15:58, 25.91s/it] 23%|██▎       | 11/47 [04:42<15:56, 26.56s/it] 26%|██▌       | 12/47 [05:09<15:40, 26.88s/it]MLLM description: The images depict woven materials with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - **Image 1**: This image shows a woven material made from light brown, natural fibers, likely straw or reeds. The texture is irregular, with visible knots and loops, suggesting a handcrafted or rustic style.  
+   - **Image 2**: This image displays a woven fabric with a geometric pattern of black and white squares. The weave appears tight and uniform, indicative of machine-made precision.  
+   - **Image 3**: This image presents a woven material in a golden hue, possibly metallic or synthetic. The weave is dense and regular, resembling a grid-like structure.
+
+2. **Color Patterns and Markings**:  
+   - **Image 1**: Predominantly light brown tones with subtle variations in shade, reflecting natural material imperfections.  
+   - **Image 2**: Consists of alternating black and white squares, creating a stark contrast.  
+   - **Image 3**: Uniform golden color with no variation, giving it a polished appearance.
+
+3. **Size and Proportions**:  
+   - All three images appear to be close-up shots, focusing on the texture and weave rather than the overall size of the material. The scale is
+类别 woven 文本特征维度: (512,)
+描述: The images depict woven materials with distinct characteristics:
+
+1. **Distinctive Physical Features...
+处理类别: gauzy
+[2025-11-23 00:27:48] [显存监控] 已分配=32.44GB, 已保留=34.27GB, 空闲=14.97GB
+[2025-11-23 00:27:51] [显存监控] 已分配=32.44GB, 已保留=34.27GB, 空闲=14.97GB
+[2025-11-23 00:27:54] [显存监控] 已分配=32.44GB, 已保留=34.27GB, 空闲=14.97GB
+[2025-11-23 00:27:57] [显存监控] 已分配=32.44GB, 已保留=34.27GB, 空闲=14.97GB
+wiki desc: Description for gauzy category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.94GB
+[2025-11-23 00:28:00] [显存监控] 已分配=32.61GB, 已保留=36.68GB, 空闲=14.79GB
+[2025-11-23 00:28:03] [显存监控] 已分配=32.62GB, 已保留=36.68GB, 空闲=14.78GB
+[2025-11-23 00:28:06] [显存监控] 已分配=32.62GB, 已保留=36.68GB, 空闲=14.78GB
+[2025-11-23 00:28:09] [显存监控] 已分配=32.63GB, 已保留=36.68GB, 空闲=14.78GB
+[2025-11-23 00:28:12] [显存监控] 已分配=32.64GB, 已保留=36.68GB, 空闲=14.77GB
+推理后显存: 已分配=32.44GB, 已保留=36.68GB, 剩余=14.97GB
+MLLM description: The gauzy fabric in these images exhibits several distinctive features:
+
+1. **Distinctive Physical Features**:  
+   - The material is sheer and lightweight, allowing light to pass through, creating a soft, diffused effect.  
+   - It has a delicate, airy texture with a slight translucence, giving it a gentle, ethereal quality.
+
+2. **Color Patterns and Markings**:  
+   - Image 1 displays a checkered pattern with alternating shades of teal and white, creating a structured yet subtle design.  
+   - Image 2 showcases a gradient of pastel colors, transitioning smoothly from green to pink to orange, adding a vibrant and dynamic appearance.  
+   - Image 3 presents a plain, solid white color, emphasizing simplicity and elegance.
+
+3. **Size and Proportions**:  
+   - The curtains appear to be medium-sized, suitable for windows of average size.  
+   - They hang gracefully, with folds and ripples that suggest movement and a natural drape.
+
+4. **Behavioral Characteristics**:  
+   - The gauzy fabric in all images allows light to filter through, which can be adjusted by opening or closing the curtains. This feature is particularly useful for controlling brightness and privacy.  
+   - The material's flexibility
+类别 gauzy 文本特征维度: (512,)
+描述: The gauzy fabric in these images exhibits several distinctive features:
+
+1. **Distinctive Physical F...
+处理类别: studded
+[2025-11-23 00:28:15] [显存监控] 已分配=32.44GB, 已保留=36.68GB, 空闲=14.97GB
+[2025-11-23 00:28:18] [显存监控] 已分配=32.44GB, 已保留=36.68GB, 空闲=14.97GB
+[2025-11-23 00:28:21] [显存监控] 已分配=32.44GB, 已保留=36.68GB, 空闲=14.97GB
+[2025-11-23 00:28:24] [显存监控] 已分配=32.44GB, 已保留=36.68GB, 空闲=14.97GB
+wiki desc: Description for studded category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:28:27] [显存监控] 已分配=32.66GB, 已保留=36.09GB, 空闲=14.75GB
+[2025-11-23 00:28:30] [显存监控] 已分配=32.60GB, 已保留=36.09GB, 空闲=14.80GB
+[2025-11-23 00:28:33] [显存监控] 已分配=32.60GB, 已保留=36.09GB, 空闲=14.80GB
+[2025-11-23 00:28:36] [显存监控] 已分配=32.61GB, 已保留=36.09GB, 空闲=14.79GB
+[2025-11-23 00:28:39] [显存监控] 已分配=32.62GB, 已保留=36.09GB, 空闲=14.78GB
+推理后显存: 已分配=32.44GB, 已保留=36.09GB, 剩余=14.97GB
+MLLM description: The images showcase items adorned with studs, each exhibiting unique characteristics:
+
+1. **Distinctive Physical Features**:  
+   - The first image displays a black leather bag embellished with silver studs and a central rhinestone embellishment, giving it a bold and edgy appearance.  
+   - The second image presents a white surface with gold studs arranged in a stylized pattern, possibly part of a garment or accessory, emphasizing a more artistic and less functional design.  
+   - The third image shows a pair of black shoes covered in metallic studs, creating a textured and rugged look.
+
+2. **Color Patterns and Markings**:  
+   - The first item is predominantly black with silver studs, accented by a clear rhinestone centerpiece.  
+   - The second item has a white background with gold studs forming a decorative motif.  
+   - The third item is black with metallic studs, which appear to be either silver or gold, depending on the light.
+
+3. **Size and Proportions**:  
+   - The bag in the first image is large enough to be a handbag, with a rectangular shape and a structured form.  
+   - The second image appears to be a close-up of a smaller section of a larger object, such as a piece of clothing or
+[2025-11-23 00:28:42] [显存监控] 已分配=32.44GB, 已保留=36.09GB, 空闲=14.97GB
+类别 studded 文本特征维度: (512,)
+描述: The images showcase items adorned with studs, each exhibiting unique characteristics:
+
+1. **Distinct...
+处理类别: lined
+[2025-11-23 00:28:45] [显存监控] 已分配=32.44GB, 已保留=36.09GB, 空闲=14.97GB
+[2025-11-23 00:28:48] [显存监控] 已分配=32.44GB, 已保留=36.09GB, 空闲=14.97GB
+[2025-11-23 00:28:51] [显存监控] 已分配=32.44GB, 已保留=36.09GB, 空闲=14.97GB
+wiki desc: Description for lined category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:28:54] [显存监控] 已分配=32.58GB, 已保留=35.28GB, 空闲=14.82GB
+[2025-11-23 00:28:57] [显存监控] 已分配=32.58GB, 已保留=35.28GB, 空闲=14.82GB
+[2025-11-23 00:29:00] [显存监控] 已分配=32.62GB, 已保留=35.28GB, 空闲=14.78GB
+[2025-11-23 00:29:03] [显存监控] 已分配=32.60GB, 已保留=35.28GB, 空闲=14.81GB
+[2025-11-23 00:29:06] [显存监控] 已分配=32.60GB, 已保留=35.28GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.28GB, 剩余=14.97GB
+ 28%|██▊       | 13/47 [05:35<15:03, 26.56s/it] 30%|██▉       | 14/47 [06:01<14:24, 26.20s/it] 32%|███▏      | 15/47 [06:26<13:53, 26.05s/it]MLLM description: The images depict lined paper, which is characterized by evenly spaced horizontal lines across the surface. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: Lined paper consists of parallel, straight lines running horizontally across the page, creating a grid-like pattern. These lines are typically uniform in thickness and spacing.
+
+2. **Color Patterns and Markings**: The lines are usually black or dark blue, contrasting with the lighter background of the paper. Some variations may include colored lines or different line styles, such as dashed or dotted lines, but these are not common in standard lined paper.
+
+3. **Size and Proportions**: The size and proportions of lined paper can vary depending on the intended use, such as for writing, drawing, or printing. Common sizes include A4, US Letter, and legal size. The proportions are generally consistent within each size, maintaining a rectangular shape.
+
+4. **Behavioral Characteristics**: Lined paper does not exhibit any behavioral characteristics since it is an inanimate object. Its purpose is to provide a structured surface for writing or drawing.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of lined paper is the presence of the horizontal lines. This characteristic sets it apart from other types of paper, such as
+类别 lined 文本特征维度: (512,)
+描述: The images depict lined paper, which is characterized by evenly spaced horizontal lines across the s...
+处理类别: meshed
+[2025-11-23 00:29:09] [显存监控] 已分配=32.44GB, 已保留=35.28GB, 空闲=14.97GB
+[2025-11-23 00:29:12] [显存监控] 已分配=32.44GB, 已保留=35.28GB, 空闲=14.97GB
+[2025-11-23 00:29:15] [显存监控] 已分配=32.44GB, 已保留=35.28GB, 空闲=14.97GB
+[2025-11-23 00:29:18] [显存监控] 已分配=32.44GB, 已保留=35.28GB, 空闲=14.97GB
+wiki desc: Description for meshed category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:29:21] [显存监控] 已分配=32.56GB, 已保留=34.73GB, 空闲=14.84GB
+[2025-11-23 00:29:24] [显存监控] 已分配=32.57GB, 已保留=34.73GB, 空闲=14.83GB
+[2025-11-23 00:29:27] [显存监控] 已分配=32.58GB, 已保留=34.73GB, 空闲=14.83GB
+[2025-11-23 00:29:30] [显存监控] 已分配=32.58GB, 已保留=34.73GB, 空闲=14.82GB
+[2025-11-23 00:29:33] [显存监控] 已分配=32.59GB, 已保留=34.73GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.73GB, 剩余=14.97GB
+MLLM description: The provided images showcase three distinct types of meshed materials with varying physical features:
+
+1. **Image 1:** This mesh appears to have a uniform, dark gray color with a consistent pattern of interlocking diamond shapes. The material seems relatively thin and flexible, as indicated by the slight curvature in the image. The spacing between the wires is relatively even, suggesting a tightly woven structure.
+
+2. **Image 2:** This mesh has a golden hue and displays a more intricate, interwoven pattern with rounded nodes at each intersection. The overall structure looks thicker and sturdier compared to Image 1, possibly indicating a different material composition or construction method. The nodes are more pronounced, giving it a textured appearance.
+
+3. **Image 3:** This mesh is metallic silver and exhibits a dense, grid-like pattern with smaller, more uniform squares. The wires appear finer and closer together than in Images 1 and 2, creating a more compact and rigid structure. The surface texture is smooth, and the material seems to have a reflective quality, suggesting it might be made of metal.
+
+### Key Visual Characteristics:
+
+- **Distinctive Physical Features:**
+  - Image 1: Diamond-shaped pattern, thin and flexible.
+  - Image 2: Rounded node intersections,
+类别 meshed 文本特征维度: (512,)
+描述: The provided images showcase three distinct types of meshed materials with varying physical features...
+处理类别: blotchy
+[2025-11-23 00:29:36] [显存监控] 已分配=32.44GB, 已保留=34.73GB, 空闲=14.97GB
+[2025-11-23 00:29:39] [显存监控] 已分配=32.44GB, 已保留=34.73GB, 空闲=14.97GB
+[2025-11-23 00:29:42] [显存监控] 已分配=32.44GB, 已保留=34.73GB, 空闲=14.97GB
+wiki desc: Description for blotchy category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:29:45] [显存监控] 已分配=32.56GB, 已保留=34.01GB, 空闲=14.84GB
+[2025-11-23 00:29:48] [显存监控] 已分配=32.56GB, 已保留=34.48GB, 空闲=14.84GB
+[2025-11-23 00:29:51] [显存监控] 已分配=32.56GB, 已保留=34.48GB, 空闲=14.84GB
+[2025-11-23 00:29:54] [显存监控] 已分配=32.56GB, 已保留=34.48GB, 空闲=14.84GB
+[2025-11-23 00:29:57] [显存监控] 已分配=32.56GB, 已保留=34.48GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.48GB, 剩余=14.97GB
+MLLM description: ### Image 1: Blotchy Pattern
+
+**Distinctive Physical Features:**  
+The image displays a chaotic, irregular pattern characterized by a dense aggregation of small, rounded shapes that appear to merge into one another. These shapes vary in size and density, creating a textured surface.
+
+**Color Patterns and Markings:**  
+The color palette is muted, primarily consisting of shades of gray and white, with subtle variations in tone. There are no distinct colors, only gradients and shading that enhance the texture's depth.
+
+**Size and Proportions:**  
+The pattern lacks uniformity in size; the shapes range from tiny specks to larger clusters. The overall composition is dense, with no clear separation between individual elements.
+
+**Behavioral Characteristics:**  
+This image does not depict any dynamic behavior as it is a static representation of a pattern.
+
+**Unique Identifying Traits:**  
+The key trait is the interwoven, organic nature of the shapes, which gives the impression of a natural or biological formation, such as a close-up view of a moldy surface or a microscopic organism.
+
+---
+
+### Image 2: Reddish Network
+
+**Distinctive Physical Features:**  
+The image shows a network of thin, curved lines that intertwine and overlap, forming a complex web-like structure.
+类别 blotchy 文本特征维度: (512,)
+描述: ### Image 1: Blotchy Pattern
+
+**Distinctive Physical Features:**  
+The image displays a chaotic, irr...
+处理类别: polka-dotted
+[2025-11-23 00:30:00] [显存监控] 已分配=32.44GB, 已保留=34.48GB, 空闲=14.97GB
+[2025-11-23 00:30:03] [显存监控] 已分配=32.44GB, 已保留=34.48GB, 空闲=14.97GB
+[2025-11-23 00:30:06] [显存监控] 已分配=32.44GB, 已保留=34.48GB, 空闲=14.97GB
+[2025-11-23 00:30:09] [显存监控] 已分配=32.44GB, 已保留=34.48GB, 空闲=14.97GB
+wiki desc: Description for polka-dotted category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:30:12] [显存监控] 已分配=32.58GB, 已保留=35.30GB, 空闲=14.82GB
+[2025-11-23 00:30:15] [显存监控] 已分配=32.58GB, 已保留=35.30GB, 空闲=14.82GB
+[2025-11-23 00:30:18] [显存监控] 已分配=32.59GB, 已保留=35.30GB, 空闲=14.81GB
+[2025-11-23 00:30:21] [显存监控] 已分配=32.60GB, 已保留=35.30GB, 空闲=14.81GB
+[2025-11-23 00:30:24] [显存监控] 已分配=32.60GB, 已保留=35.30GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.30GB, 剩余=14.97GB
+ 34%|███▍      | 16/47 [06:53<13:36, 26.33s/it] 36%|███▌      | 17/47 [07:20<13:11, 26.39s/it] 38%|███▊      | 18/47 [07:47<12:50, 26.57s/it]MLLM description: The polka-dotted category is characterized by its distinct circular spots scattered across a solid background. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features**: Polka dots are small, round, and evenly spaced spots. They can vary in size and shape, but the circular form is the defining feature.
+
+2. **Color Patterns and Markings**: Polka dots come in various colors, including white, black, red, blue, green, and more. The background color can also differ, ranging from dark to light hues. In some cases, the dots may have a gradient or shading effect, as seen in Image 2.
+
+3. **Size and Proportions**: The size of the polka dots can vary significantly depending on the design. Some polka dots are large and prominent, while others are small and subtle. The spacing between the dots also plays a role in determining the overall appearance of the pattern.
+
+4. **Behavioral Characteristics**: Polka dots do not exhibit any specific behavioral characteristics since they are static elements in an image. However, their placement and arrangement can create a sense of movement or rhythm when viewed in motion, such as in animated designs.
+
+5. **Unique Identifying Traits**: The unique identifying trait of pol
+类别 polka-dotted 文本特征维度: (512,)
+描述: The polka-dotted category is characterized by its distinct circular spots scattered across a solid b...
+处理类别: frilly
+[2025-11-23 00:30:27] [显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+[2025-11-23 00:30:30] [显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+[2025-11-23 00:30:33] [显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+[2025-11-23 00:30:36] [显存监控] 已分配=32.44GB, 已保留=35.30GB, 空闲=14.97GB
+wiki desc: Description for frilly category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:30:39] [显存监控] 已分配=32.56GB, 已保留=34.70GB, 空闲=14.84GB
+[2025-11-23 00:30:42] [显存监控] 已分配=32.57GB, 已保留=34.70GB, 空闲=14.84GB
+[2025-11-23 00:30:45] [显存监控] 已分配=32.58GB, 已保留=34.70GB, 空闲=14.83GB
+[2025-11-23 00:30:48] [显存监控] 已分配=32.58GB, 已保留=34.70GB, 空闲=14.82GB
+[2025-11-23 00:30:51] [显存监控] 已分配=32.59GB, 已保留=34.70GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.70GB, 剩余=14.97GB
+MLLM description: The images depict frilly objects with distinct characteristics:
+
+1. **Distinctive Physical Features**: The frilly objects in these images have layered, ruffled edges, giving them a delicate and intricate appearance. They resemble fabric or floral arrangements.
+
+2. **Color Patterns and Markings**: The first image shows a white flower with a soft, creamy hue and subtle pinkish tones near the center. The second image displays a fabric with a vibrant yellow base adorned with multicolored floral prints, including green, orange, and white. The third image features a cluster of deep pink peonies with lighter pink inner petals and yellow centers.
+
+3. **Size and Proportions**: The size of the frilly objects varies. The flower in the first image appears to be a single bloom, while the fabric in the second image is a close-up of a larger piece, possibly a skirt or dress. The peonies in the third image are also individual blooms, but they are grouped together, creating a fuller appearance.
+
+4. **Behavioral Characteristics**: None of the objects exhibit behavioral characteristics as they are inanimate.
+
+5. **Unique Identifying Traits**:
+   - The first image's frilly object is a white flower with a soft texture and a natural, organic shape.
+
+类别 frilly 文本特征维度: (512,)
+描述: The images depict frilly objects with distinct characteristics:
+
+1. **Distinctive Physical Features*...
+处理类别: smeared
+[2025-11-23 00:30:54] [显存监控] 已分配=32.44GB, 已保留=34.70GB, 空闲=14.97GB
+[2025-11-23 00:30:57] [显存监控] 已分配=32.44GB, 已保留=34.70GB, 空闲=14.97GB
+[2025-11-23 00:31:00] [显存监控] 已分配=32.44GB, 已保留=34.70GB, 空闲=14.97GB
+[2025-11-23 00:31:03] [显存监控] 已分配=32.44GB, 已保留=34.70GB, 空闲=14.97GB
+wiki desc: Description for smeared category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:31:06] [显存监控] 已分配=32.58GB, 已保留=35.21GB, 空闲=14.82GB
+[2025-11-23 00:31:09] [显存监控] 已分配=32.58GB, 已保留=35.21GB, 空闲=14.82GB
+[2025-11-23 00:31:12] [显存监控] 已分配=32.59GB, 已保留=35.21GB, 空闲=14.81GB
+[2025-11-23 00:31:15] [显存监控] 已分配=32.59GB, 已保留=35.21GB, 空闲=14.81GB
+[2025-11-23 00:31:18] [显存监控] 已分配=32.60GB, 已保留=35.21GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.21GB, 剩余=14.97GB
+MLLM description: The provided images showcase smeared textures with distinct visual characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: A human-like figure with exaggerated facial features, including dark hair, red lips, and a black cross symbol on the chest. The figure appears to be dripping or smeared, with white streaks resembling paint or liquid.  
+   - Image 2: A collage featuring abstract shapes and patterns, including a dark, dripping substance on the left side and a cloudy sky image on the right. The overall composition is chaotic and fragmented.  
+   - Image 3: A close-up of a textured surface, possibly a wall or floor, with visible scratches, marks, and smudges. The surface has a rough, uneven texture.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: Predominantly dark tones with splashes of red and white, creating a dramatic contrast. The color palette suggests a sense of intensity and emotion.  
+   - Image 2: A mix of dark and light colors, with the dripping substance appearing in black against a lighter background. The cloudy sky adds a contrasting element of softness.  
+   - Image 3: Neutral tones, primarily shades of beige and brown, with subtle
+类别 smeared 文本特征维度: (512,)
+描述: The provided images showcase smeared textures with distinct visual characteristics:
+
+1. **Distinctiv...
+处理类别: striped
+[2025-11-23 00:31:21] [显存监控] 已分配=32.44GB, 已保留=35.21GB, 空闲=14.97GB
+[2025-11-23 00:31:24] [显存监控] 已分配=32.44GB, 已保留=35.21GB, 空闲=14.97GB
+[2025-11-23 00:31:27] [显存监控] 已分配=32.44GB, 已保留=35.21GB, 空闲=14.97GB
+wiki desc: Description for striped category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-23 00:31:30] [显存监控] 已分配=32.54GB, 已保留=33.69GB, 空闲=14.86GB
+[2025-11-23 00:31:33] [显存监控] 已分配=32.56GB, 已保留=34.09GB, 空闲=14.85GB
+[2025-11-23 00:31:36] [显存监控] 已分配=32.56GB, 已保留=34.09GB, 空闲=14.85GB
+[2025-11-23 00:31:39] [显存监控] 已分配=32.56GB, 已保留=34.09GB, 空闲=14.85GB
+[2025-11-23 00:31:42] [显存监控] 已分配=32.56GB, 已保留=34.09GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=34.09GB, 剩余=14.97GB
+ 40%|████      | 19/47 [08:11<12:04, 25.86s/it] 43%|████▎     | 20/47 [08:36<11:34, 25.74s/it] 45%|████▍     | 21/47 [09:03<11:14, 25.94s/it]MLLM description: The images presented showcase distinct striped patterns, which can be categorized into two types: one resembling a baked good with a zebra-like pattern and another depicting the stripes of a zebra.
+
+### 1. **Distinctive Physical Features**
+   - **Image 1:** This image shows a baked good with a textured surface. The stripes are irregular in shape and size, with varying thicknesses and depths. The texture appears rough, suggesting a cake or cookie with a unique design.
+   - **Image 2 & Image 3:** These images depict the stripes of a zebra. The stripes are uniform in width and depth, forming a consistent pattern across the skin. They are smooth and continuous, creating a striking contrast between black and white.
+
+### 2. **Color Patterns and Markings**
+   - **Image 1:** The color is primarily beige with dark brown/black stripes. The contrast is not as stark as in the zebra images, and the stripes appear more abstract and less defined.
+   - **Image 2 & Image 3:** The color pattern is a classic black and white, with the stripes being sharply defined and evenly spaced. The contrast is high, making the stripes stand out prominently against each other.
+
+### 3. **Size and Proport
+类别 striped 文本特征维度: (512,)
+描述: The images presented showcase distinct striped patterns, which can be categorized into two types: on...
+处理类别: knitted
+[2025-11-23 00:31:45] [显存监控] 已分配=32.44GB, 已保留=34.09GB, 空闲=14.97GB
+[2025-11-23 00:31:48] [显存监控] 已分配=32.44GB, 已保留=34.09GB, 空闲=14.97GB
+[2025-11-23 00:31:51] [显存监控] 已分配=32.44GB, 已保留=34.09GB, 空闲=14.97GB
+wiki desc: Description for knitted category.
+[2025-11-23 00:31:54] [显存监控] 已分配=32.44GB, 已保留=34.09GB, 空闲=14.97GB
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:31:57] [显存监控] 已分配=32.56GB, 已保留=34.69GB, 空闲=14.84GB
+[2025-11-23 00:32:00] [显存监控] 已分配=32.57GB, 已保留=34.69GB, 空闲=14.83GB
+[2025-11-23 00:32:03] [显存监控] 已分配=32.58GB, 已保留=34.69GB, 空闲=14.83GB
+[2025-11-23 00:32:06] [显存监控] 已分配=32.58GB, 已保留=34.69GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.69GB, 剩余=14.97GB
+MLLM description: The images depict close-up views of knitted fabrics with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - The first image shows a red knitted fabric with a textured pattern resembling cables or twisted yarns, creating a ribbed effect.  
+   - The second image displays a green knitted fabric featuring a leaf-like pattern, with vertical lines and a consistent texture throughout.  
+   - The third image presents a purple knitted fabric with a dense, uniform pattern, likely a stockinette stitch, characterized by its smooth surface and consistent stitches.
+
+2. **Color Patterns and Markings**:  
+   - The first image is predominantly red with a textured, cable-like pattern.  
+   - The second image is green with a leaf motif and vertical lines, suggesting a more intricate design.  
+   - The third image is purple with a simple, uniform pattern, indicating a smoother texture compared to the others.
+
+3. **Size and Proportions**:  
+   - All three images appear to be close-up shots, focusing on small sections of the knitted fabric. The size and proportions are not discernible beyond the close-up view.
+
+4. **Behavioral Characteristics**:  
+   - Knitted fabrics do not exhibit behavioral characteristics as they are inanimate objects.
+类别 knitted 文本特征维度: (512,)
+描述: The images depict close-up views of knitted fabrics with distinct characteristics:
+
+1. **Distinctive...
+处理类别: waffled
+[2025-11-23 00:32:09] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+[2025-11-23 00:32:12] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+[2025-11-23 00:32:15] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+[2025-11-23 00:32:18] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+wiki desc: Description for waffled category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:32:21] [显存监控] 已分配=32.64GB, 已保留=35.63GB, 空闲=14.76GB
+[2025-11-23 00:32:24] [显存监控] 已分配=32.59GB, 已保留=35.63GB, 空闲=14.81GB
+[2025-11-23 00:32:27] [显存监控] 已分配=32.60GB, 已保留=35.63GB, 空闲=14.80GB
+[2025-11-23 00:32:30] [显存监控] 已分配=32.61GB, 已保留=35.63GB, 空闲=14.80GB
+[2025-11-23 00:32:33] [显存监控] 已分配=32.61GB, 已保留=35.63GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.63GB, 剩余=14.97GB
+MLLM description: The images depict waffles with distinct physical features:
+
+1. **Distinctive Physical Features**:  
+   - The waffles have a grid-like pattern created by the waffle iron, with raised squares and recessed wells.
+   - They appear to be cooked to a golden-brown color, indicating they are well-done.
+
+2. **Color Patterns and Markings**:  
+   - The color is primarily a warm golden brown, with some areas appearing slightly darker or lighter due to the cooking process.
+   - There may be small variations in color within the grid pattern, possibly due to uneven cooking or the presence of toppings like syrup or butter.
+
+3. **Size and Proportions**:  
+   - The size of the waffles appears consistent across the images, suggesting they were made using the same waffle iron.
+   - The proportions of the grid pattern are uniform, with each square and well maintaining a similar size relative to one another.
+
+4. **Behavioral Characteristics**:  
+   - Waffles are typically served as a breakfast dish, often accompanied by toppings such as syrup, butter, or fruit.
+   - The texture of the waffles can vary depending on the recipe and cooking method, but they generally have a soft, fluffy interior with a crispy exterior.
+
+5. **
+类别 waffled 文本特征维度: (512,)
+描述: The images depict waffles with distinct physical features:
+
+1. **Distinctive Physical Features**:  
+...
+处理类别: lacelike
+[2025-11-23 00:32:36] [显存监控] 已分配=32.44GB, 已保留=35.63GB, 空闲=14.97GB
+[2025-11-23 00:32:39] [显存监控] 已分配=32.44GB, 已保留=35.63GB, 空闲=14.97GB
+[2025-11-23 00:32:42] [显存监控] 已分配=32.44GB, 已保留=35.63GB, 空闲=14.97GB
+[2025-11-23 00:32:45] [显存监控] 已分配=32.44GB, 已保留=35.63GB, 空闲=14.97GB
+wiki desc: Description for lacelike category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:32:48] [显存监控] 已分配=32.60GB, 已保留=35.97GB, 空闲=14.81GB
+[2025-11-23 00:32:51] [显存监控] 已分配=32.60GB, 已保留=35.97GB, 空闲=14.80GB
+[2025-11-23 00:32:54] [显存监控] 已分配=32.60GB, 已保留=35.97GB, 空闲=14.80GB
+[2025-11-23 00:32:57] [显存监控] 已分配=32.61GB, 已保留=35.97GB, 空闲=14.79GB
+[2025-11-23 00:33:00] [显存监控] 已分配=32.62GB, 已保留=35.97GB, 空闲=14.78GB
+推理后显存: 已分配=32.44GB, 已保留=35.97GB, 剩余=14.97GB
+ 47%|████▋     | 22/47 [09:30<10:53, 26.14s/it] 49%|████▉     | 23/47 [09:56<10:28, 26.20s/it] 51%|█████     | 24/47 [10:19<09:38, 25.14s/it]MLLM description: The provided images showcase different types of lace-like fabrics with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: This fabric has a delicate, intricate design with fine, white threadwork on a soft pink background. The lace is semi-transparent, allowing light to pass through, giving it a dainty and ethereal appearance.
+   - Image 2: This fabric features a more textured, raised pattern with a black background. The white lace appears fluffy or puffy, creating a three-dimensional effect. The design includes floral motifs with a net-like structure beneath.
+   - Image 3: This image displays a close-up of a garment made from lace, showcasing detailed embroidery and appliqués. The lace is layered over sheer fabric, creating a complex texture. The design includes floral and geometric patterns.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The color is primarily a soft pink with white lace detailing. The lace is fine and detailed, creating a subtle contrast against the background.
+   - Image 2: The background is black, providing a stark contrast to the white lace. The lace itself has a textured, fluffy appearance, and the floral motifs have a slightly darker shade of white or gray in the center.
+
+类别 lacelike 文本特征维度: (512,)
+描述: The provided images showcase different types of lace-like fabrics with distinct characteristics:
+
+1....
+处理类别: veined
+[2025-11-23 00:33:03] [显存监控] 已分配=32.44GB, 已保留=35.97GB, 空闲=14.97GB
+[2025-11-23 00:33:06] [显存监控] 已分配=32.44GB, 已保留=35.97GB, 空闲=14.97GB
+[2025-11-23 00:33:09] [显存监控] 已分配=32.44GB, 已保留=35.97GB, 空闲=14.97GB
+[2025-11-23 00:33:12] [显存监控] 已分配=32.44GB, 已保留=35.97GB, 空闲=14.97GB
+wiki desc: Description for veined category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:33:15] [显存监控] 已分配=32.56GB, 已保留=34.61GB, 空闲=14.84GB
+[2025-11-23 00:33:18] [显存监控] 已分配=32.56GB, 已保留=34.61GB, 空闲=14.84GB
+[2025-11-23 00:33:21] [显存监控] 已分配=32.57GB, 已保留=34.61GB, 空闲=14.83GB
+[2025-11-23 00:33:24] [显存监控] 已分配=32.58GB, 已保留=34.61GB, 空闲=14.83GB
+[2025-11-23 00:33:27] [显存监控] 已分配=32.58GB, 已保留=34.61GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.61GB, 剩余=14.97GB
+MLLM description: ### Description of Veined Objects:
+
+#### Image 1: Iris Petal
+1. **Distinctive Physical Features**: The petal exhibits a smooth, slightly curved surface with visible veins running through it. These veins are not only structural but also contribute to the petal's texture and flexibility.
+2. **Color Patterns and Markings**: The petal displays a gradient of colors, transitioning from deep purple at the edges to a lighter yellow near the center. The veins are a darker shade of purple, creating a subtle contrast against the lighter areas.
+3. **Size and Proportions**: The petal is relatively large compared to the overall flower structure, occupying a significant portion of the image. Its proportions are balanced, with the veins evenly distributed across its surface.
+4. **Behavioral Characteristics**: As a living organism, the petal may exhibit movement in response to environmental stimuli like light or touch, though this is not directly observable in the image.
+5. **Unique Identifying Traits**: The combination of color gradients and vein patterns is unique to this specific type of petal, distinguishing it from others.
+
+---
+
+#### Image 2: Painted Texture
+1. **Distinctive Physical Features**: This image shows a textured surface with a dark gray base. Red and black
+类别 veined 文本特征维度: (512,)
+描述: ### Description of Veined Objects:
+
+#### Image 1: Iris Petal
+1. **Distinctive Physical Features**: T...
+处理类别: sprinkled
+[2025-11-23 00:33:30] [显存监控] 已分配=32.44GB, 已保留=34.61GB, 空闲=14.97GB
+[2025-11-23 00:33:33] [显存监控] 已分配=32.44GB, 已保留=34.61GB, 空闲=14.97GB
+[2025-11-23 00:33:36] [显存监控] 已分配=32.44GB, 已保留=34.61GB, 空闲=14.97GB
+wiki desc: Description for sprinkled category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:33:39] [显存监控] 已分配=32.53GB, 已保留=32.87GB, 空闲=14.87GB
+[2025-11-23 00:33:42] [显存监控] 已分配=32.57GB, 已保留=34.77GB, 空闲=14.84GB
+[2025-11-23 00:33:45] [显存监控] 已分配=32.58GB, 已保留=34.77GB, 空闲=14.83GB
+[2025-11-23 00:33:48] [显存监控] 已分配=32.58GB, 已保留=34.77GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.77GB, 剩余=14.97GB
+MLLM description: The first image depicts an abstract painting with a textured surface, featuring a mix of muted colors like white, gray, and hints of red and blue. The composition is fluid and lacks distinct shapes or figures, giving it an impressionistic feel. The second image shows a close-up of a surface covered in small, golden glitter pieces scattered across a white background. The glitter pieces vary in size and shape, creating a sparkling effect. The third image presents a pattern of red dots and circles on a white background, resembling a biological sample under a microscope. The dots vary in size and density, with some appearing larger and more prominent than others.
+
+In summary, the first image has a textured, abstract appearance with a muted color palette, while the second image showcases a glittery, sparkling effect with small, irregularly shaped pieces. The third image displays a pattern of red dots and circles on a white background, resembling a biological sample. Each image has its unique visual characteristics that set it apart from the others.
+类别 sprinkled 文本特征维度: (512,)
+描述: The first image depicts an abstract painting with a textured surface, featuring a mix of muted color...
+处理类别: porous
+[2025-11-23 00:33:51] [显存监控] 已分配=32.44GB, 已保留=34.77GB, 空闲=14.97GB
+[2025-11-23 00:33:54] [显存监控] 已分配=32.44GB, 已保留=34.77GB, 空闲=14.97GB
+[2025-11-23 00:33:57] [显存监控] 已分配=32.44GB, 已保留=34.77GB, 空闲=14.97GB
+[2025-11-23 00:34:00] [显存监控] 已分配=32.44GB, 已保留=34.77GB, 空闲=14.97GB
+wiki desc: Description for porous category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:34:03] [显存监控] 已分配=32.58GB, 已保留=35.12GB, 空闲=14.82GB
+[2025-11-23 00:34:06] [显存监控] 已分配=32.58GB, 已保留=35.12GB, 空闲=14.82GB
+[2025-11-23 00:34:09] [显存监控] 已分配=32.58GB, 已保留=35.12GB, 空闲=14.82GB
+[2025-11-23 00:34:12] [显存监控] 已分配=32.59GB, 已保留=35.12GB, 空闲=14.81GB
+[2025-11-23 00:34:15] [显存监控] 已分配=32.60GB, 已保留=35.12GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.12GB, 剩余=14.97GB
+ 53%|█████▎    | 25/47 [10:44<09:17, 25.35s/it] 55%|█████▌    | 26/47 [11:11<09:01, 25.78s/it] 57%|█████▋    | 27/47 [11:35<08:25, 25.30s/it]MLLM description: The provided images showcase materials with distinct porous textures, characterized by their open-cell structure allowing for air or liquid passage. Here's a detailed description:
+
+1. **Distinctive Physical Features**:  
+   - All three images exhibit a granular surface with visible pores or voids, indicative of porosity. These pores vary in size and shape, contributing to the material's ability to absorb liquids or gases.
+
+2. **Color Patterns and Markings**:  
+   - Image 1 has a light beige or off-white color with darker speckles, suggesting a mix of lighter and darker grains. The shadow of a tree is cast over part of the surface, adding contrast and depth.  
+   - Image 2 displays a grayish tone with darker spots scattered throughout, resembling a rough concrete or stone texture. The darker spots could be mineral inclusions or variations in the material composition.  
+   - Image 3 presents a uniform golden-brown hue, with smaller, more densely packed granules compared to the other two images. The surface appears smoother than the others, possibly due to less pronounced porosity.
+
+3. **Size and Proportions**:  
+   - The granules in all images are relatively small, indicating a fine-to-medium grain size. However, the density and
+类别 porous 文本特征维度: (512,)
+描述: The provided images showcase materials with distinct porous textures, characterized by their open-ce...
+处理类别: matted
+[2025-11-23 00:34:18] [显存监控] 已分配=32.44GB, 已保留=35.12GB, 空闲=14.97GB
+[2025-11-23 00:34:21] [显存监控] 已分配=32.44GB, 已保留=35.12GB, 空闲=14.97GB
+[2025-11-23 00:34:24] [显存监控] 已分配=32.44GB, 已保留=35.12GB, 空闲=14.97GB
+[2025-11-23 00:34:27] [显存监控] 已分配=32.44GB, 已保留=35.12GB, 空闲=14.97GB
+wiki desc: Description for matted category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-23 00:34:30] [显存监控] 已分配=32.57GB, 已保留=34.98GB, 空闲=14.83GB
+[2025-11-23 00:34:33] [显存监控] 已分配=32.58GB, 已保留=34.98GB, 空闲=14.83GB
+[2025-11-23 00:34:36] [显存监控] 已分配=32.58GB, 已保留=34.98GB, 空闲=14.82GB
+[2025-11-23 00:34:39] [显存监控] 已分配=32.59GB, 已保留=34.98GB, 空闲=14.81GB
+[2025-11-23 00:34:42] [显存监控] 已分配=32.59GB, 已保留=34.98GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.98GB, 剩余=14.97GB
+MLLM description: The images depict matted hair or wool, which can be distinguished by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Matted hair or wool is characterized by its tangled, clumped, and intertwined strands. The strands appear to be tightly bound together, creating a dense, uneven texture.
+
+2. **Color Patterns and Markings**: The color of the matted hair or wool can vary widely depending on the source. In Image 1, the hair appears dark brown with some lighter highlights. Image 2 shows a lighter, beige or light brown matted wool, while Image 3 displays a uniform off-white or cream-colored matted wool. The color patterns in these images are consistent throughout the matted sections, without distinct markings or variations.
+
+3. **Size and Proportions**: The size and proportions of the matted hair or wool can differ based on the context. In Image 1, the matted hair appears to be part of a person's head, suggesting a larger overall size. Image 2 and Image 3 show close-up views of matted wool, indicating smaller, more localized areas of matting.
+
+4. **Behavioral Characteristics**: Matted hair or wool does not exhibit any specific behavioral characteristics as it is an inanimate
+类别 matted 文本特征维度: (512,)
+描述: The images depict matted hair or wool, which can be distinguished by their distinctive physical feat...
+处理类别: spiralled
+[2025-11-23 00:34:45] [显存监控] 已分配=32.44GB, 已保留=34.98GB, 空闲=14.97GB
+[2025-11-23 00:34:48] [显存监控] 已分配=32.44GB, 已保留=34.98GB, 空闲=14.97GB
+[2025-11-23 00:34:51] [显存监控] 已分配=32.44GB, 已保留=34.98GB, 空闲=14.97GB
+wiki desc: Description for spiralled category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-23 00:34:54] [显存监控] 已分配=32.50GB, 已保留=32.86GB, 空闲=14.90GB
+[2025-11-23 00:34:57] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.85GB
+[2025-11-23 00:35:00] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.85GB
+[2025-11-23 00:35:03] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.85GB
+[2025-11-23 00:35:06] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=34.10GB, 剩余=14.97GB
+MLLM description: The images depict spiraled objects with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: A plant with thin, curly stems resembling a type of grass or fern. The spirals are natural and organic in appearance.
+   - Image 2: A crocheted or knitted square with a geometric pattern. The spirals are formed by the interlocking loops of yarn, creating a textured surface.
+   - Image 3: A woven mat or rope with a tightly coiled spiral design. The spirals are uniform and symmetrical, showcasing a handcrafted texture.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The plant has a consistent green color with subtle variations due to natural growth patterns. The spirals are smooth and continuous.
+   - Image 2: The crocheted square displays a gradient of colors, transitioning smoothly between shades of blue, green, purple, and brown. The spirals are defined by the color changes within each loop.
+   - Image 3: The woven material is primarily green with hints of beige, and the spirals are created through the interlacing of these colors. The spirals are uniform in color but vary in density.
+
+3. **Size and Proport
+类别 spiralled 文本特征维度: (512,)
+描述: The images depict spiraled objects with distinct characteristics:
+
+1. **Distinctive Physical Feature...
+处理类别: grid
+[2025-11-23 00:35:09] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+[2025-11-23 00:35:12] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+[2025-11-23 00:35:15] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+[2025-11-23 00:35:18] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+wiki desc: Description for grid category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:35:21] [显存监控] 已分配=32.65GB, 已保留=35.81GB, 空闲=14.75GB
+[2025-11-23 00:35:24] [显存监控] 已分配=32.59GB, 已保留=35.81GB, 空闲=14.81GB
+[2025-11-23 00:35:27] [显存监控] 已分配=32.63GB, 已保留=35.81GB, 空闲=14.77GB
+[2025-11-23 00:35:30] [显存监控] 已分配=32.61GB, 已保留=35.81GB, 空闲=14.80GB
+[2025-11-23 00:35:33] [显存监控] 已分配=32.61GB, 已保留=35.81GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.81GB, 剩余=14.97GB
+ 60%|█████▉    | 28/47 [12:04<08:18, 26.23s/it] 62%|██████▏   | 29/47 [12:28<07:39, 25.51s/it] 64%|██████▍   | 30/47 [12:53<07:12, 25.41s/it]MLLM description: The provided images showcase grids with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: A uniform, clean grid composed of small, evenly spaced black lines forming a perfect square pattern on a white background.  
+   - Image 2: A textured grid featuring a mix of rusted metal and embedded stones or pebbles, creating a rough, uneven surface.  
+   - Image 3: A brick-patterned grid with rectangular bricks laid in a staggered pattern, giving it a more organic and less uniform appearance compared to the first two.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: Predominantly white with black lines, resulting in a stark contrast.  
+   - Image 2: A combination of rusty brown tones from the metal and various colors from the embedded stones, creating a mottled effect.  
+   - Image 3: A consistent reddish-brown hue with lighter grout lines between the bricks, providing a subtle texture.
+
+3. **Size and Proportions**:  
+   - All three grids have a consistent cell size, though the overall dimensions vary slightly due to the different materials and textures. The first image is purely geometric, while the others incorporate natural elements like rust and
+[2025-11-23 00:35:36] [显存监控] 已分配=32.44GB, 已保留=35.81GB, 空闲=14.97GB
+类别 grid 文本特征维度: (512,)
+描述: The provided images showcase grids with distinct characteristics:
+
+1. **Distinctive Physical Feature...
+处理类别: braided
+[2025-11-23 00:35:39] [显存监控] 已分配=32.44GB, 已保留=35.81GB, 空闲=14.97GB
+[2025-11-23 00:35:42] [显存监控] 已分配=32.44GB, 已保留=35.81GB, 空闲=14.97GB
+[2025-11-23 00:35:45] [显存监控] 已分配=32.44GB, 已保留=35.81GB, 空闲=14.97GB
+wiki desc: Description for braided category.
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-23 00:35:48] [显存监控] 已分配=32.51GB, 已保留=33.84GB, 空闲=14.89GB
+[2025-11-23 00:35:51] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+[2025-11-23 00:35:54] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+[2025-11-23 00:35:57] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.84GB, 剩余=14.97GB
+MLLM description: The images presented depict three distinct categories: knitted fabric, woven mat, and braided hair.
+
+1. **Distinctive Physical Features**:
+   - **Knitted Fabric**: This image shows a close-up of a knitted fabric with a consistent, interlocking pattern of loops and stitches. The texture is soft and slightly raised, with a uniform blue color.
+   - **Woven Mat**: The woven mat displays a dense, interlaced pattern of natural fibers, likely jute or a similar material. The texture appears rougher and more compact compared to the knitted fabric, with a uniform brownish-yellow hue.
+   - **Braided Hair**: The braided hair image showcases a tightly woven braid made up of individual strands of light brown hair. The strands are smooth and shiny, forming a neat, symmetrical braid.
+
+2. **Color Patterns and Markings**:
+   - **Knitted Fabric**: The fabric is uniformly blue, with no visible patterns or markings beyond the texture of the knitting.
+   - **Woven Mat**: The mat has a consistent brownish-yellow color throughout, with no distinct patterns or markings apart from the woven texture.
+   - **Braided Hair**: The hair is a light brown shade, with subtle variations
+类别 braided 文本特征维度: (512,)
+描述: The images presented depict three distinct categories: knitted fabric, woven mat, and braided hair.
+...
+处理类别: freckled
+[2025-11-23 00:36:00] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+[2025-11-23 00:36:03] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+[2025-11-23 00:36:06] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+[2025-11-23 00:36:09] [显存监控] 已分配=32.44GB, 已保留=33.84GB, 空闲=14.97GB
+wiki desc: Description for freckled category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-23 00:36:12] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-23 00:36:15] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-23 00:36:18] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-23 00:36:21] [显存监控] 已分配=32.56GB, 已保留=34.07GB, 空闲=14.85GB
+[2025-11-23 00:36:24] [显存监控] 已分配=32.57GB, 已保留=34.07GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.07GB, 剩余=14.97GB
+MLLM description: The images depict individuals with freckles, which are small, flat spots of concentrated melanin in the skin. Here's a detailed description of their distinctive features:
+
+1. **Distinctive Physical Features**: Freckles are typically small, round, and light brown or tan spots scattered across the skin. They are more common on areas exposed to sunlight, such as the face, arms, and shoulders.
+
+2. **Color Patterns and Markings**: The freckles in the images appear as small, irregularly shaped dots with a uniform color, ranging from light beige to dark brown. They are not arranged in any specific pattern and can vary in size and density.
+
+3. **Size and Proportions**: The freckles are generally small, often less than 1 millimeter in diameter. Their size is consistent throughout the images, indicating they are part of the same individual.
+
+4. **Behavioral Characteristics**: Freckles are static and do not exhibit any movement or behavior. They are a permanent feature of the skin, influenced by genetics and sun exposure.
+
+5. **Unique Identifying Traits**: The presence of freckles is unique to each individual due to genetic factors and environmental influences like sun exposure. The distribution and density of freckles can vary significantly
+类别 freckled 文本特征维度: (512,)
+描述: The images depict individuals with freckles, which are small, flat spots of concentrated melanin in ...
+处理类别: swirly
+[2025-11-23 00:36:27] [显存监控] 已分配=32.44GB, 已保留=34.07GB, 空闲=14.97GB
+[2025-11-23 00:36:30] [显存监控] 已分配=32.44GB, 已保留=34.07GB, 空闲=14.97GB
+[2025-11-23 00:36:33] [显存监控] 已分配=32.44GB, 已保留=34.07GB, 空闲=14.97GB
+wiki desc: Description for swirly category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-23 00:36:36] [显存监控] 已分配=32.63GB, 已保留=35.29GB, 空闲=14.78GB
+[2025-11-23 00:36:39] [显存监控] 已分配=32.58GB, 已保留=35.29GB, 空闲=14.82GB
+[2025-11-23 00:36:42] [显存监控] 已分配=32.59GB, 已保留=35.29GB, 空闲=14.81GB
+[2025-11-23 00:36:45] [显存监控] 已分配=32.59GB, 已保留=35.29GB, 空闲=14.81GB
+[2025-11-23 00:36:48] [显存监控] 已分配=32.60GB, 已保留=35.29GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.29GB, 剩余=14.97GB
+ 66%|██████▌   | 31/47 [13:19<06:49, 25.58s/it]
