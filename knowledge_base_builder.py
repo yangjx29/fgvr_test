@@ -21,6 +21,10 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from collections import defaultdict
+import warnings
+
+# 抑制BeautifulSoup的MarkupResemblesLocatorWarning
+warnings.filterwarnings('ignore', category=UserWarning, module='bs4')
 
 from agents.mllm_bot import MLLMBot
 from retrieval.multimodal_retrieval import MultimodalRetrieval

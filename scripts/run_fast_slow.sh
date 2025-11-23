@@ -31,7 +31,9 @@ show_help() {
 
 选项:
     --gpu GPU_ID            GPU编号
-    --test_suffix NUM       测试数据后缀
+    --test_suffix NUM       测试数据后缀（使用discovery集时）
+    --use_test_data         使用images_test目录进行测试
+    --test_percentage NUM   测试集采样百分比 (0-100)
     --conda_env ENV_NAME    Conda环境名称
     --help                  显示此帮助信息
 
@@ -42,8 +44,14 @@ show_help() {
     # 指定数据集
     bash run_fast_slow.sh dtd
 
-    # 指定多个参数
+    # 使用discovery集
     bash run_fast_slow.sh food --gpu 3 --test_suffix 8
+    
+    # 使用测试集（全部）
+    bash run_fast_slow.sh aircraft --gpu 2 --use_test_data
+    
+    # 使用测试集（50%采样）
+    bash run_fast_slow.sh dog --gpu 1 --use_test_data --test_percentage 50
 
 优先级: 命令行参数 > YAML配置文件
 
@@ -80,6 +88,8 @@ get_yaml_value() {
 CUDA_VISIBLE_DEVICES_VALUE=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
 DATASET_NAME=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX_VALUE=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
+USE_TEST_DATA_VALUE=$(get_yaml_value "use_test_data" "${CONFIG_FILE}")
+TEST_PERCENTAGE_VALUE=$(get_yaml_value "test_percentage" "${CONFIG_FILE}")
 CONDA_ENV_VALUE=$(get_yaml_value "conda_env" "${CONFIG_FILE}")
 CONDA_BASE_VALUE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
 PROJECT_ROOT_VALUE=$(get_yaml_value "project_root" "${CONFIG_FILE}")
@@ -98,6 +108,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         --test_suffix)
             TEST_DATA_SUFFIX_VALUE="$2"
+            shift 2
+            ;;
+        --use_test_data)
+            USE_TEST_DATA_VALUE="true"
+            shift
+            ;;
+        --test_percentage)
+            TEST_PERCENTAGE_VALUE="$2"
             shift 2
             ;;
         --conda_env)
@@ -131,6 +149,8 @@ export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES_VALUE}"
 # 数据集配置
 DATASET="${DATASET_NAME}"
 TEST_DATA_SUFFIX="${TEST_DATA_SUFFIX_VALUE}"
+USE_TEST_DATA="${USE_TEST_DATA_VALUE}"
+TEST_PERCENTAGE="${TEST_PERCENTAGE_VALUE}"
 
 # 环境配置
 CONDA_ENV="${CONDA_ENV_VALUE}"
@@ -296,10 +316,29 @@ print_info "================"
 
 # 将配置信息写入临时文件
 TEMP_HEADER="/tmp/fast_slow_header_${DATASET}_$$.txt"
-cat > "${TEMP_HEADER}" << LOGHEADER
+if [ "${USE_TEST_DATA}" = "true" ]; then
+    cat > "${TEMP_HEADER}" << LOGHEADER
 [INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
 GPU: CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}  # 使用的GPU编号
-Dataset: ${DATASET} (num_classes=${NUM_CLASSES})  # 数据集及类别数, test_data_suffix=${TEST_DATA_SUFFIX}  # 测试数据样本后缀
+Dataset: ${DATASET} (num_classes=${DATASET_NUM})  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: ${TEST_PERCENTAGE}%  # 测试集采样百分比
+Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径
+Project Root: ${PROJECT_ROOT}  # 项目根目录
+Knowledge Base Dir: ${KNOWLEDGE_BASE_DIR}  # 知识库目录
+Results Out: ${RESULTS_OUT}  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/${CONFIG_FILE}  # 实验配置文件
+Log File: ${LOG_FILE}  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+LOGHEADER
+else
+    cat > "${TEMP_HEADER}" << LOGHEADER
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}  # 使用的GPU编号
+Dataset: ${DATASET} (num_classes=${DATASET_NUM})  # 数据集及类别数, test_data_suffix=${TEST_DATA_SUFFIX}  # 测试数据样本后缀
+Test Mode: discovery_set  # 使用discovery集
 Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径
 Project Root: ${PROJECT_ROOT}  # 项目根目录
 Knowledge Base Dir: ${KNOWLEDGE_BASE_DIR}  # 知识库目录
@@ -311,6 +350,7 @@ Run Mode: fast_slow  # 运行模式
 [INFO] ========================================================
 
 LOGHEADER
+fi
 
 # 检查conda环境是否存在
 if [ ! -d "${CONDA_BASE}/envs/${CONDA_ENV}" ]; then
@@ -320,13 +360,26 @@ if [ ! -d "${CONDA_BASE}/envs/${CONDA_ENV}" ]; then
 fi
 
 # 构建命令
-CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-    --mode=fast_slow \
-    --config_file_env=./configs/env_machine.yml \
-    --config_file_expt=./configs/expts/${CONFIG_FILE} \
-    --test_data_dir=${TEST_DATA_DIR} \
-    --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-    --results_out=${RESULTS_OUT}"
+if [ "${USE_TEST_DATA}" = "true" ]; then
+    # 使用测试集
+    CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+        --mode=fast_slow \
+        --config_file_env=./configs/env_machine.yml \
+        --config_file_expt=./configs/expts/${CONFIG_FILE} \
+        --use_test_data \
+        --test_percentage=${TEST_PERCENTAGE} \
+        --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+        --results_out=${RESULTS_OUT}"
+else
+    # 使用discovery集
+    CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+        --mode=fast_slow \
+        --config_file_env=./configs/env_machine.yml \
+        --config_file_expt=./configs/expts/${CONFIG_FILE} \
+        --test_data_dir=${TEST_DATA_DIR} \
+        --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+        --results_out=${RESULTS_OUT}"
+fi
 
 # 创建启动脚本（先写配置信息，再运行Python）
 TEMP_SCRIPT="/tmp/run_fast_slow_${DATASET}_$$.sh"

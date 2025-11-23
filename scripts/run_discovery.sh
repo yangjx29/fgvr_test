@@ -42,7 +42,9 @@ show_help() {
 选项:
     --gpu GPU_ID            GPU编号
     --kshot NUM             每个类别的样本数
-    --test_suffix NUM       测试数据后缀
+    --test_suffix NUM       测试数据后缀（使用discovery集时）
+    --use_test_data         使用images_test目录进行测试
+    --test_percentage NUM   测试集采样百分比 (0-100)
     --conda_env ENV_NAME    Conda环境名称
     --help                  显示此帮助信息
 
@@ -53,8 +55,11 @@ show_help() {
     # 指定数据集和模式
     bash run_discovery.sh aircraft evaluate
 
-    # 指定多个参数
+    # 使用discovery集
     bash run_discovery.sh food fast_slow --gpu 2 --kshot 6
+    
+    # 使用测试集评估
+    bash run_discovery.sh pet evaluate --gpu 0 --use_test_data --test_percentage 20
 
 优先级: 命令行参数 > YAML配置文件
 
@@ -97,6 +102,8 @@ get_yaml_value() {
 CUDA_VISIBLE_DEVICES_VALUE=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
 DATASET_NAME=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX_VALUE=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
+USE_TEST_DATA_VALUE=$(get_yaml_value "use_test_data" "${CONFIG_FILE}")
+TEST_PERCENTAGE_VALUE=$(get_yaml_value "test_percentage" "${CONFIG_FILE}")
 KSHOT_VALUE=$(get_yaml_value "kshot" "${CONFIG_FILE}")
 MODE_VALUE=$(get_yaml_value "discovery_mode" "${CONFIG_FILE}")
 CONDA_ENV_VALUE=$(get_yaml_value "conda_env" "${CONFIG_FILE}")
@@ -121,6 +128,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         --test_suffix)
             TEST_DATA_SUFFIX_VALUE="$2"
+            shift 2
+            ;;
+        --use_test_data)
+            USE_TEST_DATA_VALUE="true"
+            shift
+            ;;
+        --test_percentage)
+            TEST_PERCENTAGE_VALUE="$2"
             shift 2
             ;;
         --conda_env)
@@ -157,6 +172,8 @@ export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES_VALUE}"
 # 数据集配置
 DATASET="${DATASET_NAME}"
 TEST_DATA_SUFFIX="${TEST_DATA_SUFFIX_VALUE}"
+USE_TEST_DATA="${USE_TEST_DATA_VALUE}"
+TEST_PERCENTAGE="${TEST_PERCENTAGE_VALUE}"
 KSHOT="${KSHOT_VALUE}"
 MODE="${MODE_VALUE}"
 
@@ -412,17 +429,30 @@ case "${MODE}" in
             print_error "请先运行 build_knowledge_base 模式构建知识库"
             exit 1
         fi
-        if [ ! -d "${TEST_DATA_DIR}" ]; then
-            print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
-            exit 1
+        if [ "${USE_TEST_DATA}" = "true" ]; then
+            # 使用测试集
+            CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+                --mode=${MODE} \
+                --config_file_env=./configs/env_machine.yml \
+                --config_file_expt=./configs/expts/${CONFIG_FILE} \
+                --use_test_data \
+                --test_percentage=${TEST_PERCENTAGE} \
+                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+                --results_out=${RESULTS_OUT}"
+        else
+            # 使用discovery集
+            if [ ! -d "${TEST_DATA_DIR}" ]; then
+                print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
+                exit 1
+            fi
+            CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+                --mode=${MODE} \
+                --config_file_env=./configs/env_machine.yml \
+                --config_file_expt=./configs/expts/${CONFIG_FILE} \
+                --test_data_dir=${TEST_DATA_DIR} \
+                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+                --results_out=${RESULTS_OUT}"
         fi
-        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-            --mode=${MODE} \
-            --config_file_env=./configs/env_machine.yml \
-            --config_file_expt=./configs/expts/${CONFIG_FILE} \
-            --test_data_dir=${TEST_DATA_DIR} \
-            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-            --results_out=${RESULTS_OUT}"
         ;;
     
     # 3. 分离式推理分类模式 - Separated Inference-Classification Modes

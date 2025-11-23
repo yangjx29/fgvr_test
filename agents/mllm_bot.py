@@ -1,5 +1,6 @@
 import sys
 import os
+import warnings
 
 # 确保导入正确的utils模块
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +22,12 @@ import torch.nn as nn
 import numpy as np
 import torch.nn.functional as F
 from skimage.measure import block_reduce
+
+# 限制图片最大尺寸
+pre_define_max_size=1750
+
+# 抑制transformers生成配置的警告
+warnings.filterwarnings('ignore', message='.*do_sample.*temperature.*', category=UserWarning)
 
 QWEN = {
     'Qwen2.5-VL-7B': 'Qwen/Qwen2.5-VL-7B-Instruct'
@@ -239,13 +246,13 @@ class MLLMBot:
     def get_name(self):
         return self.model_name
     
-    def _resize_image_if_needed(self, image: Image.Image, max_size: int = 1750) -> Image.Image:
+    def _resize_image_if_needed(self, image: Image.Image, max_size: int = pre_define_max_size) -> Image.Image:
         """
         如果图像尺寸超过max_size，按比例缩小以防止显存爆炸
         
         Args:
             image: PIL图像
-            max_size: 最大边长（默认1750，足够保留细节）
+            max_size: 最大边长（默认pre_define_max_size，预定义好）
             
         Returns:
             调整后的PIL图像
@@ -277,7 +284,7 @@ class MLLMBot:
         # content.append({"type": "text", "text": prompt})
         for img in raw_image:
             # 限制图像最大尺寸，防止超大图片导致显存爆炸
-            img = self._resize_image_if_needed(img, max_size=1750)
+            img = self._resize_image_if_needed(img, max_size=pre_define_max_size)
             image_str = encode_base64(img)
             content.append({"type": "image", "image": f'data:image;base64,{image_str}'})
         content.append({"type": "text", "text": prompt})

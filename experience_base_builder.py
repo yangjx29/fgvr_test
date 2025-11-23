@@ -22,6 +22,9 @@ from knowledge_base_builder import KnowledgeBaseBuilder
 from utils.fileios import dump_json, load_json
 from utils.util import is_similar
 
+# 最大经验条数超参数
+experience_base_max_number = 8
+
 
 class ExperienceBaseBuilder:
     """经验库构建器 - 基于模型自反思与优化"""
@@ -59,7 +62,7 @@ class ExperienceBaseBuilder:
         self.dataset_info = dataset_info or {}
         
         # Self-Belief：当前推理策略
-        self.max_strategy_rules = 8    ### todo 经验条数
+        self.max_strategy_rules = experience_base_max_number    ### todo 经验条数
         self.strategy_rules = []
         self.next_rule_id = 1
         self.self_belief_core = self.INITIAL_SELF_BELIEF

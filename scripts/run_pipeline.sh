@@ -33,7 +33,9 @@ FGVR Pipeline 脚本 - 完整流程（知识库构建 + 快慢思考评估）
 选项:
     --gpu GPU_ID            GPU编号
     --kshot NUM             每个类别的样本数
-    --test_suffix NUM       测试数据后缀
+    --test_suffix NUM       测试数据后缀（使用discovery集时）
+    --use_test_data         使用images_test目录进行测试
+    --test_percentage NUM   测试集采样百分比 (0-100)
     --conda_env ENV_NAME    Conda环境名称
     --help                  显示此帮助信息
 
@@ -44,8 +46,11 @@ FGVR Pipeline 脚本 - 完整流程（知识库构建 + 快慢思考评估）
     # 指定数据集
     bash run_pipeline.sh aircraft
 
-    # 指定多个参数
+    # 使用discovery集
     bash run_pipeline.sh food --gpu 3 --kshot 6 --test_suffix 8
+    
+    # 使用测试集
+    bash run_pipeline.sh bird --gpu 1 --kshot 5 --use_test_data --test_percentage 30
 
 优先级: 命令行参数 > YAML配置文件
 
@@ -84,6 +89,8 @@ get_yaml_value() {
 CUDA_VISIBLE_DEVICES=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
 DATASET=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
+USE_TEST_DATA=$(get_yaml_value "use_test_data" "${CONFIG_FILE}")
+TEST_PERCENTAGE=$(get_yaml_value "test_percentage" "${CONFIG_FILE}")
 KSHOT=$(get_yaml_value "kshot" "${CONFIG_FILE}")
 CONDA_ENV=$(get_yaml_value "conda_env" "${CONFIG_FILE}")
 CONDA_BASE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
@@ -107,6 +114,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         --test_suffix)
             TEST_DATA_SUFFIX="$2"
+            shift 2
+            ;;
+        --use_test_data)
+            USE_TEST_DATA="true"
+            shift
+            ;;
+        --test_percentage)
+            TEST_PERCENTAGE="$2"
             shift 2
             ;;
         --conda_env)
@@ -199,11 +214,17 @@ run_pipeline_bg() {
         # 输出 YAML 配置关键内容到日志（带中文）
         echo "[INFO] === Pipeline 启动, YAML 配置摘要 ==="
         echo "GPU: CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}  # 使用的GPU编号"
-        echo "Dataset: ${DATASET} (num_classes=${DATASET_NUM})  # 数据集及类别数, test_data_suffix=${TEST_DATA_SUFFIX}  # 测试数据样本后缀"
+        echo "Dataset: ${DATASET} (num_classes=${DATASET_NUM})  # 数据集及类别数"
+        if [ "${USE_TEST_DATA}" = "true" ]; then
+            echo "Test Mode: images_test  # 使用测试集"
+            echo "Test Percentage: ${TEST_PERCENTAGE}%  # 测试集采样百分比"
+        else
+            echo "Test Mode: discovery_set  # 使用discovery集, test_data_suffix=${TEST_DATA_SUFFIX}"
+            echo "Test Data Dir: ${TEST_DATA_DIR}  # 测试数据目录"
+        fi
         echo "K-shot: ${KSHOT}  # 检索库使用每个类别的样本数目"
         echo "Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径"
         echo "Knowledge Base Dir: ${KNOWLEDGE_BASE_DIR}  # 知识库目录"
-        echo "Test Data Dir: ${TEST_DATA_DIR}  # 测试数据目录"
         echo "Results Out: ${RESULTS_OUT}  # 快慢思考评估结果输出文件"
         echo "---------------------------"
         echo ""
@@ -227,12 +248,22 @@ run_pipeline_bg() {
 
         # Step2: 快慢思考评估
         echo "[INFO] === Step2: 快慢思考评估 ==="
-        python discovering.py --mode=fast_slow \
-            --config_file_env=./configs/env_machine.yml \
-            --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
-            --test_data_dir=${TEST_DATA_DIR} \
-            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-            --results_out=${RESULTS_OUT}
+        if [ "${USE_TEST_DATA}" = "true" ]; then
+            python discovering.py --mode=fast_slow \
+                --config_file_env=./configs/env_machine.yml \
+                --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
+                --use_test_data \
+                --test_percentage=${TEST_PERCENTAGE} \
+                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+                --results_out=${RESULTS_OUT}
+        else
+            python discovering.py --mode=fast_slow \
+                --config_file_env=./configs/env_machine.yml \
+                --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
+                --test_data_dir=${TEST_DATA_DIR} \
+                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+                --results_out=${RESULTS_OUT}
+        fi
 
         EXIT_CODE=$?
         if [ $EXIT_CODE -ne 0 ]; then

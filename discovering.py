@@ -1,3 +1,8 @@
+import warnings
+# 抑制常见的警告信息
+warnings.filterwarnings('ignore', message='.*Failed to load image Python extension.*', category=UserWarning)
+warnings.filterwarnings('ignore', message='.*Using a slow image processor.*', category=UserWarning)
+
 import torch 
 import os 
 import argparse 
@@ -9,7 +14,8 @@ from utils.configuration import setup_config, seed_everything
 from utils.fileios import dump_json, load_json, dump_txt  
 
 from data import DATA_STATS, PROMPTERS, DATA_DISCOVERY  
-from data.prompt_identify import prompts_howto  
+from data.prompt_identify import prompts_howto
+from data.test_data import get_test_images_by_percentage, validate_test_set  
 from agents.vqa_bot import VQABot  
 from agents.llm_bot import LLMBot 
 from agents.mllm_bot import MLLMBot
@@ -77,6 +83,90 @@ def set_current_dataset(dataset_name: str):
     print(f"类别数: {CURRENT_DATASET['num_classes']}")
     print(f"实验目录: {CURRENT_DATASET['experiment_dir_full']}")
     return CURRENT_DATASET
+
+
+def prepare_test_samples(cfg, args):
+    """
+    准备测试样本，支持discovery集和test集
+    
+    Args:
+        cfg: 配置字典
+        args: 命令行参数
+        
+    Returns:
+        dict: 测试样本字典 {class_name: [image_paths]}
+    """
+    test_samples = defaultdict(list)
+    
+    # 如果使用测试集
+    if args.use_test_data:
+        dataset_key = f"{cfg['dataset_name']}{cfg.get('num_classes', '')}"
+        data_root = cfg.get('data_root', './datasets')
+        
+        print("="*70)
+        print(colored("📊 测试数据来源: images_test (测试集)", "cyan", attrs=['bold']))
+        print("="*70)
+        print(f"数据集标识: {dataset_key}")
+        print(f"数据集根目录: {data_root}")
+        print(f"测试百分比: {args.test_percentage}%")
+        print(f"说明: 使用完整测试集的 {args.test_percentage}% 进行评估")
+        print("="*70)
+        
+        # 验证测试集
+        try:
+            test_stats = validate_test_set(dataset_key, data_root)
+            print(f"✓ 测试集验证成功")
+            print(f"  测试集目录: {test_stats['test_dir']}")
+            print(f"  类别数量: {test_stats['num_classes']}")
+            print(f"  总图像数: {test_stats['total_images']}")
+            print(f"  平均每类: {test_stats['avg_images_per_class']:.1f} 张")
+            print(f"  图像范围: {test_stats['min_images_per_class']} - {test_stats['max_images_per_class']} 张/类")
+        except Exception as e:
+            print(colored(f"❌ 测试集验证失败: {e}", "red"))
+            raise ValueError(f"测试集验证失败: {e}")
+        
+        # 获取采样的测试图像
+        sampled_images = get_test_images_by_percentage(
+            dataset_key, 
+            data_root, 
+            args.test_percentage,
+            seed=cfg.get('seed', 42)
+        )
+        
+        # 组织成字典格式
+        for img_path, class_name in sampled_images:
+            test_samples[class_name].append(img_path)
+        
+        avg_per_class = len(sampled_images) / len(test_samples) if test_samples else 0
+        print(f"✓ 采样完成: {len(sampled_images)} 张图像，覆盖 {len(test_samples)} 个类别")
+        print(f"  平均每类: {avg_per_class:.1f} 张")
+        print("="*70)
+    
+    # 否则使用discovery集
+    else:
+        if args.test_data_dir is None:
+            raise ValueError("请提供测试数据目录 --test_data_dir 或使用 --use_test_data")
+        
+        print("="*70)
+        print(colored("📊 测试数据来源: images_discovery (发现集)", "cyan", attrs=['bold']))
+        print("="*70)
+        print(f"测试数据目录: {args.test_data_dir}")
+        print(f"说明: 使用discovery集进行评估（每类固定样本数）")
+        print("="*70)
+        
+        # 从test_data_dir加载
+        for class_name in os.listdir(args.test_data_dir):
+            class_dir = os.path.join(args.test_data_dir, class_name)
+            if os.path.isdir(class_dir):
+                for img_name in os.listdir(class_dir):
+                    if img_name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
+                        img_path = os.path.join(class_dir, img_name)
+                        test_samples[class_name].append(img_path)
+        
+        total_images = sum(len(paths) for paths in test_samples.values())
+        print(f"✓ 从discovery集加载 {len(test_samples)} 个类别，共 {total_images} 张图像")
+    
+    return dict(test_samples)
 
 
 def cint2cname(label: int, cname_sheet: list):
@@ -420,6 +510,8 @@ if __name__ == "__main__":
     parser.add_argument('--knowledge_base_dir', type=str, default='./knowledge_base', help='knowledge base directory')
     parser.add_argument('--query_image', type=str, default=None, help='query image path for classification')
     parser.add_argument('--test_data_dir', type=str, default=None, help='test data directory for evaluation')
+    parser.add_argument('--use_test_data', action='store_true', help='use images_test directory for testing')
+    parser.add_argument('--test_percentage', type=float, default=100.0, help='percentage of test images to use (0-100)')
     parser.add_argument('--results_out', type=str, default='./results.json', help='output path for results')
     parser.add_argument('--use_slow_thinking', type=bool, default=None, help='force use slow thinking (None for auto)')
     parser.add_argument('--confidence_threshold', type=float, default=0.8, help='confidence threshold for fast thinking')
@@ -530,10 +622,9 @@ if __name__ == "__main__":
         """
         在测试数据集上评估快慢思考系统
         CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=evaluate --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=./test_data --knowledge_base_dir=./knowledge_base_dog120 --results_out=./evaluation_results.json
+        或使用测试集:
+        CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=evaluate --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --use_test_data --test_percentage=50 --knowledge_base_dir=./knowledge_base_dog120 --results_out=./evaluation_results.json
         """
-        if args.test_data_dir is None:
-            raise ValueError("请提供测试数据目录 --test_data_dir")
-        
         # 初始化快慢思考系统
         system = FastSlowThinkingSystem(
             model_tag=cfg['model_size_mllm'],
@@ -547,15 +638,8 @@ if __name__ == "__main__":
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
         
-        # 构建测试样本
-        test_samples = defaultdict(list)
-        for class_name in os.listdir(args.test_data_dir):
-            class_dir = os.path.join(args.test_data_dir, class_name)
-            if os.path.isdir(class_dir):
-                for img_name in os.listdir(class_dir):
-                    if img_name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                        img_path = os.path.join(class_dir, img_name)
-                        test_samples[class_name].append(img_path)
+        # 准备测试样本
+        test_samples = prepare_test_samples(cfg, args)
         
         print(f"测试数据集包含 {len(test_samples)} 个类别")
         
@@ -576,6 +660,8 @@ if __name__ == "__main__":
     elif args.mode == 'fastonly':
         """
         CUDA_VISIBLE_DEVICES=2 python discovering.py --mode=fastonly --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fastonly_eval.json 2>&1 | tee ./logs/fastonly_eval_lcb.log
+        或使用测试集:
+        CUDA_VISIBLE_DEVICES=2 python discovering.py --mode=fastonly --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --use_test_data --test_percentage=50 --knowledge_base_dir=./knowledge_base --results_out=./results.json
         """
 
         # 初始化系统（仅用于加载组件），随后只用fast模块
@@ -589,23 +675,10 @@ if __name__ == "__main__":
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
 
-        # 构建测试样本
-        test_samples = {}
-        img_root = args.test_data_dir
-        class_folders = os.listdir(args.test_data_dir)
-        for i in range(len(class_folders)):
-            cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
-            # print(f'cat name:{cat_name}')
-            img_path = os.path.join(img_root, class_folders[i])
-            file_names = os.listdir(img_path)
-            # print(f'img_path:{img_path}\tfilename:{file_names}')
-            for name in file_names:
-                path = os.path.join(img_path,name)
-                if cat_name not in test_samples:
-                    test_samples[cat_name] = []
-                test_samples[cat_name].append(path)
+        # 准备测试样本
+        test_samples = prepare_test_samples(cfg, args)
 
-        print(f'test sample:{test_samples}')
+        print(f'test sample keys: {list(test_samples.keys())[:5]}...')
         print(f"[fastonly] 测试数据集包含 {len(test_samples)} 个类别")
         # 仅使用快思考评估
         fast_module = system.fast_thinking
@@ -654,6 +727,8 @@ if __name__ == "__main__":
     elif args.mode == 'slowonly':
         """
         CUDA_VISIBLE_DEVICES=3 python discovering.py --mode=slowonly --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try/experiments/dog120/knowledge_base --results_out=./logs/slowonly_eval.json 2>&1 | tee ./logs/slowonly_eval.log
+        或使用测试集:
+        CUDA_VISIBLE_DEVICES=3 python discovering.py --mode=slowonly --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --use_test_data --test_percentage=50 --knowledge_base_dir=./knowledge_base --results_out=./results.json
         """
 
         # 初始化系统（仅用于加载组件），随后只用slow模块
@@ -667,21 +742,10 @@ if __name__ == "__main__":
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
 
-        # 构建测试样本
-        test_samples = {}
-        img_root = args.test_data_dir
-        class_folders = os.listdir(args.test_data_dir)
-        for i in range(len(class_folders)):
-            cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
-            img_path = os.path.join(img_root, class_folders[i])
-            file_names = os.listdir(img_path)
-            for name in file_names:
-                path = os.path.join(img_path,name)
-                if cat_name not in test_samples:
-                    test_samples[cat_name] = []
-                test_samples[cat_name].append(path)
+        # 准备测试样本
+        test_samples = prepare_test_samples(cfg, args)
 
-        print(f'test sample:{test_samples}')
+        print(f'test sample keys: {list(test_samples.keys())[:5]}...')
         print(f"[slowonly] 测试数据集包含 {len(test_samples)} 个类别")
         
         # 仅使用慢思考评估
@@ -723,7 +787,8 @@ if __name__ == "__main__":
     elif args.mode == 'fast_slow':
         """
         CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_update_lcb_10_context256.log
-        CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --test_data_dir=/data/yjx/MLLM/UniFGVR/datasets/dogs_120/images_discovery_all_10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --results_out=./logs/fast_and_slow_eval.json 2>&1 | tee ./logs/fast_and_slow_10_experience.log
+        或使用测试集:
+        CUDA_VISIBLE_DEVICES=0 python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --use_test_data --test_percentage=50 --knowledge_base_dir=./knowledge_base --results_out=./results.json
         """
 
         # 初始化完整的快慢思考系统
@@ -737,21 +802,11 @@ if __name__ == "__main__":
         # 加载知识库
         system.load_knowledge_base(args.knowledge_base_dir)
         system.load_experience_base(args.knowledge_base_dir)
-        # 构建测试样本
-        test_samples = {}
-        img_root = args.test_data_dir
-        class_folders = os.listdir(args.test_data_dir)
-        for i in range(len(class_folders)):
-            cat_name = class_folders[i].split('-')[-1].replace('_', ' ')
-            img_path = os.path.join(img_root, class_folders[i])
-            file_names = os.listdir(img_path)
-            for name in file_names:
-                path = os.path.join(img_path,name)
-                if cat_name not in test_samples:
-                    test_samples[cat_name] = []
-                test_samples[cat_name].append(path)
+        
+        # 准备测试样本
+        test_samples = prepare_test_samples(cfg, args)
 
-        print(f'test sample:{test_samples}')
+        print(f'test sample keys: {list(test_samples.keys())[:5]}...')  # 只显示前5个类别
         print(f"[fast and slow] 测试数据集包含 {len(test_samples)} 个类别")
         
         # 使用完整的快慢思考系统评估
