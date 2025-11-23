@@ -245,7 +245,7 @@ class MLLMBot:
         
         Args:
             image: PIL图像
-            max_size: 最大边长（默认1536，足够保留细节）
+            max_size: 最大边长（默认1750，足够保留细节）
             
         Returns:
             调整后的PIL图像
@@ -277,7 +277,7 @@ class MLLMBot:
         # content.append({"type": "text", "text": prompt})
         for img in raw_image:
             # 限制图像最大尺寸，防止超大图片导致显存爆炸
-            img = self._resize_image_if_needed(img, max_size=1536)
+            img = self._resize_image_if_needed(img, max_size=1750)
             image_str = encode_base64(img)
             content.append({"type": "image", "image": f'data:image;base64,{image_str}'})
         content.append({"type": "text", "text": prompt})

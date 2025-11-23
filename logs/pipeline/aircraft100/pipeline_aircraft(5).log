@@ -1,387 +1,0 @@
-[INFO] === Pipeline 启动, YAML 配置摘要 ===
-GPU: CUDA_VISIBLE_DEVICES=7  # 使用的GPU编号
-Dataset: aircraft (num_classes=100)  # 数据集及类别数, test_data_suffix=10  # 测试数据样本后缀
-K-shot: 4  # 检索库使用每个类别的样本数目
-Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
-Knowledge Base Dir: ./experiments/aircraft100/knowledge_base  # 知识库目录
-Test Data Dir: ./datasets/fgvc_aircraft/images_discovery_all_10  # 测试数据目录
-Results Out: ./results/aircraft_fast_slow_results.json  # 快慢思考评估结果输出文件
----------------------------
-
-[INFO] === Step1: 构建知识库 ===
-/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
-  warn(
-Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
-当前数据集: aircraft (aircraft100)
-类别数: 100
-实验目录: ./experiments/aircraft100
-当前使用的 GPU 为：7
-
-=== Experiment Start Time: 2025-11-23 15:44:34 ===
-
-=== Experiment Arguments ===
-{'confidence_threshold': 0.8,
- 'config_file_env': './configs/env_machine.yml',
- 'config_file_expt': './configs/expts/aircraft100_all.yml',
- 'fusion_method': 'concat',
- 'gallery_out': None,
- 'knowledge_base_dir': './experiments/aircraft100/knowledge_base',
- 'kshot': None,
- 'mode': 'build_knowledge_base',
- 'num_per_category': '4',
- 'query_image': None,
- 'region_num': None,
- 'results_out': './results.json',
- 'similarity_threshold': 0.7,
- 'superclass': None,
- 'test_data_dir': None,
- 'use_slow_thinking': None}
-=== Configuration (cfg) ===
-{'batch_size': 64,
- 'clustering_method': 'multi_clip_voting',
- 'data_dir': './datasets/fgvc_aircraft',
- 'dataset_name': 'aircraft',
- 'device': 'cuda',
- 'device_count': '1',
- 'device_id': '0',
- 'experiment': 5.0,
- 'expt_dir': './experiments/aircraft100',
- 'expt_dir_describe': './experiments/aircraft100/describe',
- 'expt_dir_gallery': './experiments/aircraft100/gallery',
- 'expt_dir_grouping': './experiments/aircraft100/grouping',
- 'expt_dir_guess': './experiments/aircraft100/guess',
- 'host': 'xiao',
- 'image_size': 224,
- 'model_size': 'ViT-B/16',
- 'model_size_mllm': 'Qwen2.5-VL-7B',
- 'model_size_vqa': 'OPT6.7B-COCO',
- 'model_type_llm': 'gpt-3.5-turbo',
- 'num_base': 50,
- 'num_classes': 100,
- 'num_novel': 50,
- 'num_workers': 16,
- 'path_descriptions': './experiments/aircraft100/gallery/aircraft_image_descriptions_attn',
- 'path_identify_answers': './experiments/aircraft100/identify',
- 'path_llm_gussed_names': './experiments/aircraft100/guess/aircraft_llm_gussed_names',
- 'path_llm_prompts': './experiments/aircraft100/describe/aircraft_llm_prompts',
- 'path_llm_replies_jsoned': './experiments/aircraft100/guess/aircraft_llm_replies_jsoned',
- 'path_llm_replies_raw': './experiments/aircraft100/guess/aircraft_llm_replies_raw',
- 'path_references': './experiments/aircraft100/gallery/aircraft_image_references',
- 'path_regions': './experiments/aircraft100/gallery/aircraft_image_regions',
- 'path_vqa_answers': './experiments/aircraft100/describe/aircraft_attributes_pairs',
- 'path_vqa_questions': './experiments/aircraft100/describe/aircraft_vqa_questions_ours',
- 'seed': 1,
- 'setup': 'ours',
- 'verbose': False}
-
-================= 快慢思考系统初始化 =================
-🖥️ 设备: cuda
-🤖 MLLM 模型标签: Qwen2.5-VL-7B
-🤖 MLLM 模型名称: Qwen2.5-VL-7B
-🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
-📄 文本编码器: ./models/Clip/clip-vit-base-patch32
-📚 数据集信息:
-{
-    "full_name": "aircraft100",
-    "num_classes": 100,
-    "config_file": "aircraft100_all.yml",
-    "data_dir": "fgvc_aircraft",
-    "experiment_dir": "aircraft100",
-    "stats_file": "aircraft100/knowledge_base/stats.json",
-    "experiments_root": "./experiments",
-    "stats_file_full": "./experiments/aircraft100/knowledge_base/stats.json",
-    "experiment_dir_full": "./experiments/aircraft100"
-}
-====================================================
-
-🚀初始化MLLM模型...
-
-================= 模型初始化（MLLMBot） =================
-📌 模型标识（model_tag）: Qwen2.5-VL-7B
-📌 模型名称（model_name）: Qwen2.5-VL-7B
-📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
-🖥️ 设备: GPU - cuda:0
-🤖 使用 8bit 推理: 否
-🔍 使用数据类型: float32（FP32）
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.02s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.27s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.25s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.25s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.75s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.96s/it]
-✓ 已启用梯度检查点以节省显存
-📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
-🔢 当前使用的精度 dtype: float32（FP32）
-🔧 最大生成长度 max_answer_tokens: -1
-🚀 模型加载完成！
-========================================================
-
-✅ MLLM 初始化完成, 当前使用精度: 未知
-🚀 初始化知识库构建器...
-
-================= 知识库构建器初始化 =================
-🕒 初始化时间: 2025-11-23 15:44:45
-🖥️ 设备: cuda
-🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
-📝 文本编码器: ./models/Clip/clip-vit-base-patch32
-📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
-🔍 初始化 MultimodalRetrieval 模块...
-✓ 检索模块初始化完成
-📚 知识库初始化完成
-====================================================
-
-✅ 知识库构建器初始化完成
-🚀 初始化快思考模块...
-
-================= 快思考模块初始化 =================
-使用数据集stats文件: ./experiments/aircraft100/knowledge_base/stats.json
-📊 使用数据集 stats 文件: ./experiments/aircraft100/knowledge_base/stats.json
-🔧 置信度阈值 confidence_threshold: 0.8
-🔧 相似度阈值 similarity_threshold: 0.7
-🔧 融合权重 fusion_weight: 0.05
-🔧 softmax 温度 softmax_temp: 0.07
-🔧 融合阈值 fused_conf_threshold: 0.75
-🔧 融合边距阈值 fused_margin_threshold: 0.15
-🔧 单模态阈值 per_modality_conf_threshold: 0.65
-🔧 考虑 topk 重叠: True, topk_for_overlap: 3
-📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
-📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
-💾 缓存启用: True, 缓存大小: 1000
-====================================================
-
-未找到历史统计量文件，将从头开始
-✅ 快思考模块初始化完成
-🚀 初始化慢思考模块...
-
-================= 慢思考模块初始化 =================
-🕒 初始化时间: 2025-11-23 15:44:48
-🖥️ 使用设备: cuda:0
-🧠 MLLM模型: Qwen2.5-VL-7B
-📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x743b67d4b430>
-⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x743b67d04940>
-📖 经验库构建器: None
-💾 启用缓存: 是, 缓存大小: 1000
-🔍 简化推理: 是
-🧩 使用经验库: 是, top_k_experience=1
-慢思考默认保存目录: ./experiments/aircraft100/knowledge_base
-使用数据集: aircraft, 类别数: 100
-✅ 慢思考模块初始化完成，类别映射数量: 100
-====================================================
-
-✅ 慢思考模块初始化完成
-⏱️ 启动显存监控线程...
-[2025-11-23 15:44:48] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
-🎉快慢思考系统初始化完成!
-====================================================
-
-构建知识库，包含 100 个类别, dog datasets:100
-从 ./experiments/aircraft100/knowledge_base 加载知识库...
-知识库已从 ./experiments/aircraft100/knowledge_base 加载
-知识库加载完成!
-构建知识库...
-训练样本包含 100 个类别
-开始构建知识库...
-构建图像知识库...
-  0%|          | 0/100 [00:00<?, ?it/s]  1%|          | 1/100 [00:00<00:32,  3.07it/s]  3%|▎         | 3/100 [00:00<00:14,  6.49it/s]  4%|▍         | 4/100 [00:00<00:13,  7.38it/s]  6%|▌         | 6/100 [00:00<00:10,  8.92it/s]  8%|▊         | 8/100 [00:00<00:09,  9.77it/s] 10%|█         | 10/100 [00:01<00:08, 10.79it/s] 12%|█▏        | 12/100 [00:01<00:07, 11.12it/s] 14%|█▍        | 14/100 [00:01<00:07, 11.62it/s] 16%|█▌        | 16/100 [00:01<00:07, 11.27it/s] 18%|█▊        | 18/100 [00:01<00:07, 11.06it/s] 20%|██        | 20/100 [00:02<00:07, 11.05it/s] 22%|██▏       | 22/100 [00:02<00:07, 10.90it/s] 24%|██▍       | 24/100 [00:02<00:06, 11.26it/s] 26%|██▌       | 26/100 [00:02<00:06, 11.30it/s] 28%|██▊       | 28/100 [00:02<00:06, 11.33it/s] 30%|███       | 30/100 [00:02<00:06, 11.35it/s] 32%|███▏      | 32/100 [00:03<00:05, 11.45it/s] 34%|███▍      | 34/100 [00:03<00:05, 11.63it/s] 36%|███▌      | 36/100 [00:03<00:05, 11.61it/s] 38%|███▊      | 38/100 [00:03<00:05, 11.22it/s] 40%|████      | 40/100 [00:03<00:05, 11.54it/s] 42%|████▏     | 42/100 [00:03<00:04, 11.81it/s] 44%|████▍     | 44/100 [00:04<00:04, 11.52it/s] 46%|████▌     | 46/100 [00:04<00:04, 11.03it/s] 48%|████▊     | 48/100 [00:04<00:04, 11.43it/s] 50%|█████     | 50/100 [00:04<00:04, 10.52it/s] 52%|█████▏    | 52/100 [00:04<00:04, 11.09it/s] 54%|█████▍    | 54/100 [00:05<00:04, 11.35it/s] 56%|█████▌    | 56/100 [00:05<00:03, 11.65it/s] 58%|█████▊    | 58/100 [00:05<00:03, 11.21it/s] 60%|██████    | 60/100 [00:05<00:03, 11.34it/s] 62%|██████▏   | 62/100 [00:05<00:03, 11.22it/s] 64%|██████▍   | 64/100 [00:05<00:03, 11.02it/s] 66%|██████▌   | 66/100 [00:06<00:02, 11.57it/s] 68%|██████▊   | 68/100 [00:06<00:02, 11.58it/s] 70%|███████   | 70/100 [00:06<00:02, 11.52it/s] 72%|███████▏  | 72/100 [00:06<00:02, 11.03it/s] 74%|███████▍  | 74/100 [00:06<00:02, 11.13it/s] 76%|███████▌  | 76/100 [00:06<00:02, 11.36it/s] 78%|███████▊  | 78/100 [00:07<00:01, 11.67it/s] 80%|████████  | 80/100 [00:07<00:01, 11.90it/s] 82%|████████▏ | 82/100 [00:07<00:01, 11.55it/s] 84%|████████▍ | 84/100 [00:07<00:01, 11.42it/s] 86%|████████▌ | 86/100 [00:07<00:01, 11.64it/s] 88%|████████▊ | 88/100 [00:07<00:01, 11.88it/s] 90%|█████████ | 90/100 [00:08<00:00, 11.94it/s] 92%|█████████▏| 92/100 [00:08<00:00, 12.36it/s] 94%|█████████▍| 94/100 [00:08<00:00, 11.94it/s] 96%|█████████▌| 96/100 [00:08<00:00, 11.36it/s] 98%|█████████▊| 98/100 [00:08<00:00, 10.71it/s]100%|██████████| 100/100 [00:09<00:00, 10.89it/s]100%|██████████| 100/100 [00:09<00:00, 11.07it/s]
-处理类别: An-12
-类别 An-12 图像特征维度: (512,)
-处理类别: BAE-125
-类别 BAE-125 图像特征维度: (512,)
-处理类别: 737-200
-类别 737-200 图像特征维度: (512,)
-处理类别: Embraer_Legacy_600
-类别 Embraer_Legacy_600 图像特征维度: (512,)
-处理类别: Tornado
-类别 Tornado 图像特征维度: (512,)
-处理类别: MD-87
-类别 MD-87 图像特征维度: (512,)
-处理类别: A380
-类别 A380 图像特征维度: (512,)
-处理类别: Global_Express
-类别 Global_Express 图像特征维度: (512,)
-处理类别: EMB-120
-类别 EMB-120 图像特征维度: (512,)
-处理类别: Model_B200
-类别 Model_B200 图像特征维度: (512,)
-处理类别: Cessna_560
-类别 Cessna_560 图像特征维度: (512,)
-处理类别: DC-10
-类别 DC-10 图像特征维度: (512,)
-处理类别: Gulfstream_IV
-类别 Gulfstream_IV 图像特征维度: (512,)
-处理类别: A310
-类别 A310 图像特征维度: (512,)
-处理类别: PA-28
-类别 PA-28 图像特征维度: (512,)
-处理类别: Fokker_70
-类别 Fokker_70 图像特征维度: (512,)
-处理类别: 757-300
-类别 757-300 图像特征维度: (512,)
-处理类别: 747-200
-类别 747-200 图像特征维度: (512,)
-处理类别: A320
-类别 A320 图像特征维度: (512,)
-处理类别: 737-400
-类别 737-400 图像特征维度: (512,)
-处理类别: MD-80
-类别 MD-80 图像特征维度: (512,)
-处理类别: A318
-类别 A318 图像特征维度: (512,)
-处理类别: Metroliner
-类别 Metroliner 图像特征维度: (512,)
-处理类别: Tu-134
-类别 Tu-134 图像特征维度: (512,)
-处理类别: F__A-18
-类别 F__A-18 图像特征维度: (512,)
-处理类别: DR-400
-类别 DR-400 图像特征维度: (512,)
-处理类别: C-47
-类别 C-47 图像特征维度: (512,)
-处理类别: A340-600
-类别 A340-600 图像特征维度: (512,)
-处理类别: MD-11
-类别 MD-11 图像特征维度: (512,)
-处理类别: C-130
-类别 C-130 图像特征维度: (512,)
-处理类别: DC-8
-[2025-11-23 15:44:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
-类别 DC-8 图像特征维度: (512,)
-处理类别: 757-200
-类别 757-200 图像特征维度: (512,)
-处理类别: DC-3
-类别 DC-3 图像特征维度: (512,)
-处理类别: SR-20
-类别 SR-20 图像特征维度: (512,)
-处理类别: 737-500
-类别 737-500 图像特征维度: (512,)
-处理类别: Fokker_50
-类别 Fokker_50 图像特征维度: (512,)
-处理类别: DH-82
-类别 DH-82 图像特征维度: (512,)
-处理类别: Gulfstream_V
-类别 Gulfstream_V 图像特征维度: (512,)
-处理类别: E-170
-类别 E-170 图像特征维度: (512,)
-处理类别: 777-300
-类别 777-300 图像特征维度: (512,)
-处理类别: Cessna_172
-类别 Cessna_172 图像特征维度: (512,)
-处理类别: Fokker_100
-类别 Fokker_100 图像特征维度: (512,)
-处理类别: Falcon_2000
-类别 Falcon_2000 图像特征维度: (512,)
-处理类别: Yak-42
-类别 Yak-42 图像特征维度: (512,)
-处理类别: 737-800
-类别 737-800 图像特征维度: (512,)
-处理类别: 737-600
-类别 737-600 图像特征维度: (512,)
-处理类别: Beechcraft_1900
-类别 Beechcraft_1900 图像特征维度: (512,)
-处理类别: 737-700
-类别 737-700 图像特征维度: (512,)
-处理类别: Hawk_T1
-类别 Hawk_T1 图像特征维度: (512,)
-处理类别: A319
-类别 A319 图像特征维度: (512,)
-处理类别: DC-9-30
-类别 DC-9-30 图像特征维度: (512,)
-处理类别: A340-200
-类别 A340-200 图像特征维度: (512,)
-处理类别: Boeing_717
-类别 Boeing_717 图像特征维度: (512,)
-处理类别: 707-320
-类别 707-320 图像特征维度: (512,)
-处理类别: 737-900
-类别 737-900 图像特征维度: (512,)
-处理类别: CRJ-900
-类别 CRJ-900 图像特征维度: (512,)
-处理类别: Dornier_328
-类别 Dornier_328 图像特征维度: (512,)
-处理类别: Saab_2000
-类别 Saab_2000 图像特征维度: (512,)
-处理类别: BAE_146-200
-类别 BAE_146-200 图像特征维度: (512,)
-处理类别: CRJ-700
-类别 CRJ-700 图像特征维度: (512,)
-处理类别: Saab_340
-类别 Saab_340 图像特征维度: (512,)
-处理类别: DHC-8-300
-类别 DHC-8-300 图像特征维度: (512,)
-处理类别: MD-90
-类别 MD-90 图像特征维度: (512,)
-处理类别: DHC-1
-类别 DHC-1 图像特征维度: (512,)
-处理类别: ATR-72
-[2025-11-23 15:44:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.96GB
-类别 ATR-72 图像特征维度: (512,)
-处理类别: A300B4
-类别 A300B4 图像特征维度: (512,)
-处理类别: ERJ_135
-类别 ERJ_135 图像特征维度: (512,)
-处理类别: A330-200
-类别 A330-200 图像特征维度: (512,)
-处理类别: Falcon_900
-类别 Falcon_900 图像特征维度: (512,)
-处理类别: DHC-6
-类别 DHC-6 图像特征维度: (512,)
-处理类别: Eurofighter_Typhoon
-类别 Eurofighter_Typhoon 图像特征维度: (512,)
-处理类别: E-195
-类别 E-195 图像特征维度: (512,)
-处理类别: Il-76
-类别 Il-76 图像特征维度: (512,)
-处理类别: BAE_146-300
-类别 BAE_146-300 图像特征维度: (512,)
-处理类别: 747-100
-类别 747-100 图像特征维度: (512,)
-处理类别: ATR-42
-类别 ATR-42 图像特征维度: (512,)
-处理类别: DHC-8-100
-类别 DHC-8-100 图像特征维度: (512,)
-处理类别: Tu-154
-类别 Tu-154 图像特征维度: (512,)
-处理类别: CRJ-200
-类别 CRJ-200 图像特征维度: (512,)
-处理类别: 767-200
-类别 767-200 图像特征维度: (512,)
-处理类别: 747-400
-类别 747-400 图像特征维度: (512,)
-处理类别: L-1011
-类别 L-1011 图像特征维度: (512,)
-处理类别: Challenger_600
-类别 Challenger_600 图像特征维度: (512,)
-处理类别: A321
-类别 A321 图像特征维度: (512,)
-处理类别: E-190
-类别 E-190 图像特征维度: (512,)
-处理类别: 777-200
-类别 777-200 图像特征维度: (512,)
-处理类别: 767-400
-类别 767-400 图像特征维度: (512,)
-处理类别: ERJ_145
-类别 ERJ_145 图像特征维度: (512,)
-处理类别: DC-6
-类别 DC-6 图像特征维度: (512,)
-处理类别: 737-300
-类别 737-300 图像特征维度: (512,)
-处理类别: Spitfire
-类别 Spitfire 图像特征维度: (512,)
-处理类别: 767-300
-类别 767-300 图像特征维度: (512,)
-处理类别: A330-300
-类别 A330-300 图像特征维度: (512,)
-处理类别: 727-200
-类别 727-200 图像特征维度: (512,)
-处理类别: 747-300
-类别 747-300 图像特征维度: (512,)
-处理类别: A340-300
-类别 A340-300 图像特征维度: (512,)
-处理类别: F-16A__B
-类别 F-16A__B 图像特征维度: (512,)
-处理类别: A340-500
-类别 A340-500 图像特征维度: (512,)
-处理类别: Cessna_208
-类别 Cessna_208 图像特征维度: (512,)
-处理类别: Cessna_525
-[2025-11-23 15:44:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
-类别 Cessna_525 图像特征维度: (512,)
-构建文本知识库...
-  0%|          | 0/100 [00:00<?, ?it/s]/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/configuration_utils.py:629: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `1e-06` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
-  warnings.warn(
-  1%|          | 1/100 [00:12<20:27, 12.39s/it]  2%|▏         | 2/100 [00:24<20:00, 12.25s/it]  3%|▎         | 3/100 [00:36<19:51, 12.28s/it]  4%|▍         | 4/100 [00:51<20:58, 13.11s/it]
