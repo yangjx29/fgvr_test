@@ -1,0 +1,1091 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: eurosat (num_classes=10)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/eurosat10/knowledge_base  # 知识库目录
+Results Out: ./results/eurosat_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: eurosat (eurosat10)
+类别数: 10
+实验目录: ./experiments/eurosat10
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-24 00:23:13 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/eurosat10_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/eurosat10/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/eurosat',
+ 'dataset_name': 'eurosat',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/eurosat10',
+ 'expt_dir_describe': './experiments/eurosat10/describe',
+ 'expt_dir_gallery': './experiments/eurosat10/gallery',
+ 'expt_dir_grouping': './experiments/eurosat10/grouping',
+ 'expt_dir_guess': './experiments/eurosat10/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 5,
+ 'num_classes': 10,
+ 'num_novel': 5,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/eurosat10/gallery/eurosat_image_descriptions_attn',
+ 'path_identify_answers': './experiments/eurosat10/identify',
+ 'path_llm_gussed_names': './experiments/eurosat10/guess/eurosat_llm_gussed_names',
+ 'path_llm_prompts': './experiments/eurosat10/describe/eurosat_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/eurosat10/guess/eurosat_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/eurosat10/guess/eurosat_llm_replies_raw',
+ 'path_references': './experiments/eurosat10/gallery/eurosat_image_references',
+ 'path_regions': './experiments/eurosat10/gallery/eurosat_image_regions',
+ 'path_vqa_answers': './experiments/eurosat10/describe/eurosat_attributes_pairs',
+ 'path_vqa_questions': './experiments/eurosat10/describe/eurosat_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "eurosat10",
+    "num_classes": 10,
+    "config_file": "eurosat10_all.yml",
+    "data_dir": "eurosat",
+    "experiment_dir": "eurosat10",
+    "stats_file": "eurosat10/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/eurosat10/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/eurosat10"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.17s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.34s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:07<00:04,  2.36s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.36s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.82s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.04s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-24 00:23:25
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/eurosat10/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/eurosat10/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 71 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-24 00:23:34
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7477c6b863d0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7477cb1cf220>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/eurosat10/knowledge_base
+使用数据集: eurosat, 类别数: 10
+✅ 慢思考模块初始化完成，类别映射数量: 10
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-24 00:23:34] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 10 个类别, dog datasets:10
+从 ./experiments/eurosat10/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/eurosat10/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/eurosat10/knowledge_base 加载
+图像知识库类别数: 10
+文本知识库类别数: 10
+类别描述数: 10
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+构建知识库...
+训练样本包含 10 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [00:00<00:02,  3.53it/s] 60%|██████    | 6/10 [00:00<00:00, 17.86it/s]100%|██████████| 10/10 [00:00<00:00, 19.99it/s]
+处理类别: Residential
+类别 Residential 图像特征维度: (512,)
+处理类别: Pasture
+类别 Pasture 图像特征维度: (512,)
+处理类别: PermanentCrop
+类别 PermanentCrop 图像特征维度: (512,)
+处理类别: Industrial
+类别 Industrial 图像特征维度: (512,)
+处理类别: AnnualCrop
+类别 AnnualCrop 图像特征维度: (512,)
+处理类别: Forest
+类别 Forest 图像特征维度: (512,)
+处理类别: Highway
+类别 Highway 图像特征维度: (512,)
+处理类别: HerbaceousVegetation
+类别 HerbaceousVegetation 图像特征维度: (512,)
+处理类别: SeaLake
+类别 SeaLake 图像特征维度: (512,)
+处理类别: River
+类别 River 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/10 [00:00<?, ?it/s]/home/hdl/project/fgvr_test/knowledge_base_builder.py:167: MarkupResemblesLocatorWarning: The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup.
+  soup = BeautifulSoup(response.content, 'html.parser')
+ 10%|█         | 1/10 [00:12<01:56, 12.96s/it] 20%|██        | 2/10 [00:25<01:42, 12.77s/it] 30%|███       | 3/10 [00:38<01:28, 12.62s/it]处理类别: Residential
+wiki desc: Information about Residential from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:23:37] [显存监控] 已分配=32.45GB, 已保留=32.92GB, 空闲=14.95GB
+[2025-11-24 00:23:40] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:23:43] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+[2025-11-24 00:23:46] [显存监控] 已分配=32.48GB, 已保留=32.96GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The images depict residential areas characterized by:
+
+1. **Distinctive Physical Features**: The buildings are closely packed together, forming a dense urban fabric. There is a mix of low-rise and mid-rise structures, with some taller buildings visible in the background. The streets are narrow and winding, creating a grid-like pattern.
+
+2. **Color Patterns and Markings**: The buildings have a variety of colors, including shades of beige, brown, and gray. Some buildings feature darker roofs, while others have lighter ones. There are also patches of greenery, such as trees and shrubs, which add contrast to the otherwise monochromatic scene.
+
+3. **Size and Proportions**: The buildings vary in size, with some being larger and more prominent than others. The streets are relatively narrow compared to the width of the buildings, emphasizing the density of the area. The overall proportions suggest a tightly packed urban environment.
+
+4. **Behavioral Characteristics**: As these are satellite images, there are no behavioral characteristics to observe directly. However, the layout suggests a high population density, with people likely living and working within close proximity.
+
+5. **Unique Identifying Traits**: The combination of closely packed buildings, narrow streets, and a mix of building heights and colors makes this category distinct from
+类别 Residential 文本特征维度: (512,)
+描述: The images depict residential areas characterized by:
+
+1. **Distinctive Physical Features**: The bui...
+处理类别: Pasture
+wiki desc: Information about Pasture from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:23:49] [显存监控] 已分配=32.45GB, 已保留=32.92GB, 空闲=14.95GB
+[2025-11-24 00:23:52] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:23:55] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+[2025-11-24 00:23:58] [显存监控] 已分配=32.47GB, 已保留=32.96GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The images depict pastures, which are open areas of land used for grazing livestock. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**: Pastures are characterized by their relatively flat terrain, often with gentle slopes or undulations. They are typically covered in grasses and other vegetation suitable for grazing animals.
+
+2. **Color Patterns and Markings**: The coloration is predominantly green, reflecting the presence of grasses and other vegetation. There may be variations in shades depending on the type of grass and the time of year. Some areas might show brown patches where the grass has been grazed or where the soil is exposed.
+
+3. **Size and Proportions**: Pastures can vary greatly in size, from small plots to expansive fields. The images provided appear to represent smaller pastures, possibly individual paddocks within a larger farm. The proportions suggest a rectangular or irregular shape, typical of managed grazing areas.
+
+4. **Behavioral Characteristics**: While not directly observable in these static images, pastures are associated with the behavior of grazing animals such as cows, sheep, or horses. The presence of livestock would indicate active use of the pasture.
+
+5. **Unique Identifying Traits**: Pastures are distinguished by their association with agriculture and animal husband
+类别 Pasture 文本特征维度: (512,)
+描述: The images depict pastures, which are open areas of land used for grazing livestock. Here's a breakd...
+处理类别: PermanentCrop
+wiki desc: Information about PermanentCrop from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:24:01] [显存监控] 已分配=32.45GB, 已保留=32.92GB, 空闲=14.95GB
+[2025-11-24 00:24:04] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:24:07] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.94GB
+[2025-11-24 00:24:10] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The images depict **PermanentCrop**, which appears to be agricultural fields. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The crops in these images are organized in neat rows, suggesting they are planted in a structured manner typical of farming practices. The uniformity in spacing and alignment is a key indicator.
+
+2. **Color Patterns and Markings**: The coloration varies across the images, with shades ranging from light green to darker hues, indicating different stages of growth or types of crops. Some areas show a mix of colors, possibly due to varying crop health or different species planted together.
+
+3. **Size and Proportions**: The size of the crops is consistent within each field, with no significant variation in the dimensions of individual plants. The fields themselves are large, covering a significant area, which is characteristic of agricultural land use.
+
+4. **Behavioral Characteristics**: Since these are static images, there are no behavioral characteristics to observe. However, the presence of irrigation systems or machinery in some fields might suggest ongoing agricultural activities.
+
+5. **Unique Identifying Traits**: The most distinguishing feature is the systematic arrangement of the crops in rows, which is indicative of human agricultural practices. The absence of natural vegetation like trees or shrubs further supports this
+类别 PermanentCrop 文本特征维度: (512,)
+描述: The images depict **PermanentCrop**, which appears to be agricultural fields. Here's a breakdown of ...
+处理类别: Industrial
+wiki desc: Information about Industrial from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:24:13] [显存监控] 已分配=32.45GB, 已保留=32.91GB, 空闲=14.95GB
+[2025-11-24 00:24:16] [显存监控] 已分配=32.46GB, 已保留=32.92GB, 空闲=14.94GB
+[2025-11-24 00:24:19] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.94GB
+[2025-11-24 00:24:22] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+ 40%|████      | 4/10 [00:49<01:13, 12.29s/it] 50%|█████     | 5/10 [00:55<00:49,  9.91s/it] 60%|██████    | 6/10 [01:07<00:43, 10.77s/it] 70%|███████   | 7/10 [01:20<00:33, 11.31s/it]MLLM description: The images depict an **Industrial** setting characterized by:
+
+1. **Distinctive Physical Features**: The structures are primarily rectangular or boxy, indicative of industrial buildings such as factories, warehouses, or storage units. There is a lack of organic shapes, which contrasts with residential or natural environments.
+
+2. **Color Patterns and Markings**: The color palette is muted, dominated by shades of gray, white, and brown. This suggests a utilitarian design typical of industrial architecture. There are no vibrant colors or intricate patterns, reinforcing the functional nature of these spaces.
+
+3. **Size and Proportions**: The buildings are large and densely packed, reflecting the scale required for industrial operations. The spacing between structures is minimal compared to residential areas, emphasizing efficiency over aesthetics.
+
+4. **Behavioral Characteristics**: While not directly observable in still images, the layout suggests a focus on productivity and logistics. The arrangement of buildings implies a flow of materials and processes, possibly involving transportation routes or loading docks.
+
+5. **Unique Identifying Traits**: The presence of flat roofs, large windows for ventilation, and repetitive building designs are common identifiers of industrial zones. These features are designed for practicality rather than aesthetic appeal.
+类别 Industrial 文本特征维度: (512,)
+描述: The images depict an **Industrial** setting characterized by:
+
+1. **Distinctive Physical Features**:...
+处理类别: AnnualCrop
+wiki desc: Information about AnnualCrop from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:24:25] [显存监控] 已分配=32.45GB, 已保留=32.91GB, 空闲=14.95GB
+[2025-11-24 00:24:28] [显存监控] 已分配=32.46GB, 已保留=32.92GB, 空闲=14.94GB
+推理后显存: 已分配=32.44GB, 已保留=32.93GB, 剩余=14.97GB
+MLLM description: The images depict AnnualCrop, which is characterized by its vibrant green coloration with hints of yellow and brown, indicative of healthy growth stages. The crops appear to be planted in rows, suggesting agricultural practices such as farming or horticulture. The size and proportions of the crops are consistent across the images, with each plant being relatively uniform in height and width. There are no visible behavioral characteristics as these are inanimate objects. The unique identifying trait is the distinct pattern of the crops' arrangement in rows, which is typical of cultivated land.
+类别 AnnualCrop 文本特征维度: (512,)
+描述: The images depict AnnualCrop, which is characterized by its vibrant green coloration with hints of y...
+处理类别: Forest
+wiki desc: Information about Forest from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:24:31] [显存监控] 已分配=32.45GB, 已保留=32.92GB, 空闲=14.95GB
+[2025-11-24 00:24:34] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:24:37] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.94GB
+[2025-11-24 00:24:40] [显存监控] 已分配=32.47GB, 已保留=32.95GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The images depict a forest scene with trees and foliage. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features**: The trees in the forest have a variety of shapes and sizes, with some appearing taller and more slender while others are shorter and wider. The leaves are dense and green, indicating a healthy and thriving ecosystem.
+
+2. **Color Patterns and Markings**: The predominant color is a vibrant green, which is characteristic of healthy vegetation. There are no distinct markings or patterns visible on the trees or foliage, as they appear uniformly green.
+
+3. **Size and Proportions**: The trees vary in size, with some being taller and more slender, while others are shorter and wider. The foliage is dense and covers the branches extensively, creating a lush canopy.
+
+4. **Behavioral Characteristics**: As this is a still image, there are no behavioral characteristics to observe. However, in a live forest setting, one might expect to see animals moving through the trees, birds perched on branches, or leaves rustling in the wind.
+
+5. **Unique Identifying Traits**: The unique identifying trait of this forest scene is the dense green foliage covering the trees, which suggests a healthy and thriving ecosystem. The variety in tree sizes and shapes also adds
+类别 Forest 文本特征维度: (512,)
+描述: The images depict a forest scene with trees and foliage. Here's a breakdown of the key visual charac...
+处理类别: Highway
+wiki desc: Information about Highway from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:24:43] [显存监控] 已分配=32.45GB, 已保留=32.91GB, 空闲=14.95GB
+[2025-11-24 00:24:46] [显存监控] 已分配=32.46GB, 已保留=32.92GB, 空闲=14.94GB
+[2025-11-24 00:24:49] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.94GB
+[2025-11-24 00:24:52] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The first image depicts a highway with multiple lanes, including a central divider, and is surrounded by greenery. The road appears to be well-maintained, with clear lane markings. The second image shows a close-up of a metallic surface, possibly part of a vehicle or machinery, with a dark background. The third image displays a collection of mechanical parts, such as gears and levers, in various colors and sizes. 
+
+In terms of distinctive physical features, the highway has a structured layout with lanes and dividers, while the metallic surface is smooth and reflective. The mechanical parts have intricate details and varying shapes. The color patterns and markings on the highway include white lines indicating lanes and a yellow line marking the center divider. The metallic surface has a uniform dark color, and the mechanical parts display a mix of metallic and colored surfaces. The size and proportions vary significantly between the highway and the other two images; the highway is large and expansive, while the metallic surface and mechanical parts are smaller and more detailed. There are no behavioral characteristics associated with highways or mechanical parts. The unique identifying traits of each image are their specific objects and contexts: the highway represents transportation infrastructure, the metallic surface suggests industrial or mechanical components, and the mechanical parts indicate machinery or equipment.
+类别 Highway 文本特征维度: (512,)
+描述: The first image depicts a highway with multiple lanes, including a central divider, and is surrounde...
+处理类别: HerbaceousVegetation
+[2025-11-24 00:24:55] [显存监控] 已分配=32.44GB, 已保留=32.96GB, 空闲=14.97GB
+wiki desc: Information about HerbaceousVegetation from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:24:58] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:25:01] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.94GB
+[2025-11-24 00:25:04] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+[2025-11-24 00:25:07] [显存监控] 已分配=32.48GB, 已保留=32.96GB, 空闲=14.92GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+ 80%|████████  | 8/10 [01:32<00:23, 11.70s/it] 90%|█████████ | 9/10 [01:45<00:11, 11.96s/it]100%|██████████| 10/10 [01:57<00:00, 12.14s/it]100%|██████████| 10/10 [01:57<00:00, 11.80s/it]
+MLLM description: The images depict Herbaceous Vegetation, which is characterized by its soft, non-woody stems and leaves. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features**: Herbaceous plants lack woody tissue in their stems and roots, making them more flexible and often shorter-lived compared to woody plants. They can be annuals, biennials, or perennials.
+
+2. **Color Patterns and Markings**: The color of herbaceous vegetation can vary widely depending on the species. In the provided images, the colors range from dark blue to greenish-brown, suggesting a mix of different plant types. Some may have spots, stripes, or other patterns, but these are not clearly visible in the given images.
+
+3. **Size and Proportions**: The size of herbaceous plants can vary greatly. Some are small and low-growing, while others can reach significant heights. The images do not provide enough detail to determine the exact size or proportion of the plants depicted.
+
+4. **Behavioral Characteristics**: Herbaceous plants do not exhibit complex behaviors like movement or reproduction through seeds. Instead, they rely on environmental factors such as light, water, and nutrients to grow and reproduce.
+
+5. **Unique Identifying Traits**: The
+类别 HerbaceousVegetation 文本特征维度: (512,)
+描述: The images depict Herbaceous Vegetation, which is characterized by its soft, non-woody stems and lea...
+处理类别: SeaLake
+wiki desc: Information about SeaLake from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:25:10] [显存监控] 已分配=32.46GB, 已保留=32.92GB, 空闲=14.95GB
+[2025-11-24 00:25:13] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:25:16] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+[2025-11-24 00:25:19] [显存监控] 已分配=32.48GB, 已保留=32.96GB, 空闲=14.92GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The images depict a SeaLake, which is a type of aquatic environment characterized by its shallow, clear waters and often sandy or rocky bottoms. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features**: SeaLakes are typically small to medium-sized bodies of water, often surrounded by land. They can have varying depths, with some areas being quite shallow while others may have slightly deeper spots. The presence of vegetation, such as reeds or grasses, is common in the shallower parts.
+
+2. **Color Patterns and Markings**: The color of SeaLakes can vary depending on the surrounding environment and the time of year. During the summer, they might appear a vibrant blue due to the reflection of sunlight off the water. In winter, the water might take on a darker hue, possibly appearing almost black if it's covered in ice. The bottom of the lake can also show different colors based on the type of sediment present—sand might appear light brown or beige, while rocks could be gray or brown.
+
+3. **Size and Proportions**: SeaLakes are generally smaller than large lakes or rivers. They can range in size from a few acres to several hundred acres. The proportions of a SeaLake are usually more compact compared
+类别 SeaLake 文本特征维度: (512,)
+描述: The images depict a SeaLake, which is a type of aquatic environment characterized by its shallow, cl...
+处理类别: River
+wiki desc: Information about River from Wikipedia.
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:25:22] [显存监控] 已分配=32.46GB, 已保留=32.92GB, 空闲=14.94GB
+[2025-11-24 00:25:25] [显存监控] 已分配=32.46GB, 已保留=32.93GB, 空闲=14.94GB
+[2025-11-24 00:25:28] [显存监控] 已分配=32.47GB, 已保留=32.94GB, 空闲=14.93GB
+[2025-11-24 00:25:31] [显存监控] 已分配=32.48GB, 已保留=32.96GB, 空闲=14.93GB
+推理后显存: 已分配=32.44GB, 已保留=32.96GB, 剩余=14.97GB
+MLLM description: The images depict a river with distinct physical features such as flowing water, banks, and possibly vegetation along its edges. 
+
+* **Distinctive Physical Features:** The river appears to have a meandering path, with curves and bends in the water's flow. The banks of the river are visible, and they seem to be relatively flat and straight in some areas, while in others, they curve along with the river's path.
+
+* **Color Patterns and Markings:** The color of the water varies depending on the depth and clarity of the river. In some parts, the water appears darker, indicating shallower or murkier sections, while in others, it is lighter, suggesting deeper or clearer waters. The banks and surrounding land appear green, likely due to vegetation, and there may be patches of brown or tan where the soil is exposed.
+
+* **Size and Proportions:** The size of the river can vary significantly across the images. In some frames, the river appears narrow and winding, while in others, it seems wider and more expansive. The proportion of the river to the surrounding landscape also changes, with some images showing the river as a significant portion of the scene, while in others, it takes up less space.
+
+* **Behavioral Characteristics:** The river flows
+类别 River 文本特征维度: (512,)
+描述: The images depict a river with distinct physical features such as flowing water, banks, and possibly...
+知识库构建完成!
+图像知识库包含 10 个类别
+文本知识库包含 10 个类别
+知识库已保存到: ./experiments/eurosat10/knowledge_base
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7477cb1cf220>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7477c6df1fa0>
+📦 数据集信息: {'full_name': 'eurosat10', 'num_classes': 10, 'config_file': 'eurosat10_all.yml', 'data_dir': 'eurosat', 'experiment_dir': 'eurosat10', 'stats_file': 'eurosat10/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/eurosat10/knowledge_base/stats.json', 'experiment_dir_full': './experiments/eurosat10'}
+====================================================
+
+经验库构建器初始化完成!
+============================================================
+开始构建经验库（模型自反思与优化）
+============================================================
+Self-Belief已初始化
+初始策略:
+You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+使用当前Self-Belief评估性能...
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:25:34] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:25:37] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:25:40] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense collection of buildings with varying heights and colors, forming a grid-like pattern. There are narrow streets weaving through the buildings, suggesting a residential area.
+2. **Localization**: The most discriminative local parts include the closely packed buildings, the grid-like street pattern, and the mix of building heights and colors.
+3. **Comparison**: The visual characteristics align well with the description of a residential area. The buildings are densely packed, the streets are narrow, and there is a variety of building heights and colors, which are typical features of a residential neighborhood.
+4. **Decision**: Based on the match between the observed details and the characteristics of a residential area, the most likely class is "Residential".
+预测: Residential
+evaluate_with_current_belief, 预测: Residential, 真实: Residential, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:25:43] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:25:46] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:25:49] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense collection of buildings with varying heights and colors, forming a grid-like pattern. There are narrow streets weaving through the area, and some greenery is visible among the buildings.
+2. **Localization**: The most discriminative local parts include the closely packed buildings, the grid-like street pattern, and the mix of building heights and colors.
+3. **Comparison**: The visual characteristics align well with the description of a residential area. The buildings are closely packed, the streets are narrow and form a grid, and there is a mix of building heights and colors, which are typical features of a residential neighborhood.
+4. **Decision**: Based on the match between the observed details and the characteristics of a residential area, the most likely class is "Residential".
+预测: Residential
+evaluate_with_current_belief, 预测: Residential, 真实: Residential, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:25:52] [显存监控] 已分配=32.52GB, 已保留=33.29GB, 空闲=14.88GB
+[2025-11-24 00:25:55] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense collection of buildings with varying heights and colors, forming a grid-like pattern. The streets appear narrow and winding, suggesting a high population density typical of residential areas.
+2. **Localization**: The most discriminative local parts include the closely packed buildings, the mix of low-rise and mid-rise structures, and the narrow streets that form a grid-like pattern.
+3. **Comparison**: The visual characteristics align well with the description of a residential area, particularly the dense urban fabric, narrow streets, and variety of building heights and colors.
+4. **Decision**: Based on the match between the observed details and the characteristics of a residential area, the most likely class is "Residential".
+预测: Residential
+evaluate_with_current_belief, 预测: Residential, 真实: Residential, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:25:58] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:26:01] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:26:04] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense urban area with closely packed buildings, narrow streets, and a mix of building heights and colors. There are no clear signs of agricultural fields, industrial zones, highways, or rivers.
+2. **Localization**: The most discriminative local parts include the tightly packed buildings, narrow streets, and the variety of building colors and heights.
+3. **Comparison**: The visual characteristics match those described for the "Residential" category, particularly the dense urban fabric, narrow streets, and mixed building heights and colors.
+4. **Decision**: Based on the match between the observed details and the characteristics of the "Residential" category, the most likely class is "Residential".
+预测: Residential
+evaluate_with_current_belief, 预测: Residential, 真实: Residential, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:07] [显存监控] 已分配=32.52GB, 已保留=33.30GB, 空闲=14.88GB
+[2025-11-24 00:26:10] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.89GB
+[2025-11-24 00:26:13] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with a uniform green color, suggesting it is covered in vegetation. There are no visible signs of water bodies like rivers or lakes, nor any urban structures that would indicate a permanent crop or annual crop. The terrain appears relatively flat with some minor undulations, which is consistent with the description of a pasture.
+
+2. **Localization**: The most discriminative local parts include the uniform green color and the flat terrain with slight undulations. These features align well with the characteristics of a pasture.
+
+3. **Comparison**: Comparing the observed details with the candidate subcategories, the uniform green color and the flat terrain with slight undulations are most consistent with the description of a pasture. The other categories (PermanentCrop, AnnualCrop, River, SeaLake) do not match the observed features as closely.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pasture".
+预测: Pasture
+evaluate_with_current_belief, 预测: Pasture, 真实: Pasture, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:16] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:26:19] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:26:22] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with a uniform green color, suggesting it is covered in vegetation. The terrain appears relatively flat with some subtle undulations, which is characteristic of a pasture.
+2. **Localization**: The most discriminative local parts include the uniform green color and the relatively flat terrain, which align well with the description of a pasture.
+3. **Comparison**: The visual characteristics of the image match the description of a pasture, including the green coloration and the flat terrain. There are no signs of crops, rivers, or sea/lakes that would suggest otherwise.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pasture".
+预测: Pasture
+evaluate_with_current_belief, 预测: Pasture, 真实: Pasture, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:25] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:26:28] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:26:31] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with a predominantly green color, suggesting vegetation. There are no clear signs of buildings, roads, or water bodies that would indicate residential, river, or permanent crop categories. The landscape appears to be open and flat, which aligns with the description of a pasture.
+
+2. **Localization**: The most discriminative local parts include the uniform green color and the lack of any distinct structures or patterns that would suggest other categories like residential or annual crops.
+
+3. **Comparison**: The visual characteristics of the image match the description of a pasture, particularly the green coloration and the open, flat terrain. There are no signs of permanent crops or residential areas.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pasture".
+预测: Pasture
+evaluate_with_current_belief, 预测: Pasture, 真实: Pasture, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:34] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:26:37] [显存监控] 已分配=32.53GB, 已保留=33.29GB, 空闲=14.88GB
+[2025-11-24 00:26:40] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large expanse of green area with some variation in shade, suggesting it could be a pasture. There are no visible signs of crops, rivers, or residential structures that would suggest the other categories.
+   
+2. **Localization**: The most discriminative local part is the uniform green color covering a significant portion of the image, which is characteristic of grassland used for grazing livestock.
+
+3. **Comparison**: Comparing the observed details with the candidate classes, the green, open area with variations in shade aligns closely with the description of a pasture. The lack of any other distinct features such as crops, water bodies, or buildings further supports this classification.
+
+4. **Decision**: Based on the match between the observed details and the characteristics of a pasture, the most likely class is "Pasture".
+预测: Pasture
+evaluate_with_current_belief, 预测: Pasture, 真实: Pasture, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:43] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:26:46] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:26:49] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large expanse of land with crops arranged in neat rows. The uniformity in spacing and alignment suggests a structured agricultural setting.
+2. **Localization**: The most discriminative local parts include the rows of crops, their consistent spacing, and the varying shades of green, which indicate different stages of growth or types of crops.
+3. **Comparison**: The visual characteristics align well with the description of **PermanentCrop**. The systematic arrangement of crops in rows, the uniformity in spacing, and the large area covered are all indicative of agricultural land use.
+4. **Decision**: Based on the match between the observed details and the characteristics of **PermanentCrop**, the most likely class is **PermanentCrop**.
+预测: PermanentCrop
+evaluate_with_current_belief, 预测: PermanentCrop, 真实: PermanentCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:52] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:26:55] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large, open area with neatly arranged rows of crops. The uniformity in spacing and alignment suggests a structured agricultural setting.
+2. **Localization**: The most discriminative local parts include the rows of crops, their uniform spacing, and the lack of natural vegetation such as trees or shrubs.
+3. **Comparison**: The visual characteristics align well with the description of a PermanentCrop. The neat rows, consistent spacing, and absence of natural vegetation are indicative of agricultural fields.
+4. **Decision**: Based on the match between the observed details and the characteristics of PermanentCrop, the most likely class is PermanentCrop.
+预测: PermanentCrop
+evaluate_with_current_belief, 预测: PermanentCrop, 真实: PermanentCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:26:58] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:27:01] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:27:04] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with neatly arranged rows of crops, which suggests agricultural land use.
+2. **Localization**: The most discriminative local parts are the rows of crops, which are uniformly spaced and aligned.
+3. **Comparison**: The visual characteristics align well with the description of "PermanentCrop". The crops are organized in structured rows, and the uniformity in spacing and alignment is typical of farming practices. There is no indication of natural vegetation like trees or shrubs, which further supports the agricultural context.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "PermanentCrop".
+预测: PermanentCrop
+evaluate_with_current_belief, 预测: PermanentCrop, 真实: PermanentCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:27:07] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:27:10] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:27:13] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a collection of small, rectangular objects that appear to be wooden blocks or similar items. There is no indication of agricultural fields, residential areas, industrial sites, rivers, or any other specific landscape features.
+   
+2. **Localization**: The most discriminative local parts are the uniform shapes and sizes of the objects, which do not resemble any of the described categories. They lack the characteristics of crops, buildings, industrial structures, water bodies, or any other recognizable elements.
+
+3. **Comparison**: None of the candidate classes match the visual characteristics of the objects in the image. The objects are too uniform and lack the necessary features to be classified under any of the provided categories.
+
+4. **Decision**: Given the lack of matching features, it is impossible to accurately predict a category from the given options. The image does not provide enough context or information to make a confident
+预测: None
+evaluate_with_current_belief, 预测: None, 真实: PermanentCrop, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:27:16] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.90GB
+[2025-11-24 00:27:19] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.90GB
+[2025-11-24 00:27:22] [显存监控] 已分配=32.55GB, 已保留=33.28GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.28GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a collection of rectangular and boxy structures that appear to be densely packed together. The color palette is muted, dominated by shades of gray, white, and brown, which is characteristic of industrial architecture. There are no visible signs of residential or agricultural activity, nor are there any indications of highways or annual crops.
+
+2. **Localization**: The most discriminative local parts include the uniformity of the structures, their rectangular shape, and the lack of organic forms. The spacing between the buildings is minimal, suggesting a high density typical of industrial settings.
+
+3. **Comparison**: The visual characteristics align well with the description of an industrial setting. The muted color palette, the rectangular and boxy shapes, and the dense packing of the buildings all point towards an industrial environment.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Industrial".
+预测: Industrial
+evaluate_with_current_belief, 预测: Industrial, 真实: Industrial, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:27:25] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.90GB
+[2025-11-24 00:27:28] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.90GB
+[2025-11-24 00:27:31] [显存监控] 已分配=32.55GB, 已保留=33.28GB, 空闲=14.85GB
+[2025-11-24 00:27:34] [显存监控] 已分配=32.55GB, 已保留=33.28GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.28GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a collection of rectangular and boxy structures that appear to be buildings. The color palette is muted, dominated by shades of gray, white, and brown, which is characteristic of industrial architecture. The buildings are densely packed, suggesting a focus on functionality rather than aesthetics. There are no visible signs of agricultural activity like crops or pastures, nor are there any residential features like houses or gardens.
+
+2. **Localization**: The most discriminative local parts include the rectangular shapes of the buildings, their uniformity, and the lack of organic shapes. The color scheme is consistent with industrial settings, and the density of the structures indicates a high level of organization typical of industrial zones.
+
+3. **Comparison**: Comparing these observations with the category descriptions, the industrial setting matches the distinctive physical features, color patterns, size and proportions, and unique identifying traits described for industrial areas. There are no characteristics that align more closely with residential, permanent crop, pasture, or annual crop categories.
+
+4. **Decision**: Based on the match between the observed details and the descriptions of the industrial category, the most likely class is "Industrial."
+预测: Industrial
+evaluate_with_current_belief, 预测: Industrial, 真实: Industrial, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:27:37] [显存监控] 已分配=32.52GB, 已保留=33.28GB, 空闲=14.88GB
+[2025-11-24 00:27:40] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.90GB
+[2025-11-24 00:27:43] [显存监控] 已分配=32.55GB, 已保留=33.28GB, 空闲=14.86GB
+[2025-11-24 00:27:46] [显存监控] 已分配=32.55GB, 已保留=33.28GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.28GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with numerous rectangular and boxy structures that appear to be buildings. The color palette is muted, dominated by shades of gray, white, and brown, which is characteristic of industrial architecture. The buildings are densely packed and there is a lack of organic shapes, which contrasts with residential or natural environments. The layout suggests a focus on productivity and logistics, with minimal spacing between structures.
+
+2. **Localization**: The most discriminative local parts include the rectangular and boxy shapes of the buildings, the muted color palette, and the dense packing of the structures.
+
+3. **Comparison**: The visual characteristics of the candidate subcategories are as follows:
+   - **Residential**: Typically includes houses with organic shapes, vibrant colors, and larger spacing between buildings.
+   - **PermanentCrop**: Usually shows agricultural fields with distinct patterns and colors, often with some greenery.
+   - **Industrial**: Characterized by rectangular or boxy structures, muted colors, and dense packing.
+   - **Highway**: Shows roads and vehicles, which are not present here.
+   - **River**: Displays water bodies, which are not visible in this image.
+
+4. **Decision**: Based on the observed details, the image matches
+预测: Residential
+evaluate_with_current_belief, 预测: Residential, 真实: Industrial, 是否正确: True
+[2025-11-24 00:27:49] [显存监控] 已分配=32.44GB, 已保留=33.28GB, 空闲=14.97GB
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:27:52] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.90GB
+[2025-11-24 00:27:55] [显存监控] 已分配=32.51GB, 已保留=33.28GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.28GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with numerous rectangular and boxy structures that appear to be industrial buildings. There are no signs of residential housing, agricultural fields, or natural landscapes like lakes or crops.
+2. **Localization**: The most discriminative local parts include the uniformity of the structures, their size, and the lack of any greenery or organic shapes that would suggest a residential or agricultural setting.
+3. **Comparison**: The visual characteristics align closely with the description of an industrial setting. The muted color palette, large and densely packed buildings, and the absence of vibrant colors or intricate patterns all point towards an industrial environment.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Industrial".
+预测: Industrial
+evaluate_with_current_belief, 预测: Industrial, 真实: Industrial, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:27:58] [显存监控] 已分配=32.48GB, 已保留=33.23GB, 空闲=14.92GB
+[2025-11-24 00:28:01] [显存监控] 已分配=32.49GB, 已保留=33.23GB, 空闲=14.91GB
+[2025-11-24 00:28:04] [显存监控] 已分配=32.51GB, 已保留=33.23GB, 空闲=14.90GB
+推理后显存: 已分配=32.44GB, 已保留=33.23GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a patch of greenery with a distinct pattern that appears to be arranged in rows. This suggests a cultivated area rather than a natural landscape like a forest or a field of wild plants.
+2. **Localize**: The most discriminative local part is the uniformity and arrangement of the green patches, which resemble crops planted in rows.
+3. **Compare**: The visual characteristics align well with the description of AnnualCrop, particularly the vibrant green coloration with hints of yellow and brown, indicating healthy growth stages. The arrangement in rows is a strong indicator of agricultural practices.
+4. **Decide**: Based on the match between the observed details and the characteristics of AnnualCrop, the most likely class is AnnualCrop.
+预测: AnnualCrop
+evaluate_with_current_belief, 预测: AnnualCrop, 真实: AnnualCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:07] [显存监控] 已分配=32.48GB, 已保留=33.23GB, 空闲=14.92GB
+[2025-11-24 00:28:10] [显存监控] 已分配=32.49GB, 已保留=33.23GB, 空闲=14.91GB
+推理后显存: 已分配=32.44GB, 已保留=33.23GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a large area with a uniform pattern of green and yellowish-brown patches. This suggests a cultivated field rather than a residential, industrial, or pasture area.
+2. **Localize**: The most discriminative local parts are the rows of crops, which are characteristic of agricultural practices.
+3. **Compare**: The visual characteristics match those of AnnualCrop, including the vibrant green coloration with hints of yellow and brown, indicating healthy growth stages, and the uniform arrangement in rows.
+4. **Decide**: Based on the match between the observed details and the description of AnnualCrop, the most likely class is AnnualCrop.
+预测: AnnualCrop
+evaluate_with_current_belief, 预测: AnnualCrop, 真实: AnnualCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:13] [显存监控] 已分配=32.48GB, 已保留=33.21GB, 空闲=14.92GB
+[2025-11-24 00:28:16] [显存监控] 已分配=32.49GB, 已保留=33.23GB, 空闲=14.91GB
+[2025-11-24 00:28:19] [显存监控] 已分配=32.51GB, 已保留=33.23GB, 空闲=14.90GB
+推理后显存: 已分配=32.44GB, 已保留=33.23GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a landscape with what appears to be agricultural fields. The colors are predominantly green with some brown patches, which could indicate different stages of crop growth or soil conditions.
+2. **Localize**: The most discriminative local parts include the rows of crops, which suggest a structured agricultural layout.
+3. **Compare**: The visual characteristics align well with the description of AnnualCrop, particularly the vibrant green coloration with hints of yellow and brown, and the presence of rows indicating agricultural practices.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is AnnualCrop.
+预测: AnnualCrop
+evaluate_with_current_belief, 预测: AnnualCrop, 真实: AnnualCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:22] [显存监控] 已分配=32.48GB, 已保留=33.23GB, 空闲=14.92GB
+[2025-11-24 00:28:25] [显存监控] 已分配=32.49GB, 已保留=33.23GB, 空闲=14.91GB
+推理后显存: 已分配=32.44GB, 已保留=33.23GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a patterned surface that appears to be a field with crops. The colors are predominantly green with some brown, which could indicate different stages of growth or soil conditions.
+2. **Localize**: The most discriminative local part is the pattern of the crops arranged in rows, which is characteristic of agricultural practices.
+3. **Compare**: The visual characteristics match the description of AnnualCrop, which includes vibrant green coloration with hints of yellow and brown, and the crops are planted in rows, indicating agricultural practices.
+4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is AnnualCrop.
+预测: AnnualCrop
+evaluate_with_current_belief, 预测: AnnualCrop, 真实: AnnualCrop, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:28] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:28:31] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:28:34] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+[2025-11-24 00:28:37] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a uniform green area without any distinct features such as trees, foliage, or other objects that would suggest a forest, sea, lake, or pasture. The texture appears consistent and lacks the diversity expected in a forest or annual crop field.
+   
+2. **Localization**: The most discriminative local part is the uniform green color, which could be indicative of a sea or lake surface due to the lack of variation in texture and color.
+
+3. **Comparison**: Comparing the observed uniform green color to the candidate classes, "SeaLake" has the highest similarity score (0.1865), followed by "Forest" (0.1942). However, the absence of water ripples, reflections, or other typical features of a sea or lake makes it less likely to be "SeaLake". The remaining options like "PermanentCrop", "Pasture", and "AnnualCrop" do not fit the observed uniformity and lack of specific features.
+
+4. **Decision**: Based on the high similarity score for "SeaLake" and the lack of features that would suggest a forest, pasture, or annual crop, the most likely class is "SeaLake".
+预测: SeaLake
+evaluate_with_current_belief, 预测: SeaLake, 真实: Forest, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:40] [显存监控] 已分配=32.44GB, 已保留=32.80GB, 空闲=14.96GB
+[2025-11-24 00:28:43] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:28:46] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large expanse of greenery with no distinct features such as trees, buildings, or water bodies that would suggest a specific type of landscape.
+2. **Localization**: The most discriminative local part appears to be the uniform green color covering the entire area, suggesting a large area of vegetation.
+3. **Comparison**: Comparing the observed details with the candidate classes, the uniform green color and lack of distinct features align most closely with the description of a forest.
+4. **Decision**: Based on the match between the observed details and the forest description, the most likely class is "Forest".
+预测: Forest
+evaluate_with_current_belief, 预测: Forest, 真实: Forest, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:49] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:28:52] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image appears to be a uniform blue color without any discernible objects, textures, or patterns that would suggest a specific category like forest, sea/lake, pasture, highway, or industrial area.
+2. **Localization**: There are no local parts to identify as the image is entirely blue without any variations or features that could be used for localization.
+3. **Comparison**: Given the lack of any visual characteristics that align with the descriptions provided for the candidate classes, it is impossible to match the observed details with any of the categories.
+4. **Decision**: Since none of the candidate classes can be accurately identified based on the image, the
+预测: cannot be made from the given options.
+evaluate_with_current_belief, 预测: cannot be made from the given options., 真实: Forest, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:28:55] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:28:58] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:29:01] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a uniform green surface with no distinct features such as trees, foliage, or any other objects that would suggest a forest scene.
+2. **Localization**: The most discriminative local part is the uniform green color, which does not match the detailed description of a forest scene with varying tree sizes and shapes.
+3. **Comparison**: The visual characteristics of the candidate subcategories do not align with the image. The image lacks the variety in tree sizes and shapes, dense foliage, and the vibrant green color indicative of a forest.
+4. **Decision**: Given the lack of forest-specific characteristics, the image appears to be a sea or lake surface, which matches the "SeaLake" category with the highest similarity score.
+预测: SeaLake
+evaluate_with_current_belief, 预测: SeaLake, 真实: Forest, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:29:04] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:29:07] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:29:10] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+[2025-11-24 00:29:13] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a road with multiple lanes, a central divider, and surrounding greenery. This is indicative of a highway.
+2. **Localize**: The most discriminative local parts include the structured layout with lanes and dividers, which are characteristic of a highway.
+3. **Compare**: The visual characteristics of the candidate subcategories include:
+   - **Highway**: Structured layout with lanes and dividers, well-maintained road with clear lane markings.
+   - **PermanentCrop**: Typically agricultural land with crops, not roads.
+   - **Residential**: Houses and buildings, not roads.
+   - **River**: Water body, not roads.
+   - **Pasture**: Open land used for grazing animals, not roads.
+4. **Decide**: The image matches the description of a highway, with its structured layout, lanes, and dividers, making it the most likely class.
+预测: Highway
+evaluate_with_current_belief, 预测: Highway, 真实: Highway, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:29:16] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:29:19] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:29:22] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+[2025-11-24 00:29:25] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a metallic surface with a dark background, which does not resemble any of the categories provided (PermanentCrop, Industrial, Highway, Residential, SeaLake). It lacks the characteristics of a road, crops, buildings, water bodies, or any other typical scene.
+   
+2. **Localize**: The most discriminative local parts are the smooth, reflective metallic surface and the dark background. These features do not align with the visual characteristics of the candidate classes.
+
+3. **Compare**: The visual characteristics of the candidate classes are as follows:
+   - **PermanentCrop**: Typically includes agricultural fields with crops.
+   - **Industrial**: Includes machinery, factories, and other industrial structures.
+   - **Highway**: Features multiple lanes, dividers, and clear lane markings.
+   - **Residential**: Includes houses, streets, and residential areas.
+   - **SeaLake**: Includes water bodies like lakes or seas.
+
+4. **Decide**: None of the candidate classes match the observed metallic surface and dark background. The image does not depict a highway, permanent crop, residential area, or sea/lake. Therefore, it must belong to the "Industrial" category, as it resembles a metallic surface that could be part of
+预测: Industrial
+evaluate_with_current_belief, 预测: Industrial, 真实: Highway, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:29:28] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:29:31] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:29:34] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+[2025-11-24 00:29:37] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a collection of mechanical parts, such as gears and levers, in various colors and sizes. These parts appear to be part of a larger machine or machinery.
+2. **Localize**: The most discriminative local parts are the intricate details of the gears and levers, which are characteristic of mechanical components.
+3. **Compare**: The visual characteristics of the candidate subcategories include:
+   - **Highway**: Structured layout with lanes and dividers, well-maintained road with clear lane markings.
+   - **PermanentCrop**: Not applicable as it typically refers to agricultural land.
+   - **Industrial**: Includes machinery and equipment, which aligns with the mechanical parts seen in the image.
+   - **Residential**: Not relevant as it pertains to housing structures.
+   - **Pasture**: Not applicable as it relates to agricultural land use.
+4. **Decide**: The image clearly depicts mechanical parts, which are indicative of industrial settings. The presence of gears and levers suggests machinery or equipment, fitting the description of the "Industrial" category.
+预测: Industrial
+evaluate_with_current_belief, 预测: Industrial, 真实: Highway, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:29:40] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:29:43] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:29:46] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a long, straight path with visible lane markings and a central divider, which are characteristic features of a highway.
+2. **Localize**: The most discriminative local parts are the white lane markings and the yellow center divider, which are typical for highways.
+3. **Compare**: The visual characteristics of the candidate subcategories include:
+   - **PermanentCrop**: This typically refers to agricultural land, which does not match the image.
+   - **Highway**: The image matches the description of a highway with clear lane markings and a central divider.
+   - **Pasture**: This is usually grassy land, which is not present here.
+   - **River**: There is no water body visible in the image.
+   - **Residential**: This would show houses or buildings, which are not present.
+4. **Decide**: Based on the match between the observed details (white lane markings, yellow center divider) and the description of a highway, the most likely class is "Highway".
+预测: Highway
+evaluate_with_current_belief, 预测: Highway, 真实: Highway, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:29:49] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:29:52] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:29:55] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large expanse of what appears to be water, with a uniform dark blue color. There are no visible land features, plants, or any other objects that would suggest a terrestrial environment.
+2. **Localization**: The most discriminative local part is the uniform color and texture across the entire image, which is characteristic of water bodies.
+3. **Comparison**: Comparing this observation to the candidate classes, "SeaLake" has the highest similarity score (0.1939), indicating it is the most likely class for this image.
+4. **Decision**: Based on the high similarity score and the visual characteristics of the image, the most likely class is "SeaLake".
+预测: SeaLake
+evaluate_with_current_belief, 预测: SeaLake, 真实: HerbaceousVegetation, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:29:58] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:01] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.89GB
+[2025-11-24 00:30:04] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+[2025-11-24 00:30:07] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a scene with a mix of dark blue and greenish-brown areas that appear to be vegetation. There are no clear signs of a road, river, or forest canopy that would suggest a specific category like "Highway," "River," or "Forest." The presence of what looks like herbaceous vegetation is more indicative of a natural setting rather than a man-made one.
+   
+2. **Localize**: The most discriminative local parts seem to be the areas with varying shades of blue and green, which could represent different types of plants or vegetation. These areas do not show distinct features like roads, water bodies, or trees that would help in identifying a specific category.
+
+3. **Compare**: Given the visual characteristics, the image does not align well with the descriptions of "PermanentCrop," "Highway," "River," or "Pasture." However, it closely matches the description of "HerbaceousVegetation" due to the presence of various shades of green and blue, which could indicate a mix of different plant types.
+
+4. **Decide**: Based on the match between the observed details and the description of "HerbaceousVegetation," the most likely class for this image is
+预测: PermanentCrop
+evaluate_with_current_belief, 预测: PermanentCrop, 真实: HerbaceousVegetation, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:30:10] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:13] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:16] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+[2025-11-24 00:30:19] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image appears to show a textured surface with a pattern that could be indicative of vegetation. However, the texture does not resemble typical features of a river, sea lake, or permanent crop. It lacks distinct shapes or structures that would suggest pasture or annual crops.
+
+2. **Localization**: The image shows a uniform texture without clear boundaries or distinct features that would help in identifying specific plant types or categories.
+
+3. **Comparison**: Given the lack of clear features, it is challenging to definitively categorize this as Herbaceous Vegetation based on the provided descriptions. The texture suggests a natural surface rather than a cultivated or managed area.
+
+4. **Decision**: Since none of the candidate classes fit the observed texture well, and considering the lack of clear indicators for any of the listed categories, the most plausible class is "PermanentCrop" due to the uniformity and texture resembling agricultural land.
+预测: PermanentCrop
+evaluate_with_current_belief, 预测: PermanentCrop, 真实: HerbaceousVegetation, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:30:22] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:25] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+[2025-11-24 00:30:28] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a landscape with a mix of dark blue and greenish-brown areas, which could suggest vegetation. However, the texture and pattern do not clearly indicate specific types of crops or pastures.
+2. **Localize**: The image does not show distinct features that would help identify specific types of vegetation like herbaceous plants, annual crops, or permanent crops. The texture appears more like a forested area rather than a cultivated field.
+3. **Compare**: Given the visual characteristics, the image seems to depict a natural landscape rather than a managed agricultural area. The presence of darker areas could suggest shadowed regions within a forest, but it is not clear enough to definitively classify it as any of the candidate classes.
+4. **Decide**: Based on the lack of clear indicators for herbaceous vegetation, annual crops, or pastures, and the absence of distinct features that would suggest a managed agricultural area, the most likely class is "Forest."
+预测: Forest
+evaluate_with_current_belief, 预测: Forest, 真实: HerbaceousVegetation, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:30:31] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:34] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:37] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+[2025-11-24 00:30:40] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image appears to show a body of water with a greenish tint, which is not typical for a SeaLake, Sea, or River. The water does not seem to have the clarity or depth associated with these environments. There are no visible signs of vegetation like reeds or grasses that would suggest a SeaLake. The image lacks the distinct features of a SeaLake, Sea, or River, such as sandy or rocky bottoms, varying depths, or the presence of vegetation.
+
+2. **Localization**: The image shows a uniform green area without any visible water or land features that would indicate a SeaLake, Sea, or River. The green color suggests it might be a field or pasture.
+
+3. **Comparison**: Comparing the image to the candidate classes, "PermanentCrop" and "Pasture" are the most relevant. However, since the image does not show any crops or agricultural activity, "Pasture" seems more fitting as it aligns with the green color and lack of other distinguishing features.
+
+4. **Decision**: Based on the analysis, the most likely class is "Pasture".
+预测: Pasture
+evaluate_with_current_belief, 预测: Pasture, 真实: SeaLake, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:30:43] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:46] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:30:49] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image appears to be a dark, featureless area with no visible water, vegetation, or any distinct physical features that would suggest a SeaLake, PermanentCrop, Industrial, Pasture, or HerbaceousVegetation.
+2. **Localization**: There are no discernible local parts that could help identify the category. The image lacks any color patterns, size, or proportions that would be characteristic of any of the listed categories.
+3. **Comparison**: Given the lack of any visual characteristics that match the descriptions provided for the candidate classes, it is impossible to determine the category based on the image alone.
+4. **Decision**: Since there is insufficient information in the image to make a confident
+预测: None
+evaluate_with_current_belief, 预测: None, 真实: SeaLake, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:30:52] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:30:55] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:30:58] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+[2025-11-24 00:31:01] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a body of water with a dark blue color, which is characteristic of water bodies like lakes or rivers. There are no visible signs of vegetation, sand, or rocks that would suggest a SeaLake, PermanentCrop, or Residential area. The image does not show any agricultural fields or crops, ruling out PermanentCrop and Residential categories.
+
+2. **Localization**: The image appears to be a close-up view of a water body, which is consistent with the characteristics of a SeaLake. The color and texture of the water suggest a shallow depth, which is typical for SeaLakes.
+
+3. **Comparison**: Comparing the observed details with the category descriptions, the SeaLake description matches the image best. The water's color and the lack of other features align with the SeaLake characteristics.
+
+4. **Decision**: Based on the match between the observed details and the SeaLake description, the most likely class is SeaLake.
+预测: SeaLake
+evaluate_with_current_belief, 预测: SeaLake, 真实: SeaLake, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:04] [显存监控] 已分配=32.52GB, 已保留=33.30GB, 空闲=14.88GB
+[2025-11-24 00:31:07] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.89GB
+[2025-11-24 00:31:10] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image appears to be a solid dark blue color without any visible features that would suggest a specific landscape or environment.
+2. **Localization**: There are no distinct local parts or features that can be identified in the image. It is uniformly colored.
+3. **Comparison**: Given the uniform dark blue color, none of the candidate classes (SeaLake, PermanentCrop, Industrial, Pasture, HerbaceousVegetation) seem to match this description. The image does not show any signs of water, vegetation, or land features that would be associated with any of these categories.
+4. **Decision**: Since the image does not contain any discernible features that align with the descriptions of the candidate classes, it is not possible to accurately predict a category from the given options.
+预测: None
+evaluate_with_current_belief, 预测: None, 真实: SeaLake, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:13] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:31:16] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:31:19] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a body of water with a meandering path, which is characteristic of a river. The banks are visible and appear relatively flat and straight in some areas, while curving along with the river's path in others. The surrounding area has green vegetation, which could indicate the presence of trees or grass along the riverbanks.
+
+2. **Localize**: The most discriminative local parts include the meandering path of the water, the visible banks, and the green vegetation along the edges. These features align well with the description of a river.
+
+3. **Compare**: Comparing the observed details with the category descriptions, the image matches the characteristics of a river, particularly the meandering path, the visible banks, and the green vegetation along the edges.
+
+4. **Decide**: Based on the match between the observed details and the description of a river, the most likely class is "River".
+预测: River
+evaluate_with_current_belief, 预测: River, 真实: River, 是否正确: True
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:22] [显存监控] 已分配=32.52GB, 已保留=33.29GB, 空闲=14.88GB
+[2025-11-24 00:31:25] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:31:28] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a large expanse of green, which suggests vegetation. There are no clear signs of buildings, roads, or industrial structures that would indicate residential, industrial, or permanent crop categories. The area does not appear to be a pasture, as pastures typically have a more uniform appearance without distinct patterns.
+
+2. **Localize**: The most discriminative local part is the green color, which is consistent with vegetation. The pattern of the green area suggests a cultivated field rather than a natural landscape like a forest or a riverbank.
+
+3. **Compare**: Comparing the observed details with the candidate subcategories, the green area with a patterned layout is most consistent with an AnnualCrop. This is because annual crops are typically planted in specific rows or patterns, which matches the observed structure in the image.
+
+4. **Decide**: Based on the match between the observed details and the description of AnnualCrop, the most likely class is AnnualCrop.
+预测: AnnualCrop
+evaluate_with_current_belief, 预测: AnnualCrop, 真实: River, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:31] [显存监控] 已分配=32.82GB, 已保留=33.29GB, 空闲=14.58GB
+[2025-11-24 00:31:34] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:31:37] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. Observing the image, I see a large expanse of land with what appears to be agricultural fields, which suggests a rural setting.
+2. The most discriminative local parts include the uniform patterns of the fields, which are typical of cultivated crops.
+3. Comparing these observations with the candidate classes, "PermanentCrop" stands out because it describes agricultural land used for growing crops that are planted and harvested annually.
+4. The other categories like "River," "Industrial," "SeaLake," and "Residential" do not match the visual characteristics of the image.
+预测: PermanentCrop
+evaluate_with_current_belief, 预测: PermanentCrop, 真实: River, 是否正确: False
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:40] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:31:43] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:31:46] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observe**: The image shows a large body of water with visible banks and what appears to be vegetation along the edges. The water has varying shades, suggesting different depths and clarity. There are no signs of agricultural fields or crops, which rules out options like PermanentCrop, AnnualCrop, and Pasture.
+
+2. **Localize**: The most discriminative local parts include the curved path of the water, the visible banks, and the green vegetation along the edges. These features are characteristic of a river.
+
+3. **Compare**: The visual characteristics of the image align closely with the description of a river. The presence of a meandering path, varying water colors, and the presence of vegetation along the banks are all indicative of a river.
+
+4. **Decide**: Based on the match between the observed details and the description of a river, the most likely class is "River".
+预测: River
+evaluate_with_current_belief, 预测: River, 真实: River, 是否正确: True
+评估完成: 准确率 = 0.6250 (25/40)
+
+初始准确率: 0.6250
+
+============================================================
+迭代 1/1
+============================================================
+开始构造伪轨迹...
+处理类别: Residential (4 张图像)
+处理 Residential:   0%|          | 0/4 [00:00<?, ?it/s]处理 Residential:  25%|██▌       | 1/4 [00:08<00:24,  8.15s/it]处理 Residential:  50%|█████     | 2/4 [00:16<00:16,  8.41s/it]处理 Residential:  75%|███████▌  | 3/4 [00:24<00:08,  8.17s/it]处理 Residential: 100%|██████████| 4/4 [00:32<00:00,  8.03s/it]处理 Residential: 100%|██████████| 4/4 [00:32<00:00,  8.11s/it]
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:49] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:31:52] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:31:55] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense collection of buildings with varying heights and colors, forming a grid-like pattern. There are narrow streets weaving through the buildings, suggesting a residential area.
+2. **Localization**: The most discriminative local parts include the closely packed buildings, the grid-like street pattern, and the mix of building heights and colors.
+3. **Comparison**: The visual characteristics align well with the description of a residential area. The buildings are densely packed, the streets are narrow, and there is a variety of building heights and colors, which are typical features of a residential neighborhood.
+4. **Decision**: Based on the match between the observed details and the characteristics of a residential area, the most likely class is "Residential".
+预测: Residential
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:31:58] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:32:01] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense collection of buildings with varying heights and colors, forming a grid-like pattern. There are narrow streets weaving through the area, and some greenery is visible among the buildings.
+2. **Localization**: The most discriminative local parts include the closely packed buildings, the grid-like street pattern, and the mix of building heights and colors.
+3. **Comparison**: The visual characteristics align well with the description of a residential area. The buildings are closely packed, the streets are narrow and form a grid, and there is a mix of building heights and colors, which are typical features of a residential neighborhood.
+4. **Decision**: Based on the match between the observed details and the characteristics of a residential area, the most likely class is "Residential".
+预测: Residential
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:04] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:32:07] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:32:10] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense collection of buildings with varying heights and colors, forming a grid-like pattern. The streets appear narrow and winding, suggesting a high population density typical of residential areas.
+2. **Localization**: The most discriminative local parts include the closely packed buildings, the mix of low-rise and mid-rise structures, and the narrow streets that form a grid-like pattern.
+3. **Comparison**: The visual characteristics align well with the description of a residential area, particularly the dense urban fabric, narrow streets, and variety of building heights and colors.
+4. **Decision**: Based on the match between the observed details and the characteristics of a residential area, the most likely class is "Residential".
+预测: Residential
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:13] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:32:16] [显存监控] 已分配=32.52GB, 已保留=33.29GB, 空闲=14.88GB
+[2025-11-24 00:32:19] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a dense urban area with closely packed buildings, narrow streets, and a mix of building heights and colors. There are no clear signs of agricultural fields, industrial zones, highways, or rivers.
+2. **Localization**: The most discriminative local parts include the tightly packed buildings, narrow streets, and the variety of building colors and heights.
+3. **Comparison**: The visual characteristics match those described for the "Residential" category, particularly the dense urban fabric, narrow streets, and mixed building heights and colors.
+4. **Decision**: Based on the match between the observed details and the characteristics of the "Residential" category, the most likely class is "Residential".
+预测: Residential
+处理类别: Pasture (4 张图像)
+处理 Pasture:   0%|          | 0/4 [00:00<?, ?it/s]处理 Pasture:  25%|██▌       | 1/4 [00:10<00:31, 10.55s/it]处理 Pasture:  50%|█████     | 2/4 [00:18<00:18,  9.11s/it]处理 Pasture:  75%|███████▌  | 3/4 [00:27<00:09,  9.12s/it]处理 Pasture: 100%|██████████| 4/4 [00:36<00:00,  9.10s/it]处理 Pasture: 100%|██████████| 4/4 [00:36<00:00,  9.21s/it]
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:22] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:32:25] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.89GB
+[2025-11-24 00:32:28] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with a uniform green color, suggesting it is covered in vegetation. There are no visible signs of water bodies like rivers or lakes, nor any urban structures that would indicate a permanent crop or annual crop. The terrain appears relatively flat with some minor undulations, which is consistent with the description of a pasture.
+
+2. **Localization**: The most discriminative local parts include the uniform green color and the flat terrain with slight undulations. These features align well with the characteristics of a pasture.
+
+3. **Comparison**: Comparing the observed details with the candidate subcategories, the uniform green color and the flat terrain with slight undulations are most consistent with the description of a pasture. The other categories (PermanentCrop, AnnualCrop, River, SeaLake) do not match the observed features as closely.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pasture".
+预测: Pasture
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:31] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:32:34] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:32:37] [显存监控] 已分配=32.55GB, 已保留=33.30GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with a uniform green color, suggesting it is covered in vegetation. The terrain appears relatively flat with some subtle undulations, which is characteristic of a pasture.
+2. **Localization**: The most discriminative local parts include the uniform green color and the relatively flat terrain, which align well with the description of a pasture.
+3. **Comparison**: The visual characteristics of the image match the description of a pasture, including the green coloration and the flat terrain. There are no signs of crops, rivers, or sea/lakes that would suggest otherwise.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pasture".
+预测: Pasture
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:40] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:32:43] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:32:46] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with a predominantly green color, suggesting vegetation. There are no clear signs of buildings, roads, or water bodies that would indicate residential, river, or permanent crop categories. The landscape appears to be open and flat, which aligns with the description of a pasture.
+
+2. **Localization**: The most discriminative local parts include the uniform green color and the lack of any distinct structures or patterns that would suggest other categories like residential or annual crops.
+
+3. **Comparison**: The visual characteristics of the image match the description of a pasture, particularly the green coloration and the open, flat terrain. There are no signs of permanent crops or residential areas.
+
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "Pasture".
+预测: Pasture
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:49] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:32:52] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:32:55] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large expanse of green area with some variation in shade, suggesting it could be a pasture. There are no visible signs of crops, rivers, or residential structures that would suggest the other categories.
+   
+2. **Localization**: The most discriminative local part is the uniform green color covering a significant portion of the image, which is characteristic of grassland used for grazing livestock.
+
+3. **Comparison**: Comparing the observed details with the candidate classes, the green, open area with variations in shade aligns closely with the description of a pasture. The lack of any other distinct features such as crops, water bodies, or buildings further supports this classification.
+
+4. **Decision**: Based on the match between the observed details and the characteristics of a pasture, the most likely class is "Pasture".
+预测: Pasture
+处理类别: PermanentCrop (4 张图像)
+处理 PermanentCrop:   0%|          | 0/4 [00:00<?, ?it/s]处理 PermanentCrop:  25%|██▌       | 1/4 [00:08<00:24,  8.21s/it]处理 PermanentCrop:  50%|█████     | 2/4 [00:15<00:15,  7.69s/it]处理 PermanentCrop:  75%|███████▌  | 3/4 [00:23<00:07,  7.62s/it]处理 PermanentCrop: 100%|██████████| 4/4 [00:32<00:00,  8.46s/it]处理 PermanentCrop: 100%|██████████| 4/4 [00:32<00:00,  8.20s/it]
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:32:58] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:33:01] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:33:04] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large expanse of land with crops arranged in neat rows. The uniformity in spacing and alignment suggests a structured agricultural setting.
+2. **Localization**: The most discriminative local parts include the rows of crops, their consistent spacing, and the varying shades of green, which indicate different stages of growth or types of crops.
+3. **Comparison**: The visual characteristics align well with the description of **PermanentCrop**. The systematic arrangement of crops in rows, the uniformity in spacing, and the large area covered are all indicative of agricultural land use.
+4. **Decision**: Based on the match between the observed details and the characteristics of **PermanentCrop**, the most likely class is **PermanentCrop**.
+预测: PermanentCrop
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:33:07] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.90GB
+[2025-11-24 00:33:10] [显存监控] 已分配=32.51GB, 已保留=33.30GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.30GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large, open area with neatly arranged rows of crops. The uniformity in spacing and alignment suggests a structured agricultural setting.
+2. **Localization**: The most discriminative local parts include the rows of crops, their uniform spacing, and the lack of natural vegetation such as trees or shrubs.
+3. **Comparison**: The visual characteristics align well with the description of a PermanentCrop. The neat rows, consistent spacing, and absence of natural vegetation are indicative of agricultural fields.
+4. **Decision**: Based on the match between the observed details and the characteristics of PermanentCrop, the most likely class is PermanentCrop.
+预测: PermanentCrop
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:33:13] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:33:16] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:33:19] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a large area with neatly arranged rows of crops, which suggests agricultural land use.
+2. **Localization**: The most discriminative local parts are the rows of crops, which are uniformly spaced and aligned.
+3. **Comparison**: The visual characteristics align well with the description of "PermanentCrop". The crops are organized in structured rows, and the uniformity in spacing and alignment is typical of farming practices. There is no indication of natural vegetation like trees or shrubs, which further supports the agricultural context.
+4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is "PermanentCrop".
+预测: PermanentCrop
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 00:33:22] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.90GB
+[2025-11-24 00:33:25] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 00:33:28] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+推理链: 1. **Observation**: The image shows a collection of small, rectangular objects that appear to be wooden blocks or similar items. There is no indication of agricultural fields, residential areas, industrial sites, rivers, or any other specific landscape features.
+   
+2. **Localization**: The most discriminative local parts are the uniform shapes and sizes of the objects, which do not resemble any of the described categories. They lack the characteristics of crops, buildings, industrial structures, water bodies, or any other recognizable elements.
+
+3. **Comparison**: None of the candidate classes match the visual characteristics of the objects in the image. The objects are too uniform and lack the necessary features to be classified under any of the provided categories.
+
+4. **Decision**: Given the lack of matching features, it is impossible to accurately predict a category from the given options. The image does not provide enough context or information to make a confident
+预测: None
+处理类别: Industrial (4 张图像)
+处理 Industrial:   0%|          | 0/4 [00:00<?, ?it/s]

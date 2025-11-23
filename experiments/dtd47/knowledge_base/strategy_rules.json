@@ -122,5 +122,67 @@
             "effectiveness": 0.0,
             "applicability": 0.0
         }
+    ],
+    [
+        {
+            "rule": "Focus on the overall texture and pattern rather than individual features when classifying textures.",
+            "failure_pattern": "The model incorrectly classified 'bumpy' as 'perforated' due to focusing on the wrong discriminative features.",
+            "applicability_signals": "When dealing with images that show a surface with a repetitive pattern or texture.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/dtd/images_discovery_all_4/bumpy/bumpy_0165.jpg"
+            ],
+            "labels": [
+                "bumpy"
+            ],
+            "root_cause": "The reasoning focused on the presence of small, circular, and evenly spaced bumps, which led to the misclassification of 'perforated' instead of 'bumpy'.",
+            "source_reasoning": "1. **Observation**: The image shows a uniform, gray surface with evenly spaced, circular bumps. The bumps are small and consistent in size and shape, which is characteristic of a bumpy texture.\n2. **Localization**: The most discriminative local parts are the small, circular, and evenly spaced bumps that cover the entire surface.\n3. **Comparison**: The visual characteristics of the candidate subcategories include:\n   - **Perforated**: This typically refers to holes or openings in a material, not the bumps seen here.\n   - **Grid**: This would imply a pattern of lines or squares, not the circular bumps.\n   - **Honeycombed**: This suggests a structure with cells, not the circular bumps.\n   - **Flecked**: This implies small spots or specks, not the bumps.\n   - **Meshed**: This would suggest a network of lines or threads, not the circular bumps.\n4. **Decision**: Based on the match between the observed details (small, circular, evenly spaced bumps) and the description of \"bumpy,\" the most likely class is \"perforated.\"",
+            "normalized": "focus on the overall texture and pattern rather than individual features when classifying textures",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify if the image contains evenly spaced circular patterns before classifying as 'grid'.",
+            "failure_pattern": "The model misclassified 'bumpy' as 'grid' due to the presence of evenly spaced circular protrusions.",
+            "applicability_signals": "When the image features regularly spaced circular elements.",
+            "priority": "medium",
+            "support": 1,
+            "source_images": [
+                "./datasets/dtd/images_discovery_all_4/bumpy/bumpy_0120.jpg"
+            ],
+            "labels": [
+                "bumpy"
+            ],
+            "root_cause": "The model's similarity scores for 'perforated', 'flecked', 'porous', and 'waffled' were lower than for 'grid', leading to an incorrect prediction.",
+            "source_reasoning": "1. **Observation**: The image shows a surface with numerous small, evenly spaced, circular protrusions that are consistent in size and shape. The texture appears uniform and repetitive, suggesting a man-made pattern rather than a natural one.\n   \n2. **Localization**: The most discriminative local parts are the small, circular, and evenly spaced protrusions which are characteristic of a grid-like pattern.\n\n3. **Comparison**: Comparing the observed details with the candidate subcategories:\n   - **Perforated**: This typically refers to holes or openings in a material, not the raised bumps seen here.\n   - **Flecked**: This suggests a speckled or mottled appearance, which is not present.\n   - **Porous**: While this could describe the texture, it does not specifically refer to the pattern of the bumps.\n   - **Grid**: This matches the description of evenly spaced, circular bumps forming a grid-like pattern.\n   - **Waffled**: This suggests a pattern with ridges or waves, which is not present here.\n\n4. **Decision**: Based on the match between the observed details and the description of a grid, the most likely class is \"grid\".",
+            "normalized": "verify if the image contains evenly spaced circular patterns before classifying as grid",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the intersection patterns and grid density when distinguishing between 'woven' and 'crosshatched'.",
+            "failure_pattern": "The model incorrectly identified 'woven' instead of 'crosshatched', despite the presence of intersecting lines forming a grid-like structure.",
+            "applicability_signals": "When dealing with images featuring intersecting lines or grids, especially if there is a slight variation in the pattern's density or regularity.",
+            "priority": "medium",
+            "support": 1,
+            "source_images": [
+                "./datasets/dtd/images_discovery_all_4/crosshatched/crosshatched_0071.jpg"
+            ],
+            "labels": [
+                "crosshatched"
+            ],
+            "root_cause": "The model's similarity scores for 'woven' were slightly higher than for 'crosshatched', leading to an incorrect prediction due to a minor difference in the visual characteristics.",
+            "source_reasoning": "1. **Observation**: The image displays a pattern that resembles a grid or mesh, which is characteristic of woven materials. There are no signs of pleats, lace, braids, or gauzy textures that would suggest otherwise.\n2. **Localization**: The most discriminative local parts are the intersecting lines forming a grid-like structure, which is typical of woven fabrics.\n3. **Comparison**: The visual characteristics align closely with those of a woven fabric, as it shows a consistent and uniform pattern without any irregularities or variations that would suggest pleating, lacing, braiding, or gauzy textures.\n4. **Decision**: Based on the match between the observed details and the description of woven textures, the most likely class is \"woven\".",
+            "normalized": "verify the intersection patterns and grid density when distinguishing between woven and crosshatched",
+            "failure_patterns": [],
+            "id": "R3",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
     ]
 ]
