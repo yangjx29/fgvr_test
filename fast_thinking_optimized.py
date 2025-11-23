@@ -182,6 +182,15 @@ class FastThinkingOptimized:
         query_img_feat = self.kb_builder.retrieval.extract_image_feat(query_image_path)
         similarities = []
         for category, text_feat in self.kb_builder.text_knowledge_base.items():
+            # 确保text_feat是正确的格式和维度
+            if not isinstance(text_feat, np.ndarray):
+                text_feat = np.array(text_feat)
+            
+            # 检查维度是否匹配
+            if text_feat.shape != query_img_feat.shape:
+                print(f"警告: 类别 {category} 的文本特征维度不匹配: {text_feat.shape} vs {query_img_feat.shape}，跳过")
+                continue
+            
             sim = np.dot(query_img_feat, text_feat)
             similarities.append((category, sim))
         similarities.sort(key=lambda x: x[1], reverse=True)

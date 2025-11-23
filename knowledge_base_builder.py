@@ -511,11 +511,25 @@ class KnowledgeBaseBuilder:
             text_kb_data = load_json(text_kb_path)
             # 处理两种格式：字典格式或列表格式（旧版本）
             if isinstance(text_kb_data, dict):
-                self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data.items()}
+                self.text_knowledge_base = {}
+                for cat, feat in text_kb_data.items():
+                    feat_array = np.array(feat)
+                    # 检查维度：应该是1D数组，维度应该与图像特征匹配（通常是512）
+                    if feat_array.ndim == 1 and len(feat_array) > 0:
+                        self.text_knowledge_base[cat] = feat_array
+                    else:
+                        print(f"警告: 类别 {cat} 的文本特征维度不正确: {feat_array.shape}，跳过")
             elif isinstance(text_kb_data, list) and len(text_kb_data) > 0:
                 # 旧格式：列表的第一个元素是字典
                 if isinstance(text_kb_data[0], dict):
-                    self.text_knowledge_base = {cat: np.array(feat) for cat, feat in text_kb_data[0].items()}
+                    self.text_knowledge_base = {}
+                    for cat, feat in text_kb_data[0].items():
+                        feat_array = np.array(feat)
+                        # 检查维度：应该是1D数组
+                        if feat_array.ndim == 1 and len(feat_array) > 0:
+                            self.text_knowledge_base[cat] = feat_array
+                        else:
+                            print(f"警告: 类别 {cat} 的文本特征维度不正确: {feat_array.shape}，跳过")
                 else:
                     print(f"警告: 文本知识库格式不正确，跳过加载")
                     self.text_knowledge_base = {}
@@ -548,6 +562,30 @@ class KnowledgeBaseBuilder:
                 self.self_belief = f.read()
             print(f"Self-Belief已从 {belief_path} 加载")
         print(f"知识库已从 {load_dir} 加载")
+        print(f"图像知识库类别数: {len(self.image_knowledge_base)}")
+        print(f"文本知识库类别数: {len(self.text_knowledge_base)}")
+        print(f"类别描述数: {len(self.category_descriptions)}")
+        
+        # 验证文本特征维度
+        if self.text_knowledge_base:
+            expected_dim = None
+            problem_categories = []
+            for cat, feat in self.text_knowledge_base.items():
+                if not isinstance(feat, np.ndarray):
+                    feat = np.array(feat)
+                if expected_dim is None:
+                    expected_dim = len(feat)
+                elif len(feat) != expected_dim:
+                    problem_categories.append((cat, feat.shape))
+            
+            if problem_categories:
+                print(f"⚠️  警告: 发现 {len(problem_categories)} 个类别的文本特征维度不正确:")
+                for cat, shape in problem_categories[:5]:
+                    print(f"  - {cat}: {shape} (期望: ({expected_dim},))")
+                if len(problem_categories) > 5:
+                    print(f"  ... 还有 {len(problem_categories) - 5} 个类别")
+            else:
+                print(f"✓ 文本特征维度验证通过: 所有类别特征维度为 ({expected_dim},)")
     
     def image_retrieval(self, query_image_path: str, top_k: int = 5) -> List[Tuple[str, float]]:
         """
