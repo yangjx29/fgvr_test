@@ -22,12 +22,13 @@ def save_classification_result(
     Args:
         dataset_name: 数据集名称（如 'dog120', 'flower102'）
         experiment_dir: 实验目录（如 './experiments/dog120'）
-        results: 结果列表，每个元素包含：
-            - label: 正确标签
-            - prediction: 预测结果
-            - is_correct: 是否正确
-            - fast_result: 快思考分类结果
-            - slow_result: 慢思考分类结果（可选）
+        results: 结果列表，每个元素为6元组：
+            1. label: 正确标签
+            2. prediction: 预测结果
+            3. is_correct: 是否正确
+            4. fast_result: 快思考分类结果
+            5. slow_result: 慢思考分类结果（可选）
+            6. image_path: 测试图片路径（相对路径）
         metadata: 元数据（如准确率、总样本数等）
         
     Returns:
@@ -66,10 +67,19 @@ def create_result_entry(
     fast_result: Optional[Dict] = None,
     slow_result: Optional[Dict] = None,
     image_path: Optional[str] = None,
-    confidence: Optional[float] = None
+    confidence: Optional[float] = None,
+    project_root: Optional[str] = None
 ) -> Dict:
     """
-    创建单个分类结果条目
+    创建单个分类结果条目（6元组）
+    
+    6元组格式：
+    1. label: 正确标签
+    2. prediction: 预测结果
+    3. is_correct: 是否正确
+    4. fast_result: 快思考分类结果
+    5. slow_result: 慢思考分类结果（可选）
+    6. image_path: 测试图片路径（相对路径）
     
     Args:
         label: 正确标签
@@ -77,22 +87,36 @@ def create_result_entry(
         is_correct: 是否正确
         fast_result: 快思考分类结果
         slow_result: 慢思考分类结果
-        image_path: 图像路径
+        image_path: 图像路径（绝对路径或相对路径）
         confidence: 置信度
+        project_root: 项目根目录，用于将绝对路径转换为相对路径
         
     Returns:
-        结果字典
+        结果字典（6元组）
     """
+    # 处理图片路径：转换为相对路径
+    relative_image_path = None
+    if image_path:
+        if project_root and os.path.isabs(image_path):
+            # 如果是绝对路径，转换为相对于项目根目录的相对路径
+            try:
+                relative_image_path = os.path.relpath(image_path, project_root)
+            except ValueError:
+                # 如果无法转换为相对路径（例如在不同驱动器上），使用原始路径
+                relative_image_path = image_path
+        else:
+            # 如果已经是相对路径或没有提供project_root，直接使用
+            relative_image_path = image_path
+    
     entry = {
-        'label': label,
-        'prediction': prediction,
-        'is_correct': is_correct,
-        'fast_result': fast_result or {},
-        'slow_result': slow_result or {}
+        'label': label,                    # 1. 正确标签
+        'prediction': prediction,           # 2. 预测结果
+        'is_correct': is_correct,           # 3. 是否正确
+        'fast_result': fast_result or {},   # 4. 快思考分类结果
+        'slow_result': slow_result or {},   # 5. 慢思考分类结果
+        'image_path': relative_image_path    # 6. 测试图片路径（相对路径）
     }
     
-    if image_path:
-        entry['image_path'] = image_path
     if confidence is not None:
         entry['confidence'] = confidence
     

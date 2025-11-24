@@ -32,7 +32,7 @@ import yaml
 import pprint
 import time
 
-
+test_data_true_random =True # 测试集采样是否实现真随机，每次运行结果都不一样
 DEBUG = False  # 设置调试模式为关闭状态
 
 # 全局数据集配置
@@ -878,15 +878,21 @@ if __name__ == "__main__":
                         'reasoning': slow_result.get('reasoning', '')
                     }
                 
-                # 创建结果条目
+                # 获取项目根目录用于路径转换
+                # 项目根目录就是discovering.py所在目录，这是最可靠的方式
+                # 使用os.path.dirname(os.path.abspath(__file__))确保获取绝对路径
+                project_root = os.path.dirname(os.path.abspath(__file__))
+                
+                # 创建结果条目（6元组）
                 result_entry = create_result_entry(
-                    label=true_cat,
-                    prediction=pred,
-                    is_correct=ok,
-                    fast_result=fast_result_data,
-                    slow_result=slow_result_data if used_slow else None,
-                    image_path=path,
-                    confidence=result.get('final_confidence', 0.0)
+                    label=true_cat,                    # 1. 正确标签
+                    prediction=pred,                   # 2. 预测结果
+                    is_correct=ok,                     # 3. 是否正确
+                    fast_result=fast_result_data,      # 4. 快思考分类结果
+                    slow_result=slow_result_data if used_slow else None,  # 5. 慢思考分类结果
+                    image_path=path,                   # 6. 测试图片路径（将转换为相对路径）
+                    confidence=result.get('final_confidence', 0.0),
+                    project_root=project_root
                 )
                 classification_results.append(result_entry)
                 
