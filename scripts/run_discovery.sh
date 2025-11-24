@@ -441,17 +441,17 @@ case "${MODE}" in
                 --results_out=${RESULTS_OUT}"
         else
             # 使用discovery集
-            if [ ! -d "${TEST_DATA_DIR}" ]; then
-                print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
-                exit 1
-            fi
-            CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-                --mode=${MODE} \
-                --config_file_env=./configs/env_machine.yml \
-                --config_file_expt=./configs/expts/${CONFIG_FILE} \
-                --test_data_dir=${TEST_DATA_DIR} \
-                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-                --results_out=${RESULTS_OUT}"
+        if [ ! -d "${TEST_DATA_DIR}" ]; then
+            print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
+            exit 1
+        fi
+        CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --test_data_dir=${TEST_DATA_DIR} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --results_out=${RESULTS_OUT}"
         fi
         ;;
     

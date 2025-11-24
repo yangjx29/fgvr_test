@@ -1,0 +1,573 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+Dataset: car (num_classes=196)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test  # 项目根目录
+Knowledge Base Dir: ./experiments/car196/knowledge_base  # 知识库目录
+Results Out: ./results/car_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/car196_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test/logs/fast_slow/car196/fast_slow_car.log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: car (car196)
+类别数: 196
+实验目录: ./experiments/car196
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-11-24 01:50:59 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/car196_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/car196/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/car_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 10.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/car_196',
+ 'dataset_name': 'car',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/car196',
+ 'expt_dir_describe': './experiments/car196/describe',
+ 'expt_dir_gallery': './experiments/car196/gallery',
+ 'expt_dir_grouping': './experiments/car196/grouping',
+ 'expt_dir_guess': './experiments/car196/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 98,
+ 'num_classes': 196,
+ 'num_novel': 98,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/car196/gallery/car_image_descriptions_attn',
+ 'path_identify_answers': './experiments/car196/identify',
+ 'path_llm_gussed_names': './experiments/car196/guess/car_llm_gussed_names',
+ 'path_llm_prompts': './experiments/car196/describe/car_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/car196/guess/car_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/car196/guess/car_llm_replies_raw',
+ 'path_references': './experiments/car196/gallery/car_image_references',
+ 'path_regions': './experiments/car196/gallery/car_image_regions',
+ 'path_vqa_answers': './experiments/car196/describe/car_attributes_pairs',
+ 'path_vqa_questions': './experiments/car196/describe/car_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "car196",
+    "num_classes": 196,
+    "config_file": "car196_all.yml",
+    "data_dir": "car_196",
+    "experiment_dir": "car196",
+    "stats_file": "car196/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/car196/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/car196"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.10s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.20s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.20s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.22s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.70s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.92s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-24 01:51:09
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/car196/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/car196/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1475 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-24 01:52:21
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x77127ab241f0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x77127ab24400>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/car196/knowledge_base
+使用数据集: car, 类别数: 196
+✅ 慢思考模块初始化完成，类别映射数量: 196
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-24 01:52:21] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/car196/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/car196/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/car196/knowledge_base 加载
+图像知识库类别数: 196
+文本知识库类别数: 196
+类别描述数: 196
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x77127ab24400>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x77127ab240d0>
+📦 数据集信息: {'full_name': 'car196', 'num_classes': 196, 'config_file': 'car196_all.yml', 'data_dir': 'car_196', 'experiment_dir': 'car196', 'stats_file': 'car196/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/car196/knowledge_base/stats.json', 'experiment_dir_full': './experiments/car196'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Verify the vehicle's body type and context before making a final classification decision. (Trigger: This rule should be recalled when analyzing images of vehicles in a showroom setting or when the body type is ambiguous based on initial visual cues.)
+2. Verify the entire vehicle's design, including the body shape, door configuration, and overall proportions before making a final classification decision. (Trigger: This rule should be recalled when analyzing images of trucks where the grille and headlights are not immediately recognizable or when the vehicle's proportions and body style are ambiguous.)
+3. Focus on specific design features such as the grille and headlights when identifying car models. (Trigger: This rule should be recalled whenever the task involves identifying car models based on visual inspection.)
+
+经验库已从 ./experiments/car196/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: car196
+数据集根目录: ./datasets
+测试百分比: 10.0%
+说明: 使用完整测试集的 10.0% 进行评估
+======================================================================
+✓ 测试集验证成功
+  测试集目录: ./datasets/car_196/images_test
+  类别数量: 196
+  总图像数: 8041
+  平均每类: 41.0 张
+  图像范围: 24 - 68 张/类
+✓ 采样完成: 908 张图像，覆盖 196 个类别
+  平均每类: 4.6 张
+======================================================================
+test sample keys: ['AM_General_Hummer_SUV_2000', 'Acura_Integra_Type_R_2001', 'Acura_RL_Sedan_2012', 'Acura_TL_Sedan_2012', 'Acura_TL_Type-S_2008']...
+[fast and slow] 测试数据集包含 196 个类别
+  0%|          | 0/196 [00:00<?, ?it/s][2025-11-24 01:52:22] Processing fast-slow:   0%|          | 0/196 [00:00<?, ?it/s]开始分类图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/07917.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/07917.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['AM_General_Hummer_SUV_2000', 'HUMMER_H2_SUT_Crew_Cab_2009', 'HUMMER_H3T_Crew_Cab_2010', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Ford_Ranger_SuperCab_2011', 'Jeep_Patriot_SUV_2012', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Ford_F-150_Regular_Cab_2007', 'Jeep_Wrangler_SUV_2012', 'Jeep_Liberty_SUV_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Lamborghini_Reventon_Coupe_2008', 'Land_Rover_Range_Rover_SUV_2012', 'Toyota_4Runner_SUV_2012', 'Lamborghini_Aventador_Coupe_2012', 'Toyota_Sequoia_SUV_2012', 'Land_Rover_LR2_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.80GB, 剩余=14.96GB
+[2025-11-24 01:52:24] [显存监控] 已分配=32.56GB, 已保留=33.92GB, 空闲=14.84GB
+[2025-11-24 01:52:27] [显存监控] 已分配=32.57GB, 已保留=33.92GB, 空闲=14.84GB
+[2025-11-24 01:52:30] [显存监控] 已分配=32.57GB, 已保留=33.92GB, 空闲=14.83GB
+[2025-11-24 01:52:33] [显存监控] 已分配=32.58GB, 已保留=33.92GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=33.92GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'HUMMER_H2_SUT_Crew_Cab_2009' -> 'HUMMER H2 SUT Crew Cab 2009'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:52:36] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+[2025-11-24 01:52:39] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+[2025-11-24 01:52:42] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+[2025-11-24 01:52:45] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.46GB, 剩余=14.97GB
+分类完成: HUMMER_H2_SUT_Crew_Cab_2009 (置信度: 0.8500)
+总耗时: 25.19秒
+succ. pred cate:HUMMER_H2_SUT_Crew_Cab_2009, true cate:AM_General_Hummer_SUV_2000, used_slow:True, confidence:0.8500
+开始分类图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/03073.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/03073.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Jeep_Wrangler_SUV_2012', 'HUMMER_H2_SUT_Crew_Cab_2009', 'HUMMER_H3T_Crew_Cab_2010', 'AM_General_Hummer_SUV_2000', 'Jeep_Patriot_SUV_2012', 'Jeep_Liberty_SUV_2012', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Ford_F-150_Regular_Cab_2012', 'Chevrolet_Express_Cargo_Van_2007', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:52:48] [显存监控] 已分配=32.55GB, 已保留=33.69GB, 空闲=14.85GB
+[2025-11-24 01:52:51] [显存监控] 已分配=32.55GB, 已保留=33.69GB, 空闲=14.85GB
+[2025-11-24 01:52:54] [显存监控] 已分配=32.56GB, 已保留=33.69GB, 空闲=14.85GB
+[2025-11-24 01:52:57] [显存监控] 已分配=32.56GB, 已保留=33.69GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=33.69GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'HUMMER_H2_SUT_Crew_Cab_2009' -> 'HUMMER H2 SUT Crew Cab 2009'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:53:00] [显存监控] 已分配=32.55GB, 已保留=33.48GB, 空闲=14.85GB
+[2025-11-24 01:53:03] [显存监控] 已分配=32.57GB, 已保留=33.48GB, 空闲=14.83GB
+[2025-11-24 01:53:06] [显存监控] 已分配=32.55GB, 已保留=33.48GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.48GB, 剩余=14.97GB
+分类完成: HUMMER_H2_SUT_Crew_Cab_2009 (置信度: 0.9500)
+总耗时: 20.50秒
+succ. pred cate:HUMMER_H2_SUT_Crew_Cab_2009, true cate:AM_General_Hummer_SUV_2000, used_slow:True, confidence:0.9500
+开始分类图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/07948.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/07948.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['AM_General_Hummer_SUV_2000', 'Jeep_Patriot_SUV_2012', 'Jeep_Liberty_SUV_2012', 'Jeep_Wrangler_SUV_2012', 'HUMMER_H2_SUT_Crew_Cab_2009', 'HUMMER_H3T_Crew_Cab_2010', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Jeep_Compass_SUV_2012', 'Dodge_Dakota_Club_Cab_2007', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007', 'Chevrolet_Avalanche_Crew_Cab_2012', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 01:53:09] [显存监控] 已分配=32.55GB, 已保留=33.51GB, 空闲=14.85GB
+[2025-11-24 01:53:12] [显存监控] 已分配=32.55GB, 已保留=33.51GB, 空闲=14.86GB
+[2025-11-24 01:53:15] [显存监控] 已分配=32.55GB, 已保留=33.51GB, 空闲=14.86GB
+[2025-11-24 01:53:18] [显存监控] 已分配=32.55GB, 已保留=33.51GB, 空闲=14.86GB
+推理后显存: 已分配=32.44GB, 已保留=33.51GB, 剩余=14.97GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.97GB
+[2025-11-24 01:53:21] [显存监控] 已分配=32.51GB, 已保留=33.32GB, 空闲=14.90GB
+[2025-11-24 01:53:24] [显存监控] 已分配=32.51GB, 已保留=33.32GB, 空闲=14.90GB
+[2025-11-24 01:53:27] [显存监控] 已分配=32.51GB, 已保留=33.32GB, 空闲=14.89GB
+推理后显存: 已分配=32.44GB, 已保留=33.32GB, 剩余=14.97GB
+分类完成: AM_General_Hummer_SUV_2000 (置信度: 0.9500)
+总耗时: 19.95秒
+succ. pred cate:AM_General_Hummer_SUV_2000, true cate:AM_General_Hummer_SUV_2000, used_slow:True, confidence:0.9500
+开始分类图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/02017.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/02017.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Jeep_Wrangler_SUV_2012', 'AM_General_Hummer_SUV_2000', 'HUMMER_H2_SUT_Crew_Cab_2009', 'Jeep_Patriot_SUV_2012', 'Cadillac_Escalade_EXT_Crew_Cab_2007', 'Jeep_Liberty_SUV_2012', 'HUMMER_H3T_Crew_Cab_2010', 'Land_Rover_LR2_SUV_2012', 'Chevrolet_Express_Van_2007', 'Dodge_Sprinter_Cargo_Van_2009', 'Land_Rover_Range_Rover_SUV_2012', 'Ford_F-150_Regular_Cab_2007', 'GMC_Savana_Van_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:53:30] [显存监控] 已分配=32.58GB, 已保留=33.71GB, 空闲=14.82GB
+[2025-11-24 01:53:33] [显存监控] 已分配=32.55GB, 已保留=33.71GB, 空闲=14.85GB
+[2025-11-24 01:53:36] [显存监控] 已分配=32.56GB, 已保留=33.71GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=33.71GB, 剩余=14.97GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:53:39] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+[2025-11-24 01:53:42] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+[2025-11-24 01:53:45] [显存监控] 已分配=32.55GB, 已保留=33.46GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.46GB, 剩余=14.97GB
+[2025-11-24 01:52:22] Processing fast-slow:   1%|          | 1/196 [01:46<5:47:15, 106.85s/it][2025-11-24 01:54:09] Processing fast-slow:   1%|          | 1/196 [01:46<5:47:15, 106.85s/it]分类完成: AM_General_Hummer_SUV_2000 (置信度: 0.9500)
+总耗时: 19.07秒
+succ. pred cate:AM_General_Hummer_SUV_2000, true cate:AM_General_Hummer_SUV_2000, used_slow:True, confidence:0.9500
+开始分类图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/03094.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/AM_General_Hummer_SUV_2000/03094.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['AM_General_Hummer_SUV_2000', 'Jeep_Wrangler_SUV_2012', 'HUMMER_H2_SUT_Crew_Cab_2009', 'Jeep_Patriot_SUV_2012', 'Jeep_Liberty_SUV_2012', 'HUMMER_H3T_Crew_Cab_2010', 'Jeep_Compass_SUV_2012', 'Toyota_4Runner_SUV_2012', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Jeep_Grand_Cherokee_SUV_2012', 'Land_Rover_Range_Rover_SUV_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:53:48] [显存监控] 已分配=32.56GB, 已保留=33.95GB, 空闲=14.84GB
+[2025-11-24 01:53:51] [显存监控] 已分配=32.56GB, 已保留=33.95GB, 空闲=14.84GB
+[2025-11-24 01:53:54] [显存监控] 已分配=32.57GB, 已保留=33.95GB, 空闲=14.83GB
+[2025-11-24 01:53:57] [显存监控] 已分配=32.58GB, 已保留=33.95GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=33.95GB, 剩余=14.97GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:54:00] [显存监控] 已分配=32.55GB, 已保留=33.64GB, 空闲=14.85GB
+[2025-11-24 01:54:03] [显存监控] 已分配=32.55GB, 已保留=33.64GB, 空闲=14.85GB
+[2025-11-24 01:54:06] [显存监控] 已分配=32.55GB, 已保留=33.64GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.64GB, 剩余=14.97GB
+分类完成: HUMMER_H2_SUT_Crew_Cab_2009 (置信度: 0.9500)
+总耗时: 22.13秒
+succ. pred cate:HUMMER_H2_SUT_Crew_Cab_2009, true cate:AM_General_Hummer_SUV_2000, used_slow:True, confidence:0.9500
+开始分类图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/05181.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/05181.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_Integra_Type_R_2001', 'Eagle_Talon_Hatchback_1998', 'Nissan_240SX_Coupe_1998', 'Plymouth_Neon_Coupe_1999', 'Geo_Metro_Convertible_1993', 'Chevrolet_Corvette_Convertible_2012', 'Chevrolet_Cobalt_SS_2010', 'Lamborghini_Diablo_Coupe_2001', 'Ford_Mustang_Convertible_2007', 'Ford_GT_Coupe_2006', 'Chevrolet_Monte_Carlo_Coupe_2007', 'Daewoo_Nubira_Wagon_2002', 'Dodge_Charger_SRT-8_2009']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:54:09] [显存监控] 已分配=32.50GB, 已保留=33.06GB, 空闲=14.90GB
+[2025-11-24 01:54:12] [显存监控] 已分配=32.55GB, 已保留=33.70GB, 空闲=14.85GB
+[2025-11-24 01:54:15] [显存监控] 已分配=32.56GB, 已保留=33.70GB, 空闲=14.84GB
+[2025-11-24 01:54:18] [显存监控] 已分配=32.57GB, 已保留=33.70GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=33.70GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_Integra_Type_R_2001' -> 'Acura Integra Type R 2001'
+分类完成: Acura Integra Type R 2001 (置信度: 0.2121)
+总耗时: 10.98秒
+succ. pred cate:Acura Integra Type R 2001, true cate:Acura_Integra_Type_R_2001, used_slow:True, confidence:0.2121
+开始分类图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/03466.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/03466.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_Integra_Type_R_2001', 'Bentley_Continental_GT_Coupe_2007', 'Mercedes-Benz_SL-Class_Coupe_2009', 'Eagle_Talon_Hatchback_1998', 'Nissan_240SX_Coupe_1998', 'BMW_M6_Convertible_2010', 'Suzuki_Kizashi_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'BMW_6_Series_Convertible_2007', 'Porsche_Panamera_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'BMW_M3_Coupe_2012', 'Plymouth_Neon_Coupe_1999', 'Dodge_Charger_SRT-8_2009', 'Bentley_Continental_Supersports_Conv._Convertible_2012', 'Mercedes-Benz_300-Class_Convertible_1993']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:54:21] [显存监控] 已分配=32.58GB, 已保留=34.04GB, 空闲=14.82GB
+[2025-11-24 01:54:24] [显存监控] 已分配=32.58GB, 已保留=34.04GB, 空闲=14.82GB
+[2025-11-24 01:54:27] [显存监控] 已分配=32.62GB, 已保留=34.04GB, 空闲=14.78GB
+[2025-11-24 01:54:30] [显存监控] 已分配=32.60GB, 已保留=34.04GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=34.04GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_Integra_Type_R_2001' -> 'Acura Integra Type R 2001'
+分类完成: Acura Integra Type R 2001 (置信度: 0.2746)
+总耗时: 12.09秒
+succ. pred cate:Acura Integra Type R 2001, true cate:Acura_Integra_Type_R_2001, used_slow:True, confidence:0.2746
+开始分类图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/02798.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/02798.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_Integra_Type_R_2001', 'Eagle_Talon_Hatchback_1998', 'Plymouth_Neon_Coupe_1999', 'Mitsubishi_Lancer_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Geo_Metro_Convertible_1993', 'Nissan_240SX_Coupe_1998', 'Chevrolet_Corvette_Convertible_2012', 'Chevrolet_Sonic_Sedan_2012', 'Ford_Mustang_Convertible_2007', 'Dodge_Charger_SRT-8_2009', 'Volkswagen_Golf_Hatchback_1991', 'Chevrolet_Corvette_ZR1_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:54:33] [显存监控] 已分配=32.55GB, 已保留=33.66GB, 空闲=14.85GB
+[2025-11-24 01:54:36] [显存监控] 已分配=32.55GB, 已保留=33.66GB, 空闲=14.85GB
+[2025-11-24 01:54:39] [显存监控] 已分配=32.55GB, 已保留=33.66GB, 空闲=14.85GB
+[2025-11-24 01:54:42] [显存监控] 已分配=32.56GB, 已保留=33.66GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=33.66GB, 剩余=14.97GB
+分类完成: Acura Integra Type R 2001 (置信度: 0.1888)
+总耗时: 12.24秒
+succ. pred cate:Acura Integra Type R 2001, true cate:Acura_Integra_Type_R_2001, used_slow:True, confidence:0.1888
+开始分类图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/06181.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/06181.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_Integra_Type_R_2001', 'Eagle_Talon_Hatchback_1998', 'Lamborghini_Diablo_Coupe_2001', 'Nissan_240SX_Coupe_1998', 'Bugatti_Veyron_16.4_Convertible_2009', 'Plymouth_Neon_Coupe_1999', 'Ford_GT_Coupe_2006', 'Chevrolet_Monte_Carlo_Coupe_2007', 'Bugatti_Veyron_16.4_Coupe_2009', 'BMW_M3_Coupe_2012', 'Chevrolet_Cobalt_SS_2010', 'Chevrolet_Corvette_Convertible_2012', 'Dodge_Challenger_SRT8_2011', 'Dodge_Charger_SRT-8_2009', 'Chevrolet_Corvette_ZR1_2012', 'Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007', 'FIAT_500_Abarth_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:54:45] [显存监控] 已分配=32.64GB, 已保留=33.75GB, 空闲=14.76GB
+[2025-11-24 01:54:48] [显存监控] 已分配=32.61GB, 已保留=34.56GB, 空闲=14.79GB
+[2025-11-24 01:54:09] Processing fast-slow:   1%|          | 2/196 [02:45<4:12:57, 78.23s/it] [2025-11-24 01:55:07] Processing fast-slow:   1%|          | 2/196 [02:45<4:12:57, 78.23s/it][2025-11-24 01:54:51] [显存监控] 已分配=32.61GB, 已保留=34.56GB, 空闲=14.79GB
+[2025-11-24 01:54:54] [显存监控] 已分配=32.62GB, 已保留=34.56GB, 空闲=14.78GB
+推理后显存: 已分配=32.44GB, 已保留=34.56GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_Integra_Type_R_2001' -> 'Acura Integra Type R 2001'
+分类完成: Acura Integra Type R 2001 (置信度: 0.1900)
+总耗时: 11.27秒
+succ. pred cate:Acura Integra Type R 2001, true cate:Acura_Integra_Type_R_2001, used_slow:True, confidence:0.1900
+开始分类图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/06701.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_Integra_Type_R_2001/06701.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_Integra_Type_R_2001', 'Nissan_240SX_Coupe_1998', 'Geo_Metro_Convertible_1993', 'Eagle_Talon_Hatchback_1998', 'Plymouth_Neon_Coupe_1999', 'Chevrolet_Monte_Carlo_Coupe_2007', 'Lamborghini_Diablo_Coupe_2001', 'Chevrolet_Camaro_Convertible_2012', 'Ford_GT_Coupe_2006', 'Audi_V8_Sedan_1994', 'Chevrolet_Cobalt_SS_2010', 'Volkswagen_Golf_Hatchback_1991', 'Chevrolet_Corvette_Convertible_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:54:57] [显存监控] 已分配=32.55GB, 已保留=33.69GB, 空闲=14.85GB
+[2025-11-24 01:55:00] [显存监控] 已分配=32.55GB, 已保留=33.69GB, 空闲=14.85GB
+[2025-11-24 01:55:03] [显存监控] 已分配=32.56GB, 已保留=33.69GB, 空闲=14.85GB
+[2025-11-24 01:55:06] [显存监控] 已分配=32.56GB, 已保留=33.69GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=33.69GB, 剩余=14.97GB
+分类完成: Acura Integra Type R 2001 (置信度: 0.1982)
+总耗时: 11.62秒
+succ. pred cate:Acura Integra Type R 2001, true cate:Acura_Integra_Type_R_2001, used_slow:True, confidence:0.1982
+开始分类图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/04311.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/04311.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_RL_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Mitsubishi_Lancer_Sedan_2012', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Chevrolet_Sonic_Sedan_2012', 'Acura_TL_Sedan_2012', 'Honda_Accord_Sedan_2012', 'Chevrolet_Malibu_Sedan_2007', 'Eagle_Talon_Hatchback_1998', 'Buick_Verano_Sedan_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'Honda_Odyssey_Minivan_2012', 'Chevrolet_Malibu_Hybrid_Sedan_2010', 'Dodge_Caliber_Wagon_2007', 'Dodge_Caravan_Minivan_1997']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:55:09] [显存监控] 已分配=32.57GB, 已保留=34.19GB, 空闲=14.83GB
+[2025-11-24 01:55:12] [显存监控] 已分配=32.58GB, 已保留=34.19GB, 空闲=14.82GB
+[2025-11-24 01:55:15] [显存监控] 已分配=32.59GB, 已保留=34.19GB, 空闲=14.82GB
+[2025-11-24 01:55:18] [显存监控] 已分配=32.59GB, 已保留=34.19GB, 空闲=14.81GB
+推理后显存: 已分配=32.44GB, 已保留=34.19GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+分类完成: Acura RL Sedan 2012 (置信度: 0.1452)
+总耗时: 11.95秒
+succ. pred cate:Acura RL Sedan 2012, true cate:Acura_RL_Sedan_2012, used_slow:True, confidence:0.1452
+开始分类图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/04920.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/04920.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_RL_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Acura_TL_Sedan_2012', 'Suzuki_Kizashi_Sedan_2012', 'Acura_TL_Type-S_2008', 'Honda_Accord_Coupe_2012', 'Buick_Regal_GS_2012', 'Chevrolet_Impala_Sedan_2007', 'Chevrolet_Cobalt_SS_2010', 'Honda_Accord_Sedan_2012', 'Buick_Verano_Sedan_2012', 'Hyundai_Azera_Sedan_2012', 'Acura_TSX_Sedan_2012', 'Suzuki_SX4_Sedan_2012', 'Honda_Odyssey_Minivan_2012', 'Cadillac_SRX_SUV_2012', 'Chrysler_Town_and_Country_Minivan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:55:21] [显存监控] 已分配=32.60GB, 已保留=34.45GB, 空闲=14.81GB
+[2025-11-24 01:55:24] [显存监控] 已分配=32.61GB, 已保留=34.45GB, 空闲=14.80GB
+[2025-11-24 01:55:27] [显存监控] 已分配=32.61GB, 已保留=34.45GB, 空闲=14.79GB
+[2025-11-24 01:55:30] [显存监控] 已分配=32.61GB, 已保留=34.45GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=34.45GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+分类完成: Acura RL Sedan 2012 (置信度: 0.1915)
+总耗时: 12.70秒
+succ. pred cate:Acura RL Sedan 2012, true cate:Acura_RL_Sedan_2012, used_slow:True, confidence:0.1915
+开始分类图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/06119.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/06119.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_ZDX_Hatchback_2012', 'Acura_RL_Sedan_2012', 'Acura_TL_Sedan_2012', 'Acura_TSX_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Honda_Accord_Coupe_2012', 'Acura_TL_Type-S_2008', 'Suzuki_Kizashi_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Buick_Verano_Sedan_2012', 'Hyundai_Azera_Sedan_2012', 'Buick_Regal_GS_2012', 'Honda_Odyssey_Minivan_2012', 'Honda_Accord_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:55:33] [显存监控] 已分配=32.57GB, 已保留=34.01GB, 空闲=14.83GB
+[2025-11-24 01:55:36] [显存监控] 已分配=32.58GB, 已保留=34.01GB, 空闲=14.82GB
+[2025-11-24 01:55:39] [显存监控] 已分配=32.58GB, 已保留=34.01GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.01GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-24 01:55:42] [显存监控] 已分配=32.59GB, 已保留=33.34GB, 空闲=14.82GB
+[2025-11-24 01:55:45] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+[2025-11-24 01:55:48] [显存监控] 已分配=32.55GB, 已保留=33.84GB, 空闲=14.85GB
+[2025-11-24 01:55:51] [显存监控] 已分配=32.56GB, 已保留=33.84GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=33.84GB, 剩余=14.97GB
+分类完成: Acura_RL_Sedan_2012 (置信度: 0.9500)
+总耗时: 20.24秒
+succ. pred cate:Acura_RL_Sedan_2012, true cate:Acura_RL_Sedan_2012, used_slow:True, confidence:0.9500
+开始分类图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/06250.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_RL_Sedan_2012/06250.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_RL_Sedan_2012', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Acura_TL_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Chevrolet_Cobalt_SS_2010', 'Buick_Enclave_SUV_2012', 'Honda_Accord_Sedan_2012', 'Nissan_NV_Passenger_Van_2012', 'Honda_Odyssey_Minivan_2012', 'Buick_Verano_Sedan_2012', 'Acura_TSX_Sedan_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'Acura_TL_Type-S_2008', 'Hyundai_Genesis_Sedan_2012', 'Cadillac_SRX_SUV_2012', 'Buick_Regal_GS_2012', 'Honda_Odyssey_Minivan_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-24 01:55:07] Processing fast-slow:   2%|▏         | 3/196 [03:40<3:38:42, 67.99s/it][2025-11-24 01:56:03] Processing fast-slow:   2%|▏         | 3/196 [03:40<3:38:42, 67.99s/it][2025-11-24 01:56:03] Processing fast-slow:   2%|▏         | 3/196 [04:02<4:19:39, 80.72s/it]
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.96GB
+[2025-11-24 01:55:54] [显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[2025-11-24 01:55:57] [显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+[2025-11-24 01:56:00] [显存监控] 已分配=32.55GB, 已保留=33.58GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.58GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+分类完成: Acura RL Sedan 2012 (置信度: 0.1827)
+总耗时: 10.92秒
+succ. pred cate:Acura RL Sedan 2012, true cate:Acura_RL_Sedan_2012, used_slow:True, confidence:0.1827
+开始分类图像: datasets/car_196/images_test/Acura_TL_Sedan_2012/01162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_TL_Sedan_2012/01162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_ZDX_Hatchback_2012', 'Acura_RL_Sedan_2012', 'Acura_TL_Sedan_2012', 'Acura_TL_Type-S_2008', 'Honda_Accord_Coupe_2012', 'Acura_TSX_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Honda_Accord_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Eagle_Talon_Hatchback_1998', 'Toyota_Corolla_Sedan_2012', 'Suzuki_SX4_Sedan_2012', 'Chevrolet_Malibu_Sedan_2007', 'Honda_Odyssey_Minivan_2007', 'Hyundai_Genesis_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.96GB
+[2025-11-24 01:56:03] [显存监控] 已分配=32.55GB, 已保留=33.53GB, 空闲=14.85GB
+[2025-11-24 01:56:06] [显存监控] 已分配=32.55GB, 已保留=33.53GB, 空闲=14.85GB
+[2025-11-24 01:56:09] [显存监控] 已分配=32.55GB, 已保留=33.53GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.53GB, 剩余=14.97GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=32.44GB, 已保留=32.78GB, 剩余=14.96GB
+[2025-11-24 01:56:12] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 01:56:15] [显存监控] 已分配=32.51GB, 已保留=33.29GB, 空闲=14.89GB
+[2025-11-24 01:56:18] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.85GB
+[2025-11-24 01:56:21] [显存监控] 已分配=32.55GB, 已保留=33.29GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.29GB, 剩余=14.97GB
+分类完成: Acura_RL_Sedan_2012 (置信度: 0.8500)
+总耗时: 19.41秒
+succ. pred cate:Acura_RL_Sedan_2012, true cate:Acura_TL_Sedan_2012, used_slow:True, confidence:0.8500
+开始分类图像: datasets/car_196/images_test/Acura_TL_Sedan_2012/04965.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: datasets/car_196/images_test/Acura_TL_Sedan_2012/04965.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_ZDX_Hatchback_2012', 'Acura_TL_Sedan_2012', 'Acura_RL_Sedan_2012', 'Acura_TL_Type-S_2008', 'Honda_Accord_Coupe_2012', 'Acura_TSX_Sedan_2012', 'Honda_Accord_Sedan_2012', 'Buick_Regal_GS_2012', 'Eagle_Talon_Hatchback_1998', 'Honda_Odyssey_Minivan_2007', 'Buick_Verano_Sedan_2012', 'Suzuki_SX4_Sedan_2012', 'Cadillac_SRX_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2000x1333)，缩小到 (1750x1166) 以节省显存
+推理前显存: 已分配=32.48GB, 已保留=33.09GB, 剩余=14.92GB
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test/discovering.py", line 829, in <module>
+    result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)
+  File "/home/hdl/project/fgvr_test/fast_slow_thinking_system.py", line 330, in classify_single_image
+    slow_result = self.slow_thinking.slow_thinking_pipeline_optimized(
+  File "/home/hdl/project/fgvr_test/slow_thinking_optimized.py", line 687, in slow_thinking_pipeline_optimized
+    result = self.reasoning_with_experience_base(
+  File "/home/hdl/project/fgvr_test/slow_thinking_optimized.py", line 279, in reasoning_with_experience_base
+    reply, response = self.mllm_bot.describe_attribute(image, prompt)
+  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 459, in describe_attribute
+    reply = self.__call_qwen2_5(raw_image, attr_prompt, max_new_tokens)
+  File "/home/hdl/project/fgvr_test/agents/mllm_bot.py", line 390, in __call_qwen2_5
+    generated_ids = self.qwen2_5.generate(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/utils.py", line 2223, in generate
+    result = self._sample(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/generation/utils.py", line 3211, in _sample
+    outputs = self(**model_inputs, return_dict=True)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 1799, in forward
+    image_embeds = self.visual(pixel_values, grid_thw=image_grid_thw)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 558, in forward
+    hidden_states = blk(hidden_states, cu_seqlens=cu_seqlens_now, position_embeddings=position_embeddings)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 351, in forward
+    hidden_states = hidden_states + self.attn(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/models/qwen2_5_vl/modeling_qwen2_5_vl.py", line 320, in forward
+    attn_output = F.scaled_dot_product_attention(q, k, v, attention_mask, dropout_p=0.0)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.62 GiB. GPU 0 has a total capacity of 47.40 GiB of which 310.31 MiB is free. Including non-PyTorch memory, this process has 47.09 GiB memory in use. Of the allocated memory 46.37 GiB is allocated by PyTorch, and 415.40 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

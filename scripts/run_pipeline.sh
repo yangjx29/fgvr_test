@@ -257,12 +257,12 @@ run_pipeline_bg() {
                 --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
                 --results_out=${RESULTS_OUT}
         else
-            python discovering.py --mode=fast_slow \
-                --config_file_env=./configs/env_machine.yml \
-                --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
-                --test_data_dir=${TEST_DATA_DIR} \
-                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-                --results_out=${RESULTS_OUT}
+        python discovering.py --mode=fast_slow \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
+            --test_data_dir=${TEST_DATA_DIR} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --results_out=${RESULTS_OUT}
         fi
 
         EXIT_CODE=$?

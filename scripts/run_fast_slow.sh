@@ -372,13 +372,13 @@ if [ "${USE_TEST_DATA}" = "true" ]; then
         --results_out=${RESULTS_OUT}"
 else
     # 使用discovery集
-    CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-        --mode=fast_slow \
-        --config_file_env=./configs/env_machine.yml \
-        --config_file_expt=./configs/expts/${CONFIG_FILE} \
-        --test_data_dir=${TEST_DATA_DIR} \
-        --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-        --results_out=${RESULTS_OUT}"
+CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+    --mode=fast_slow \
+    --config_file_env=./configs/env_machine.yml \
+    --config_file_expt=./configs/expts/${CONFIG_FILE} \
+    --test_data_dir=${TEST_DATA_DIR} \
+    --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+    --results_out=${RESULTS_OUT}"
 fi
 
 # 创建启动脚本（先写配置信息，再运行Python）
