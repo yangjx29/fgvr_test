@@ -740,7 +740,40 @@ def visualize_attention_mapping(att_map, ori_inputs, processor, important_tokens
     return visualization
 
 def is_similar(str1, str2, threshold=0.7):
-        """判断两个字符串是否语义相似"""
+        """
+        判断两个字符串是否语义相似
+        在比较前进行大小写不敏感和分隔符归一化处理
         
-        similarity = SequenceMatcher(None, str1, str2).ratio()
+        Args:
+            str1: 第一个字符串
+            str2: 第二个字符串
+            threshold: 相似度阈值
+            
+        Returns:
+            是否相似
+        """
+        if not str1 or not str2:
+            return False
+        
+        # 归一化处理：转换为小写，统一分隔符
+        def normalize(s):
+            import re
+            # 转换为小写
+            s = s.lower()
+            # 替换各种分隔符为空格
+            s = re.sub(r'[_\-\.,;:]', ' ', s)
+            # 移除多余空格
+            s = re.sub(r'\s+', ' ', s)
+            # 去除首尾空格
+            return s.strip()
+        
+        normalized_str1 = normalize(str1)
+        normalized_str2 = normalize(str2)
+        
+        # 如果归一化后完全相同，直接返回True
+        if normalized_str1 == normalized_str2:
+            return True
+        
+        # 计算相似度
+        similarity = SequenceMatcher(None, normalized_str1, normalized_str2).ratio()
         return similarity >= threshold

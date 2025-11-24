@@ -6,8 +6,12 @@
 import os
 import random
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 import math
+from data.class_name_mapper import (
+    get_dataset_name_from_key,
+    standardize_test_class_name
+)
 
 # 数据集测试集路径映射
 DATASET_TEST_PATHS = {
@@ -57,7 +61,8 @@ def get_test_set_path(dataset_name: str, data_root: str) -> str:
 def sample_test_images(
     test_dir: str,
     test_percentage: float,
-    seed: int = 42
+    seed: int = 42,
+    dataset_key: Optional[str] = None
 ) -> List[Tuple[str, str]]:
     """
     从测试集中按百分比采样图像
@@ -66,9 +71,10 @@ def sample_test_images(
         test_dir: 测试集目录路径
         test_percentage: 采样百分比 (0-100)
         seed: 随机种子
+        dataset_key: 数据集key（如 'flower102'），用于类别名标准化
     
     Returns:
-        采样的图像列表，每个元素为 (图像路径, 类别名) 元组
+        采样的图像列表，每个元素为 (图像路径, 标准化后的类别名) 元组
     """
     random.seed(seed)
     
@@ -78,11 +84,22 @@ def sample_test_images(
     
     sampled_images = []
     
+    # 获取数据集名称用于类别名标准化
+    dataset_name = None
+    if dataset_key:
+        dataset_name = get_dataset_name_from_key(dataset_key)
+    
     # 遍历所有类别目录
     class_dirs = sorted([d for d in test_path.iterdir() if d.is_dir()])
     
     for class_dir in class_dirs:
-        class_name = class_dir.name
+        raw_class_name = class_dir.name
+        
+        # 标准化类别名称
+        if dataset_name:
+            class_name = standardize_test_class_name(raw_class_name, dataset_name)
+        else:
+            class_name = raw_class_name
         
         # 获取该类别的所有图像
         image_files = []
@@ -123,10 +140,10 @@ def get_test_images_by_percentage(
         seed: 随机种子
     
     Returns:
-        采样的图像列表，每个元素为 (图像路径, 类别名) 元组
+        采样的图像列表，每个元素为 (图像路径, 标准化后的类别名) 元组
     """
     test_dir = get_test_set_path(dataset_name, data_root)
-    return sample_test_images(test_dir, test_percentage, seed)
+    return sample_test_images(test_dir, test_percentage, seed, dataset_key=dataset_name)
 
 
 def get_all_test_images(dataset_name: str, data_root: str) -> List[Tuple[str, str]]:

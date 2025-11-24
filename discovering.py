@@ -133,7 +133,7 @@ def prepare_test_samples(cfg, args):
             seed=cfg.get('seed', 42)
         )
         
-        # 组织成字典格式
+        # 组织成字典格式（类别名已经在sample_test_images中标准化）
         for img_path, class_name in sampled_images:
             test_samples[class_name].append(img_path)
         
@@ -155,9 +155,23 @@ def prepare_test_samples(cfg, args):
         print("="*70)
         
         # 从test_data_dir加载
-        for class_name in os.listdir(args.test_data_dir):
-            class_dir = os.path.join(args.test_data_dir, class_name)
+        # 获取数据集名称用于类别名标准化
+        dataset_key = f"{cfg['dataset_name']}{cfg.get('num_classes', '')}"
+        from data.class_name_mapper import (
+            get_dataset_name_from_key,
+            standardize_test_class_name
+        )
+        dataset_name = get_dataset_name_from_key(dataset_key)
+        
+        for raw_class_name in os.listdir(args.test_data_dir):
+            class_dir = os.path.join(args.test_data_dir, raw_class_name)
             if os.path.isdir(class_dir):
+                # 标准化类别名称
+                if dataset_name:
+                    class_name = standardize_test_class_name(raw_class_name, dataset_name)
+                else:
+                    class_name = raw_class_name
+                
                 for img_name in os.listdir(class_dir):
                     if img_name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                         img_path = os.path.join(class_dir, img_name)
@@ -816,6 +830,16 @@ if __name__ == "__main__":
         slow_triggered = 0       # 触发慢思考的数量
         slow_triggered_correct = 0  # 触发慢思考且正确的数量
         
+        # 导入结果保存模块
+        from data.result_saver import (
+            save_classification_result,
+            create_result_entry,
+            get_experiment_dir_from_dataset_info
+        )
+        
+        # 准备结果列表用于保存
+        classification_results = []
+        
         # for true_cat, paths in test_samples.items():
         from datetime import datetime
         from tqdm import tqdm
@@ -831,6 +855,40 @@ if __name__ == "__main__":
                 pred = result.get('final_prediction', 'unknown')
                 ok = is_similar(pred, true_cat, threshold=0.3)
                 used_slow = result.get('used_slow_thinking', False)
+                
+                # 提取快思考和慢思考结果
+                fast_result = result.get('fast_result', {})
+                fast_result_data = {
+                    'predicted_category': fast_result.get('predicted_category', 'unknown'),
+                    'predicted_fast': fast_result.get('predicted_fast', 'unknown'),
+                    'confidence': fast_result.get('confidence', 0.0),
+                    'fused_top1': fast_result.get('fused_top1', 'unknown'),
+                    'fused_top1_prob': fast_result.get('fused_top1_prob', 0.0),
+                    'need_slow_thinking': fast_result.get('need_slow_thinking', False),
+                    'img_category': fast_result.get('img_category', 'unknown'),
+                    'text_category': fast_result.get('text_category', 'unknown')
+                }
+                
+                slow_result_data = {}
+                if used_slow:
+                    slow_result = result.get('slow_result', {})
+                    slow_result_data = {
+                        'predicted_category': slow_result.get('predicted_category', 'unknown'),
+                        'confidence': slow_result.get('confidence', 0.0),
+                        'reasoning': slow_result.get('reasoning', '')
+                    }
+                
+                # 创建结果条目
+                result_entry = create_result_entry(
+                    label=true_cat,
+                    prediction=pred,
+                    is_correct=ok,
+                    fast_result=fast_result_data,
+                    slow_result=slow_result_data if used_slow else None,
+                    image_path=path,
+                    confidence=result.get('final_confidence', 0.0)
+                )
+                classification_results.append(result_entry)
                 
                 if ok:
                     print(f"succ. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
@@ -863,6 +921,36 @@ if __name__ == "__main__":
         print(f"[fast and slow] 快思考准确率: {fast_only_acc:.4f}")
         print(f"[fast and slow] 慢思考触发比例: {slow_trigger_ratio:.4f}")
         print(f"[fast and slow] 慢思考准确率: {slow_trigger_acc:.4f}")
+        
+        # 保存分类结果
+        try:
+            dataset_key = f"{cfg['dataset_name']}{cfg.get('num_classes', '')}"
+            experiment_dir = get_experiment_dir_from_dataset_info(CURRENT_DATASET)
+            if experiment_dir:
+                metadata = {
+                    'accuracy': acc,
+                    'correct': correct,
+                    'total': total,
+                    'fast_only_correct': fast_only_correct,
+                    'slow_triggered': slow_triggered,
+                    'slow_triggered_correct': slow_triggered_correct,
+                    'fast_only_acc': fast_only_acc,
+                    'slow_trigger_ratio': slow_trigger_ratio,
+                    'slow_trigger_acc': slow_trigger_acc
+                }
+                save_path = save_classification_result(
+                    dataset_name=dataset_key,
+                    experiment_dir=experiment_dir,
+                    results=classification_results,
+                    metadata=metadata
+                )
+                print(f"📁 分类结果已保存到: {save_path}")
+            else:
+                print("⚠️  无法获取实验目录，跳过结果保存")
+        except Exception as e:
+            print(f"⚠️  保存分类结果时出错: {e}")
+            import traceback
+            traceback.print_exc()
     else:
         raise NotImplementedError 
 

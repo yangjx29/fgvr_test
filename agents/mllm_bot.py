@@ -83,6 +83,7 @@ class MLLMBot:
         print(f"📌 模型标识（model_tag）: {model_tag}")
         print(f"📌 模型名称（model_name）: {model_name}")
         print(f"📁 本地模型路径: {local_model_path}")
+        print(f"📁 图片最大尺寸: {pre_define_max_size} ，超出这个值将压缩")
 
         # ========== CPU ==========
         if device == 'cpu':
