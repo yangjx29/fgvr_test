@@ -77,6 +77,14 @@ def setup_config(config_file_env: str, config_file_expt: str):
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "dtd")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "dtd47")  # 设置实验目录
         mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "caltech101":  # 如果是Caltech-101数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "caltech101")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "caltech101")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "caltech256":  # 如果是Caltech-256数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "caltech256")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "caltech256")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
     elif cfg_expt['dataset_name'] == "place":  # 如果是场景数据集
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "place_365")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "place365")  # 设置实验目录

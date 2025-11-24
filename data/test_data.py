@@ -24,6 +24,8 @@ DATASET_TEST_PATHS = {
     'eurosat10': 'eurosat/images_test',
     'food101': 'food_101/images_test',
     'dtd47': 'dtd/images_test',
+    'caltech101': 'caltech101/images_test',
+    'caltech256': 'caltech256/images_test',
 }
 
 
@@ -62,7 +64,8 @@ def sample_test_images(
     test_dir: str,
     test_percentage: float,
     seed: int = 42,
-    dataset_key: Optional[str] = None
+    dataset_key: Optional[str] = None,
+    use_true_random: bool = False
 ) -> List[Tuple[str, str]]:
     """
     从测试集中按百分比采样图像
@@ -70,13 +73,25 @@ def sample_test_images(
     Args:
         test_dir: 测试集目录路径
         test_percentage: 采样百分比 (0-100)
-        seed: 随机种子
+        seed: 随机种子（仅在use_true_random=False时使用）
         dataset_key: 数据集key（如 'flower102'），用于类别名标准化
+        use_true_random: 是否使用真随机数生成器（True=真随机，False=伪随机）
     
     Returns:
         采样的图像列表，每个元素为 (图像路径, 标准化后的类别名) 元组
     """
-    random.seed(seed)
+    # 根据use_true_random选择随机数生成方式
+    if use_true_random:
+        from utils.true_random import get_true_random_generator
+        true_random = get_true_random_generator(use_blocking=True, fallback_to_pseudo=True)
+        if true_random.is_available():
+            print("✓ 使用真随机数生成器进行采样")
+        else:
+            print("⚠️  真随机数生成器不可用，回退到伪随机数生成器")
+            random.seed(seed)
+    else:
+        random.seed(seed)
+        true_random = None
     
     test_path = Path(test_dir)
     if not test_path.exists():
@@ -114,8 +129,11 @@ def sample_test_images(
         num_samples = max(1, math.ceil(total_images * test_percentage / 100.0))
         num_samples = min(num_samples, total_images)  # 不超过总数
         
-        # 随机采样
-        sampled = random.sample(image_files, num_samples)
+        # 随机采样：使用真随机或伪随机
+        if use_true_random and true_random and true_random.is_available():
+            sampled = true_random.sample(image_files, num_samples)
+        else:
+            sampled = random.sample(image_files, num_samples)
         
         # 添加到结果列表
         for img_path in sampled:
@@ -128,7 +146,8 @@ def get_test_images_by_percentage(
     dataset_name: str,
     data_root: str,
     test_percentage: float,
-    seed: int = 42
+    seed: int = 42,
+    use_true_random: bool = False
 ) -> List[Tuple[str, str]]:
     """
     根据数据集名称和采样百分比获取测试图像
@@ -137,13 +156,14 @@ def get_test_images_by_percentage(
         dataset_name: 数据集名称
         data_root: 数据集根目录
         test_percentage: 采样百分比 (0-100)
-        seed: 随机种子
+        seed: 随机种子（仅在use_true_random=False时使用）
+        use_true_random: 是否使用真随机数生成器
     
     Returns:
         采样的图像列表，每个元素为 (图像路径, 标准化后的类别名) 元组
     """
     test_dir = get_test_set_path(dataset_name, data_root)
-    return sample_test_images(test_dir, test_percentage, seed, dataset_key=dataset_name)
+    return sample_test_images(test_dir, test_percentage, seed, dataset_key=dataset_name, use_true_random=use_true_random)
 
 
 def get_all_test_images(dataset_name: str, data_root: str) -> List[Tuple[str, str]]:

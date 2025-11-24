@@ -1,0 +1,648 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+Dataset: caltech101 (num_classes=101)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/caltech101/knowledge_base  # 知识库目录
+Results Out: ./results/caltech101_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: caltech101 (caltech101)
+类别数: 101
+实验目录: ./experiments/caltech101
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-11-24 23:00:07 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/caltech101_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/caltech101/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/caltech101',
+ 'dataset_name': 'caltech101',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/caltech101',
+ 'expt_dir_describe': './experiments/caltech101/describe',
+ 'expt_dir_gallery': './experiments/caltech101/gallery',
+ 'expt_dir_grouping': './experiments/caltech101/grouping',
+ 'expt_dir_guess': './experiments/caltech101/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 101,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/caltech101/gallery/caltech101_image_descriptions_attn',
+ 'path_identify_answers': './experiments/caltech101/identify',
+ 'path_llm_gussed_names': './experiments/caltech101/guess/caltech101_llm_gussed_names',
+ 'path_llm_prompts': './experiments/caltech101/describe/caltech101_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/caltech101/guess/caltech101_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/caltech101/guess/caltech101_llm_replies_raw',
+ 'path_references': './experiments/caltech101/gallery/caltech101_image_references',
+ 'path_regions': './experiments/caltech101/gallery/caltech101_image_regions',
+ 'path_vqa_answers': './experiments/caltech101/describe/caltech101_attributes_pairs',
+ 'path_vqa_questions': './experiments/caltech101/describe/caltech101_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "caltech101",
+    "num_classes": 101,
+    "config_file": "caltech101_all.yml",
+    "data_dir": "caltech101",
+    "experiment_dir": "caltech101",
+    "stats_file": "caltech101/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/caltech101/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/caltech101"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:09<00:38,  9.64s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:18<00:28,  9.41s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:37<00:27, 13.62s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:43<00:10, 10.51s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:46<00:00,  7.85s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:46<00:00,  9.28s/it]
+Some parameters are on the meta device because they were offloaded to the cpu.
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-24 23:00:56
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/caltech101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/caltech101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-24 23:02:21
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7058fa57c430>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7058fa57ccd0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/caltech101/knowledge_base
+使用数据集: caltech101, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-24 23:02:21] [显存监控] 已分配=7.70GB, 已保留=7.99GB, 空闲=39.70GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建发现集,img_root: ./datasets/caltech101/images_discovery_all_4
+subcat_to_sample: 100 classes
+构建知识库，包含 100 个类别, dog datasets:101
+从 ./experiments/caltech101/knowledge_base 加载知识库...
+知识库已从 ./experiments/caltech101/knowledge_base 加载
+图像知识库类别数: 0
+文本知识库类别数: 0
+类别描述数: 0
+知识库加载完成!
+构建知识库...
+训练样本包含 100 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/100 [00:00<?, ?it/s]  1%|          | 1/100 [00:00<00:36,  2.72it/s]  4%|▍         | 4/100 [00:00<00:09,  9.74it/s]  6%|▌         | 6/100 [00:01<00:20,  4.63it/s]  7%|▋         | 7/100 [00:01<00:18,  4.95it/s]  8%|▊         | 8/100 [00:01<00:27,  3.29it/s]  9%|▉         | 9/100 [00:02<00:25,  3.50it/s] 11%|█         | 11/100 [00:02<00:16,  5.29it/s] 12%|█▏        | 12/100 [00:02<00:22,  3.85it/s] 13%|█▎        | 13/100 [00:02<00:20,  4.28it/s] 15%|█▌        | 15/100 [00:03<00:20,  4.25it/s] 16%|█▌        | 16/100 [00:03<00:19,  4.29it/s] 18%|█▊        | 18/100 [00:04<00:21,  3.87it/s] 20%|██        | 20/100 [00:04<00:17,  4.63it/s] 21%|██        | 21/100 [00:04<00:17,  4.50it/s] 22%|██▏       | 22/100 [00:04<00:15,  4.88it/s] 23%|██▎       | 23/100 [00:05<00:18,  4.07it/s] 24%|██▍       | 24/100 [00:05<00:26,  2.88it/s] 25%|██▌       | 25/100 [00:06<00:24,  3.12it/s] 26%|██▌       | 26/100 [00:06<00:25,  2.94it/s] 28%|██▊       | 28/100 [00:07<00:25,  2.81it/s] 30%|███       | 30/100 [00:07<00:22,  3.06it/s] 31%|███       | 31/100 [00:08<00:21,  3.23it/s] 32%|███▏      | 32/100 [00:08<00:24,  2.76it/s] 33%|███▎      | 33/100 [00:09<00:30,  2.19it/s] 34%|███▍      | 34/100 [00:09<00:27,  2.42it/s] 35%|███▌      | 35/100 [00:10<00:28,  2.25it/s] 36%|███▌      | 36/100 [00:10<00:23,  2.76it/s] 37%|███▋      | 37/100 [00:10<00:20,  3.13it/s] 39%|███▉      | 39/100 [00:10<00:14,  4.22it/s] 40%|████      | 40/100 [00:11<00:12,  4.76it/s] 41%|████      | 41/100 [00:11<00:12,  4.59it/s] 42%|████▏     | 42/100 [00:11<00:11,  5.08it/s] 43%|████▎     | 43/100 [00:11<00:14,  3.97it/s] 45%|████▌     | 45/100 [00:12<00:13,  4.11it/s] 46%|████▌     | 46/100 [00:12<00:14,  3.84it/s] 47%|████▋     | 47/100 [00:12<00:11,  4.54it/s] 48%|████▊     | 48/100 [00:12<00:11,  4.40it/s] 49%|████▉     | 49/100 [00:14<00:37,  1.38it/s] 50%|█████     | 50/100 [00:15<00:28,  1.73it/s] 52%|█████▏    | 52/100 [00:15<00:22,  2.12it/s] 54%|█████▍    | 54/100 [00:15<00:14,  3.20it/s] 55%|█████▌    | 55/100 [00:16<00:12,  3.54it/s] 56%|█████▌    | 56/100 [00:16<00:12,  3.62it/s] 58%|█████▊    | 58/100 [00:16<00:08,  5.00it/s] 59%|█████▉    | 59/100 [00:16<00:08,  4.60it/s] 60%|██████    | 60/100 [00:16<00:07,  5.00it/s] 61%|██████    | 61/100 [00:17<00:08,  4.59it/s] 63%|██████▎   | 63/100 [00:17<00:05,  6.52it/s] 65%|██████▌   | 65/100 [00:17<00:05,  6.15it/s] 66%|██████▌   | 66/100 [00:17<00:05,  6.20it/s] 67%|██████▋   | 67/100 [00:18<00:08,  3.81it/s] 69%|██████▉   | 69/100 [00:18<00:06,  4.64it/s] 70%|███████   | 70/100 [00:18<00:05,  5.12it/s] 72%|███████▏  | 72/100 [00:19<00:04,  6.78it/s] 73%|███████▎  | 73/100 [00:19<00:03,  7.06it/s] 74%|███████▍  | 74/100 [00:19<00:03,  7.27it/s] 75%|███████▌  | 75/100 [00:19<00:03,  7.64it/s] 76%|███████▌  | 76/100 [00:19<00:05,  4.26it/s] 78%|███████▊  | 78/100 [00:20<00:03,  5.59it/s] 80%|████████  | 80/100 [00:20<00:02,  7.31it/s] 82%|████████▏ | 82/100 [00:20<00:02,  7.54it/s] 84%|████████▍ | 84/100 [00:20<00:01,  8.99it/s] 86%|████████▌ | 86/100 [00:20<00:01,  9.51it/s] 88%|████████▊ | 88/100 [00:21<00:01,  7.18it/s] 89%|████████▉ | 89/100 [00:21<00:01,  7.26it/s] 92%|█████████▏| 92/100 [00:21<00:00, 10.20it/s] 94%|█████████▍| 94/100 [00:22<00:00,  6.32it/s] 95%|█████████▌| 95/100 [00:22<00:00,  5.35it/s] 97%|█████████▋| 97/100 [00:23<00:00,  4.39it/s] 99%|█████████▉| 99/100 [00:23<00:00,  4.15it/s]100%|██████████| 100/100 [00:23<00:00,  4.22it/s]
+处理类别: Grand Piano
+类别 Grand Piano 图像特征维度: (512,)
+处理类别: Scissors
+类别 Scissors 图像特征维度: (512,)
+处理类别: Starfish
+类别 Starfish 图像特征维度: (512,)
+处理类别: Cannon
+类别 Cannon 图像特征维度: (512,)
+处理类别: Sea Horse
+类别 Sea Horse 图像特征维度: (512,)
+处理类别: Garfield
+类别 Garfield 图像特征维度: (512,)
+处理类别: Tick
+类别 Tick 图像特征维度: (512,)
+处理类别: Barrel
+类别 Barrel 图像特征维度: (512,)
+处理类别: Dragonfly
+类别 Dragonfly 图像特征维度: (512,)
+处理类别: Strawberry
+类别 Strawberry 图像特征维度: (512,)
+处理类别: Saxophone
+类别 Saxophone 图像特征维度: (512,)
+处理类别: Ibis
+类别 Ibis 图像特征维度: (512,)
+处理类别: Kangaroo
+类别 Kangaroo 图像特征维度: (512,)
+处理类别: Wheelchair
+[2025-11-24 23:02:24] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Wheelchair 图像特征维度: (512,)
+处理类别: Watch
+类别 Watch 图像特征维度: (512,)
+处理类别: Flamingo Head
+类别 Flamingo Head 图像特征维度: (512,)
+处理类别: Hawksbill
+类别 Hawksbill 图像特征维度: (512,)
+处理类别: Menorah
+类别 Menorah 图像特征维度: (512,)
+处理类别: Trilobite
+类别 Trilobite 图像特征维度: (512,)
+处理类别: Dalmatian
+类别 Dalmatian 图像特征维度: (512,)
+处理类别: Emu
+类别 Emu 图像特征维度: (512,)
+处理类别: Anchor
+类别 Anchor 图像特征维度: (512,)
+处理类别: Nautilus
+类别 Nautilus 图像特征维度: (512,)
+处理类别: Lobster
+类别 Lobster 图像特征维度: (512,)
+处理类别: Leopards
+[2025-11-24 23:02:27] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Leopards 图像特征维度: (512,)
+处理类别: Beaver
+类别 Beaver 图像特征维度: (512,)
+处理类别: Sunflower
+类别 Sunflower 图像特征维度: (512,)
+处理类别: Ant
+类别 Ant 图像特征维度: (512,)
+处理类别: Water Lilly
+类别 Water Lilly 图像特征维度: (512,)
+处理类别: Bass
+类别 Bass 图像特征维度: (512,)
+处理类别: Wrench
+类别 Wrench 图像特征维度: (512,)
+处理类别: Rhino
+类别 Rhino 图像特征维度: (512,)
+处理类别: Metronome
+[2025-11-24 23:02:30] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Metronome 图像特征维度: (512,)
+处理类别: Okapi
+类别 Okapi 图像特征维度: (512,)
+处理类别: Pigeon
+类别 Pigeon 图像特征维度: (512,)
+处理类别: Flamingo
+类别 Flamingo 图像特征维度: (512,)
+处理类别: Dolphin
+类别 Dolphin 图像特征维度: (512,)
+处理类别: Yin Yang
+类别 Yin Yang 图像特征维度: (512,)
+处理类别: Binocular
+类别 Binocular 图像特征维度: (512,)
+处理类别: Laptop
+类别 Laptop 图像特征维度: (512,)
+处理类别: Gramophone
+类别 Gramophone 图像特征维度: (512,)
+处理类别: Cellphone
+类别 Cellphone 图像特征维度: (512,)
+处理类别: Platypus
+类别 Platypus 图像特征维度: (512,)
+处理类别: Hedgehog
+类别 Hedgehog 图像特征维度: (512,)
+处理类别: Crocodile
+[2025-11-24 23:02:33] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Crocodile 图像特征维度: (512,)
+处理类别: Dollar Bill
+类别 Dollar Bill 图像特征维度: (512,)
+处理类别: Octopus
+类别 Octopus 图像特征维度: (512,)
+处理类别: Elephant
+类别 Elephant 图像特征维度: (512,)
+处理类别: Stapler
+类别 Stapler 图像特征维度: (512,)
+处理类别: Camera
+[2025-11-24 23:02:36] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Camera 图像特征维度: (512,)
+处理类别: Bonsai
+类别 Bonsai 图像特征维度: (512,)
+处理类别: Faces
+类别 Faces 图像特征维度: (512,)
+处理类别: Minaret
+类别 Minaret 图像特征维度: (512,)
+处理类别: Lotus
+类别 Lotus 图像特征维度: (512,)
+处理类别: Ewer
+类别 Ewer 图像特征维度: (512,)
+处理类别: Stegosaurus
+类别 Stegosaurus 图像特征维度: (512,)
+处理类别: Helicopter
+类别 Helicopter 图像特征维度: (512,)
+处理类别: Ferry
+类别 Ferry 图像特征维度: (512,)
+处理类别: Crocodile Head
+类别 Crocodile Head 图像特征维度: (512,)
+处理类别: Cup
+类别 Cup 图像特征维度: (512,)
+处理类别: Snoopy
+类别 Snoopy 图像特征维度: (512,)
+处理类别: Car Side
+类别 Car Side 图像特征维度: (512,)
+处理类别: Headphone
+类别 Headphone 图像特征维度: (512,)
+处理类别: Motorbikes
+类别 Motorbikes 图像特征维度: (512,)
+处理类别: Crab
+类别 Crab 图像特征维度: (512,)
+处理类别: Pizza
+类别 Pizza 图像特征维度: (512,)
+处理类别: Revolver
+[2025-11-24 23:02:39] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Revolver 图像特征维度: (512,)
+处理类别: Mayfly
+类别 Mayfly 图像特征维度: (512,)
+处理类别: Cougar Body
+类别 Cougar Body 图像特征维度: (512,)
+处理类别: Brontosaurus
+类别 Brontosaurus 图像特征维度: (512,)
+处理类别: Inline Skate
+类别 Inline Skate 图像特征维度: (512,)
+处理类别: Panda
+类别 Panda 图像特征维度: (512,)
+处理类别: Crayfish
+类别 Crayfish 图像特征维度: (512,)
+处理类别: Airplanes
+类别 Airplanes 图像特征维度: (512,)
+处理类别: Schooner
+类别 Schooner 图像特征维度: (512,)
+处理类别: Wild Cat
+类别 Wild Cat 图像特征维度: (512,)
+处理类别: Pyramid
+类别 Pyramid 图像特征维度: (512,)
+处理类别: Brain
+类别 Brain 图像特征维度: (512,)
+处理类别: Joshua Tree
+类别 Joshua Tree 图像特征维度: (512,)
+处理类别: Soccer Ball
+类别 Soccer Ball 图像特征维度: (512,)
+处理类别: Electric Guitar
+类别 Electric Guitar 图像特征维度: (512,)
+处理类别: Accordion
+类别 Accordion 图像特征维度: (512,)
+处理类别: Pagoda
+类别 Pagoda 图像特征维度: (512,)
+处理类别: Chair
+类别 Chair 图像特征维度: (512,)
+处理类别: Ketch
+类别 Ketch 图像特征维度: (512,)
+处理类别: Stop Sign
+类别 Stop Sign 图像特征维度: (512,)
+处理类别: Butterfly
+[2025-11-24 23:02:42] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+类别 Butterfly 图像特征维度: (512,)
+处理类别: Cougar Face
+类别 Cougar Face 图像特征维度: (512,)
+处理类别: Umbrella
+类别 Umbrella 图像特征维度: (512,)
+处理类别: Mandolin
+类别 Mandolin 图像特征维度: (512,)
+处理类别: Chandelier
+类别 Chandelier 图像特征维度: (512,)
+处理类别: Scorpion
+类别 Scorpion 图像特征维度: (512,)
+处理类别: Windsor Chair
+类别 Windsor Chair 图像特征维度: (512,)
+处理类别: Euphonium
+类别 Euphonium 图像特征维度: (512,)
+处理类别: Buddha
+类别 Buddha 图像特征维度: (512,)
+处理类别: Llama
+类别 Llama 图像特征维度: (512,)
+处理类别: Gerenuk
+类别 Gerenuk 图像特征维度: (512,)
+处理类别: Rooster
+类别 Rooster 图像特征维度: (512,)
+处理类别: Ceiling Fan
+类别 Ceiling Fan 图像特征维度: (512,)
+处理类别: Lamp
+类别 Lamp 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/100 [00:00<?, ?it/s]  1%|          | 1/100 [00:25<42:27, 25.73s/it]  2%|▏         | 2/100 [00:48<39:10, 23.98s/it]  3%|▎         | 3/100 [01:08<35:50, 22.17s/it]  4%|▍         | 4/100 [01:28<33:48, 21.13s/it]  5%|▌         | 5/100 [01:47<32:23, 20.46s/it]处理类别: Grand Piano
+[2025-11-24 23:02:45] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+[2025-11-24 23:02:48] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+[2025-11-24 23:02:51] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+[2025-11-24 23:02:54] [显存监控] 已分配=7.71GB, 已保留=8.01GB, 空闲=39.70GB
+wiki desc: Description for Grand Piano category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:02:57] [显存监控] 已分配=7.76GB, 已保留=8.24GB, 空闲=39.65GB
+[2025-11-24 23:03:00] [显存监控] 已分配=8.03GB, 已保留=8.59GB, 空闲=39.37GB
+[2025-11-24 23:03:03] [显存监控] 已分配=8.02GB, 已保留=8.34GB, 空闲=39.38GB
+[2025-11-24 23:03:06] [显存监控] 已分配=8.05GB, 已保留=8.63GB, 空闲=39.35GB
+[2025-11-24 23:03:09] [显存监控] 已分配=8.03GB, 已保留=8.36GB, 空闲=39.37GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.16 GiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 33.81 GiB memory in use. Including non-PyTorch memory, this process has 8.41 GiB memory in use. Of the allocated memory 7.77 GiB is allocated by PyTorch, and 342.82 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Grand Piano 文本特征维度: (512,)
+描述: Description for Grand Piano category....
+处理类别: Scissors
+[2025-11-24 23:03:12] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:03:15] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:03:18] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+wiki desc: Description for Scissors category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:03:21] [显存监控] 已分配=7.76GB, 已保留=8.30GB, 空闲=39.64GB
+[2025-11-24 23:03:24] [显存监控] 已分配=7.81GB, 已保留=8.13GB, 空闲=39.59GB
+[2025-11-24 23:03:27] [显存监控] 已分配=8.04GB, 已保留=8.60GB, 空闲=39.36GB
+[2025-11-24 23:03:30] [显存监控] 已分配=7.84GB, 已保留=8.17GB, 空闲=39.56GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.09 GiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 33.88 GiB memory in use. Including non-PyTorch memory, this process has 8.42 GiB memory in use. Of the allocated memory 7.77 GiB is allocated by PyTorch, and 341.11 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[2025-11-24 23:03:33] [显存监控] 已分配=7.77GB, 已保留=8.11GB, 空闲=39.63GB
+类别 Scissors 文本特征维度: (512,)
+描述: Description for Scissors category....
+处理类别: Starfish
+[2025-11-24 23:03:36] [显存监控] 已分配=7.71GB, 已保留=8.11GB, 空闲=39.70GB
+[2025-11-24 23:03:39] [显存监控] 已分配=7.71GB, 已保留=8.11GB, 空闲=39.70GB
+[2025-11-24 23:03:42] [显存监控] 已分配=7.71GB, 已保留=8.11GB, 空闲=39.70GB
+wiki desc: Description for Starfish category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:03:45] [显存监控] 已分配=7.75GB, 已保留=8.22GB, 空闲=39.65GB
+[2025-11-24 23:03:48] [显存监控] 已分配=8.03GB, 已保留=8.58GB, 空闲=39.37GB
+[2025-11-24 23:03:51] [显存监控] 已分配=8.05GB, 已保留=8.64GB, 空闲=39.36GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.23 GiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 33.74 GiB memory in use. Including non-PyTorch memory, this process has 8.41 GiB memory in use. Of the allocated memory 7.77 GiB is allocated by PyTorch, and 344.52 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Starfish 文本特征维度: (512,)
+描述: Description for Starfish category....
+处理类别: Cannon
+[2025-11-24 23:03:54] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:03:57] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:00] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:03] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+wiki desc: Description for Cannon category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:04:06] [显存监控] 已分配=8.03GB, 已保留=8.59GB, 空闲=39.38GB
+[2025-11-24 23:04:09] [显存监控] 已分配=7.76GB, 已保留=8.12GB, 空闲=39.64GB
+[2025-11-24 23:04:12] [显存监控] 已分配=7.84GB, 已保留=8.17GB, 空闲=39.56GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.16 GiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 33.81 GiB memory in use. Including non-PyTorch memory, this process has 8.41 GiB memory in use. Of the allocated memory 7.76 GiB is allocated by PyTorch, and 344.66 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Cannon 文本特征维度: (512,)
+描述: Description for Cannon category....
+处理类别: Sea Horse
+[2025-11-24 23:04:15] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:18] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:21] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+wiki desc: Description for Sea Horse category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:04:24] [显存监控] 已分配=7.76GB, 已保留=8.28GB, 空闲=39.64GB
+[2025-11-24 23:04:27] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:04:30] [显存监控] 已分配=7.84GB, 已保留=8.17GB, 空闲=39.56GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.18 GiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 33.79 GiB memory in use. Including non-PyTorch memory, this process has 8.41 GiB memory in use. Of the allocated memory 7.77 GiB is allocated by PyTorch, and 340.96 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Sea Horse 文本特征维度: (512,)
+描述: Description for Sea Horse category....
+处理类别: Garfield
+[2025-11-24 23:04:33] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:36] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:39] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:04:42] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+wiki desc: Description for Garfield category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:04:45] [显存监控] 已分配=7.75GB, 已保留=8.23GB, 空闲=39.65GB
+  6%|▌         | 6/100 [02:07<31:50, 20.32s/it]  7%|▋         | 7/100 [02:27<31:21, 20.23s/it][2025-11-24 23:04:48] [显存监控] 已分配=8.04GB, 已保留=8.62GB, 空闲=39.36GB
+[2025-11-24 23:04:51] [显存监控] 已分配=7.82GB, 已保留=8.15GB, 空闲=39.59GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 1.10 GiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 33.89 GiB memory in use. Including non-PyTorch memory, this process has 8.39 GiB memory in use. Of the allocated memory 7.77 GiB is allocated by PyTorch, and 324.18 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Garfield 文本特征维度: (512,)
+描述: Description for Garfield category....
+处理类别: Tick
+[2025-11-24 23:04:54] [显存监控] 已分配=7.71GB, 已保留=8.08GB, 空闲=39.70GB
+[2025-11-24 23:04:57] [显存监控] 已分配=7.71GB, 已保留=8.08GB, 空闲=39.70GB
+[2025-11-24 23:05:00] [显存监控] 已分配=7.71GB, 已保留=8.08GB, 空闲=39.70GB
+[2025-11-24 23:05:03] [显存监控] 已分配=7.71GB, 已保留=8.08GB, 空闲=39.70GB
+wiki desc: Description for Tick category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:05:06] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:05:09] [显存监控] 已分配=8.02GB, 已保留=8.33GB, 空闲=39.39GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 2.03 GiB. GPU 0 has a total capacity of 47.40 GiB of which 617.62 MiB is free. Process 426442 has 4.00 GiB memory in use. Process 1084725 has 34.37 GiB memory in use. Including non-PyTorch memory, this process has 8.41 GiB memory in use. Of the allocated memory 7.77 GiB is allocated by PyTorch, and 341.10 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Tick 文本特征维度: (512,)
+描述: Description for Tick category....
+处理类别: Barrel
+[2025-11-24 23:05:12] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:05:15] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:05:18] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+[2025-11-24 23:05:21] [显存监控] 已分配=7.71GB, 已保留=8.10GB, 空闲=39.70GB
+wiki desc: Description for Barrel category.
+推理前显存: 已分配=7.71GB, 已保留=8.01GB, 剩余=39.69GB
+[2025-11-24 23:05:24] [显存监控] 已分配=7.80GB, 已保留=8.11GB, 空闲=39.60GB
+[2025-11-24 23:05:27] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:05:30] [显存监控] 已分配=8.04GB, 已保留=8.63GB, 空闲=39.36GB
+[2025-11-24 23:05:33] [显存监控] 已分配=9.79GB, 已保留=10.13GB, 空闲=37.61GB
+[2025-11-24 23:05:36] [显存监控] 已分配=8.00GB, 已保留=8.34GB, 空闲=39.40GB
+[2025-11-24 23:05:39] [显存监控] 已分配=9.78GB, 已保留=10.12GB, 空闲=37.62GB
+[2025-11-24 23:05:42] [显存监控] 已分配=8.00GB, 已保留=8.33GB, 空闲=39.40GB
+[2025-11-24 23:05:45] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:05:48] [显存监控] 已分配=7.81GB, 已保留=8.14GB, 空闲=39.59GB
+[2025-11-24 23:05:51] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:05:54] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:05:57] [显存监控] 已分配=9.78GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:06:00] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:03] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:06] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:09] [显存监控] 已分配=7.75GB, 已保留=8.07GB, 空闲=39.65GB
+[2025-11-24 23:06:12] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:15] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:18] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:21] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:24] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:27] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:06:30] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:33] [显存监控] 已分配=8.00GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:36] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:39] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:42] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:45] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:06:48] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:06:51] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:06:54] [显存监控] 已分配=9.78GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:06:57] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:00] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:03] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:06] [显存监控] 已分配=9.78GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:07:09] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:07:12] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:15] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:18] [显存监控] 已分配=9.78GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:07:21] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:24] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:27] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:30] [显存监控] 已分配=9.78GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:07:33] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:07:36] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.40GB
+[2025-11-24 23:07:39] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:07:42] [显存监控] 已分配=7.75GB, 已保留=8.07GB, 空闲=39.65GB
+[2025-11-24 23:07:45] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:07:48] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:07:51] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:07:54] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:07:57] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:00] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:03] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:06] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:09] [显存监控] 已分配=7.81GB, 已保留=8.14GB, 空闲=39.59GB
+[2025-11-24 23:08:12] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:15] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:18] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:08:21] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:08:24] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:08:27] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:30] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:08:33] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:08:36] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:08:39] [显存监控] 已分配=7.75GB, 已保留=8.07GB, 空闲=39.65GB
+[2025-11-24 23:08:42] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:08:45] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:08:48] [显存监控] 已分配=7.81GB, 已保留=8.13GB, 空闲=39.59GB
+[2025-11-24 23:08:51] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:08:54] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:08:57] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:00] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.62GB
+[2025-11-24 23:09:03] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:06] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:09] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:12] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:15] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:18] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:21] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:24] [显存监控] 已分配=7.80GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:09:27] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:30] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:33] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:36] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:39] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.61GB
+[2025-11-24 23:09:42] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:45] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:09:48] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:09:51] [显存监控] 已分配=7.81GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:09:54] [显存监控] 已分配=7.81GB, 已保留=8.12GB, 空闲=39.60GB
+[2025-11-24 23:09:57] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:10:00] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:03] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:06] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:09] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:12] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:15] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:18] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.61GB
+[2025-11-24 23:10:21] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:24] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:27] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:10:30] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:33] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:36] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:39] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:42] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:45] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.61GB
+[2025-11-24 23:10:48] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:51] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:54] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:10:57] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:00] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:03] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:06] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:09] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:12] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:15] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:18] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:21] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:24] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:27] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:30] [显存监控] 已分配=7.82GB, 已保留=8.14GB, 空闲=39.58GB
+[2025-11-24 23:11:33] [显存监控] 已分配=7.81GB, 已保留=8.12GB, 空闲=39.59GB
+[2025-11-24 23:11:36] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:39] [显存监控] 已分配=7.81GB, 已保留=8.12GB, 空闲=39.59GB
+[2025-11-24 23:11:42] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:45] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:48] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:51] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:54] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:11:57] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:00] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:03] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:06] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:09] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:12] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.61GB
+[2025-11-24 23:12:15] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:18] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:21] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:24] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:27] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:30] [显存监控] 已分配=7.77GB, 已保留=8.12GB, 空闲=39.63GB
+[2025-11-24 23:12:33] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:36] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:39] [显存监控] 已分配=8.01GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:42] [显存监控] 已分配=9.79GB, 已保留=10.10GB, 空闲=37.61GB
+[2025-11-24 23:12:45] [显存监控] 已分配=8.02GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:48] [显存监控] 已分配=7.76GB, 已保留=8.07GB, 空闲=39.64GB
+[2025-11-24 23:12:51] [显存监控] 已分配=8.02GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:54] [显存监控] 已分配=8.02GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:12:57] [显存监控] 已分配=8.02GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:13:00] [显存监控] 已分配=8.02GB, 已保留=8.32GB, 空闲=39.39GB
+[2025-11-24 23:13:03] [显存监控] 已分配=8.02GB, 已保留=8.32GB, 空闲=39.39GB

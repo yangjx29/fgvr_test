@@ -27,7 +27,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256
 
 选项:
     --gpu GPU_ID            GPU编号
@@ -207,18 +207,35 @@ case "${DATASET}" in
         CONFIG_FILE="dtd47_all.yml"
         DATASET_DIR="dtd"
         ;;
+    "caltech101")
+        DATASET_NUM="101"
+        CONFIG_FILE="caltech101_all.yml"
+        DATASET_DIR="caltech101"
+        ;;
+    "caltech256")
+        DATASET_NUM="256"
+        CONFIG_FILE="caltech256_all.yml"
+        DATASET_DIR="caltech256"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256"
         exit 1
         ;;
 esac
 
 # 生成路径
-KNOWLEDGE_BASE_DIR="./experiments/${DATASET}${DATASET_NUM}/knowledge_base"
+# 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ]; then
+    EXPERIMENT_DIR="${DATASET}"
+else
+    EXPERIMENT_DIR="${DATASET}${DATASET_NUM}"
+fi
+
+KNOWLEDGE_BASE_DIR="./experiments/${EXPERIMENT_DIR}/knowledge_base"
 TEST_DATA_DIR="./datasets/${DATASET_DIR}/images_discovery_all_${TEST_DATA_SUFFIX}"
 RESULTS_OUT="./results/${DATASET}_fast_slow_results.json"
-LOG_DIR="${LOG_BASE_DIR}/fast_slow/${DATASET}${DATASET_NUM}"
+LOG_DIR="${LOG_BASE_DIR}/fast_slow/${EXPERIMENT_DIR}"
 
 # 生成递增编号的日志文件名函数
 generate_log_filename() {

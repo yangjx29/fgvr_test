@@ -126,11 +126,13 @@ def prepare_test_samples(cfg, args):
             raise ValueError(f"测试集验证失败: {e}")
         
         # 获取采样的测试图像
+        # 使用全局变量test_data_true_random控制是否使用真随机
         sampled_images = get_test_images_by_percentage(
             dataset_key, 
             data_root, 
             args.test_percentage,
-            seed=cfg.get('seed', 42)
+            seed=cfg.get('seed', 42),
+            use_true_random=test_data_true_random
         )
         
         # 组织成字典格式（类别名已经在sample_test_images中标准化）
