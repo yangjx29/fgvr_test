@@ -27,7 +27,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion
 
 选项:
     --gpu GPU_ID            GPU编号
@@ -217,17 +217,25 @@ case "${DATASET}" in
         CONFIG_FILE="caltech256_all.yml"
         DATASET_DIR="caltech256"
         ;;
+    "deepfashion")
+        DATASET_NUM="23"
+        CONFIG_FILE="deepfashion23_all.yml"
+        DATASET_DIR="DeepFashion"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion"
         exit 1
         ;;
 esac
 
 # 生成路径
 # 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
+# deepfashion 使用 deepfashion23 作为实验目录名
 if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ]; then
     EXPERIMENT_DIR="${DATASET}"
+elif [ "${DATASET}" = "deepfashion" ]; then
+    EXPERIMENT_DIR="deepfashion23"
 else
     EXPERIMENT_DIR="${DATASET}${DATASET_NUM}"
 fi

@@ -26,6 +26,7 @@ DATASET_TEST_PATHS = {
     'dtd47': 'dtd/images_test',
     'caltech101': 'caltech101/images_test',
     'caltech256': 'caltech256/images_test',
+    'deepfashion23': 'DeepFashion/images_test',
 }
 
 

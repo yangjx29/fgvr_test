@@ -866,6 +866,37 @@ CALTECH101_STATS = {
 }
 
 
+DEEPFASHION_STATS = {
+    "num_classes": 23,
+    "superclass": ['fashion'],
+    "class_names": [
+        'MEN-Denim',
+        'MEN-Jackets_Vests',
+        'MEN-Pants',
+        'MEN-Shirts_Polos',
+        'MEN-Shorts',
+        'MEN-Suiting',
+        'MEN-Sweaters',
+        'MEN-Sweatshirts_Hoodies',
+        'MEN-Tees_Tanks',
+        'WOMEN-Blouses_Shirts',
+        'WOMEN-Cardigans',
+        'WOMEN-Denim',
+        'WOMEN-Dresses',
+        'WOMEN-Graphic_Tees',
+        'WOMEN-Jackets_Coats',
+        'WOMEN-Leggings',
+        'WOMEN-Pants',
+        'WOMEN-Rompers_Jumpsuits',
+        'WOMEN-Shorts',
+        'WOMEN-Skirts',
+        'WOMEN-Sweaters',
+        'WOMEN-Sweatshirts_Hoodies',
+        'WOMEN-Tees_Tanks'
+    ]
+}
+
+
 CALTECH256_STATS = {
     "num_classes": 257,
     "superclass": ['object'],

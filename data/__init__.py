@@ -1,4 +1,4 @@
-from data.data_stats import BIRD_STATS, DOG_STATS, FLOWER_STATS, PET_STATS, CAR_STATS, POKEMON_STATS, AIRCRAFT_STATS, EUROSAT_STATS, FOOD_STATS, DTD_STATS, CALTECH101_STATS, CALTECH256_STATS
+from data.data_stats import BIRD_STATS, DOG_STATS, FLOWER_STATS, PET_STATS, CAR_STATS, POKEMON_STATS, AIRCRAFT_STATS, EUROSAT_STATS, FOOD_STATS, DTD_STATS, CALTECH101_STATS, CALTECH256_STATS, DEEPFASHION_STATS
 from data.bird200 import build_bird_prompter, build_bird200_discovery, build_bird200_test, bird_how_to1, bird_how_to2, build_bird200_swav_train
 from data.dog120 import build_dog_prompter, build_dog120_discovery, build_dog120_test, dog_how_to1, dog_how_to2, build_dog120_swav_train
 from data.flower102 import build_flower_prompter, build_flower102_discovery, build_flower102_test, flower_how_to1, flower_how_to2, build_flower102_swav_train
@@ -10,6 +10,7 @@ from data.food_101 import build_food_prompter, build_food101_discovery, build_fo
 from data.dtd import build_dtd_prompter, build_dtd47_discovery, build_dtd47_test, dtd_how_to1, dtd_how_to2, build_dtd47_swav_train
 from data.caltech101 import build_caltech101_prompter, build_caltech101_discovery, build_caltech101_test, caltech101_how_to1, caltech101_how_to2, build_caltech101_swav_train
 from data.caltech256 import build_caltech256_prompter, build_caltech256_discovery, build_caltech256_test, caltech256_how_to1, caltech256_how_to2, build_caltech256_swav_train
+from data.deepfashion import build_deepfashion_prompter, build_deepfashion_discovery, build_deepfashion_test, deepfashion_how_to1, deepfashion_how_to2, build_deepfashion_swav_train
 
 from data.bird200 import _transform as bird_transform
 from data.car196 import _transform as car_transform
@@ -22,6 +23,7 @@ from data.food_101 import _transform as food_transform
 from data.dtd import _transform as dtd_transform
 from data.caltech101 import _transform as caltech101_transform
 from data.caltech256 import _transform as caltech256_transform
+from data.deepfashion import _transform as deepfashion_transform
 
 from .utils import random_augmentation
 
@@ -49,6 +51,7 @@ HOW_TOS1 = {
     "dtd": dtd_how_to1,
     "caltech101": caltech101_how_to1,
     "caltech256": caltech256_how_to1,
+    "deepfashion": deepfashion_how_to1,
 }
 
 HOW_TOS2 = {
@@ -63,6 +66,7 @@ HOW_TOS2 = {
     "dtd": dtd_how_to2,
     "caltech101": caltech101_how_to2,
     "caltech256": caltech256_how_to2,
+    "deepfashion": deepfashion_how_to2,
 }
 
 DATA_STATS = {
@@ -77,6 +81,7 @@ DATA_STATS = {
     "dtd": DTD_STATS,
     "caltech101": CALTECH101_STATS,
     "caltech256": CALTECH256_STATS,
+    "deepfashion": DEEPFASHION_STATS,
 }
 
 
@@ -92,6 +97,7 @@ PROMPTERS = {
     "dtd": build_dtd_prompter,
     "caltech101": build_caltech101_prompter,
     "caltech256": build_caltech256_prompter,
+    "deepfashion": build_deepfashion_prompter,
 }
 
 
@@ -107,6 +113,7 @@ DATA_DISCOVERY = {
     "dtd": build_dtd47_discovery,
     "caltech101": build_caltech101_discovery,
     "caltech256": build_caltech256_discovery,
+    "deepfashion": build_deepfashion_discovery,
 }
 
 
@@ -122,6 +129,7 @@ DATA_GROUPING = {
     "dtd": build_dtd47_test,
     "caltech101": build_caltech101_test,
     "caltech256": build_caltech256_test,
+    "deepfashion": build_deepfashion_test,
 }
 
 
@@ -137,6 +145,7 @@ DATA_TRANSFORM = {
     "dtd": dtd_transform,
     "caltech101": caltech101_transform,
     "caltech256": caltech256_transform,
+    "deepfashion": deepfashion_transform,
 }
 
 
@@ -152,6 +161,7 @@ DATA_SWAV = {
     "dtd": build_dtd47_swav_train,
     "caltech101": build_caltech101_swav_train,
     "caltech256": build_caltech256_swav_train,
+    "deepfashion": build_deepfashion_swav_train,
 }
 
 DATA_AUGMENTATION = random_augmentation

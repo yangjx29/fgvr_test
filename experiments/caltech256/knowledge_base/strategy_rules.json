@@ -1,0 +1,64 @@
+[
+    [
+        {
+            "rule": "Verify the presence of all critical features before making a classification decision.",
+            "failure_pattern": "The model incorrectly classified the object as a 'Boom Box' due to the presence of a circular window and slots, which led to overlooking the lack of typical features like a speaker grille, buttons, and a control panel.",
+            "applicability_signals": "This rule should be recalled when analyzing objects with multiple components where each part plays a significant role in identifying the class.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/caltech256/images_discovery_all_4/239.washing-machine/239_0045.jpg"
+            ],
+            "labels": [
+                "Washing Machine"
+            ],
+            "root_cause": "The model focused on the circular window and slots without considering the overall structure and context of the object, which did not match any of the provided classes.",
+            "source_reasoning": "1. **Observe**: The object appears to be a wooden box with a circular window, two small rectangular slots, and a handle-like structure at the top. It does not resemble a bird, dog, or car, which eliminates the first coarse category.\n\n2. **Localize**: The most discriminative local parts include the circular window, the two small slots, and the handle-like structure. These features suggest a device that might involve some form of operation or display.\n\n3. **Compare**: \n   - **Boom Box**: Typically has a speaker grille, buttons, and a display screen, none of which are present here.\n   - **Breadmaker**: Usually has a lid with a viewing window, a control panel, and sometimes a timer or buttons, but this object lacks a control panel and timer.\n   - **Dice**: This is a simple cube with no windows or slots, so it's clearly not this object.\n   - **Tambourine**: Has a circular frame with a membrane and a handle, but this object lacks the membrane and the circular frame is not prominent.\n   - **Roulette Wheel**: This typically has a circular wheel with numbers and a handle, but this object lacks the wheel and numbers.\n\n4.",
+            "normalized": "verify the presence of all critical features before making a classification decision",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the context before making a fine-grained recognition decision.",
+            "failure_pattern": "Misidentification due to overlooking the context and focusing on the wrong discriminative features.",
+            "applicability_signals": "When the object in question is ambiguous and context is crucial for identification.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/caltech256/images_discovery_all_4/019.boxing-glove/019_0104.jpg"
+            ],
+            "labels": [
+                "Boxing Glove"
+            ],
+            "root_cause": "The reasoning focused on the large, cylindrical object being held by the person as a cannon, but overlooked the context that the person was wearing boxing gloves and the object was not mounted on a vehicle.",
+            "source_reasoning": "1. The overall object in the image appears to be a large, cylindrical device mounted on a vehicle, which is not typical for boxing gloves or other sports equipment.\n2. The most discriminative local part is the large, cylindrical object that the person is holding and aiming. This object has a shape and size consistent with a cannon rather than a boxing glove or any of the other listed items.\n3. Comparing the visual characteristics of the candidate subcategories, the cannon matches the observed details best. It is large, cylindrical, and mounted on a vehicle, which aligns with the context of the image.\n4. Based on the match between the observed details and the cannon's description, the most likely class is \"Cannon.\"",
+            "normalized": "verify the context before making a fine grained recognition decision",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Focus on identifying the primary function and structural components of the object when making predictions.",
+            "failure_pattern": "The model incorrectly predicted 'Video Projector' due to focusing on the wrong discriminative parts and overlooking the key features of the object.",
+            "applicability_signals": "This rule should be recalled whenever the object in question has a distinct function and structure that is not commonly associated with the candidate classes.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/caltech256/images_discovery_all_4/128.lathe/128_0074.jpg"
+            ],
+            "labels": [
+                "Lathe"
+            ],
+            "root_cause": "The reasoning was inconsistent with the known characteristics of a lathe, as it did not consider the machine's purpose and structure.",
+            "source_reasoning": "1. **Observe**: The object in the image appears to be a machine with a flatbed design, which is typically used for processing paper or documents. It has a scanning bed and what looks like a document feeder, which are common features of photocopiers.\n   \n2. **Localize**: The most discriminative local parts include the flatbed surface, the document feeder, and the control panel with buttons and a display screen, which are characteristic of a photocopier.\n\n3. **Compare**: Comparing the visual characteristics of the candidate subcategories:\n   - **Photocopier**: The presence of a flatbed, document feeder, and control panel aligns well with the typical features of a photocopier.\n   - **Paper Shredder**: This would have a different design, typically with a hopper and blades, not a flatbed and document feeder.\n   - **Lathe**: This is a machine used for machining metal, which does not match the visual characteristics of the object in the image.\n   - **VCR**: This is a device for recording and playing video, which does not match the visual characteristics of the object in the image.\n   - **Video Projector**: This is used for displaying images on a screen",
+            "normalized": "focus on identifying the primary function and structural components of the object when making predictions",
+            "failure_patterns": [],
+            "id": "R3",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
+    ]
+]
