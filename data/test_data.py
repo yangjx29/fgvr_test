@@ -12,6 +12,7 @@ from data.class_name_mapper import (
     get_dataset_name_from_key,
     standardize_test_class_name
 )
+from data import DATA_STATS
 
 # 数据集测试集路径映射
 DATASET_TEST_PATHS = {
@@ -26,8 +27,118 @@ DATASET_TEST_PATHS = {
     'dtd47': 'dtd/images_test',
     'caltech101': 'caltech101/images_test',
     'caltech256': 'caltech256/images_test',
-    'deepfashion23': 'DeepFashion/images_test',
+    'deepfashion_multimodal23': 'DeepFashion/images_test',
+    'sun397': 'SUN397/images_test',
 }
+
+
+def get_dataset_key_for_test(cfg: Dict) -> str:
+    """
+    获取用于测试集的数据集键
+    
+    对于已经包含编号的数据集（如 caltech101, caltech256），直接使用 dataset_name
+    对于其他数据集，拼接 dataset_name 和 num_classes
+    
+    Args:
+        cfg: 配置字典，包含 'dataset_name' 和 'num_classes' 字段
+        
+    Returns:
+        str: 数据集键（如 'dog120', 'caltech101', 'deepfashion23'）
+        
+    Examples:
+        >>> cfg = {'dataset_name': 'dog', 'num_classes': 120}
+        >>> get_dataset_key_for_test(cfg)
+        'dog120'
+        
+        >>> cfg = {'dataset_name': 'caltech256', 'num_classes': 257}
+        >>> get_dataset_key_for_test(cfg)
+        'caltech256'
+        
+        >>> cfg = {'dataset_name': 'deepfashion_multimodal', 'num_classes': 23}
+        >>> get_dataset_key_for_test(cfg)
+        'deepfashion_multimodal23'
+    """
+    dataset_name = cfg.get('dataset_name', '')
+    num_classes = cfg.get('num_classes', '')
+    
+    # 数据集名称已经包含编号的情况
+    # 这些数据集的 dataset_name 已经包含了类别数，不需要再拼接
+    if dataset_name in ['caltech101', 'caltech256']:
+        return dataset_name
+    
+    # 其他数据集需要拼接编号
+    return f"{dataset_name}{num_classes}"
+
+
+def _sample_sun397_nested(
+    test_path: Path,
+    test_percentage: float,
+    seed: int,
+    use_true_random: bool,
+    true_random
+) -> List[Tuple[str, str]]:
+    """
+    SUN397特殊处理：递归遍历嵌套目录结构
+    
+    Args:
+        test_path: 测试集根目录
+        test_percentage: 采样百分比
+        seed: 随机种子
+        use_true_random: 是否使用真随机
+        true_random: 真随机数生成器
+        
+    Returns:
+        采样的图像列表
+    """
+    sampled_images = []
+    
+    # 递归遍历所有包含图片的目录
+    for root, dirs, files in os.walk(test_path):
+        # 获取相对路径作为类别名（如 "a/abbey"）
+        rel_path = os.path.relpath(root, test_path)
+        if rel_path == '.':
+            continue
+        
+        # 检查是否有图片文件
+        image_files = []
+        for f in files:
+            if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
+                image_files.append(os.path.join(root, f))
+        
+        if not image_files:
+            continue
+        
+        # 将路径分隔符统一为 /（类别名格式）
+        class_name = rel_path.replace(os.sep, '/')
+        
+        # 验证类别名是否在SUN397_STATS中
+        if class_name not in DATA_STATS['sun397']['class_names']:
+            # 尝试查找匹配的类别（处理可能的格式差异）
+            matched = False
+            for std_name in DATA_STATS['sun397']['class_names']:
+                if std_name.lower() == class_name.lower() or std_name.replace('/', os.sep) == rel_path:
+                    class_name = std_name
+                    matched = True
+                    break
+            if not matched:
+                continue  # 跳过不在标准类别列表中的目录
+        
+        # 计算要采样的图像数量
+        total_images = len(image_files)
+        num_samples = max(1, math.ceil(total_images * test_percentage / 100.0))
+        num_samples = min(num_samples, total_images)
+        
+        # 随机采样
+        if use_true_random and true_random and true_random.is_available():
+            sampled = true_random.sample(image_files, num_samples)
+        else:
+            sampled = random.sample(image_files, num_samples)
+        
+        # 添加到结果列表
+        for img_path in sampled:
+            sampled_images.append((img_path, class_name))
+    
+    return sampled_images
 
 
 def get_test_set_path(dataset_name: str, data_root: str) -> str:
@@ -105,7 +216,13 @@ def sample_test_images(
     if dataset_key:
         dataset_name = get_dataset_name_from_key(dataset_key)
     
-    # 遍历所有类别目录
+    # SUN397特殊处理：需要处理嵌套目录结构
+    if dataset_name == 'sun397':
+        # SUN397的测试集可能有嵌套结构（如 a/abbey），需要递归遍历
+        sampled_images = _sample_sun397_nested(test_path, test_percentage, seed, use_true_random, true_random)
+        return sampled_images
+    
+    # 遍历所有类别目录（扁平结构）
     class_dirs = sorted([d for d in test_path.iterdir() if d.is_dir()])
     
     for class_dir in class_dirs:

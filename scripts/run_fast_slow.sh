@@ -27,7 +27,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397
 
 选项:
     --gpu GPU_ID            GPU编号
@@ -217,25 +217,31 @@ case "${DATASET}" in
         CONFIG_FILE="caltech256_all.yml"
         DATASET_DIR="caltech256"
         ;;
-    "deepfashion")
+    "deepfashion_multimodal")
         DATASET_NUM="23"
-        CONFIG_FILE="deepfashion23_all.yml"
+        CONFIG_FILE="deepfashion_multimodal23_all.yml"
         DATASET_DIR="DeepFashion"
+        ;;
+    "sun397")
+        DATASET_NUM="397"
+        CONFIG_FILE="sun397_all.yml"
+        DATASET_DIR="SUN397"
         ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397"
         exit 1
         ;;
 esac
 
 # 生成路径
 # 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
-# deepfashion 使用 deepfashion23 作为实验目录名
-if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ]; then
+# deepfashion_multimodal 使用 deepfashion_multimodal23 作为实验目录名
+# sun397 使用 sun397 作为实验目录名（已包含编号）
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ]; then
     EXPERIMENT_DIR="${DATASET}"
-elif [ "${DATASET}" = "deepfashion" ]; then
-    EXPERIMENT_DIR="deepfashion23"
+elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
+    EXPERIMENT_DIR="deepfashion_multimodal23"
 else
     EXPERIMENT_DIR="${DATASET}${DATASET_NUM}"
 fi

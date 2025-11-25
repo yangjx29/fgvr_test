@@ -85,9 +85,13 @@ def setup_config(config_file_env: str, config_file_expt: str):
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "caltech256")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "caltech256")  # 设置实验目录
         mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
-    elif cfg_expt['dataset_name'] == "deepfashion":  # 如果是DeepFashion数据集
+    elif cfg_expt['dataset_name'] == "deepfashion_multimodal":  # 如果是DeepFashion Multimodal数据集
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "DeepFashion")  # 设置数据目录
-        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "deepfashion23")  # 设置实验目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "deepfashion_multimodal23")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "sun397":  # 如果是SUN397数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "SUN397")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "sun397")  # 设置实验目录
         mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
     elif cfg_expt['dataset_name'] == "place":  # 如果是场景数据集
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "place_365")  # 设置数据目录

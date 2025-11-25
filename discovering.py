@@ -15,7 +15,7 @@ from utils.fileios import dump_json, load_json, dump_txt
 
 from data import DATA_STATS, PROMPTERS, DATA_DISCOVERY  
 from data.prompt_identify import prompts_howto
-from data.test_data import get_test_images_by_percentage, validate_test_set  
+from data.test_data import get_test_images_by_percentage, validate_test_set, get_dataset_key_for_test  
 from agents.vqa_bot import VQABot  
 from agents.llm_bot import LLMBot 
 from agents.mllm_bot import MLLMBot
@@ -100,7 +100,7 @@ def prepare_test_samples(cfg, args):
     
     # 如果使用测试集
     if args.use_test_data:
-        dataset_key = f"{cfg['dataset_name']}{cfg.get('num_classes', '')}"
+        dataset_key = get_dataset_key_for_test(cfg)
         data_root = cfg.get('data_root', './datasets')
         
         print("="*70)
@@ -158,7 +158,7 @@ def prepare_test_samples(cfg, args):
         
         # 从test_data_dir加载
         # 获取数据集名称用于类别名标准化
-        dataset_key = f"{cfg['dataset_name']}{cfg.get('num_classes', '')}"
+        dataset_key = get_dataset_key_for_test(cfg)
         from data.class_name_mapper import (
             get_dataset_name_from_key,
             standardize_test_class_name
@@ -932,7 +932,7 @@ if __name__ == "__main__":
         
         # 保存分类结果
         try:
-            dataset_key = f"{cfg['dataset_name']}{cfg.get('num_classes', '')}"
+            dataset_key = get_dataset_key_for_test(cfg)
             experiment_dir = get_experiment_dir_from_dataset_info(CURRENT_DATASET)
             if experiment_dir:
                 metadata = {

@@ -1,0 +1,1294 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=4  # 使用的GPU编号
+Dataset: sun397 (num_classes=397)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/sun397/knowledge_base  # 知识库目录
+Results Out: ./results/sun397_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: sun397 (sun397)
+类别数: 397
+实验目录: ./experiments/sun397
+当前使用的 GPU 为：4
+
+=== Experiment Start Time: 2025-11-25 16:09:51 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/sun397_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/sun397/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 64,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/SUN397',
+ 'dataset_name': 'sun397',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/sun397',
+ 'expt_dir_describe': './experiments/sun397/describe',
+ 'expt_dir_gallery': './experiments/sun397/gallery',
+ 'expt_dir_grouping': './experiments/sun397/grouping',
+ 'expt_dir_guess': './experiments/sun397/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 198,
+ 'num_classes': 397,
+ 'num_novel': 199,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/sun397/gallery/sun397_image_descriptions_attn',
+ 'path_identify_answers': './experiments/sun397/identify',
+ 'path_llm_gussed_names': './experiments/sun397/guess/sun397_llm_gussed_names',
+ 'path_llm_prompts': './experiments/sun397/describe/sun397_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/sun397/guess/sun397_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/sun397/guess/sun397_llm_replies_raw',
+ 'path_references': './experiments/sun397/gallery/sun397_image_references',
+ 'path_regions': './experiments/sun397/gallery/sun397_image_regions',
+ 'path_vqa_answers': './experiments/sun397/describe/sun397_attributes_pairs',
+ 'path_vqa_questions': './experiments/sun397/describe/sun397_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "sun397",
+    "num_classes": 397,
+    "config_file": "sun397_all.yml",
+    "data_dir": "SUN397",
+    "experiment_dir": "sun397",
+    "stats_file": "sun397/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/sun397/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/sun397"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.11s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.33s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:07<00:04,  2.37s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.41s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.87s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.08s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-25 16:10:03
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/sun397/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/sun397/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-25 16:10:06
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x753ddcbcaaf0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x753ddcd29f70>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/sun397/knowledge_base
+使用数据集: sun397, 类别数: 397
+✅ 慢思考模块初始化完成，类别映射数量: 397
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-25 16:10:06] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建发现集,img_root: ./datasets/SUN397/images_discovery_all_4
+Warning: Could not find label for class folder: indoor casino
+Warning: Could not find label for class folder: indoor brewery
+[2025-11-25 16:10:09] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor podium
+Warning: Could not find label for class folder: exterior covered_bridge
+Warning: Could not find label for class folder: outdoor tennis_court
+[2025-11-25 16:10:12] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: plunge waterfall
+Warning: Could not find label for class folder: shop bakery
+Warning: Could not find label for class folder: indoor kennel
+[2025-11-25 16:10:15] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:10:18] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor greenhouse
+Warning: Could not find label for class folder: outdoor inn
+[2025-11-25 16:10:21] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: vegetation desert
+Warning: Could not find label for class folder: indoor_procenium theater
+Warning: Could not find label for class folder: cultivated field
+Warning: Could not find label for class folder: outdoor general_store
+Warning: Could not find label for class folder: outdoor control_tower
+[2025-11-25 16:10:24] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor warehouse
+Warning: Could not find label for class folder: indoor chicken_coop
+Warning: Could not find label for class folder: outdoor track
+Warning: Could not find label for class folder: outdoor church
+[2025-11-25 16:10:27] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor hangar
+Warning: Could not find label for class folder: exterior gazebo
+[2025-11-25 16:10:30] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor swimming_pool
+Warning: Could not find label for class folder: indoor mosque
+Warning: Could not find label for class folder: football stadium
+[2025-11-25 16:10:33] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor florist_shop
+Warning: Could not find label for class folder: interior elevator
+Warning: Could not find label for class folder: outdoor library
+Warning: Could not find label for class folder: indoor apse
+[2025-11-25 16:10:36] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor athletic_field
+Warning: Could not find label for class folder: outdoor market
+Warning: Could not find label for class folder: home dinette
+[2025-11-25 16:10:39] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: wild field
+Warning: Could not find label for class folder: indoor firing_range
+Warning: Could not find label for class folder: outdoor hot_tub
+Warning: Could not find label for class folder: indoor booth
+[2025-11-25 16:10:42] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor stage
+Warning: Could not find label for class folder: outdoor power_plant
+[2025-11-25 16:10:45] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor synagogue
+Warning: Could not find label for class folder: indoor bistro
+[2025-11-25 16:10:48] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: vehicle dinette
+Warning: Could not find label for class folder: natural lake
+Warning: Could not find label for class folder: outdoor cathedral
+Warning: Could not find label for class folder: frontseat car_interior
+[2025-11-25 16:10:51] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor greenhouse
+[2025-11-25 16:10:54] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor synagogue
+[2025-11-25 16:10:57] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor library
+Warning: Could not find label for class folder: indoor movie_theater
+[2025-11-25 16:11:00] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor parking_garage
+Warning: Could not find label for class folder: indoor market
+Warning: Could not find label for class folder: outdoor apartment_building
+Warning: Could not find label for class folder: needleleaf forest
+Warning: Could not find label for class folder: natural canal
+[2025-11-25 16:11:03] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: urban canal
+Warning: Could not find label for class folder: outdoor observatory
+Warning: Could not find label for class folder: block waterfall
+Warning: Could not find label for class folder: indoor wrestling_ring
+Warning: Could not find label for class folder: indoor factory
+[2025-11-25 16:11:06] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:11:09] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:11:12] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor outhouse
+Warning: Could not find label for class folder: coral_reef underwater
+[2025-11-25 16:11:15] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor jail
+Warning: Could not find label for class folder: door elevator
+Warning: Could not find label for class folder: indoor diner
+[2025-11-25 16:11:18] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: broadleaf forest
+Warning: Could not find label for class folder: barrel_storage wine_cellar
+[2025-11-25 16:11:21] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor doorway
+[2025-11-25 16:11:24] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor escalator
+Warning: Could not find label for class folder: platform subway_station
+Warning: Could not find label for class folder: indoor pilothouse
+Warning: Could not find label for class folder: outdoor bow_window
+Warning: Could not find label for class folder: indoor volleyball_court
+Warning: Could not find label for class folder: indoor general_store
+[2025-11-25 16:11:27] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: interior balcony
+Warning: Could not find label for class folder: indoor tennis_court
+[2025-11-25 16:11:30] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor_seats theater
+Warning: Could not find label for class folder: outdoor nuclear_power_plant
+Warning: Could not find label for class folder: indoor cavern
+Warning: Could not find label for class folder: outdoor cabin
+[2025-11-25 16:11:33] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor arrival_gate
+Warning: Could not find label for class folder: public atrium
+[2025-11-25 16:11:36] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor parking_garage
+Warning: Could not find label for class folder: indoor gymnasium
+Warning: Could not find label for class folder: baseball stadium
+[2025-11-25 16:11:39] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor driving_range
+[2025-11-25 16:11:42] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor bazaar
+Warning: Could not find label for class folder: indoor hangar
+Warning: Could not find label for class folder: indoor pub
+Warning: Could not find label for class folder: outdoor basketball_court
+[2025-11-25 16:11:45] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor church
+Warning: Could not find label for class folder: establishment poolroom
+Warning: Could not find label for class folder: water moat
+Warning: Could not find label for class folder: bottle_storage wine_cellar
+Warning: Could not find label for class folder: outdoor monastery
+[2025-11-25 16:11:48] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor bow_window
+Warning: Could not find label for class folder: south_asia temple
+Warning: Could not find label for class folder: outdoor tent
+Warning: Could not find label for class folder: outdoor labyrinth
+[2025-11-25 16:11:51] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor swimming_pool
+Warning: Could not find label for class folder: outdoor ice_skating_rink
+Warning: Could not find label for class folder: home poolroom
+Warning: Could not find label for class folder: office cubicle
+[2025-11-25 16:11:54] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:11:57] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor podium
+Warning: Could not find label for class folder: outdoor kennel
+[2025-11-25 16:12:00] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: sand desert
+[2025-11-25 16:12:03] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor jacuzzi
+Warning: Could not find label for class folder: east_asia temple
+Warning: Could not find label for class folder: outdoor planetarium
+Warning: Could not find label for class folder: outdoor chicken_coop
+[2025-11-25 16:12:06] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor cloister
+[2025-11-25 16:12:09] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: platform train_station
+Warning: Could not find label for class folder: indoor ice_skating_rink
+[2025-11-25 16:12:12] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor museum
+Warning: Could not find label for class folder: indoor shopping_mall
+[2025-11-25 16:12:15] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor oil_refinery
+[2025-11-25 16:12:18] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor volleyball_court
+Warning: Could not find label for class folder: outdoor hotel
+[2025-11-25 16:12:21] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: outdoor lido_deck
+Warning: Could not find label for class folder: exterior balcony
+Warning: Could not find label for class folder: indoor badminton_court
+[2025-11-25 16:12:24] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: fan waterfall
+Warning: Could not find label for class folder: outdoor mosque
+Warning: Could not find label for class folder: outdoor diner
+Warning: Could not find label for class folder: outdoor hunting_lodge
+Warning: Could not find label for class folder: indoor cathedral
+[2025-11-25 16:12:27] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+Warning: Could not find label for class folder: indoor garage
+Warning: Could not find label for class folder: backseat car_interior
+Warning: Could not find label for class folder: indoor bazaar
+subcat_to_sample: 271 classes
+构建知识库，包含 271 个类别, dog datasets:397
+从 ./experiments/sun397/knowledge_base 加载知识库...
+知识库已从 ./experiments/sun397/knowledge_base 加载
+图像知识库类别数: 0
+文本知识库类别数: 0
+类别描述数: 0
+知识库加载完成!
+构建知识库...
+训练样本包含 271 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/271 [00:00<?, ?it/s]  0%|          | 1/271 [00:02<09:53,  2.20s/it]  1%|          | 2/271 [00:05<11:51,  2.64s/it]  1%|          | 3/271 [00:07<11:14,  2.52s/it]  1%|▏         | 4/271 [00:09<11:00,  2.47s/it]  2%|▏         | 5/271 [00:11<09:52,  2.23s/it]  2%|▏         | 6/271 [00:13<09:53,  2.24s/it]  3%|▎         | 7/271 [00:16<10:36,  2.41s/it]  3%|▎         | 8/271 [00:19<10:58,  2.50s/it]  3%|▎         | 9/271 [00:21<10:59,  2.52s/it]  4%|▎         | 10/271 [00:23<09:52,  2.27s/it]  4%|▍         | 11/271 [00:25<09:23,  2.17s/it]  4%|▍         | 12/271 [00:27<08:33,  1.98s/it]  5%|▍         | 13/271 [00:29<09:22,  2.18s/it]  5%|▌         | 14/271 [00:32<09:37,  2.25s/it]  6%|▌         | 15/271 [00:34<09:32,  2.24s/it]  6%|▌         | 16/271 [00:36<09:53,  2.33s/it]  6%|▋         | 17/271 [00:39<09:42,  2.29s/it]  7%|▋         | 18/271 [00:41<09:28,  2.25s/it]  7%|▋         | 19/271 [00:43<09:08,  2.18s/it]  7%|▋         | 20/271 [00:45<09:17,  2.22s/it]  8%|▊         | 21/271 [00:47<08:37,  2.07s/it]  8%|▊         | 22/271 [00:50<09:34,  2.31s/it]  8%|▊         | 23/271 [00:52<09:25,  2.28s/it]  9%|▉         | 24/271 [00:54<09:36,  2.33s/it]  9%|▉         | 25/271 [00:57<10:17,  2.51s/it] 10%|▉         | 26/271 [00:59<09:31,  2.33s/it] 10%|▉         | 27/271 [01:01<09:17,  2.28s/it] 10%|█         | 28/271 [01:03<08:20,  2.06s/it] 11%|█         | 29/271 [01:05<07:47,  1.93s/it] 11%|█         | 30/271 [01:06<07:22,  1.84s/it] 11%|█▏        | 31/271 [01:08<07:08,  1.78s/it] 12%|█▏        | 32/271 [01:10<07:47,  1.96s/it] 12%|█▏        | 33/271 [01:13<08:13,  2.07s/it] 13%|█▎        | 34/271 [01:15<08:34,  2.17s/it] 13%|█▎        | 35/271 [01:17<08:42,  2.21s/it] 13%|█▎        | 36/271 [01:19<08:04,  2.06s/it] 14%|█▎        | 37/271 [01:21<08:04,  2.07s/it] 14%|█▍        | 38/271 [01:24<08:51,  2.28s/it] 14%|█▍        | 39/271 [01:25<08:00,  2.07s/it] 15%|█▍        | 40/271 [01:28<08:14,  2.14s/it] 15%|█▌        | 41/271 [01:30<08:47,  2.29s/it] 15%|█▌        | 42/271 [01:33<08:55,  2.34s/it] 16%|█▌        | 43/271 [01:35<08:33,  2.25s/it] 16%|█▌        | 44/271 [01:37<08:33,  2.26s/it] 17%|█▋        | 45/271 [01:41<10:32,  2.80s/it] 17%|█▋        | 46/271 [01:43<09:51,  2.63s/it] 17%|█▋        | 47/271 [01:45<08:48,  2.36s/it] 18%|█▊        | 48/271 [01:47<07:54,  2.13s/it] 18%|█▊        | 49/271 [01:49<07:46,  2.10s/it] 18%|█▊        | 50/271 [01:51<07:45,  2.11s/it] 19%|█▉        | 51/271 [01:53<07:42,  2.10s/it] 19%|█▉        | 52/271 [01:55<07:38,  2.09s/it] 20%|█▉        | 53/271 [01:57<07:37,  2.10s/it] 20%|█▉        | 54/271 [01:59<07:31,  2.08s/it] 20%|██        | 55/271 [02:01<07:16,  2.02s/it] 21%|██        | 56/271 [02:03<07:26,  2.08s/it] 21%|██        | 57/271 [02:06<07:49,  2.19s/it] 21%|██▏       | 58/271 [02:10<09:28,  2.67s/it]处理类别: c/clothing_store
+[2025-11-25 16:12:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/clothing_store 图像特征维度: (512,)
+处理类别: p/playground
+[2025-11-25 16:12:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/playground 图像特征维度: (512,)
+处理类别: s/ski_slope
+类别 s/ski_slope 图像特征维度: (512,)
+处理类别: b/banquet_hall
+[2025-11-25 16:12:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/banquet_hall 图像特征维度: (512,)
+处理类别: f/fastfood_restaurant
+[2025-11-25 16:12:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/fastfood_restaurant 图像特征维度: (512,)
+处理类别: c/courtroom
+[2025-11-25 16:12:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/courtroom 图像特征维度: (512,)
+处理类别: l/laundromat
+[2025-11-25 16:12:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/laundromat 图像特征维度: (512,)
+处理类别: a/attic
+类别 a/attic 图像特征维度: (512,)
+处理类别: d/discotheque
+[2025-11-25 16:12:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/discotheque 图像特征维度: (512,)
+处理类别: b/bamboo_forest
+[2025-11-25 16:12:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bamboo_forest 图像特征维度: (512,)
+处理类别: c/clean_room
+[2025-11-25 16:12:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/clean_room 图像特征维度: (512,)
+处理类别: b/botanical_garden
+类别 b/botanical_garden 图像特征维度: (512,)
+处理类别: c/courthouse
+[2025-11-25 16:12:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/courthouse 图像特征维度: (512,)
+处理类别: l/landfill
+[2025-11-25 16:13:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/landfill 图像特征维度: (512,)
+处理类别: p/physics_laboratory
+类别 p/physics_laboratory 图像特征维度: (512,)
+处理类别: a/art_school
+[2025-11-25 16:13:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/art_school 图像特征维度: (512,)
+处理类别: b/baggage_claim
+[2025-11-25 16:13:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/baggage_claim 图像特征维度: (512,)
+处理类别: s/skatepark
+[2025-11-25 16:13:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/skatepark 图像特征维度: (512,)
+处理类别: p/pharmacy
+类别 p/pharmacy 图像特征维度: (512,)
+处理类别: b/bayou
+[2025-11-25 16:13:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bayou 图像特征维度: (512,)
+处理类别: r/railroad_track
+[2025-11-25 16:13:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/railroad_track 图像特征维度: (512,)
+处理类别: s/shoe_shop
+[2025-11-25 16:13:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/shoe_shop 图像特征维度: (512,)
+处理类别: l/lobby
+类别 l/lobby 图像特征维度: (512,)
+处理类别: h/hot_spring
+[2025-11-25 16:13:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/hot_spring 图像特征维度: (512,)
+处理类别: l/lift_bridge
+[2025-11-25 16:13:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/lift_bridge 图像特征维度: (512,)
+处理类别: l/lock_chamber
+[2025-11-25 16:13:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/lock_chamber 图像特征维度: (512,)
+处理类别: n/nursery
+[2025-11-25 16:13:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 n/nursery 图像特征维度: (512,)
+处理类别: v/village
+类别 v/village 图像特征维度: (512,)
+处理类别: p/playroom
+[2025-11-25 16:13:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/playroom 图像特征维度: (512,)
+处理类别: c/classroom
+类别 c/classroom 图像特征维度: (512,)
+处理类别: s/shopfront
+[2025-11-25 16:13:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/shopfront 图像特征维度: (512,)
+处理类别: c/canyon
+[2025-11-25 16:13:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/canyon 图像特征维度: (512,)
+处理类别: s/stable
+类别 s/stable 图像特征维度: (512,)
+处理类别: g/gift_shop
+[2025-11-25 16:13:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 g/gift_shop 图像特征维度: (512,)
+处理类别: r/rice_paddy
+[2025-11-25 16:13:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/rice_paddy 图像特征维度: (512,)
+处理类别: h/hayfield
+类别 h/hayfield 图像特征维度: (512,)
+处理类别: b/beach
+[2025-11-25 16:13:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/beach 图像特征维度: (512,)
+处理类别: p/patio
+[2025-11-25 16:13:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/patio 图像特征维度: (512,)
+处理类别: c/cubicle/office
+[2025-11-25 16:13:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/cubicle/office 图像特征维度: (512,)
+处理类别: b/bus_interior
+类别 b/bus_interior 图像特征维度: (512,)
+处理类别: l/lighthouse
+[2025-11-25 16:13:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/lighthouse 图像特征维度: (512,)
+处理类别: a/airport_terminal
+[2025-11-25 16:14:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/airport_terminal 图像特征维度: (512,)
+处理类别: b/bullring
+[2025-11-25 16:14:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bullring 图像特征维度: (512,)
+处理类别: k/kindergarden_classroom
+[2025-11-25 16:14:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 k/kindergarden_classroom 图像特征维度: (512,)
+处理类别: g/game_room
+[2025-11-25 16:14:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 g/game_room 图像特征维度: (512,)
+处理类别: a/auto_factory
+[2025-11-25 16:14:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/auto_factory 图像特征维度: (512,)
+处理类别: b/bedroom
+类别 b/bedroom 图像特征维度: (512,)
+处理类别: p/palace
+[2025-11-25 16:14:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/palace 图像特征维度: (512,)
+处理类别: b/berth
+类别 b/berth 图像特征维度: (512,)
+处理类别: a/amusement_park
+[2025-11-25 16:14:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/amusement_park 图像特征维度: (512,)
+处理类别: c/control_room
+[2025-11-25 16:14:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/control_room 图像特征维度: (512,)
+处理类别: a/assembly_line
+类别 a/assembly_line 图像特征维度: (512,)
+处理类别: d/dining_car
+[2025-11-25 16:14:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/dining_car 图像特征维度: (512,)
+处理类别: w/wheat_field
+[2025-11-25 16:14:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/wheat_field 图像特征维度: (512,)
+处理类别: p/pasture
+[2025-11-25 16:14:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/pasture 图像特征维度: (512,)
+处理类别: v/valley
+类别 v/valley 图像特征维度: (512,)
+处理类别: b/boxing_ring
+[2025-11-25 16:14:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/boxing_ring 图像特征维度: (512,)
+处理类别: p/picnic_area
+[2025-11-25 16:14:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/picnic_area 图像特征维度: (512,)
+ 22%|██▏       | 59/271 [02:12<08:53,  2.52s/it] 22%|██▏       | 60/271 [02:15<09:13,  2.62s/it] 23%|██▎       | 61/271 [02:16<08:16,  2.36s/it] 23%|██▎       | 62/271 [02:19<08:20,  2.40s/it] 23%|██▎       | 63/271 [02:21<08:20,  2.40s/it] 24%|██▎       | 64/271 [02:24<08:31,  2.47s/it] 24%|██▍       | 65/271 [02:27<08:56,  2.61s/it] 24%|██▍       | 66/271 [02:29<08:41,  2.54s/it] 25%|██▍       | 67/271 [02:33<09:34,  2.82s/it] 25%|██▌       | 68/271 [02:36<09:38,  2.85s/it] 25%|██▌       | 69/271 [02:39<09:47,  2.91s/it] 26%|██▌       | 70/271 [02:40<08:35,  2.57s/it] 26%|██▌       | 71/271 [02:43<08:22,  2.51s/it] 27%|██▋       | 72/271 [02:46<08:32,  2.58s/it] 27%|██▋       | 73/271 [02:49<09:09,  2.78s/it] 27%|██▋       | 74/271 [02:52<09:47,  2.98s/it] 28%|██▊       | 75/271 [02:55<09:04,  2.78s/it] 28%|██▊       | 76/271 [02:58<09:20,  2.87s/it] 28%|██▊       | 77/271 [03:00<09:14,  2.86s/it] 29%|██▉       | 78/271 [03:03<08:43,  2.71s/it] 29%|██▉       | 79/271 [03:05<08:06,  2.53s/it] 30%|██▉       | 80/271 [03:08<08:08,  2.56s/it] 30%|██▉       | 81/271 [03:09<07:24,  2.34s/it] 30%|███       | 82/271 [03:12<07:30,  2.38s/it] 31%|███       | 83/271 [03:14<07:40,  2.45s/it] 31%|███       | 84/271 [03:17<07:24,  2.37s/it] 31%|███▏      | 85/271 [03:18<06:38,  2.14s/it] 32%|███▏      | 86/271 [03:20<06:21,  2.06s/it] 32%|███▏      | 87/271 [03:22<06:06,  1.99s/it] 32%|███▏      | 88/271 [03:24<05:59,  1.96s/it] 33%|███▎      | 89/271 [03:25<05:38,  1.86s/it] 33%|███▎      | 90/271 [03:28<05:48,  1.92s/it] 34%|███▎      | 91/271 [03:29<05:38,  1.88s/it] 34%|███▍      | 92/271 [03:31<05:08,  1.72s/it] 34%|███▍      | 93/271 [03:32<05:10,  1.74s/it] 35%|███▍      | 94/271 [03:35<05:26,  1.84s/it] 35%|███▌      | 95/271 [03:37<05:36,  1.91s/it] 35%|███▌      | 96/271 [03:39<05:58,  2.05s/it] 36%|███▌      | 97/271 [03:41<05:39,  1.95s/it] 36%|███▌      | 98/271 [03:43<06:16,  2.18s/it] 37%|███▋      | 99/271 [03:46<06:16,  2.19s/it] 37%|███▋      | 100/271 [03:47<05:27,  1.92s/it] 37%|███▋      | 101/271 [03:49<05:50,  2.06s/it] 38%|███▊      | 102/271 [03:52<06:01,  2.14s/it] 38%|███▊      | 103/271 [03:54<06:16,  2.24s/it] 38%|███▊      | 104/271 [03:57<06:27,  2.32s/it] 39%|███▊      | 105/271 [03:59<06:23,  2.31s/it] 39%|███▉      | 106/271 [04:02<06:35,  2.40s/it] 39%|███▉      | 107/271 [04:04<06:30,  2.38s/it] 40%|███▉      | 108/271 [04:06<06:33,  2.41s/it] 40%|████      | 109/271 [04:09<06:21,  2.35s/it] 41%|████      | 110/271 [04:11<06:18,  2.35s/it] 41%|████      | 111/271 [04:14<06:39,  2.50s/it] 41%|████▏     | 112/271 [04:16<06:25,  2.42s/it] 42%|████▏     | 113/271 [04:18<06:01,  2.29s/it] 42%|████▏     | 114/271 [04:20<05:24,  2.07s/it] 42%|████▏     | 115/271 [04:22<05:41,  2.19s/it]处理类别: s/snowfield
+[2025-11-25 16:14:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.96GB
+类别 s/snowfield 图像特征维度: (512,)
+处理类别: a/anechoic_chamber
+[2025-11-25 16:14:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/anechoic_chamber 图像特征维度: (512,)
+处理类别: o/ocean
+[2025-11-25 16:14:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 o/ocean 图像特征维度: (512,)
+处理类别: h/hospital_room
+类别 h/hospital_room 图像特征维度: (512,)
+处理类别: f/food_court
+[2025-11-25 16:14:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/food_court 图像特征维度: (512,)
+处理类别: s/sandbar
+[2025-11-25 16:14:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/sandbar 图像特征维度: (512,)
+处理类别: o/office_building
+[2025-11-25 16:14:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 o/office_building 图像特征维度: (512,)
+处理类别: e/electrical_substation
+[2025-11-25 16:14:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 e/electrical_substation 图像特征维度: (512,)
+处理类别: m/mansion
+[2025-11-25 16:15:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/mansion 图像特征维度: (512,)
+处理类别: u/utility_room
+[2025-11-25 16:15:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 u/utility_room 图像特征维度: (512,)
+处理类别: c/castle
+[2025-11-25 16:15:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/castle 图像特征维度: (512,)
+处理类别: c/carrousel
+[2025-11-25 16:15:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/carrousel 图像特征维度: (512,)
+处理类别: r/restaurant_kitchen
+类别 r/restaurant_kitchen 图像特征维度: (512,)
+处理类别: b/basilica
+[2025-11-25 16:15:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/basilica 图像特征维度: (512,)
+处理类别: b/ballroom
+[2025-11-25 16:15:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/ballroom 图像特征维度: (512,)
+处理类别: a/aqueduct
+[2025-11-25 16:15:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:15:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/aqueduct 图像特征维度: (512,)
+处理类别: s/subway_interior
+类别 s/subway_interior 图像特征维度: (512,)
+处理类别: s/ski_resort
+[2025-11-25 16:15:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/ski_resort 图像特征维度: (512,)
+处理类别: m/marsh
+[2025-11-25 16:15:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/marsh 图像特征维度: (512,)
+处理类别: r/raft
+[2025-11-25 16:15:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/raft 图像特征维度: (512,)
+处理类别: h/highway
+[2025-11-25 16:15:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/highway 图像特征维度: (512,)
+处理类别: h/hospital
+[2025-11-25 16:15:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/hospital 图像特征维度: (512,)
+处理类别: b/ball_pit
+类别 b/ball_pit 图像特征维度: (512,)
+处理类别: e/excavation
+[2025-11-25 16:15:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 e/excavation 图像特征维度: (512,)
+处理类别: a/amphitheater
+[2025-11-25 16:15:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/amphitheater 图像特征维度: (512,)
+处理类别: e/engine_room
+[2025-11-25 16:15:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 e/engine_room 图像特征维度: (512,)
+处理类别: s/slum
+类别 s/slum 图像特征维度: (512,)
+处理类别: g/garbage_dump
+[2025-11-25 16:15:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 g/garbage_dump 图像特征维度: (512,)
+处理类别: s/schoolhouse
+类别 s/schoolhouse 图像特征维度: (512,)
+处理类别: w/watering_hole
+[2025-11-25 16:15:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/watering_hole 图像特征维度: (512,)
+处理类别: s/sea_cliff
+[2025-11-25 16:15:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/sea_cliff 图像特征维度: (512,)
+处理类别: m/manufactured_home
+类别 m/manufactured_home 图像特征维度: (512,)
+处理类别: r/reception
+[2025-11-25 16:15:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/reception 图像特征维度: (512,)
+处理类别: c/catacomb
+类别 c/catacomb 图像特征维度: (512,)
+处理类别: p/pantry
+[2025-11-25 16:16:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/pantry 图像特征维度: (512,)
+处理类别: c/cafeteria
+[2025-11-25 16:16:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/cafeteria 图像特征维度: (512,)
+处理类别: b/butte
+类别 b/butte 图像特征维度: (512,)
+处理类别: s/street
+[2025-11-25 16:16:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/street 图像特征维度: (512,)
+处理类别: c/courtyard
+[2025-11-25 16:16:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/courtyard 图像特征维度: (512,)
+处理类别: w/waiting_room
+[2025-11-25 16:16:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/waiting_room 图像特征维度: (512,)
+处理类别: t/television_studio
+类别 t/television_studio 图像特征维度: (512,)
+处理类别: s/skyscraper
+[2025-11-25 16:16:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/skyscraper 图像特征维度: (512,)
+处理类别: g/golf_course
+[2025-11-25 16:16:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 g/golf_course 图像特征维度: (512,)
+处理类别: c/coffee_shop
+类别 c/coffee_shop 图像特征维度: (512,)
+处理类别: t/ticket_booth
+[2025-11-25 16:16:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/ticket_booth 图像特征维度: (512,)
+处理类别: i/ice_cream_parlor
+[2025-11-25 16:16:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 i/ice_cream_parlor 图像特征维度: (512,)
+处理类别: v/volcano
+[2025-11-25 16:16:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/volcano 图像特征维度: (512,)
+处理类别: b/batters_box
+[2025-11-25 16:16:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/batters_box 图像特征维度: (512,)
+处理类别: s/sauna
+类别 s/sauna 图像特征维度: (512,)
+处理类别: c/chemistry_lab
+[2025-11-25 16:16:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/chemistry_lab 图像特征维度: (512,)
+处理类别: f/fire_escape
+[2025-11-25 16:16:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/fire_escape 图像特征维度: (512,)
+处理类别: c/closet
+[2025-11-25 16:16:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/closet 图像特征维度: (512,)
+处理类别: t/toll_plaza
+[2025-11-25 16:16:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/toll_plaza 图像特征维度: (512,)
+处理类别: r/runway
+类别 r/runway 图像特征维度: (512,)
+处理类别: b/bathroom
+[2025-11-25 16:16:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bathroom 图像特征维度: (512,)
+处理类别: d/dining_room
+[2025-11-25 16:16:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/dining_room 图像特征维度: (512,)
+处理类别: a/arch
+类别 a/arch 图像特征维度: (512,)
+处理类别: y/youth_hostel
+ 43%|████▎     | 116/271 [04:24<05:40,  2.20s/it] 43%|████▎     | 117/271 [04:27<05:51,  2.28s/it] 44%|████▎     | 118/271 [04:30<06:24,  2.51s/it] 44%|████▍     | 119/271 [04:32<05:53,  2.32s/it] 44%|████▍     | 120/271 [04:33<05:23,  2.14s/it] 45%|████▍     | 121/271 [04:35<05:18,  2.12s/it] 45%|████▌     | 122/271 [04:38<05:21,  2.16s/it] 45%|████▌     | 123/271 [04:41<05:54,  2.40s/it] 46%|████▌     | 124/271 [04:42<05:28,  2.23s/it] 46%|████▌     | 125/271 [04:45<05:25,  2.23s/it] 46%|████▋     | 126/271 [04:46<04:49,  2.00s/it] 47%|████▋     | 127/271 [04:48<04:41,  1.95s/it] 47%|████▋     | 128/271 [04:50<04:37,  1.94s/it] 48%|████▊     | 129/271 [04:53<05:36,  2.37s/it] 48%|████▊     | 130/271 [04:56<05:38,  2.40s/it] 48%|████▊     | 131/271 [04:58<05:41,  2.44s/it] 49%|████▊     | 132/271 [05:01<06:06,  2.64s/it] 49%|████▉     | 133/271 [05:05<06:26,  2.80s/it] 49%|████▉     | 134/271 [05:06<05:46,  2.53s/it] 50%|████▉     | 135/271 [05:09<05:34,  2.46s/it] 50%|█████     | 136/271 [05:11<05:24,  2.41s/it] 51%|█████     | 137/271 [05:14<05:30,  2.47s/it] 51%|█████     | 138/271 [05:17<05:54,  2.67s/it] 51%|█████▏    | 139/271 [05:19<05:48,  2.64s/it] 52%|█████▏    | 140/271 [05:22<05:47,  2.65s/it] 52%|█████▏    | 141/271 [05:25<05:47,  2.67s/it] 52%|█████▏    | 142/271 [05:27<05:21,  2.49s/it] 53%|█████▎    | 143/271 [05:29<05:06,  2.40s/it] 53%|█████▎    | 144/271 [05:32<05:13,  2.47s/it] 54%|█████▎    | 145/271 [05:34<05:08,  2.45s/it] 54%|█████▍    | 146/271 [05:36<04:50,  2.32s/it] 54%|█████▍    | 147/271 [05:39<05:01,  2.43s/it] 55%|█████▍    | 148/271 [05:41<04:48,  2.34s/it] 55%|█████▍    | 149/271 [05:43<04:37,  2.27s/it] 55%|█████▌    | 150/271 [05:46<05:03,  2.51s/it] 56%|█████▌    | 151/271 [05:48<04:51,  2.43s/it] 56%|█████▌    | 152/271 [05:51<04:46,  2.41s/it] 56%|█████▋    | 153/271 [05:53<04:27,  2.27s/it] 57%|█████▋    | 154/271 [05:54<04:08,  2.13s/it] 57%|█████▋    | 155/271 [05:57<04:13,  2.19s/it] 58%|█████▊    | 156/271 [05:59<04:12,  2.20s/it] 58%|█████▊    | 157/271 [06:01<04:13,  2.22s/it] 58%|█████▊    | 158/271 [06:03<04:05,  2.17s/it] 59%|█████▊    | 159/271 [06:05<04:00,  2.15s/it] 59%|█████▉    | 160/271 [06:07<03:51,  2.08s/it] 59%|█████▉    | 161/271 [06:10<04:20,  2.37s/it] 60%|█████▉    | 162/271 [06:13<04:14,  2.33s/it] 60%|██████    | 163/271 [06:14<03:55,  2.18s/it] 61%|██████    | 164/271 [06:16<03:48,  2.14s/it] 61%|██████    | 165/271 [06:18<03:31,  2.00s/it] 61%|██████▏   | 166/271 [06:20<03:14,  1.85s/it] 62%|██████▏   | 167/271 [06:21<03:05,  1.79s/it] 62%|██████▏   | 168/271 [06:23<02:52,  1.68s/it] 62%|██████▏   | 169/271 [06:25<03:03,  1.80s/it] 63%|██████▎   | 170/271 [06:26<02:55,  1.74s/it] 63%|██████▎   | 171/271 [06:29<03:15,  1.95s/it] 63%|██████▎   | 172/271 [06:31<03:11,  1.93s/it] 64%|██████▍   | 173/271 [06:32<03:02,  1.86s/it][2025-11-25 16:16:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 y/youth_hostel 图像特征维度: (512,)
+处理类别: f/fishpond
+[2025-11-25 16:16:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/fishpond 图像特征维度: (512,)
+处理类别: r/rock_arch
+[2025-11-25 16:16:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/rock_arch 图像特征维度: (512,)
+处理类别: r/rope_bridge
+[2025-11-25 16:17:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/rope_bridge 图像特征维度: (512,)
+处理类别: w/wet_bar
+类别 w/wet_bar 图像特征维度: (512,)
+处理类别: b/barndoor
+[2025-11-25 16:17:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/barndoor 图像特征维度: (512,)
+处理类别: r/recreation_room
+[2025-11-25 16:17:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/recreation_room 图像特征维度: (512,)
+处理类别: r/racecourse
+[2025-11-25 16:17:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/racecourse 图像特征维度: (512,)
+处理类别: r/river
+类别 r/river 图像特征维度: (512,)
+处理类别: s/supermarket
+[2025-11-25 16:17:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/supermarket 图像特征维度: (512,)
+处理类别: l/living_room
+类别 l/living_room 图像特征维度: (512,)
+处理类别: b/boardwalk
+[2025-11-25 16:17:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/boardwalk 图像特征维度: (512,)
+处理类别: b/bookstore
+[2025-11-25 16:17:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bookstore 图像特征维度: (512,)
+处理类别: s/server_room
+[2025-11-25 16:17:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/server_room 图像特征维度: (512,)
+处理类别: l/landing_deck
+[2025-11-25 16:17:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/landing_deck 图像特征维度: (512,)
+处理类别: c/chalet
+[2025-11-25 16:17:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/chalet 图像特征维度: (512,)
+处理类别: m/martial_arts_gym
+[2025-11-25 16:17:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/martial_arts_gym 图像特征维度: (512,)
+处理类别: d/dentists_office
+[2025-11-25 16:17:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/dentists_office 图像特征维度: (512,)
+处理类别: b/butchers_shop
+类别 b/butchers_shop 图像特征维度: (512,)
+处理类别: b/bar
+[2025-11-25 16:17:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bar 图像特征维度: (512,)
+处理类别: t/topiary_garden
+[2025-11-25 16:17:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/topiary_garden 图像特征维度: (512,)
+处理类别: t/tower
+[2025-11-25 16:17:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/tower 图像特征维度: (512,)
+处理类别: h/heliport
+[2025-11-25 16:17:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/heliport 图像特征维度: (512,)
+处理类别: v/viaduct
+[2025-11-25 16:17:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/viaduct 图像特征维度: (512,)
+处理类别: b/bridge
+类别 b/bridge 图像特征维度: (512,)
+处理类别: k/kasbah
+[2025-11-25 16:17:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 k/kasbah 图像特征维度: (512,)
+处理类别: c/childs_room
+[2025-11-25 16:17:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/childs_room 图像特征维度: (512,)
+处理类别: l/locker_room
+[2025-11-25 16:17:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/locker_room 图像特征维度: (512,)
+处理类别: i/islet
+[2025-11-25 16:18:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 i/islet 图像特征维度: (512,)
+处理类别: s/shed
+类别 s/shed 图像特征维度: (512,)
+处理类别: l/lecture_room
+[2025-11-25 16:18:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/lecture_room 图像特征维度: (512,)
+处理类别: b/barn
+[2025-11-25 16:18:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/barn 图像特征维度: (512,)
+处理类别: j/jewelry_shop
+[2025-11-25 16:18:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 j/jewelry_shop 图像特征维度: (512,)
+处理类别: c/cockpit
+类别 c/cockpit 图像特征维度: (512,)
+处理类别: r/raceway
+[2025-11-25 16:18:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/raceway 图像特征维度: (512,)
+处理类别: c/cemetery
+[2025-11-25 16:18:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/cemetery 图像特征维度: (512,)
+处理类别: a/archive
+[2025-11-25 16:18:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/archive 图像特征维度: (512,)
+处理类别: c/corral
+[2025-11-25 16:18:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/corral 图像特征维度: (512,)
+处理类别: f/fairway
+类别 f/fairway 图像特征维度: (512,)
+处理类别: f/forest_path
+[2025-11-25 16:18:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/forest_path 图像特征维度: (512,)
+处理类别: h/hotel_room
+[2025-11-25 16:18:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/hotel_room 图像特征维度: (512,)
+处理类别: c/cliff
+[2025-11-25 16:18:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/cliff 图像特征维度: (512,)
+处理类别: s/sky
+类别 s/sky 图像特征维度: (512,)
+处理类别: r/rainforest
+[2025-11-25 16:18:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/rainforest 图像特征维度: (512,)
+处理类别: p/promenade_deck
+[2025-11-25 16:18:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/promenade_deck 图像特征维度: (512,)
+处理类别: t/tree_house
+[2025-11-25 16:18:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/tree_house 图像特征维度: (512,)
+处理类别: c/construction_site
+类别 c/construction_site 图像特征维度: (512,)
+处理类别: s/staircase
+[2025-11-25 16:18:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/staircase 图像特征维度: (512,)
+处理类别: p/pulpit
+[2025-11-25 16:18:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/pulpit 图像特征维度: (512,)
+处理类别: m/music_store
+类别 m/music_store 图像特征维度: (512,)
+处理类别: i/ice_shelf
+[2025-11-25 16:18:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 i/ice_shelf 图像特征维度: (512,)
+处理类别: s/sushi_bar
+类别 s/sushi_bar 图像特征维度: (512,)
+处理类别: o/oast_house
+[2025-11-25 16:18:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 o/oast_house 图像特征维度: (512,)
+处理类别: p/pond
+类别 p/pond 图像特征维度: (512,)
+处理类别: s/swamp
+[2025-11-25 16:18:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/swamp 图像特征维度: (512,)
+处理类别: w/wave
+[2025-11-25 16:18:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/wave 图像特征维度: (512,)
+处理类别: f/fire_station
+类别 f/fire_station 图像特征维度: (512,)
+处理类别: c/candy_store
+[2025-11-25 16:19:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/candy_store 图像特征维度: (512,)
+处理类别: j/jail_cell
+ 64%|██████▍   | 174/271 [06:35<03:31,  2.18s/it] 65%|██████▍   | 175/271 [06:38<03:37,  2.26s/it] 65%|██████▍   | 176/271 [06:40<03:30,  2.21s/it] 65%|██████▌   | 177/271 [06:42<03:28,  2.22s/it] 66%|██████▌   | 178/271 [06:46<04:01,  2.59s/it] 66%|██████▌   | 179/271 [06:48<03:58,  2.59s/it] 66%|██████▋   | 180/271 [06:50<03:31,  2.33s/it] 67%|██████▋   | 181/271 [06:53<03:36,  2.41s/it] 67%|██████▋   | 182/271 [06:55<03:41,  2.49s/it] 68%|██████▊   | 183/271 [06:58<03:42,  2.52s/it] 68%|██████▊   | 184/271 [06:59<03:10,  2.19s/it] 68%|██████▊   | 185/271 [07:02<03:12,  2.23s/it] 69%|██████▊   | 186/271 [07:04<03:09,  2.23s/it] 69%|██████▉   | 187/271 [07:06<03:02,  2.17s/it] 69%|██████▉   | 188/271 [07:09<03:26,  2.49s/it] 70%|██████▉   | 189/271 [07:11<03:10,  2.32s/it] 70%|███████   | 190/271 [07:13<03:09,  2.34s/it] 70%|███████   | 191/271 [07:16<03:07,  2.35s/it] 71%|███████   | 192/271 [07:18<03:09,  2.40s/it] 71%|███████   | 193/271 [07:21<03:11,  2.46s/it] 72%|███████▏  | 194/271 [07:23<03:14,  2.53s/it] 72%|███████▏  | 195/271 [07:25<02:52,  2.27s/it] 72%|███████▏  | 196/271 [07:28<02:59,  2.40s/it] 73%|███████▎  | 197/271 [07:30<02:47,  2.27s/it] 73%|███████▎  | 198/271 [07:32<02:38,  2.17s/it] 73%|███████▎  | 199/271 [07:34<02:38,  2.21s/it] 74%|███████▍  | 200/271 [07:36<02:31,  2.14s/it] 74%|███████▍  | 201/271 [07:38<02:28,  2.12s/it] 75%|███████▍  | 202/271 [07:41<02:33,  2.23s/it] 75%|███████▍  | 203/271 [07:43<02:30,  2.21s/it] 75%|███████▌  | 204/271 [07:45<02:23,  2.14s/it] 76%|███████▌  | 205/271 [07:47<02:30,  2.28s/it] 76%|███████▌  | 206/271 [07:50<02:26,  2.26s/it] 76%|███████▋  | 207/271 [07:52<02:18,  2.17s/it] 77%|███████▋  | 208/271 [07:54<02:22,  2.26s/it] 77%|███████▋  | 209/271 [07:56<02:19,  2.24s/it] 77%|███████▋  | 210/271 [07:59<02:23,  2.35s/it] 78%|███████▊  | 211/271 [08:01<02:21,  2.36s/it] 78%|███████▊  | 212/271 [08:03<02:17,  2.33s/it] 79%|███████▊  | 213/271 [08:05<02:07,  2.20s/it] 79%|███████▉  | 214/271 [08:08<02:07,  2.23s/it] 79%|███████▉  | 215/271 [08:10<02:12,  2.37s/it] 80%|███████▉  | 216/271 [08:13<02:10,  2.37s/it] 80%|████████  | 217/271 [08:15<02:12,  2.45s/it] 80%|████████  | 218/271 [08:18<02:07,  2.40s/it] 81%|████████  | 219/271 [08:20<01:59,  2.30s/it] 81%|████████  | 220/271 [08:23<02:06,  2.48s/it] 82%|████████▏ | 221/271 [08:25<02:07,  2.55s/it] 82%|████████▏ | 222/271 [08:27<01:50,  2.25s/it] 82%|████████▏ | 223/271 [08:29<01:43,  2.15s/it] 83%|████████▎ | 224/271 [08:31<01:47,  2.30s/it] 83%|████████▎ | 225/271 [08:35<02:07,  2.77s/it] 83%|████████▎ | 226/271 [08:38<02:09,  2.87s/it] 84%|████████▍ | 227/271 [08:41<02:00,  2.74s/it] 84%|████████▍ | 228/271 [08:44<01:57,  2.72s/it] 85%|████████▍ | 229/271 [08:46<01:48,  2.59s/it][2025-11-25 16:19:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 j/jail_cell 图像特征维度: (512,)
+处理类别: c/coast
+[2025-11-25 16:19:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/coast 图像特征维度: (512,)
+处理类别: f/forest_road
+类别 f/forest_road 图像特征维度: (512,)
+处理类别: c/cheese_factory
+[2025-11-25 16:19:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/cheese_factory 图像特征维度: (512,)
+处理类别: c/computer_room
+[2025-11-25 16:19:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/computer_room 图像特征维度: (512,)
+处理类别: a/art_gallery
+[2025-11-25 16:19:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/art_gallery 图像特征维度: (512,)
+处理类别: m/mountain_snowy
+[2025-11-25 16:19:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/mountain_snowy 图像特征维度: (512,)
+处理类别: v/vineyard
+[2025-11-25 16:19:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/vineyard 图像特征维度: (512,)
+处理类别: h/house
+类别 h/house 图像特征维度: (512,)
+处理类别: e/elevator_shaft
+[2025-11-25 16:19:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 e/elevator_shaft 图像特征维度: (512,)
+处理类别: p/park
+[2025-11-25 16:19:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/park 图像特征维度: (512,)
+处理类别: h/harbor
+[2025-11-25 16:19:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/harbor 图像特征维度: (512,)
+处理类别: a/alley
+类别 a/alley 图像特征维度: (512,)
+处理类别: k/kitchenette
+[2025-11-25 16:19:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 k/kitchenette 图像特征维度: (512,)
+处理类别: s/shower
+[2025-11-25 16:19:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/shower 图像特征维度: (512,)
+处理类别: d/driveway
+[2025-11-25 16:19:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/driveway 图像特征维度: (512,)
+处理类别: a/abbey
+[2025-11-25 16:19:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/abbey 图像特征维度: (512,)
+处理类别: s/squash_court
+类别 s/squash_court 图像特征维度: (512,)
+处理类别: r/residential_neighborhood
+[2025-11-25 16:19:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/residential_neighborhood 图像特征维度: (512,)
+处理类别: p/parking_lot
+[2025-11-25 16:19:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/parking_lot 图像特征维度: (512,)
+处理类别: c/campsite
+[2025-11-25 16:19:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/campsite 图像特征维度: (512,)
+处理类别: d/dorm_room
+类别 d/dorm_room 图像特征维度: (512,)
+处理类别: g/galley
+[2025-11-25 16:19:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 g/galley 图像特征维度: (512,)
+处理类别: c/corn_field
+[2025-11-25 16:19:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/corn_field 图像特征维度: (512,)
+处理类别: t/throne_room
+[2025-11-25 16:20:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/throne_room 图像特征维度: (512,)
+处理类别: r/restaurant_patio
+类别 r/restaurant_patio 图像特征维度: (512,)
+处理类别: i/ice_floe
+[2025-11-25 16:20:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 i/ice_floe 图像特征维度: (512,)
+处理类别: g/gas_station
+[2025-11-25 16:20:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 g/gas_station 图像特征维度: (512,)
+处理类别: w/windmill
+[2025-11-25 16:20:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/windmill 图像特征维度: (512,)
+处理类别: r/riding_arena
+类别 r/riding_arena 图像特征维度: (512,)
+处理类别: v/veranda
+[2025-11-25 16:20:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/veranda 图像特征维度: (512,)
+处理类别: p/parlor
+[2025-11-25 16:20:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/parlor 图像特征维度: (512,)
+处理类别: c/campus
+[2025-11-25 16:20:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/campus 图像特征维度: (512,)
+处理类别: v/vegetable_garden
+类别 v/vegetable_garden 图像特征维度: (512,)
+处理类别: c/corridor
+[2025-11-25 16:20:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/corridor 图像特征维度: (512,)
+处理类别: a/auditorium
+[2025-11-25 16:20:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/auditorium 图像特征维度: (512,)
+处理类别: d/drugstore
+[2025-11-25 16:20:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/drugstore 图像特征维度: (512,)
+处理类别: c/cottage_garden
+类别 c/cottage_garden 图像特征维度: (512,)
+处理类别: r/restaurant
+[2025-11-25 16:20:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/restaurant 图像特征维度: (512,)
+处理类别: t/toyshop
+[2025-11-25 16:20:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/toyshop 图像特征维度: (512,)
+处理类别: h/home_office
+[2025-11-25 16:20:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/home_office 图像特征维度: (512,)
+处理类别: d/dam
+[2025-11-25 16:20:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/dam 图像特征维度: (512,)
+处理类别: a/aquarium
+类别 a/aquarium 图像特征维度: (512,)
+处理类别: s/sandbox
+[2025-11-25 16:20:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/sandbox 图像特征维度: (512,)
+处理类别: a/airplane_cabin
+[2025-11-25 16:20:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/airplane_cabin 图像特征维度: (512,)
+处理类别: m/medina
+[2025-11-25 16:20:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/medina 图像特征维度: (512,)
+处理类别: f/formal_garden
+[2025-11-25 16:20:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/formal_garden 图像特征维度: (512,)
+处理类别: b/burial_chamber
+[2025-11-25 16:20:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/burial_chamber 图像特征维度: (512,)
+处理类别: i/industrial_area
+类别 i/industrial_area 图像特征维度: (512,)
+处理类别: b/building_facade
+[2025-11-25 16:20:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/building_facade 图像特征维度: (512,)
+处理类别: v/van_interior
+[2025-11-25 16:21:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/van_interior 图像特征维度: (512,)
+处理类别: p/pavilion
+[2025-11-25 16:21:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/pavilion 图像特征维度: (512,)
+处理类别: i/igloo
+[2025-11-25 16:21:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 i/igloo 图像特征维度: (512,)
+处理类别: w/water_tower
+[2025-11-25 16:21:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/water_tower 图像特征维度: (512,)
+处理类别: w/wind_farm
+[2025-11-25 16:21:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 w/wind_farm 图像特征维度: (512,)
+处理类别: m/mausoleum
+类别 m/mausoleum 图像特征维度: (512,)
+处理类别: c/crosswalk
+[2025-11-25 16:21:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+ 85%|████████▍ | 230/271 [08:49<01:48,  2.65s/it] 85%|████████▌ | 231/271 [08:51<01:47,  2.69s/it] 86%|████████▌ | 232/271 [08:54<01:44,  2.67s/it] 86%|████████▌ | 233/271 [08:57<01:40,  2.64s/it] 86%|████████▋ | 234/271 [08:59<01:32,  2.51s/it] 87%|████████▋ | 235/271 [09:01<01:26,  2.41s/it] 87%|████████▋ | 236/271 [09:03<01:16,  2.17s/it] 87%|████████▋ | 237/271 [09:05<01:17,  2.28s/it] 88%|████████▊ | 238/271 [09:07<01:11,  2.15s/it] 88%|████████▊ | 239/271 [09:09<01:07,  2.10s/it] 89%|████████▊ | 240/271 [09:11<01:02,  2.03s/it] 89%|████████▉ | 241/271 [09:13<00:59,  1.98s/it] 89%|████████▉ | 242/271 [09:16<01:09,  2.39s/it] 90%|████████▉ | 243/271 [09:18<01:04,  2.30s/it] 90%|█████████ | 244/271 [09:20<01:00,  2.25s/it] 90%|█████████ | 245/271 [09:23<01:00,  2.32s/it] 91%|█████████ | 246/271 [09:25<00:58,  2.34s/it] 91%|█████████ | 247/271 [09:28<00:58,  2.46s/it] 92%|█████████▏| 248/271 [09:29<00:51,  2.22s/it] 92%|█████████▏| 249/271 [09:32<00:51,  2.35s/it] 92%|█████████▏| 250/271 [09:35<00:54,  2.58s/it] 93%|█████████▎| 251/271 [09:37<00:46,  2.31s/it] 93%|█████████▎| 252/271 [09:40<00:50,  2.65s/it] 93%|█████████▎| 253/271 [09:42<00:43,  2.42s/it] 94%|█████████▎| 254/271 [09:45<00:43,  2.55s/it] 94%|█████████▍| 255/271 [09:47<00:39,  2.47s/it] 94%|█████████▍| 256/271 [09:51<00:40,  2.72s/it] 95%|█████████▍| 257/271 [09:53<00:34,  2.46s/it] 95%|█████████▌| 258/271 [09:57<00:38,  2.96s/it] 96%|█████████▌| 259/271 [09:59<00:31,  2.65s/it] 96%|█████████▌| 260/271 [10:02<00:31,  2.87s/it] 96%|█████████▋| 261/271 [10:05<00:28,  2.83s/it] 97%|█████████▋| 262/271 [10:07<00:24,  2.73s/it] 97%|█████████▋| 263/271 [10:09<00:19,  2.44s/it] 97%|█████████▋| 264/271 [10:11<00:17,  2.44s/it] 98%|█████████▊| 265/271 [10:13<00:13,  2.32s/it] 98%|█████████▊| 266/271 [10:16<00:11,  2.27s/it] 99%|█████████▊| 267/271 [10:18<00:09,  2.37s/it] 99%|█████████▉| 268/271 [10:20<00:06,  2.29s/it] 99%|█████████▉| 269/271 [10:24<00:05,  2.74s/it]100%|█████████▉| 270/271 [10:26<00:02,  2.42s/it]100%|██████████| 271/271 [10:29<00:00,  2.74s/it]100%|██████████| 271/271 [10:29<00:00,  2.32s/it]
+类别 c/crosswalk 图像特征维度: (512,)
+处理类别: m/motel
+[2025-11-25 16:21:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/motel 图像特征维度: (512,)
+处理类别: v/veterinarians_office
+[2025-11-25 16:21:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/veterinarians_office 图像特征维度: (512,)
+处理类别: a/art_studio
+[2025-11-25 16:21:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 a/art_studio 图像特征维度: (512,)
+处理类别: b/badlands
+[2025-11-25 16:21:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/badlands 图像特征维度: (512,)
+处理类别: a/amusement_arcade
+类别 a/amusement_arcade 图像特征维度: (512,)
+处理类别: p/plaza
+[2025-11-25 16:21:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/plaza 图像特征维度: (512,)
+处理类别: m/mountain
+[2025-11-25 16:21:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 m/mountain 图像特征维度: (512,)
+处理类别: p/putting_green
+类别 p/putting_green 图像特征维度: (512,)
+处理类别: b/boat_deck
+[2025-11-25 16:21:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/boat_deck 图像特征维度: (512,)
+处理类别: d/dock
+[2025-11-25 16:21:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/dock 图像特征维度: (512,)
+处理类别: t/thriftshop
+类别 t/thriftshop 图像特征维度: (512,)
+处理类别: h/hill
+[2025-11-25 16:21:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/hill 图像特征维度: (512,)
+处理类别: r/ruin
+[2025-11-25 16:21:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 r/ruin 图像特征维度: (512,)
+处理类别: o/operating_room
+[2025-11-25 16:21:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 o/operating_room 图像特征维度: (512,)
+处理类别: v/videostore
+[2025-11-25 16:21:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 v/videostore 图像特征维度: (512,)
+处理类别: t/train_railway
+类别 t/train_railway 图像特征维度: (512,)
+处理类别: t/trench
+[2025-11-25 16:21:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/trench 图像特征维度: (512,)
+处理类别: c/conference_center
+[2025-11-25 16:21:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/conference_center 图像特征维度: (512,)
+处理类别: o/orchard
+[2025-11-25 16:22:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 o/orchard 图像特征维度: (512,)
+处理类别: p/phone_booth
+[2025-11-25 16:22:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/phone_booth 图像特征维度: (512,)
+处理类别: k/kitchen
+类别 k/kitchen 图像特征维度: (512,)
+处理类别: b/beauty_salon
+[2025-11-25 16:22:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:22:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/beauty_salon 图像特征维度: (512,)
+处理类别: i/iceberg
+类别 i/iceberg 图像特征维度: (512,)
+处理类别: b/bowling_alley
+[2025-11-25 16:22:12] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/bowling_alley 图像特征维度: (512,)
+处理类别: l/limousine_interior
+[2025-11-25 16:22:15] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 l/limousine_interior 图像特征维度: (512,)
+处理类别: s/ski_lodge
+[2025-11-25 16:22:18] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 s/ski_lodge 图像特征维度: (512,)
+处理类别: o/oilrig
+[2025-11-25 16:22:21] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 o/oilrig 图像特征维度: (512,)
+处理类别: b/baseball_field
+[2025-11-25 16:22:24] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/baseball_field 图像特征维度: (512,)
+处理类别: d/delicatessen
+[2025-11-25 16:22:27] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 d/delicatessen 图像特征维度: (512,)
+处理类别: c/crevasse
+[2025-11-25 16:22:30] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/crevasse 图像特征维度: (512,)
+处理类别: b/boathouse
+[2025-11-25 16:22:33] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/boathouse 图像特征维度: (512,)
+处理类别: m/music_studio
+类别 m/music_studio 图像特征维度: (512,)
+处理类别: c/creek
+[2025-11-25 16:22:36] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/creek 图像特征维度: (512,)
+处理类别: f/fountain
+[2025-11-25 16:22:39] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 f/fountain 图像特征维度: (512,)
+处理类别: p/pagoda
+[2025-11-25 16:22:42] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 p/pagoda 图像特征维度: (512,)
+处理类别: b/basement
+类别 b/basement 图像特征维度: (512,)
+处理类别: c/conference_room
+[2025-11-25 16:22:45] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 c/conference_room 图像特征维度: (512,)
+处理类别: t/tree_farm
+[2025-11-25 16:22:48] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 t/tree_farm 图像特征维度: (512,)
+处理类别: y/yard
+[2025-11-25 16:22:51] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 y/yard 图像特征维度: (512,)
+处理类别: h/herb_garden
+[2025-11-25 16:22:54] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 h/herb_garden 图像特征维度: (512,)
+处理类别: b/biology_laboratory
+[2025-11-25 16:22:57] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 b/biology_laboratory 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/271 [00:00<?, ?it/s]  0%|          | 1/271 [00:14<1:05:27, 14.55s/it]  1%|          | 2/271 [00:30<1:10:02, 15.62s/it]  1%|          | 3/271 [01:04<1:46:19, 23.80s/it]  1%|▏         | 4/271 [01:20<1:32:01, 20.68s/it]处理类别: c/clothing_store
+[2025-11-25 16:23:00] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:23:03] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 16:23:06] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for c/clothing_store category.
+[2025-11-25 16:23:09] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+图像过大 (1200x1600)，缩小到 (1080x1440) 以节省显存
+图像过大 (1528x882)，缩小到 (1440x831) 以节省显存
+推理前显存: 已分配=32.50GB, 已保留=32.84GB, 剩余=14.90GB
+[2025-11-25 16:23:12] [显存监控] 已分配=32.69GB, 已保留=33.03GB, 空闲=14.71GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 12.48 GiB. GPU 0 has a total capacity of 47.40 GiB of which 9.09 GiB is free. Process 3869721 has 3.41 GiB memory in use. Including non-PyTorch memory, this process has 34.88 GiB memory in use. Of the allocated memory 34.16 GiB is allocated by PyTorch, and 416.35 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 c/clothing_store 文本特征维度: (512,)
+描述: Description for c/clothing_store category....
+处理类别: p/playground
+[2025-11-25 16:23:15] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+[2025-11-25 16:23:18] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+[2025-11-25 16:23:21] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+wiki desc: Description for p/playground category.
+[2025-11-25 16:23:24] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+图像过大 (2288x1712)，缩小到 (1440x1077) 以节省显存
+图像过大 (2592x1944)，缩小到 (1440x1080) 以节省显存
+图像过大 (2048x1536)，缩小到 (1440x1080) 以节省显存
+[2025-11-25 16:23:27] [显存监控] 已分配=32.44GB, 已保留=34.57GB, 空闲=14.97GB
+推理前显存: 已分配=32.54GB, 已保留=32.97GB, 剩余=14.86GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 33.38 GiB. GPU 0 has a total capacity of 47.40 GiB of which 6.95 GiB is free. Process 3869721 has 3.41 GiB memory in use. Including non-PyTorch memory, this process has 37.02 GiB memory in use. Of the allocated memory 36.27 GiB is allocated by PyTorch, and 452.73 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 p/playground 文本特征维度: (512,)
+描述: Description for p/playground category....
+处理类别: s/ski_slope
+[2025-11-25 16:23:30] [显存监控] 已分配=32.44GB, 已保留=36.71GB, 空闲=14.97GB
+[2025-11-25 16:23:33] [显存监控] 已分配=32.44GB, 已保留=36.71GB, 空闲=14.97GB
+[2025-11-25 16:23:36] [显存监控] 已分配=32.44GB, 已保留=36.71GB, 空闲=14.97GB
+[2025-11-25 16:23:39] [显存监控] 已分配=32.44GB, 已保留=36.71GB, 空闲=14.97GB
+wiki desc: Description for s/ski_slope category.
+推理前显存: 已分配=32.47GB, 已保留=32.89GB, 剩余=14.93GB
+[2025-11-25 16:23:42] [显存监控] 已分配=32.64GB, 已保留=32.98GB, 空闲=14.76GB
+[2025-11-25 16:23:45] [显存监控] 已分配=32.86GB, 已保留=42.98GB, 空闲=14.54GB
+[2025-11-25 16:23:48] [显存监控] 已分配=32.71GB, 已保留=42.98GB, 空闲=14.69GB
+[2025-11-25 16:23:51] [显存监控] 已分配=32.72GB, 已保留=42.98GB, 空闲=14.68GB
+[2025-11-25 16:23:54] [显存监控] 已分配=32.73GB, 已保留=42.98GB, 空闲=14.68GB
+[2025-11-25 16:23:57] [显存监控] 已分配=32.73GB, 已保留=42.98GB, 空闲=14.67GB
+[2025-11-25 16:24:00] [显存监控] 已分配=32.73GB, 已保留=42.98GB, 空闲=14.67GB
+推理后显存: 已分配=32.44GB, 已保留=42.98GB, 剩余=14.97GB
+MLLM description: ### Image 1: Snow-Covered Mountain Peak
+
+**Distinctive Physical Features:**  
+- A rugged mountain peak with exposed rocky outcrops and sparse vegetation at the summit.  
+- Steep slopes covered in snow, indicating a natural, unmanicured ski slope.  
+
+**Color Patterns and Markings:**  
+- Predominantly white due to the snow covering, with patches of brown and gray where rocks are exposed.  
+- Darker shadows cast by the rocky areas contrast against the bright snow.  
+
+**Size and Proportions:**  
+- The image shows a large, imposing mountain, suggesting a significant vertical drop and expansive area.  
+- The scale is vast compared to the human figures or objects that might be present, emphasizing the grandeur of the landscape.  
+
+**Behavioral Characteristics:**  
+- No visible human activity or skiers, implying a remote or less frequented location.  
+
+**Unique Identifying Traits:**  
+- The combination of steep, rocky terrain and dense snow cover makes it an ideal location for backcountry skiing or mountaineering.  
+
+---
+
+### Image 2: Cross-Country Skiing Trail
+
+**Distinctive Physical Features:**  
+- A wide, groomed trail through a forested area, likely used for cross-country
+类别 s/ski_slope 文本特征维度: (512,)
+描述: ### Image 1: Snow-Covered Mountain Peak
+
+**Distinctive Physical Features:**  
+- A rugged mountain pe...
+处理类别: b/banquet_hall
+[2025-11-25 16:24:03] [显存监控] 已分配=32.44GB, 已保留=42.98GB, 空闲=14.97GB
+[2025-11-25 16:24:06] [显存监控] 已分配=32.44GB, 已保留=42.98GB, 空闲=14.97GB
+[2025-11-25 16:24:09] [显存监控] 已分配=32.44GB, 已保留=42.98GB, 空闲=14.97GB
+[2025-11-25 16:24:12] [显存监控] 已分配=32.44GB, 已保留=42.98GB, 空闲=14.97GB
+wiki desc: Description for b/banquet_hall category.
+[2025-11-25 16:24:15] [显存监控] 已分配=32.44GB, 已保留=42.98GB, 空闲=14.97GB
+图像过大 (4064x2704)，缩小到 (1440x958) 以节省显存
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=32.50GB, 已保留=32.89GB, 剩余=14.90GB
+[2025-11-25 16:24:18] [显存监控] 已分配=32.70GB, 已保留=33.09GB, 空闲=14.70GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 13.85 GiB. GPU 0 has a total capacity of 47.40 GiB of which 8.98 GiB is free. Process 3869721 has 3.41 GiB memory in use. Including non-PyTorch memory, this process has 35.00 GiB memory in use. Of the allocated memory 34.31 GiB is allocated by PyTorch, and 387.93 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 b/banquet_hall 文本特征维度: (512,)
+描述: Description for b/banquet_hall category....
+处理类别: f/fastfood_restaurant
+[2025-11-25 16:24:21] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+[2025-11-25 16:24:24] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+[2025-11-25 16:24:27] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+wiki desc: Description for f/fastfood_restaurant category.
+[2025-11-25 16:24:30] [显存监控] 已分配=32.44GB, 已保留=34.69GB, 空闲=14.97GB
+图像过大 (1200x1600)，缩小到 (1080x1440) 以节省显存
+推理前显存: 已分配=32.49GB, 已保留=32.85GB, 剩余=14.91GB
+  2%|▏         | 5/271 [01:34<1:21:30, 18.38s/it]  2%|▏         | 6/271 [01:48<1:13:48, 16.71s/it]  3%|▎         | 7/271 [02:16<1:29:43, 20.39s/it]  3%|▎         | 8/271 [02:32<1:23:32, 19.06s/it]MLLM描述生成失败: CUDA out of memory. Tried to allocate 9.87 GiB. GPU 0 has a total capacity of 47.40 GiB of which 9.43 GiB is free. Process 3869721 has 3.41 GiB memory in use. Including non-PyTorch memory, this process has 34.54 GiB memory in use. Of the allocated memory 33.87 GiB is allocated by PyTorch, and 362.87 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 f/fastfood_restaurant 文本特征维度: (512,)
+描述: Description for f/fastfood_restaurant category....
+处理类别: c/courtroom
+[2025-11-25 16:24:33] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+[2025-11-25 16:24:36] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+[2025-11-25 16:24:39] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+[2025-11-25 16:24:42] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+wiki desc: Description for c/courtroom category.
+图像过大 (2304x2828)，缩小到 (1173x1440) 以节省显存
+[2025-11-25 16:24:45] [显存监控] 已分配=32.44GB, 已保留=34.23GB, 空闲=14.97GB
+推理前显存: 已分配=32.48GB, 已保留=32.82GB, 剩余=14.92GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 5.27 GiB. GPU 0 has a total capacity of 47.40 GiB of which 4.72 GiB is free. Process 3869721 has 3.41 GiB memory in use. Including non-PyTorch memory, this process has 39.26 GiB memory in use. Of the allocated memory 38.56 GiB is allocated by PyTorch, and 391.69 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 c/courtroom 文本特征维度: (512,)
+描述: Description for c/courtroom category....
+处理类别: l/laundromat
+[2025-11-25 16:24:48] [显存监控] 已分配=32.44GB, 已保留=38.95GB, 空闲=14.97GB
+[2025-11-25 16:24:51] [显存监控] 已分配=32.44GB, 已保留=38.95GB, 空闲=14.97GB
+[2025-11-25 16:24:54] [显存监控] 已分配=32.44GB, 已保留=38.95GB, 空闲=14.97GB
+[2025-11-25 16:24:57] [显存监控] 已分配=32.44GB, 已保留=38.95GB, 空闲=14.97GB
+wiki desc: Description for l/laundromat category.
+推理前显存: 已分配=32.45GB, 已保留=32.81GB, 剩余=14.95GB
+[2025-11-25 16:25:00] [显存监控] 已分配=32.60GB, 已保留=34.67GB, 空闲=14.80GB
+[2025-11-25 16:25:03] [显存监控] 已分配=32.56GB, 已保留=34.67GB, 空闲=14.84GB
+[2025-11-25 16:25:06] [显存监控] 已分配=32.57GB, 已保留=34.67GB, 空闲=14.83GB
+[2025-11-25 16:25:09] [显存监控] 已分配=32.58GB, 已保留=34.67GB, 空闲=14.82GB
+[2025-11-25 16:25:12] [显存监控] 已分配=32.58GB, 已保留=34.67GB, 空闲=14.82GB
+推理后显存: 已分配=32.44GB, 已保留=34.67GB, 剩余=14.97GB
+MLLM description: ### Image 1: Laundry Room with Two Washing Machines
+
+**Distinctive Physical Features:**  
+- The room is equipped with two washing machines placed side by side, each with a control panel and a door.  
+- There's a sink with a faucet against the wall, likely for rinsing clothes or hands.  
+- A clock is mounted on the wall near the sink, indicating the time.  
+
+**Color Patterns and Markings:**  
+- The walls are painted white, creating a clean and bright atmosphere.  
+- The washing machines have a teal-colored front panel with a circular design, contrasting with their white body.  
+- The floor appears to be dark gray or black, providing a neutral base for the room.  
+
+**Size and Proportions:**  
+- The room is relatively small, designed for functionality rather than aesthetics.  
+- The washing machines are standard-sized, typical of those found in laundromats.  
+- The sink is compact, suggesting it's meant for quick tasks like rinsing.  
+
+**Behavioral Characteristics:**  
+- This space is intended for laundry-related activities, such as washing and drying clothes.  
+- It lacks personal touches, emphasizing its utilitarian purpose.  
+
+**Unique Identifying Traits:**  
+- The presence of multiple washing
+类别 l/laundromat 文本特征维度: (512,)
+描述: ### Image 1: Laundry Room with Two Washing Machines
+
+**Distinctive Physical Features:**  
+- The room...
+处理类别: a/attic
+[2025-11-25 16:25:15] [显存监控] 已分配=32.44GB, 已保留=34.67GB, 空闲=14.97GB
+[2025-11-25 16:25:18] [显存监控] 已分配=32.44GB, 已保留=34.67GB, 空闲=14.97GB
+[2025-11-25 16:25:21] [显存监控] 已分配=32.44GB, 已保留=34.67GB, 空闲=14.97GB
+[2025-11-25 16:25:24] [显存监控] 已分配=32.44GB, 已保留=34.67GB, 空闲=14.97GB
+wiki desc: Description for a/attic category.
+图像过大 (2592x1944)，缩小到 (1440x1080) 以节省显存
+[2025-11-25 16:25:27] [显存监控] 已分配=32.44GB, 已保留=34.67GB, 空闲=14.97GB
+图像过大 (2560x1920)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=32.53GB, 已保留=32.96GB, 剩余=14.87GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 29.29 GiB. GPU 0 has a total capacity of 47.40 GiB of which 7.35 GiB is free. Process 3869721 has 3.41 GiB memory in use. Including non-PyTorch memory, this process has 36.63 GiB memory in use. Of the allocated memory 35.87 GiB is allocated by PyTorch, and 455.55 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[2025-11-25 16:25:30] [显存监控] 已分配=33.83GB, 已保留=36.32GB, 空闲=13.57GB
+类别 a/attic 文本特征维度: (512,)
+描述: Description for a/attic category....
+处理类别: d/discotheque
+[2025-11-25 16:25:33] [显存监控] 已分配=32.44GB, 已保留=36.32GB, 空闲=14.97GB
+[2025-11-25 16:25:36] [显存监控] 已分配=32.44GB, 已保留=36.32GB, 空闲=14.97GB
+[2025-11-25 16:25:39] [显存监控] 已分配=32.44GB, 已保留=36.32GB, 空闲=14.97GB
+wiki desc: Description for d/discotheque category.
+[2025-11-25 16:25:42] [显存监控] 已分配=32.44GB, 已保留=36.32GB, 空闲=14.97GB
+推理前显存: 已分配=32.47GB, 已保留=32.88GB, 剩余=14.94GB
+[2025-11-25 16:25:45] [显存监控] 已分配=32.78GB, 已保留=39.98GB, 空闲=14.62GB
+[2025-11-25 16:25:48] [显存监控] 已分配=32.67GB, 已保留=39.98GB, 空闲=14.73GB
+[2025-11-25 16:25:51] [显存监控] 已分配=32.67GB, 已保留=39.98GB, 空闲=14.73GB
+[2025-11-25 16:25:54] [显存监控] 已分配=32.68GB, 已保留=39.98GB, 空闲=14.72GB
+[2025-11-25 16:25:57] [显存监控] 已分配=32.69GB, 已保留=39.98GB, 空闲=14.72GB
+[2025-11-25 16:26:00] [显存监控] 已分配=32.69GB, 已保留=39.98GB, 空闲=14.71GB
+推理后显存: 已分配=32.44GB, 已保留=39.98GB, 剩余=14.97GB
+  3%|▎         | 9/271 [03:04<1:41:00, 23.13s/it]  4%|▎         | 10/271 [03:30<1:44:34, 24.04s/it]  4%|▍         | 11/271 [03:55<1:45:24, 24.32s/it]/home/hdl/project/fgvr_test/scripts/run_pipeline.sh: line 289: 1199531 Killed                  python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/${CONFIG_FILE_DS} --num_per_category=${KSHOT} --knowledge_base_dir=${KNOWLEDGE_BASE_DIR}
+[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=137)

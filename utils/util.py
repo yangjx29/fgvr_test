@@ -744,6 +744,8 @@ def is_similar(str1, str2, threshold=0.7):
         判断两个字符串是否语义相似
         在比较前进行大小写不敏感和分隔符归一化处理
         
+        对于SUN397等有嵌套类别结构的数据集（如 a/abbey），需要确保所有层级都匹配
+        
         Args:
             str1: 第一个字符串
             str2: 第二个字符串
@@ -755,12 +757,29 @@ def is_similar(str1, str2, threshold=0.7):
         if not str1 or not str2:
             return False
         
-        # 归一化处理：转换为小写，统一分隔符
+        # SUN397特殊处理：嵌套类别结构需要精确匹配所有层级
+        # 如果两个字符串都包含 /，说明可能是嵌套类别（如 a/abbey）
+        if '/' in str1 and '/' in str2:
+            # 对于嵌套类别，需要确保所有层级都匹配
+            parts1 = str1.split('/')
+            parts2 = str2.split('/')
+            
+            # 如果层级数不同，直接返回False
+            if len(parts1) != len(parts2):
+                return False
+            
+            # 逐层比较，所有层级都必须匹配
+            for p1, p2 in zip(parts1, parts2):
+                if not _is_similar_single_level(p1, p2, threshold):
+                    return False
+            return True
+        
+        # 非嵌套类别，使用原有的归一化处理
         def normalize(s):
             import re
             # 转换为小写
             s = s.lower()
-            # 替换各种分隔符为空格
+            # 替换各种分隔符为空格（但保留 / 用于嵌套类别）
             s = re.sub(r'[_\-\.,;:]', ' ', s)
             # 移除多余空格
             s = re.sub(r'\s+', ' ', s)
@@ -777,3 +796,39 @@ def is_similar(str1, str2, threshold=0.7):
         # 计算相似度
         similarity = SequenceMatcher(None, normalized_str1, normalized_str2).ratio()
         return similarity >= threshold
+
+
+def _is_similar_single_level(str1: str, str2: str, threshold: float = 0.7) -> bool:
+    """
+    单层类别名相似度判断（用于嵌套类别的逐层比较）
+    
+    Args:
+        str1: 第一个字符串
+        str2: 第二个字符串
+        threshold: 相似度阈值
+        
+    Returns:
+        是否相似
+    """
+    if not str1 or not str2:
+        return False
+    
+    # 归一化处理
+    def normalize(s):
+        import re
+        s = s.lower()
+        s = re.sub(r'[_\-\.,;:]', ' ', s)
+        s = re.sub(r'\s+', ' ', s)
+        return s.strip()
+    
+    normalized_str1 = normalize(str1)
+    normalized_str2 = normalize(str2)
+    
+    # 如果归一化后完全相同，直接返回True
+    if normalized_str1 == normalized_str2:
+        return True
+    
+    # 计算相似度
+    from difflib import SequenceMatcher
+    similarity = SequenceMatcher(None, normalized_str1, normalized_str2).ratio()
+    return similarity >= threshold
