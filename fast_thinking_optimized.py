@@ -312,29 +312,77 @@ class FastThinkingOptimized:
         """
         trigger_reason = {}
         
-        # === 第一级: 严格的快速路径判断 ===
-        # 1. 融合Top-1置信度足够高且margin足够大 - 最严格条件
+        # === 第一级: 高置信度快速路径 (最优先判断) ===
+        # 1. 融合Top-1置信度足够高且margin足够大
         if fused_top1_prob >= self.fused_conf_threshold and fused_margin >= self.fused_margin_threshold:
             trigger_reason["type"] = "high_confidence_margin"
             trigger_reason["fused_prob"] = fused_top1_prob
             trigger_reason["margin"] = fused_margin
             return False, fused_top1, fused_top1_prob, trigger_reason
         
-        # 2. 两个模态高度一致且各自置信度都很高
-        categories_match_soft = is_similar(img_category, text_category, threshold=self.similarity_threshold) or name_soft_agree
-        if categories_match_soft and img_confidence >= self.per_modality_conf_threshold and text_confidence >= self.per_modality_conf_threshold:
-            trigger_reason["type"] = "high_modality_consistency"
-            trigger_reason["img_conf"] = img_confidence
-            trigger_reason["text_conf"] = text_confidence
-            return False, fused_top1, float(max(img_confidence, text_confidence)), trigger_reason
         
-        # 3. Top-K重叠且融合Top-1置信度较高
-        if self.consider_topk_overlap and topk_overlap and fused_top1_prob >= (self.fused_conf_threshold * 0.9):
-            trigger_reason["type"] = "topk_overlap"
+        # 3. 两个模态高度一致且各自置信度都较高
+        categories_match_soft = is_similar(img_category, text_category, threshold=self.similarity_threshold) or name_soft_agree
+        if categories_match_soft:
+            # 放宽条件: 只要模态一致,且至少一个置信度较高
+            if img_confidence >= self.per_modality_conf_threshold or text_confidence >= self.per_modality_conf_threshold:
+                trigger_reason["type"] = "modality_consistency"
+                trigger_reason["img_conf"] = img_confidence
+                trigger_reason["text_conf"] = text_confidence
+                return False, fused_top1, float(max(img_confidence, text_confidence)), trigger_reason
+        
+        
+        # 5. 两个模态的Top-1完全一致,即使置信度不高也信任（进一步放宽）
+        if img_category == text_category or is_similar(img_category, text_category, threshold=0.4):
+            if fused_top1_prob >= 0.2:  # 进一步降低到0.50
+                trigger_reason["type"] = "exact_modality_match"
+                trigger_reason["fused_prob"] = fused_top1_prob
+                return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # 5.5. 两个模态的Top-1软一致且置信度中等
+        if categories_match_soft and fused_top1_prob >= 0.3:
+            trigger_reason["type"] = "soft_modality_match"
             trigger_reason["fused_prob"] = fused_top1_prob
             return False, fused_top1, fused_top1_prob, trigger_reason
         
-        # === 第二级: LCB判断 ===
+        # === 第二级: 中等置信度快速路径 ===
+        # 6. 融合Top-1置信度中等(>=0.60)且margin中等(>=0.06)（进一步放宽）
+        if fused_top1_prob >= 0.40 and fused_margin >= 0.06:
+            trigger_reason["type"] = "medium_confidence_margin"
+            trigger_reason["fused_prob"] = fused_top1_prob
+            trigger_reason["margin"] = fused_margin
+            return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # 7. 融合Top-1置信度>=0.65,即使margin很小也信任（从0.70降低到0.65）
+        if fused_top1_prob >= 0.4:
+            trigger_reason["type"] = "high_prob_low_margin"
+            trigger_reason["fused_prob"] = fused_top1_prob
+            trigger_reason["margin"] = fused_margin
+            return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # 8. 融合Top-1置信度>=0.55且margin>=0.04,且模态一致（进一步放宽）
+        if fused_top1_prob >= 0.4 and fused_margin >= 0.04:
+            if categories_match_soft:
+                trigger_reason["type"] = "relaxed_confidence_modality"
+                trigger_reason["fused_prob"] = fused_top1_prob
+                trigger_reason["margin"] = fused_margin
+                return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # 8.5. 融合Top-1置信度>=0.60且Top-K重叠（新增）
+        if fused_top1_prob >= 0.4 and topk_overlap:
+            trigger_reason["type"] = "medium_prob_overlap_early"
+            trigger_reason["fused_prob"] = fused_top1_prob
+            return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # === 第三级: 基于置信度的预判断（在LCB之前） ===
+        # 9. 如果融合Top-1置信度>=0.60且margin>=0.05,直接通过（新增，在LCB之前）
+        if fused_top1_prob >= 0.4 and fused_margin >= 0.05:
+            trigger_reason["type"] = "pre_lcb_confidence"
+            trigger_reason["fused_prob"] = fused_top1_prob
+            trigger_reason["margin"] = fused_margin
+            return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # === 第四级: LCB判断 (动态阈值) ===
         # 准备置信度分数
         confidence_scores = [
             max(0.0, min(1.0, float(img_confidence))),
@@ -346,8 +394,6 @@ class FastThinkingOptimized:
         # 冷启动保护
         if category_for_lcb not in self.category_stats:
             self.category_stats[category_for_lcb] = {"n": 0, "m": 0}
-        
-        self.total_predictions = max(1, int(self.total_predictions) + 1)
         
         # 计算LCB
         lcb_value = self.calculate_lcb(category_for_lcb, confidence_scores)
@@ -362,16 +408,24 @@ class FastThinkingOptimized:
             trigger_reason["threshold"] = adaptive_threshold
             return False, fused_top1, fused_top1_prob, trigger_reason
         
-        # === 第三级: 额外的快速判断 ===
-        # 如果融合Top-1置信度较高(>=0.7)且margin较大(>=0.1),即使LCB不够高也信任
-        if fused_top1_prob >= 0.70 and fused_margin >= 0.10:
+        # === 第五级: LCB失败后的宽松判断 ===
+        # 10. 如果LCB接近阈值且置信度>=0.55,也通过（新增）
+        if lcb_value >= (adaptive_threshold * 0.7) and fused_top1_prob >= 0.5:
+            trigger_reason["type"] = "lcb_near_threshold"
+            trigger_reason["lcb_value"] = lcb_value
+            trigger_reason["threshold"] = adaptive_threshold
+            trigger_reason["fused_prob"] = fused_top1_prob
+            return False, fused_top1, fused_top1_prob, trigger_reason
+        
+        # === 第六级: 宽松的快速判断 (LCB失败后的最后机会) ===
+        # 11. 如果融合Top-1置信度较高(>=0.60)且margin较大(>=0.06),即使LCB不够高也信任
+        if fused_top1_prob >= 0.5 and fused_margin >= 0.05:
             # 检查两个模态的Top-1是否一致
-            if is_similar(img_category, text_category, threshold=0.8):
+            if is_similar(img_category, text_category, threshold=0.4):
                 trigger_reason["type"] = "high_prob_modality_match"
                 trigger_reason["fused_prob"] = fused_top1_prob
                 trigger_reason["margin"] = fused_margin
-                return False, fused_top1, fused_top1_prob, trigger_reason
-        
+                return False, fused_top1, fused_top1_prob, trigger_reason        
         # === 需要慢思考 ===
         trigger_reason["type"] = "need_slow_thinking"
         trigger_reason["lcb_value"] = lcb_value

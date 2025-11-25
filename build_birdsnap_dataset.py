@@ -129,9 +129,42 @@ def create_dataset_structure(base_dir, species_info):
             species_dir_path = dir_path / species_dir
             species_dir_path.mkdir(parents=True, exist_ok=True)
 
+def load_species_mapping():
+    """加载物种映射关系"""
+    species_file = Path('/home/hdl/project/fgvr_test/datasets/birdsnap/species.txt')
+    common_to_dir = {}
+    dir_to_info = {}
+    
+    with open(species_file, 'r') as f:
+        lines = f.readlines()
+    
+    for line in lines[1:]:  # 跳过标题行
+        parts = line.strip().split('\t')
+        if len(parts) >= 4:
+            species_id = int(parts[0])
+            common_name = parts[1]
+            scientific_name = parts[2]
+            dir_name = parts[3]
+            
+            # 将常见名转换为下划线格式
+            common_underscore = common_name.replace(' ', '_').replace("'", '')
+            
+            common_to_dir[common_underscore] = dir_name
+            dir_to_info[dir_name] = {
+                'id': species_id,
+                'common_name': common_name,
+                'scientific_name': scientific_name,
+                'dir_name': dir_name
+            }
+    
+    return common_to_dir, dir_to_info
+
 def distribute_images(images_dir, output_dir, train_images, test_images, species_info):
     """分发图像到相应目录"""
     print("分发图像到训练集和测试集...")
+    
+    # 加载物种映射
+    common_to_dir, dir_to_info = load_species_mapping()
     
     # 统计每个类别的图像数量
     train_counts = defaultdict(int)
@@ -143,16 +176,34 @@ def distribute_images(images_dir, output_dir, train_images, test_images, species
     
     # 遍历所有提取的图像
     images_path = Path(images_dir)
+    processed_species = 0
+    
     for species_dir in tqdm(images_path.iterdir(), desc="处理物种目录"):
         if not species_dir.is_dir():
             continue
             
         species_name = species_dir.name
-        if species_name not in species_info:
+        
+        # 尝试映射到species.txt中的目录名
+        if species_name in common_to_dir:
+            mapped_species = common_to_dir[species_name]
+        elif species_name in dir_to_info:
+            mapped_species = species_name
+        else:
+            # 如果找不到映射，跳过
+            print(f"警告: 找不到物种 {species_name} 的映射，跳过")
             continue
+        
+        if mapped_species not in species_info:
+            continue
+            
+        processed_species += 1
             
         # 获取该类别的所有图像文件
         img_files = [f for f in species_dir.iterdir() if f.suffix.lower() in ['.jpg', '.jpeg', '.png']]
+        
+        if len(img_files) == 0:
+            continue
         
         # 随机打乱
         random.shuffle(img_files)
@@ -164,17 +215,18 @@ def distribute_images(images_dir, output_dir, train_images, test_images, species
         
         # 复制到训练集
         for img_file in train_files:
-            dest_path = Path(output_dir) / 'images_train' / species_name / img_file.name
+            dest_path = Path(output_dir) / 'images_train' / mapped_species / img_file.name
             shutil.copy2(img_file, dest_path)
-            train_counts[species_name] += 1
-            all_images[species_name].append(img_file.name)
+            train_counts[mapped_species] += 1
+            all_images[mapped_species].append(img_file.name)
         
         # 复制到测试集
         for img_file in test_files:
-            dest_path = Path(output_dir) / 'images_test' / species_name / img_file.name
+            dest_path = Path(output_dir) / 'images_test' / mapped_species / img_file.name
             shutil.copy2(img_file, dest_path)
-            test_counts[species_name] += 1
+            test_counts[mapped_species] += 1
     
+    print(f"处理的物种数: {processed_species}")
     print(f"训练集类别数: {len(train_counts)}")
     print(f"测试集类别数: {len(test_counts)}")
     print(f"训练集总图像数: {sum(train_counts.values())}")
@@ -307,13 +359,10 @@ def verify_dataset(output_dir, species_info):
 
 def main():
     """主函数"""
-    # 设置路径
+    # 设置路径 - 直接在 birdsnap 目录下创建
     birdsnap_dir = Path('/home/hdl/project/fgvr_test/datasets/birdsnap')
     images_dir = birdsnap_dir / 'images'  # 使用现有的images目录
-    output_dir = Path('/home/hdl/project/fgvr_test/datasets/birdsnap_processed')
-    
-    # 创建输出目录
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = birdsnap_dir  # 直接输出到 birdsnap 目录
     
     print("=" * 60)
     print("构建 Birdsnap 数据集")
