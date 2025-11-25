@@ -75,8 +75,8 @@ class FastSlowThinkingSystem:
         print("初始化快思考模块...")
         self.fast_thinking = FastThinkingOptimized(
             knowledge_base_builder=self.kb_builder,
-            confidence_threshold=self.cfg.get('confidence_threshold', 0.8),
-            similarity_threshold=self.cfg.get('similarity_threshold', 0.7)
+            confidence_threshold=self.cfg.get('confidence_threshold', 0.5),
+            similarity_threshold=self.cfg.get('similarity_threshold', 0.5)
         )
         
         # 初始化慢思考模块
@@ -110,12 +110,12 @@ class FastSlowThinkingSystem:
         print(f"训练样本包含 {len(train_samples)} 个类别")
         
         # 构建知识库
-        # image_kb, text_kb = self.kb_builder.build_knowledge_base(
-        #     self.mllm_bot, train_samples, augmentation
-        # )
+        image_kb, text_kb = self.kb_builder.build_knowledge_base(
+            self.mllm_bot, train_samples, augmentation
+        )
         
         # 保存知识库
-        # self.kb_builder.save_knowledge_base(save_dir)
+        self.kb_builder.save_knowledge_base(save_dir)
 
         self.initialize_experience_base()
         self.exp_builder.build_experience_base(train_samples,max_iterations=1, max_reflections_per_iter=3, top_k=5)
