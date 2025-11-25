@@ -89,7 +89,7 @@ class MLLMBot:
         if device == 'cpu':
             self.device = 'cpu'
             self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(local_model_path)
-            dtype_used = "float32（CPU 默认）"
+            dtype_used = "float16（CPU 默认）"
             print(f"🖥️ 设备: CPU")
 
         # ========== GPU ==========
@@ -100,13 +100,13 @@ class MLLMBot:
             print(f"🖥️ 设备: GPU - {self.device}")
             print(f"🤖 使用 8bit 推理: {'是' if self.bit8 else '否'}")
 
-            # 按你的原始逻辑：8bit 或 float32
+            # 按你的原始逻辑：8bit 或 float16
             if self.bit8:
                 dtype_config = {"load_in_8bit": True}
                 dtype_used = "int8（8bit 量化推理）"
             else:
-                dtype_config = {"torch_dtype": torch.float32}
-                dtype_used = "float32（FP32）"
+                dtype_config = {"torch_dtype": torch.float16}
+                dtype_used = "float16（FP32）"
 
             print(f"🔍 使用数据类型: {dtype_used}")
 
@@ -318,10 +318,10 @@ class MLLMBot:
         #         videos=video_inputs,           
         #         padding=True,
         #         return_tensors="pt"
-        #     ).to(self.device,torch.float32)
+        #     ).to(self.device,torch.float16)
         # generated_ids = self.qwen2_5.generate(**inputs, max_new_tokens=256)
         model_device = self._get_model_device()
-        inputs = prepare_qwen2_5_input(messages, self.qwen2_5_processor).to(model_device, torch.float32)
+        inputs = prepare_qwen2_5_input(messages, self.qwen2_5_processor).to(model_device, torch.float16)
 
         # TODO阶段一 注意力增强
         if self.pai_enable_attn:
@@ -516,7 +516,7 @@ class MLLMBot:
         prompts_temp = self.qwen2_5_processor(None, prompts, return_tensors="pt")
         model_device = self._get_model_device()
         input_ids = prompts_temp['input_ids'].to(model_device)
-        attention_mask = prompts_temp['attention_mask'].to(model_device, torch.float32)
+        attention_mask = prompts_temp['attention_mask'].to(model_device, torch.float16)
 
         prompts_embeds = self.qwen2_5.language_model.get_input_embeddings()(input_ids)
 

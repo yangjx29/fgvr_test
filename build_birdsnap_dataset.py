@@ -15,6 +15,9 @@ from PIL import Image
 from io import BytesIO
 from tqdm import tqdm
 import glob
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 def extract_images_from_parquet(parquet_file, output_dir):
     """从 parquet 文件中提取图像"""
@@ -102,7 +105,7 @@ def load_species_info():
     return species_info
 
 def create_dataset_structure(base_dir, species_info):
-    """创建数据集目录结构"""
+    """创建数据集目录结构 - 优化版本，只创建需要的目录"""
     dirs_to_create = [
         'images_train',
         'images_test',
@@ -120,14 +123,13 @@ def create_dataset_structure(base_dir, species_info):
         'images_discovery_random'
     ]
     
+    print("创建主要目录结构...")
     for dir_name in dirs_to_create:
         dir_path = Path(base_dir) / dir_name
         dir_path.mkdir(parents=True, exist_ok=True)
-        
-        # 为每个物种创建子目录
-        for species_dir in species_info.keys():
-            species_dir_path = dir_path / species_dir
-            species_dir_path.mkdir(parents=True, exist_ok=True)
+        print(f"创建目录: {dir_path}")
+    
+    print("物种子目录将在复制文件时按需创建...")
 
 def load_species_mapping():
     """加载物种映射关系"""
@@ -159,6 +161,22 @@ def load_species_mapping():
     
     return common_to_dir, dir_to_info
 
+def copy_file_with_logging(src_path, dest_path, thread_id):
+    """复制文件并输出日志"""
+    try:
+        # 确保目标目录存在
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # 复制文件
+        shutil.copy2(src_path, dest_path)
+        
+        # 输出日志
+        print(f"[线程{thread_id}] 复制: {src_path.name} -> {dest_path.parent.name}/{dest_path.name}")
+        return True
+    except Exception as e:
+        print(f"[线程{thread_id}] 错误: 复制 {src_path.name} 失败: {e}")
+        return False
+
 def distribute_images(images_dir, output_dir, train_images, test_images, species_info):
     """分发图像到相应目录"""
     print("分发图像到训练集和测试集...")
@@ -174,11 +192,15 @@ def distribute_images(images_dir, output_dir, train_images, test_images, species
     # 由于划分文件路径与实际文件名不匹配，我们按照80%训练集，20%测试集来划分
     print("由于划分文件路径与实际文件名不匹配，使用80%训练集，20%测试集划分...")
     
+    # 收集所有需要复制的文件
+    copy_tasks = []
+    processed_species = 0
+    total_files_to_copy = 0
+    
     # 遍历所有提取的图像
     images_path = Path(images_dir)
-    processed_species = 0
     
-    for species_dir in tqdm(images_path.iterdir(), desc="处理物种目录"):
+    for species_dir in images_path.iterdir():
         if not species_dir.is_dir():
             continue
             
@@ -205,6 +227,8 @@ def distribute_images(images_dir, output_dir, train_images, test_images, species
         if len(img_files) == 0:
             continue
         
+        print(f"处理物种: {species_name} -> {mapped_species} ({len(img_files)} 张图像)")
+        
         # 随机打乱
         random.shuffle(img_files)
         
@@ -213,24 +237,56 @@ def distribute_images(images_dir, output_dir, train_images, test_images, species
         train_files = img_files[:split_idx]
         test_files = img_files[split_idx:]
         
-        # 复制到训练集
+        # 添加训练集复制任务
         for img_file in train_files:
             dest_path = Path(output_dir) / 'images_train' / mapped_species / img_file.name
-            shutil.copy2(img_file, dest_path)
-            train_counts[mapped_species] += 1
+            copy_tasks.append(('train', img_file, dest_path, mapped_species))
             all_images[mapped_species].append(img_file.name)
         
-        # 复制到测试集
+        # 添加测试集复制任务
         for img_file in test_files:
             dest_path = Path(output_dir) / 'images_test' / mapped_species / img_file.name
-            shutil.copy2(img_file, dest_path)
-            test_counts[mapped_species] += 1
+            copy_tasks.append(('test', img_file, dest_path, mapped_species))
+        
+        total_files_to_copy += len(train_files) + len(test_files)
+    
+    print(f"总共需要复制 {total_files_to_copy} 个文件，使用多线程加速...")
+    
+    # 使用多线程复制文件
+    successful_copies = 0
+    failed_copies = 0
+    
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        # 提交所有任务
+        future_to_task = {}
+        for i, (dataset_type, src_path, dest_path, species) in enumerate(copy_tasks):
+            thread_id = i % 8  # 线程ID用于日志
+            future = executor.submit(copy_file_with_logging, src_path, dest_path, thread_id)
+            future_to_task[future] = (dataset_type, src_path, dest_path, species)
+        
+        # 处理完成的任务
+        for future in tqdm(as_completed(future_to_task), total=len(copy_tasks), desc="复制文件"):
+            dataset_type, src_path, dest_path, species = future_to_task[future]
+            try:
+                success = future.result()
+                if success:
+                    successful_copies += 1
+                    if dataset_type == 'train':
+                        train_counts[species] += 1
+                    else:
+                        test_counts[species] += 1
+                else:
+                    failed_copies += 1
+            except Exception as e:
+                print(f"任务执行失败: {e}")
+                failed_copies += 1
     
     print(f"处理的物种数: {processed_species}")
     print(f"训练集类别数: {len(train_counts)}")
     print(f"测试集类别数: {len(test_counts)}")
     print(f"训练集总图像数: {sum(train_counts.values())}")
     print(f"测试集总图像数: {sum(test_counts.values())}")
+    print(f"成功复制: {successful_copies}, 失败: {failed_copies}")
     
     return all_images
 
@@ -238,8 +294,11 @@ def create_discovery_sets(all_images, output_dir, species_info):
     """创建discovery数据集"""
     print("创建discovery数据集...")
     
+    # 收集所有discovery复制任务
+    discovery_tasks = []
+    
     for k in range(1, 11):
-        print(f"创建 images_discovery_all_{k}...")
+        print(f"准备 images_discovery_all_{k}...")
         discovery_dir = Path(output_dir) / f'images_discovery_all_{k}'
         
         for species_name, image_list in all_images.items():
@@ -251,26 +310,57 @@ def create_discovery_sets(all_images, output_dir, species_info):
                 for img_name in selected_images:
                     src_path = train_dir / img_name
                     dst_path = discovery_dir / species_name / img_name
-                    if src_path.exists():
-                        shutil.copy2(src_path, dst_path)
+                    discovery_tasks.append((src_path, dst_path, f'discovery_{k}'))
     
     # 创建 images_discovery_all (与 images_discovery_all_3 相同)
-    print("创建 images_discovery_all...")
+    print("准备 images_discovery_all...")
     discovery_all_dir = Path(output_dir) / 'images_discovery_all'
     discovery_3_dir = Path(output_dir) / 'images_discovery_all_3'
     
-    for species_dir in discovery_3_dir.iterdir():
-        if species_dir.is_dir():
-            dest_dir = discovery_all_dir / species_dir.name
-            dest_dir.mkdir(parents=True, exist_ok=True)
-            for img_file in species_dir.iterdir():
-                shutil.copy2(img_file, dest_dir / img_file.name)
+    if discovery_3_dir.exists():
+        for species_dir in discovery_3_dir.iterdir():
+            if species_dir.is_dir():
+                dest_dir = discovery_all_dir / species_dir.name
+                dest_dir.mkdir(parents=True, exist_ok=True)
+                for img_file in species_dir.iterdir():
+                    src_path = img_file
+                    dst_path = dest_dir / img_file.name
+                    discovery_tasks.append((src_path, dst_path, 'discovery_all'))
     
     # 创建 images_discovery_random (zipf长尾分布)
-    print("创建 images_discovery_random...")
-    create_zipf_distribution(all_images, output_dir, species_info)
+    print("准备 images_discovery_random...")
+    create_zipf_distribution(all_images, output_dir, species_info, discovery_tasks)
+    
+    # 使用多线程执行所有discovery复制任务
+    print(f"总共需要复制 {len(discovery_tasks)} 个discovery文件...")
+    
+    successful_discovery = 0
+    failed_discovery = 0
+    
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        # 提交所有任务
+        future_to_task = {}
+        for i, (src_path, dst_path, task_type) in enumerate(discovery_tasks):
+            thread_id = i % 8
+            future = executor.submit(copy_file_with_logging, src_path, dst_path, thread_id)
+            future_to_task[future] = (src_path, dst_path, task_type)
+        
+        # 处理完成的任务
+        for future in tqdm(as_completed(future_to_task), total=len(discovery_tasks), desc="复制discovery文件"):
+            src_path, dst_path, task_type = future_to_task[future]
+            try:
+                success = future.result()
+                if success:
+                    successful_discovery += 1
+                else:
+                    failed_discovery += 1
+            except Exception as e:
+                print(f"Discovery任务执行失败: {e}")
+                failed_discovery += 1
+    
+    print(f"Discovery复制完成: 成功 {successful_discovery}, 失败 {failed_discovery}")
 
-def create_zipf_distribution(all_images, output_dir, species_info):
+def create_zipf_distribution(all_images, output_dir, species_info, discovery_tasks):
     """创建zipf长尾分布的discovery集"""
     discovery_random_dir = Path(output_dir) / 'images_discovery_random'
     
@@ -296,8 +386,7 @@ def create_zipf_distribution(all_images, output_dir, species_info):
         for img_name in selected_images:
             src_path = train_dir / img_name
             dst_path = discovery_random_dir / species_name / img_name
-            if src_path.exists():
-                shutil.copy2(src_path, dst_path)
+            discovery_tasks.append((src_path, dst_path, 'discovery_random'))
 
 def create_class_list(species_info, output_dir):
     """创建类别列表文件"""
@@ -373,17 +462,9 @@ def main():
         print(f"错误: 图像目录不存在: {images_dir}")
         return
     
-    # 统计现有图像
-    total_images = 0
-    species_dirs = []
-    for species_dir in images_dir.iterdir():
-        if species_dir.is_dir():
-            img_count = len([f for f in species_dir.iterdir() if f.suffix.lower() in ['.jpg', '.jpeg', '.png']])
-            if img_count > 0:
-                species_dirs.append(species_dir.name)
-                total_images += img_count
-    
-    print(f"找到 {len(species_dirs)} 个物种，共 {total_images} 张图像")
+    # 快速统计物种数量（不遍历每个文件）
+    species_dirs = [d for d in images_dir.iterdir() if d.is_dir()]
+    print(f"找到 {len(species_dirs)} 个物种目录")
     
     # 2. 加载信息
     print("步骤1: 加载物种和划分信息...")
