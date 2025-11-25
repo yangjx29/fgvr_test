@@ -1,0 +1,942 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: imagenet_r (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/imagenet_r200/knowledge_base  # 知识库目录
+Results Out: ./results/imagenet_r_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: imagenet_r (imagenet_r200)
+类别数: 200
+实验目录: ./experiments/imagenet_r200
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-25 21:31:50 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/imagenet_r200_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/imagenet_r200/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/ImageNet_R',
+ 'dataset_name': 'imagenet_r',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/imagenet_r200',
+ 'expt_dir_describe': './experiments/imagenet_r200/describe',
+ 'expt_dir_gallery': './experiments/imagenet_r200/gallery',
+ 'expt_dir_grouping': './experiments/imagenet_r200/grouping',
+ 'expt_dir_guess': './experiments/imagenet_r200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/imagenet_r200/gallery/imagenet_r_image_descriptions_attn',
+ 'path_identify_answers': './experiments/imagenet_r200/identify',
+ 'path_llm_gussed_names': './experiments/imagenet_r200/guess/imagenet_r_llm_gussed_names',
+ 'path_llm_prompts': './experiments/imagenet_r200/describe/imagenet_r_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_raw',
+ 'path_references': './experiments/imagenet_r200/gallery/imagenet_r_image_references',
+ 'path_regions': './experiments/imagenet_r200/gallery/imagenet_r_image_regions',
+ 'path_vqa_answers': './experiments/imagenet_r200/describe/imagenet_r_attributes_pairs',
+ 'path_vqa_questions': './experiments/imagenet_r200/describe/imagenet_r_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "imagenet_r200",
+    "num_classes": 200,
+    "config_file": "imagenet_r200_all.yml",
+    "data_dir": "ImageNet_R",
+    "experiment_dir": "imagenet_r200",
+    "stats_file": "imagenet_r200/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/imagenet_r200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/imagenet_r200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:08,  2.14s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.34s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:07<00:04,  2.40s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.47s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.89s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.11s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-25 21:32:01
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-25 21:32:05
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x70c56db038b0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x70c56db039d0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/imagenet_r200/knowledge_base
+使用数据集: imagenet_r, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-25 21:32:05] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 200 个类别, dog datasets:200
+从 ./experiments/imagenet_r200/knowledge_base 加载知识库...
+知识库已从 ./experiments/imagenet_r200/knowledge_base 加载
+图像知识库类别数: 0
+文本知识库类别数: 0
+类别描述数: 0
+知识库加载完成!
+构建知识库...
+训练样本包含 200 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/200 [00:00<?, ?it/s]  0%|          | 1/200 [00:00<01:01,  3.24it/s]  2%|▏         | 4/200 [00:00<00:17, 11.14it/s]  4%|▎         | 7/200 [00:00<00:12, 15.76it/s]  5%|▌         | 10/200 [00:00<00:10, 17.87it/s]  6%|▋         | 13/200 [00:00<00:10, 18.59it/s]  8%|▊         | 16/200 [00:00<00:09, 20.08it/s] 10%|▉         | 19/200 [00:01<00:09, 20.08it/s] 11%|█         | 22/200 [00:01<00:08, 21.38it/s] 12%|█▎        | 25/200 [00:01<00:07, 23.35it/s] 14%|█▍        | 28/200 [00:01<00:07, 21.54it/s] 16%|█▌        | 31/200 [00:01<00:07, 22.35it/s] 17%|█▋        | 34/200 [00:01<00:07, 21.88it/s] 18%|█▊        | 37/200 [00:01<00:07, 21.66it/s] 20%|██        | 40/200 [00:02<00:07, 21.62it/s] 22%|██▏       | 43/200 [00:02<00:07, 21.28it/s] 23%|██▎       | 46/200 [00:02<00:07, 20.38it/s] 24%|██▍       | 49/200 [00:02<00:07, 20.50it/s] 26%|██▌       | 52/200 [00:02<00:06, 21.33it/s] 28%|██▊       | 55/200 [00:02<00:06, 21.58it/s] 29%|██▉       | 58/200 [00:02<00:06, 21.60it/s] 30%|███       | 61/200 [00:03<00:06, 22.62it/s] 32%|███▏      | 64/200 [00:03<00:05, 23.41it/s] 34%|███▎      | 67/200 [00:03<00:05, 24.09it/s] 35%|███▌      | 70/200 [00:03<00:05, 23.10it/s] 36%|███▋      | 73/200 [00:03<00:05, 23.92it/s] 38%|███▊      | 76/200 [00:03<00:05, 22.96it/s] 40%|███▉      | 79/200 [00:03<00:05, 22.19it/s] 41%|████      | 82/200 [00:03<00:05, 20.80it/s] 42%|████▎     | 85/200 [00:04<00:05, 21.10it/s] 44%|████▍     | 88/200 [00:04<00:05, 21.85it/s] 46%|████▌     | 91/200 [00:04<00:05, 21.05it/s] 47%|████▋     | 94/200 [00:04<00:05, 20.07it/s] 48%|████▊     | 97/200 [00:04<00:04, 21.15it/s] 50%|█████     | 100/200 [00:04<00:04, 21.49it/s] 52%|█████▏    | 103/200 [00:04<00:04, 21.63it/s] 53%|█████▎    | 106/200 [00:05<00:04, 21.76it/s] 55%|█████▍    | 109/200 [00:05<00:06, 14.74it/s] 56%|█████▌    | 112/200 [00:05<00:05, 15.54it/s] 57%|█████▊    | 115/200 [00:05<00:04, 17.11it/s] 58%|█████▊    | 117/200 [00:05<00:04, 17.12it/s]处理类别: n01443537
+类别 n01443537 图像特征维度: (512,)
+处理类别: n01484850
+类别 n01484850 图像特征维度: (512,)
+处理类别: n01494475
+类别 n01494475 图像特征维度: (512,)
+处理类别: n01498041
+类别 n01498041 图像特征维度: (512,)
+处理类别: n01514859
+类别 n01514859 图像特征维度: (512,)
+处理类别: n01518878
+类别 n01518878 图像特征维度: (512,)
+处理类别: n01531178
+类别 n01531178 图像特征维度: (512,)
+处理类别: n01534433
+类别 n01534433 图像特征维度: (512,)
+处理类别: n01614925
+类别 n01614925 图像特征维度: (512,)
+处理类别: n01616318
+类别 n01616318 图像特征维度: (512,)
+处理类别: n01630670
+类别 n01630670 图像特征维度: (512,)
+处理类别: n01632777
+类别 n01632777 图像特征维度: (512,)
+处理类别: n01644373
+类别 n01644373 图像特征维度: (512,)
+处理类别: n01677366
+类别 n01677366 图像特征维度: (512,)
+处理类别: n01694178
+类别 n01694178 图像特征维度: (512,)
+处理类别: n01748264
+类别 n01748264 图像特征维度: (512,)
+处理类别: n01770393
+类别 n01770393 图像特征维度: (512,)
+处理类别: n01774750
+类别 n01774750 图像特征维度: (512,)
+处理类别: n01784675
+类别 n01784675 图像特征维度: (512,)
+处理类别: n01806143
+类别 n01806143 图像特征维度: (512,)
+处理类别: n01820546
+类别 n01820546 图像特征维度: (512,)
+处理类别: n01833805
+类别 n01833805 图像特征维度: (512,)
+处理类别: n01843383
+类别 n01843383 图像特征维度: (512,)
+处理类别: n01847000
+类别 n01847000 图像特征维度: (512,)
+处理类别: n01855672
+类别 n01855672 图像特征维度: (512,)
+处理类别: n01860187
+类别 n01860187 图像特征维度: (512,)
+处理类别: n01882714
+类别 n01882714 图像特征维度: (512,)
+处理类别: n01910747
+类别 n01910747 图像特征维度: (512,)
+处理类别: n01944390
+类别 n01944390 图像特征维度: (512,)
+处理类别: n01983481
+类别 n01983481 图像特征维度: (512,)
+处理类别: n01986214
+类别 n01986214 图像特征维度: (512,)
+处理类别: n02007558
+类别 n02007558 图像特征维度: (512,)
+处理类别: n02009912
+类别 n02009912 图像特征维度: (512,)
+处理类别: n02051845
+类别 n02051845 图像特征维度: (512,)
+处理类别: n02056570
+类别 n02056570 图像特征维度: (512,)
+处理类别: n02066245
+类别 n02066245 图像特征维度: (512,)
+处理类别: n02071294
+类别 n02071294 图像特征维度: (512,)
+处理类别: n02077923
+类别 n02077923 图像特征维度: (512,)
+处理类别: n02085620
+类别 n02085620 图像特征维度: (512,)
+处理类别: n02086240
+类别 n02086240 图像特征维度: (512,)
+处理类别: n02088094
+类别 n02088094 图像特征维度: (512,)
+处理类别: n02088238
+类别 n02088238 图像特征维度: (512,)
+处理类别: n02088364
+类别 n02088364 图像特征维度: (512,)
+处理类别: n02088466
+类别 n02088466 图像特征维度: (512,)
+处理类别: n02091032
+类别 n02091032 图像特征维度: (512,)
+处理类别: n02091134
+类别 n02091134 图像特征维度: (512,)
+处理类别: n02092339
+类别 n02092339 图像特征维度: (512,)
+处理类别: n02094433
+类别 n02094433 图像特征维度: (512,)
+处理类别: n02096585
+类别 n02096585 图像特征维度: (512,)
+处理类别: n02097298
+类别 n02097298 图像特征维度: (512,)
+处理类别: n02098286
+类别 n02098286 图像特征维度: (512,)
+处理类别: n02099601
+类别 n02099601 图像特征维度: (512,)
+处理类别: n02099712
+类别 n02099712 图像特征维度: (512,)
+处理类别: n02102318
+类别 n02102318 图像特征维度: (512,)
+处理类别: n02106030
+类别 n02106030 图像特征维度: (512,)
+处理类别: n02106166
+类别 n02106166 图像特征维度: (512,)
+处理类别: n02106550
+类别 n02106550 图像特征维度: (512,)
+处理类别: n02106662
+类别 n02106662 图像特征维度: (512,)
+处理类别: n02108089
+类别 n02108089 图像特征维度: (512,)
+处理类别: n02108915
+类别 n02108915 图像特征维度: (512,)
+处理类别: n02109525
+[2025-11-25 21:32:08] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 n02109525 图像特征维度: (512,)
+处理类别: n02110185
+类别 n02110185 图像特征维度: (512,)
+处理类别: n02110341
+类别 n02110341 图像特征维度: (512,)
+处理类别: n02110958
+类别 n02110958 图像特征维度: (512,)
+处理类别: n02112018
+类别 n02112018 图像特征维度: (512,)
+处理类别: n02112137
+类别 n02112137 图像特征维度: (512,)
+处理类别: n02113023
+类别 n02113023 图像特征维度: (512,)
+处理类别: n02113624
+类别 n02113624 图像特征维度: (512,)
+处理类别: n02113799
+类别 n02113799 图像特征维度: (512,)
+处理类别: n02114367
+类别 n02114367 图像特征维度: (512,)
+处理类别: n02117135
+类别 n02117135 图像特征维度: (512,)
+处理类别: n02119022
+类别 n02119022 图像特征维度: (512,)
+处理类别: n02123045
+类别 n02123045 图像特征维度: (512,)
+处理类别: n02128385
+类别 n02128385 图像特征维度: (512,)
+处理类别: n02128757
+类别 n02128757 图像特征维度: (512,)
+处理类别: n02129165
+类别 n02129165 图像特征维度: (512,)
+处理类别: n02129604
+类别 n02129604 图像特征维度: (512,)
+处理类别: n02130308
+类别 n02130308 图像特征维度: (512,)
+处理类别: n02134084
+类别 n02134084 图像特征维度: (512,)
+处理类别: n02138441
+类别 n02138441 图像特征维度: (512,)
+处理类别: n02165456
+类别 n02165456 图像特征维度: (512,)
+处理类别: n02190166
+类别 n02190166 图像特征维度: (512,)
+处理类别: n02206856
+类别 n02206856 图像特征维度: (512,)
+处理类别: n02219486
+类别 n02219486 图像特征维度: (512,)
+处理类别: n02226429
+类别 n02226429 图像特征维度: (512,)
+处理类别: n02233338
+类别 n02233338 图像特征维度: (512,)
+处理类别: n02236044
+类别 n02236044 图像特征维度: (512,)
+处理类别: n02268443
+类别 n02268443 图像特征维度: (512,)
+处理类别: n02279972
+类别 n02279972 图像特征维度: (512,)
+处理类别: n02317335
+类别 n02317335 图像特征维度: (512,)
+处理类别: n02325366
+类别 n02325366 图像特征维度: (512,)
+处理类别: n02346627
+类别 n02346627 图像特征维度: (512,)
+处理类别: n02356798
+类别 n02356798 图像特征维度: (512,)
+处理类别: n02363005
+类别 n02363005 图像特征维度: (512,)
+处理类别: n02364673
+类别 n02364673 图像特征维度: (512,)
+处理类别: n02391049
+类别 n02391049 图像特征维度: (512,)
+处理类别: n02395406
+类别 n02395406 图像特征维度: (512,)
+处理类别: n02398521
+类别 n02398521 图像特征维度: (512,)
+处理类别: n02410509
+类别 n02410509 图像特征维度: (512,)
+处理类别: n02423022
+类别 n02423022 图像特征维度: (512,)
+处理类别: n02437616
+类别 n02437616 图像特征维度: (512,)
+处理类别: n02445715
+类别 n02445715 图像特征维度: (512,)
+处理类别: n02447366
+类别 n02447366 图像特征维度: (512,)
+处理类别: n02480495
+类别 n02480495 图像特征维度: (512,)
+处理类别: n02480855
+类别 n02480855 图像特征维度: (512,)
+处理类别: n02481823
+类别 n02481823 图像特征维度: (512,)
+处理类别: n02483362
+类别 n02483362 图像特征维度: (512,)
+处理类别: n02486410
+类别 n02486410 图像特征维度: (512,)
+处理类别: n02510455
+类别 n02510455 图像特征维度: (512,)
+处理类别: n02526121
+类别 n02526121 图像特征维度: (512,)
+处理类别: n02607072
+类别 n02607072 图像特征维度: (512,)
+处理类别: n02655020
+类别 n02655020 图像特征维度: (512,)
+处理类别: n02672831
+类别 n02672831 图像特征维度: (512,)
+处理类别: n02701002
+类别 n02701002 图像特征维度: (512,)
+处理类别: n02749479
+类别 n02749479 图像特征维度: (512,)
+处理类别: n02769748
+类别 n02769748 图像特征维度: (512,)
+处理类别: n02793495
+类别 n02793495 图像特征维度: (512,)
+处理类别: n02797295
+类别 n02797295 图像特征维度: (512,)
+处理类别: n02802426
+类别 n02802426 图像特征维度: (512,)
+ 60%|██████    | 120/200 [00:05<00:04, 18.56it/s] 62%|██████▏   | 123/200 [00:06<00:04, 18.69it/s] 62%|██████▎   | 125/200 [00:06<00:08,  9.09it/s] 64%|██████▎   | 127/200 [00:06<00:07, 10.34it/s] 64%|██████▍   | 129/200 [00:06<00:06, 11.63it/s] 66%|██████▌   | 132/200 [00:07<00:04, 14.14it/s] 68%|██████▊   | 135/200 [00:07<00:04, 16.00it/s] 69%|██████▉   | 138/200 [00:07<00:03, 18.62it/s] 70%|███████   | 141/200 [00:07<00:02, 19.99it/s] 72%|███████▏  | 144/200 [00:07<00:02, 21.07it/s] 74%|███████▎  | 147/200 [00:07<00:02, 22.68it/s] 75%|███████▌  | 150/200 [00:07<00:02, 21.29it/s] 76%|███████▋  | 153/200 [00:08<00:02, 18.26it/s] 78%|███████▊  | 156/200 [00:08<00:02, 19.87it/s] 80%|███████▉  | 159/200 [00:08<00:01, 20.99it/s] 81%|████████  | 162/200 [00:08<00:01, 22.55it/s] 82%|████████▎ | 165/200 [00:08<00:01, 22.38it/s] 84%|████████▍ | 168/200 [00:08<00:01, 23.88it/s] 86%|████████▌ | 171/200 [00:08<00:01, 25.37it/s] 87%|████████▋ | 174/200 [00:08<00:01, 24.53it/s] 88%|████████▊ | 177/200 [00:09<00:00, 25.03it/s] 90%|█████████ | 180/200 [00:09<00:00, 25.28it/s] 92%|█████████▏| 183/200 [00:09<00:00, 25.04it/s] 93%|█████████▎| 186/200 [00:09<00:00, 25.01it/s] 94%|█████████▍| 189/200 [00:09<00:00, 24.65it/s] 96%|█████████▌| 192/200 [00:09<00:00, 25.39it/s] 98%|█████████▊| 195/200 [00:09<00:00, 26.03it/s] 99%|█████████▉| 198/200 [00:09<00:00, 25.87it/s]100%|██████████| 200/200 [00:09<00:00, 20.14it/s]
+处理类别: n02808440
+类别 n02808440 图像特征维度: (512,)
+处理类别: n02814860
+[2025-11-25 21:32:11] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.96GB
+类别 n02814860 图像特征维度: (512,)
+处理类别: n02823750
+类别 n02823750 图像特征维度: (512,)
+处理类别: n02841315
+类别 n02841315 图像特征维度: (512,)
+处理类别: n02843684
+类别 n02843684 图像特征维度: (512,)
+处理类别: n02883205
+类别 n02883205 图像特征维度: (512,)
+处理类别: n02906734
+类别 n02906734 图像特征维度: (512,)
+处理类别: n02909870
+类别 n02909870 图像特征维度: (512,)
+处理类别: n02939185
+类别 n02939185 图像特征维度: (512,)
+处理类别: n02948072
+类别 n02948072 图像特征维度: (512,)
+处理类别: n02950826
+类别 n02950826 图像特征维度: (512,)
+处理类别: n02951358
+类别 n02951358 图像特征维度: (512,)
+处理类别: n02966193
+类别 n02966193 图像特征维度: (512,)
+处理类别: n02980441
+类别 n02980441 图像特征维度: (512,)
+处理类别: n02992529
+类别 n02992529 图像特征维度: (512,)
+处理类别: n03124170
+类别 n03124170 图像特征维度: (512,)
+处理类别: n03272010
+类别 n03272010 图像特征维度: (512,)
+处理类别: n03345487
+类别 n03345487 图像特征维度: (512,)
+处理类别: n03372029
+类别 n03372029 图像特征维度: (512,)
+处理类别: n03424325
+类别 n03424325 图像特征维度: (512,)
+处理类别: n03452741
+类别 n03452741 图像特征维度: (512,)
+处理类别: n03467068
+类别 n03467068 图像特征维度: (512,)
+处理类别: n03481172
+类别 n03481172 图像特征维度: (512,)
+处理类别: n03494278
+类别 n03494278 图像特征维度: (512,)
+处理类别: n03495258
+类别 n03495258 图像特征维度: (512,)
+处理类别: n03498962
+类别 n03498962 图像特征维度: (512,)
+处理类别: n03594945
+类别 n03594945 图像特征维度: (512,)
+处理类别: n03602883
+类别 n03602883 图像特征维度: (512,)
+处理类别: n03630383
+类别 n03630383 图像特征维度: (512,)
+处理类别: n03649909
+类别 n03649909 图像特征维度: (512,)
+处理类别: n03676483
+类别 n03676483 图像特征维度: (512,)
+处理类别: n03710193
+类别 n03710193 图像特征维度: (512,)
+处理类别: n03773504
+类别 n03773504 图像特征维度: (512,)
+处理类别: n03775071
+类别 n03775071 图像特征维度: (512,)
+处理类别: n03888257
+类别 n03888257 图像特征维度: (512,)
+处理类别: n03930630
+类别 n03930630 图像特征维度: (512,)
+处理类别: n03947888
+类别 n03947888 图像特征维度: (512,)
+处理类别: n04086273
+类别 n04086273 图像特征维度: (512,)
+处理类别: n04118538
+类别 n04118538 图像特征维度: (512,)
+处理类别: n04133789
+类别 n04133789 图像特征维度: (512,)
+处理类别: n04141076
+类别 n04141076 图像特征维度: (512,)
+处理类别: n04146614
+类别 n04146614 图像特征维度: (512,)
+处理类别: n04147183
+类别 n04147183 图像特征维度: (512,)
+处理类别: n04192698
+类别 n04192698 图像特征维度: (512,)
+处理类别: n04254680
+类别 n04254680 图像特征维度: (512,)
+处理类别: n04266014
+类别 n04266014 图像特征维度: (512,)
+处理类别: n04275548
+类别 n04275548 图像特征维度: (512,)
+处理类别: n04310018
+类别 n04310018 图像特征维度: (512,)
+处理类别: n04325704
+类别 n04325704 图像特征维度: (512,)
+处理类别: n04347754
+类别 n04347754 图像特征维度: (512,)
+处理类别: n04389033
+类别 n04389033 图像特征维度: (512,)
+处理类别: n04409515
+类别 n04409515 图像特征维度: (512,)
+处理类别: n04465501
+类别 n04465501 图像特征维度: (512,)
+处理类别: n04487394
+类别 n04487394 图像特征维度: (512,)
+处理类别: n04522168
+类别 n04522168 图像特征维度: (512,)
+处理类别: n04536866
+类别 n04536866 图像特征维度: (512,)
+处理类别: n04552348
+类别 n04552348 图像特征维度: (512,)
+处理类别: n04591713
+[2025-11-25 21:32:14] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+类别 n04591713 图像特征维度: (512,)
+处理类别: n07614500
+类别 n07614500 图像特征维度: (512,)
+处理类别: n07693725
+类别 n07693725 图像特征维度: (512,)
+处理类别: n07695742
+类别 n07695742 图像特征维度: (512,)
+处理类别: n07697313
+类别 n07697313 图像特征维度: (512,)
+处理类别: n07697537
+类别 n07697537 图像特征维度: (512,)
+处理类别: n07714571
+类别 n07714571 图像特征维度: (512,)
+处理类别: n07714990
+类别 n07714990 图像特征维度: (512,)
+处理类别: n07718472
+类别 n07718472 图像特征维度: (512,)
+处理类别: n07720875
+类别 n07720875 图像特征维度: (512,)
+处理类别: n07734744
+类别 n07734744 图像特征维度: (512,)
+处理类别: n07742313
+类别 n07742313 图像特征维度: (512,)
+处理类别: n07745940
+类别 n07745940 图像特征维度: (512,)
+处理类别: n07749582
+类别 n07749582 图像特征维度: (512,)
+处理类别: n07753275
+类别 n07753275 图像特征维度: (512,)
+处理类别: n07753592
+类别 n07753592 图像特征维度: (512,)
+处理类别: n07768694
+类别 n07768694 图像特征维度: (512,)
+处理类别: n07873807
+类别 n07873807 图像特征维度: (512,)
+处理类别: n07880968
+类别 n07880968 图像特征维度: (512,)
+处理类别: n07920052
+类别 n07920052 图像特征维度: (512,)
+处理类别: n09472597
+类别 n09472597 图像特征维度: (512,)
+处理类别: n09835506
+类别 n09835506 图像特征维度: (512,)
+处理类别: n10565667
+类别 n10565667 图像特征维度: (512,)
+处理类别: n12267677
+类别 n12267677 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/200 [00:00<?, ?it/s]  0%|          | 1/200 [00:34<1:56:02, 34.99s/it]  1%|          | 2/200 [01:09<1:53:40, 34.45s/it]  2%|▏         | 3/200 [01:40<1:48:49, 33.15s/it]处理类别: n01443537
+[2025-11-25 21:32:17] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:32:20] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:32:23] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:32:26] [显存监控] 已分配=32.44GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for n01443537 category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-25 21:32:29] [显存监控] 已分配=32.55GB, 已保留=33.79GB, 空闲=14.85GB
+[2025-11-25 21:32:32] [显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[2025-11-25 21:32:35] [显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[2025-11-25 21:32:38] [显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[2025-11-25 21:32:41] [显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[2025-11-25 21:32:44] [显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+[2025-11-25 21:32:47] [显存监控] 已分配=32.56GB, 已保留=34.22GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.22GB, 剩余=14.97GB
+MLLM description: The images depict goldfish, a type of fish known for their vibrant orange coloration and distinctive physical features.
+
+1. **Distinctive Physical Features**: Goldfish have a rounded body shape with a large head and a prominent mouth. They possess a fan-shaped tail and fins that can vary in size and shape depending on the breed. In the images, the goldfish exhibit these typical features.
+
+2. **Color Patterns and Markings**: The goldfish in the images display a bright orange color, which is characteristic of the species. Some variations in shade and pattern may exist between individuals, but the overall hue remains consistent. The second image shows a goldfish with a more intricate pattern of orange and white, while the third image presents two goldfish with a more uniform orange coloration.
+
+3. **Size and Proportions**: The goldfish in the images appear to be of similar size, as they are depicted in close-up shots. Their proportions are consistent with the typical body structure of goldfish, with a relatively short body and a large head.
+
+4. **Behavioral Characteristics**: While the images do not provide direct evidence of behavior, goldfish are generally known to be calm and peaceful fish. They are often seen swimming slowly or resting at the bottom of their tank.
+类别 n01443537 文本特征维度: (512,)
+描述: The images depict goldfish, a type of fish known for their vibrant orange coloration and distinctive...
+处理类别: n01484850
+[2025-11-25 21:32:50] [显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+[2025-11-25 21:32:53] [显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+[2025-11-25 21:32:56] [显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+[2025-11-25 21:32:59] [显存监控] 已分配=32.44GB, 已保留=34.22GB, 空闲=14.97GB
+wiki desc: Description for n01484850 category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-25 21:33:02] [显存监控] 已分配=32.63GB, 已保留=35.54GB, 空闲=14.77GB
+[2025-11-25 21:33:05] [显存监控] 已分配=32.59GB, 已保留=35.54GB, 空闲=14.82GB
+[2025-11-25 21:33:08] [显存监控] 已分配=32.59GB, 已保留=35.54GB, 空闲=14.81GB
+[2025-11-25 21:33:11] [显存监控] 已分配=32.60GB, 已保留=35.54GB, 空闲=14.81GB
+[2025-11-25 21:33:14] [显存监控] 已分配=32.60GB, 已保留=35.54GB, 空闲=14.80GB
+[2025-11-25 21:33:17] [显存监控] 已分配=32.61GB, 已保留=35.54GB, 空闲=14.80GB
+[2025-11-25 21:33:20] [显存监控] 已分配=32.61GB, 已保留=35.54GB, 空闲=14.80GB
+[2025-11-25 21:33:23] [显存监控] 已分配=32.61GB, 已保留=35.54GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.54GB, 剩余=14.97GB
+MLLM description: The images depict a plush shark toy and two drawings of sharks. Here's a detailed description focusing on the key visual characteristics:
+
+### 1. **Distinctive Physical Features:**
+   - **Plush Shark:** The plush shark has a soft, gray body with a white underbelly. It has a rounded head with small, black eyes and a wide, open mouth showing pinkish-white teeth. Its fins are proportionally large compared to its body, with a dorsal fin positioned towards the back.
+   - **Drawings:** The drawings show a simplified outline of a shark with minimal details. The first drawing is a basic line sketch with a black eye and a simple mouth. The second drawing includes more shading and texture, depicting a shark in motion, with a darker top and lighter underside.
+
+### 2. **Color Patterns and Markings:**
+   - **Plush Shark:** The plush shark is primarily gray with a white belly. There are no additional markings or patterns visible.
+   - **Drawings:** The first drawing is monochromatic, using only black lines against a white background. The second drawing uses shades of gray and blue to indicate depth and movement, with a gradient effect on the shark’s body.
+
+### 3. **Size and Proport
+类别 n01484850 文本特征维度: (512,)
+描述: The images depict a plush shark toy and two drawings of sharks. Here's a detailed description focusi...
+处理类别: n01494475
+[2025-11-25 21:33:26] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+[2025-11-25 21:33:29] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+[2025-11-25 21:33:32] [显存监控] 已分配=32.44GB, 已保留=35.54GB, 空闲=14.97GB
+wiki desc: Description for n01494475 category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-25 21:33:35] [显存监控] 已分配=32.57GB, 已保留=34.19GB, 空闲=14.83GB
+[2025-11-25 21:33:38] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-25 21:33:41] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-25 21:33:44] [显存监控] 已分配=32.57GB, 已保留=34.19GB, 空闲=14.83GB
+[2025-11-25 21:33:47] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-25 21:33:50] [显存监控] 已分配=32.56GB, 已保留=34.19GB, 空闲=14.84GB
+[2025-11-25 21:33:53] [显存监控] 已分配=32.57GB, 已保留=34.19GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.19GB, 剩余=14.97GB
+MLLM description: The images depict hammerhead sharks, a distinct species characterized by their unique hammer-shaped heads.
+
+1. **Distinctive Physical Features**: Hammerhead sharks are easily recognizable by their broad, flattened heads with eyes positioned at the ends, giving them a distinctive "hammer" shape. This adaptation is believed to enhance their sensory capabilities, particularly in detecting prey and navigating through water.
+
+2. **Color Patterns and Markings**: The coloration of hammerhead sharks can vary widely depending on the species and location. In the first image, the shark appears light blue with darker shading, while the second image showcases a more artistic representation with intricate blue and black patterns, including a tree-like design on its body. The third image shows a more realistic depiction with a grayish-blue body and white underbelly, typical of some hammerhead species.
+
+3. **Size and Proportions**: Hammerhead sharks come in various sizes, ranging from small individuals to large adults. The first image portrays a smaller, cartoonish shark, while the second and third images show larger, more realistic representations. The third image also includes a comparison with a human figure, emphasizing the size difference between humans and these sharks.
+
+4. **Behavioral Characteristics**: Hammerhead sharks are known for their schooling behavior, often swimming in
+类别 n01494475 文本特征维度: (512,)
+描述: The images depict hammerhead sharks, a distinct species characterized by their unique hammer-shaped ...
+处理类别: n01498041
+[2025-11-25 21:33:56] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+  2%|▏         | 4/200 [02:13<1:47:21, 32.87s/it]  2%|▎         | 5/200 [02:49<1:51:29, 34.30s/it]  3%|▎         | 6/200 [03:22<1:48:30, 33.56s/it][2025-11-25 21:33:59] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+[2025-11-25 21:34:02] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+[2025-11-25 21:34:05] [显存监控] 已分配=32.44GB, 已保留=34.19GB, 空闲=14.97GB
+wiki desc: Description for n01498041 category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.96GB
+[2025-11-25 21:34:08] [显存监控] 已分配=32.53GB, 已保留=33.55GB, 空闲=14.87GB
+[2025-11-25 21:34:11] [显存监控] 已分配=32.56GB, 已保留=33.93GB, 空闲=14.85GB
+[2025-11-25 21:34:14] [显存监控] 已分配=32.56GB, 已保留=33.93GB, 空闲=14.85GB
+[2025-11-25 21:34:17] [显存监控] 已分配=32.56GB, 已保留=33.93GB, 空闲=14.85GB
+[2025-11-25 21:34:20] [显存监控] 已分配=32.56GB, 已保留=33.93GB, 空闲=14.85GB
+[2025-11-25 21:34:23] [显存监控] 已分配=32.56GB, 已保留=33.93GB, 空闲=14.85GB
+[2025-11-25 21:34:26] [显存监控] 已分配=32.56GB, 已保留=33.93GB, 空闲=14.85GB
+推理后显存: 已分配=32.44GB, 已保留=33.93GB, 剩余=14.97GB
+MLLM description: ### Description of n01498041
+
+#### 1. Distinctive Physical Features:
+The subject in these images appears to be a stingray, characterized by its flat, disc-shaped body with a long, slender tail. Stingrays have a unique, fan-like pectoral fin arrangement that extends outward from their body, resembling wings.
+
+#### 2. Color Patterns and Markings:
+- **Image 1:** The stingrays are depicted in a simple, solid brown color against a gradient background of blue and green hues, suggesting an underwater environment.
+- **Image 2:** This image shows a more detailed depiction of a stingray alongside other fish. The stingray has a light grayish-blue body with darker gray or black markings along its tail and fins, which may serve as camouflage in the wild.
+
+#### 3. Size and Proportions:
+- The stingrays in both images appear relatively small compared to the surrounding environment, indicating they might be juvenile or part of a smaller group. Their proportions are consistent with typical stingray anatomy, with a broad, flat body and elongated tail.
+
+#### 4. Behavioral Characteristics:
+- Stingrays are known for their ability to move slowly across the ocean floor using their flattened bodies and powerful tails
+类别 n01498041 文本特征维度: (512,)
+描述: ### Description of n01498041
+
+#### 1. Distinctive Physical Features:
+The subject in these images app...
+处理类别: n01514859
+[2025-11-25 21:34:29] [显存监控] 已分配=32.44GB, 已保留=33.93GB, 空闲=14.97GB
+[2025-11-25 21:34:32] [显存监控] 已分配=32.44GB, 已保留=33.93GB, 空闲=14.97GB
+[2025-11-25 21:34:35] [显存监控] 已分配=32.44GB, 已保留=33.93GB, 空闲=14.97GB
+[2025-11-25 21:34:38] [显存监控] 已分配=32.44GB, 已保留=33.93GB, 空闲=14.97GB
+wiki desc: Description for n01514859 category.
+推理前显存: 已分配=32.46GB, 已保留=32.81GB, 剩余=14.94GB
+[2025-11-25 21:34:41] [显存监控] 已分配=32.69GB, 已保留=36.92GB, 空闲=14.71GB
+[2025-11-25 21:34:44] [显存监控] 已分配=32.62GB, 已保留=36.92GB, 空闲=14.78GB
+[2025-11-25 21:34:47] [显存监控] 已分配=32.66GB, 已保留=36.92GB, 空闲=14.74GB
+[2025-11-25 21:34:50] [显存监控] 已分配=32.62GB, 已保留=36.92GB, 空闲=14.78GB
+[2025-11-25 21:34:53] [显存监控] 已分配=32.63GB, 已保留=36.92GB, 空闲=14.78GB
+[2025-11-25 21:34:56] [显存监控] 已分配=32.63GB, 已保留=36.92GB, 空闲=14.77GB
+[2025-11-25 21:34:59] [显存监控] 已分配=32.64GB, 已保留=36.92GB, 空闲=14.76GB
+[2025-11-25 21:35:02] [显存监控] 已分配=32.64GB, 已保留=36.92GB, 空闲=14.76GB
+推理后显存: 已分配=32.44GB, 已保留=36.92GB, 剩余=14.97GB
+MLLM description: The images depict chickens, each with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: A cartoon-style chicken with exaggerated features like a large head, prominent comb, and wattles. It is knitting, which adds a whimsical element.  
+   - Image 2: Fabric chickens with detailed textures and patterns, such as polka dots and intricate designs. They have a more stylized appearance compared to real chickens.  
+   - Image 3: A realistic pencil sketch of a chicken with natural proportions, including a rounded body, feathered tail, and a small comb on its head.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The chicken has bright orange and red colors with a white face and black knitting needles.  
+   - Image 2: The chickens feature vibrant patterns, including black with pink spots and another with a mix of black and white with decorative elements.  
+   - Image 3: The chicken is monochromatic in black and white, emphasizing shading and texture rather than color.
+
+3. **Size and Proportions**:  
+   - Image 1: The chicken appears larger due to the cartoon style, with exaggerated features making it look more substantial.  
+   - Image 
+类别 n01514859 文本特征维度: (512,)
+描述: The images depict chickens, each with distinct characteristics:
+
+1. **Distinctive Physical Features*...
+处理类别: n01518878
+[2025-11-25 21:35:05] [显存监控] 已分配=32.44GB, 已保留=36.92GB, 空闲=14.97GB
+[2025-11-25 21:35:08] [显存监控] 已分配=32.44GB, 已保留=36.92GB, 空闲=14.97GB
+[2025-11-25 21:35:11] [显存监控] 已分配=32.44GB, 已保留=36.92GB, 空闲=14.97GB
+[2025-11-25 21:35:14] [显存监控] 已分配=32.44GB, 已保留=36.92GB, 空闲=14.97GB
+wiki desc: Description for n01518878 category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-25 21:35:17] [显存监控] 已分配=32.55GB, 已保留=33.87GB, 空闲=14.85GB
+[2025-11-25 21:35:20] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-25 21:35:23] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-25 21:35:26] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-25 21:35:29] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-25 21:35:32] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+[2025-11-25 21:35:35] [显存监控] 已分配=32.56GB, 已保留=34.31GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.31GB, 剩余=14.97GB
+MLLM description: The images depict a bird, likely an ostrich or a similar species, with distinct characteristics:
+
+1. **Distinctive Physical Features**: The bird has a long neck, large head, and a short tail. Its beak is relatively small compared to its head size.
+
+2. **Color Patterns and Markings**: The bird in image 1 has a predominantly white body with gray feathers on its back and a yellow-orange beak. Image 2 shows a bird with a more colorful pattern, featuring blue and orange hues on its neck and legs, while the rest of its body appears to be a light beige or cream color. Image 3 is a black and white sketch, so it lacks color patterns.
+
+3. **Size and Proportions**: The birds appear to be of similar size, with a long neck and a relatively small head. The proportions suggest they are adult birds.
+
+4. **Behavioral Characteristics**: The images do not provide direct evidence of behavior, as they are static representations. However, the presence of a mouse in image 1 suggests a playful or humorous context, possibly indicating the bird's interaction with humans or objects.
+
+5. **Unique Identifying Traits**: The most distinguishing feature is the long neck, which is characteristic of ostriches and their
+类别 n01518878 文本特征维度: (512,)
+描述: The images depict a bird, likely an ostrich or a similar species, with distinct characteristics:
+
+1....
+处理类别: n01531178
+[2025-11-25 21:35:38] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-25 21:35:41] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-25 21:35:44] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+[2025-11-25 21:35:47] [显存监控] 已分配=32.44GB, 已保留=34.31GB, 空闲=14.97GB
+wiki desc: Description for n01531178 category.
+  4%|▎         | 7/200 [03:33<1:24:44, 26.34s/it]  4%|▍         | 8/200 [04:05<1:30:29, 28.28s/it]  4%|▍         | 9/200 [04:40<1:36:00, 30.16s/it]  5%|▌         | 10/200 [04:54<1:20:07, 25.30s/it]推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.94GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 478.00 MiB. GPU 0 has a total capacity of 47.40 GiB of which 429.62 MiB is free. Process 2246216 has 4.86 GiB memory in use. Process 2248654 has 4.86 GiB memory in use. Including non-PyTorch memory, this process has 37.24 GiB memory in use. Of the allocated memory 36.59 GiB is allocated by PyTorch, and 348.62 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 n01531178 文本特征维度: (512,)
+描述: Description for n01531178 category....
+处理类别: n01534433
+[2025-11-25 21:35:50] [显存监控] 已分配=32.44GB, 已保留=36.93GB, 空闲=14.97GB
+[2025-11-25 21:35:53] [显存监控] 已分配=32.44GB, 已保留=36.93GB, 空闲=14.97GB
+[2025-11-25 21:35:56] [显存监控] 已分配=32.44GB, 已保留=36.93GB, 空闲=14.97GB
+wiki desc: Description for n01534433 category.
+推理前显存: 已分配=32.45GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-25 21:35:59] [显存监控] 已分配=32.51GB, 已保留=32.87GB, 空闲=14.89GB
+[2025-11-25 21:36:02] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.84GB
+[2025-11-25 21:36:05] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.84GB
+[2025-11-25 21:36:08] [显存监控] 已分配=32.58GB, 已保留=34.10GB, 空闲=14.82GB
+[2025-11-25 21:36:11] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.84GB
+[2025-11-25 21:36:14] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.84GB
+[2025-11-25 21:36:17] [显存监控] 已分配=32.56GB, 已保留=34.10GB, 空闲=14.84GB
+[2025-11-25 21:36:20] [显存监控] 已分配=32.57GB, 已保留=34.10GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.10GB, 剩余=14.97GB
+MLLM description: The images depict birds belonging to the same species, characterized by their small size, compact body, and short tail. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**: All three birds have a rounded head, a short, conical beak, and a slender body. Their legs are relatively short and sturdy.
+
+2. **Color Patterns and Markings**:
+   - **Image 1**: The bird has a dark brown head and back, with lighter underparts. Its wings display subtle streaking.
+   - **Image 2**: This bird exhibits a black cap, white throat, and chest, with a brownish-orange breast and flanks. Its wings and tail are dark brown with some white streaks.
+   - **Image 3**: The bird is predominantly gray with a white underside, a pink beak, and a short, pointed tail.
+
+3. **Size and Proportions**: These birds appear to be small, with a compact build and proportionate limbs. They are likely passerines, which are typically smaller than songbirds like robins or cardinals.
+
+4. **Behavioral Characteristics**: While not directly observable in these images, these birds are likely active during the day, foraging for insects and seeds.
+类别 n01534433 文本特征维度: (512,)
+描述: The images depict birds belonging to the same species, characterized by their small size, compact bo...
+处理类别: n01614925
+[2025-11-25 21:36:23] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+[2025-11-25 21:36:26] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+[2025-11-25 21:36:29] [显存监控] 已分配=32.44GB, 已保留=34.10GB, 空闲=14.97GB
+wiki desc: Description for n01614925 category.
+推理前显存: 已分配=32.46GB, 已保留=32.80GB, 剩余=14.95GB
+[2025-11-25 21:36:32] [显存监控] 已分配=32.65GB, 已保留=35.78GB, 空闲=14.75GB
+[2025-11-25 21:36:35] [显存监控] 已分配=32.59GB, 已保留=35.78GB, 空闲=14.81GB
+[2025-11-25 21:36:38] [显存监控] 已分配=32.59GB, 已保留=35.78GB, 空闲=14.81GB
+[2025-11-25 21:36:41] [显存监控] 已分配=32.60GB, 已保留=35.78GB, 空闲=14.80GB
+[2025-11-25 21:36:44] [显存监控] 已分配=32.61GB, 已保留=35.78GB, 空闲=14.80GB
+[2025-11-25 21:36:47] [显存监控] 已分配=32.61GB, 已保留=35.78GB, 空闲=14.80GB
+[2025-11-25 21:36:50] [显存监控] 已分配=32.65GB, 已保留=35.78GB, 空闲=14.75GB
+[2025-11-25 21:36:53] [显存监控] 已分配=32.62GB, 已保留=35.78GB, 空闲=14.79GB
+推理后显存: 已分配=32.44GB, 已保留=35.78GB, 剩余=14.97GB
+MLLM description: The images depict eagles, a group of birds known for their distinctive features:
+
+1. **Distinctive Physical Features**: Eagles have large, powerful bodies with broad wings and strong talons. Their heads are typically smaller in proportion to their bodies, with a hooked beak adapted for tearing prey.
+
+2. **Color Patterns and Markings**: Eagles exhibit a variety of coloration depending on species. Common patterns include white heads and tails contrasted with darker bodies, or entirely dark plumage. Some species may display reddish-brown feathers on their heads and necks during breeding seasons.
+
+3. **Size and Proportions**: Eagles are large birds, often among the largest raptors. They have long wingspans and robust builds, which are essential for their hunting and soaring abilities.
+
+4. **Behavioral Characteristics**: Eagles are known for their hunting prowess, often targeting fish, mammals, and other birds. They are also territorial and can be seen perched on high vantage points, scanning for prey.
+
+5. **Unique Identifying Traits**:
+   - **Beak Shape**: Eagles have a hooked beak, which is an adaptation for tearing flesh.
+   - **Talons**: Their sharp, curved talons are used for grasping and holding prey securely
+类别 n01614925 文本特征维度: (512,)
+描述: The images depict eagles, a group of birds known for their distinctive features:
+
+1. **Distinctive P...
+处理类别: n01616318
+[2025-11-25 21:36:56] [显存监控] 已分配=32.44GB, 已保留=35.78GB, 空闲=14.97GB
+[2025-11-25 21:36:59] [显存监控] 已分配=32.44GB, 已保留=35.78GB, 空闲=14.97GB
+[2025-11-25 21:37:02] [显存监控] 已分配=32.44GB, 已保留=35.78GB, 空闲=14.97GB
+[2025-11-25 21:37:05] [显存监控] 已分配=32.44GB, 已保留=35.78GB, 空闲=14.97GB
+[2025-11-25 21:37:08] [显存监控] 已分配=32.44GB, 已保留=35.78GB, 空闲=14.97GB
+wiki desc: Description for n01616318 category.
+推理前显存: 已分配=32.47GB, 已保留=32.84GB, 剩余=14.93GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 3.30 GiB. GPU 0 has a total capacity of 47.40 GiB of which 663.62 MiB is free. Process 2246216 has 4.86 GiB memory in use. Process 2248654 has 4.86 GiB memory in use. Including non-PyTorch memory, this process has 37.01 GiB memory in use. Of the allocated memory 36.35 GiB is allocated by PyTorch, and 360.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 n01616318 文本特征维度: (512,)
+描述: Description for n01616318 category....
+处理类别: n01630670
+[2025-11-25 21:37:11] [显存监控] 已分配=32.44GB, 已保留=36.70GB, 空闲=14.97GB
+[2025-11-25 21:37:14] [显存监控] 已分配=32.44GB, 已保留=36.70GB, 空闲=14.97GB
+[2025-11-25 21:37:17] [显存监控] 已分配=32.44GB, 已保留=36.70GB, 空闲=14.97GB
+wiki desc: Description for n01630670 category.
+推理前显存: 已分配=32.45GB, 已保留=32.81GB, 剩余=14.95GB
+[2025-11-25 21:37:20] [显存监控] 已分配=32.50GB, 已保留=32.85GB, 空闲=14.90GB
+[2025-11-25 21:37:23] [显存监控] 已分配=32.56GB, 已保留=34.29GB, 空闲=14.84GB
+[2025-11-25 21:37:26] [显存监控] 已分配=32.56GB, 已保留=34.29GB, 空闲=14.84GB
+[2025-11-25 21:37:29] [显存监控] 已分配=32.56GB, 已保留=34.29GB, 空闲=14.84GB
+[2025-11-25 21:37:32] [显存监控] 已分配=32.56GB, 已保留=34.29GB, 空闲=14.84GB
+  6%|▌         | 11/200 [05:24<1:24:07, 26.70s/it]  6%|▌         | 12/200 [05:55<1:27:38, 27.97s/it]  6%|▋         | 13/200 [06:07<1:12:23, 23.22s/it]  7%|▋         | 14/200 [06:39<1:19:41, 25.70s/it][2025-11-25 21:37:35] [显存监控] 已分配=32.56GB, 已保留=34.29GB, 空闲=14.84GB
+[2025-11-25 21:37:38] [显存监控] 已分配=32.56GB, 已保留=34.29GB, 空闲=14.84GB
+推理后显存: 已分配=32.44GB, 已保留=34.29GB, 剩余=14.97GB
+MLLM description: The images depict amphibians, specifically newts, characterized by their elongated bodies, four limbs, and smooth skin. 
+
+1. **Distinctive Physical Features**: Newts have a streamlined body shape with a long tail, which is used for swimming. They possess four limbs, with webbed feet adapted for both swimming and walking on land.
+
+2. **Color Patterns and Markings**: The newts in the images display a marbled pattern, with dark spots or blotches on a lighter background. This coloration can vary between species and individuals, but it is a common feature among newts.
+
+3. **Size and Proportions**: The newts appear to be relatively small, with a compact body and a long tail. Their size and proportions suggest they are adapted for both aquatic and terrestrial environments.
+
+4. **Behavioral Characteristics**: While not explicitly shown in the images, newts are known to be semi-aquatic creatures. They spend most of their time in water, where they feed on small invertebrates, and come out of the water at night to lay eggs on land. They are also capable of breathing through their skin, which allows them to absorb oxygen directly from the environment.
+
+5. **Unique Identifying Traits**: The marbled pattern and
+类别 n01630670 文本特征维度: (512,)
+描述: The images depict amphibians, specifically newts, characterized by their elongated bodies, four limb...
+处理类别: n01632777
+[2025-11-25 21:37:41] [显存监控] 已分配=32.44GB, 已保留=34.29GB, 空闲=14.97GB
+[2025-11-25 21:37:44] [显存监控] 已分配=32.44GB, 已保留=34.29GB, 空闲=14.97GB
+[2025-11-25 21:37:47] [显存监控] 已分配=32.44GB, 已保留=34.29GB, 空闲=14.97GB
+wiki desc: Description for n01632777 category.
+推理前显存: 已分配=32.45GB, 已保留=32.79GB, 剩余=14.95GB
+[2025-11-25 21:37:50] [显存监控] 已分配=32.57GB, 已保留=34.24GB, 空闲=14.83GB
+[2025-11-25 21:37:53] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-25 21:37:56] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-25 21:37:59] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-25 21:38:02] [显存监控] 已分配=32.56GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-25 21:38:05] [显存监控] 已分配=32.57GB, 已保留=34.24GB, 空闲=14.84GB
+[2025-11-25 21:38:08] [显存监控] 已分配=32.57GB, 已保留=34.24GB, 空闲=14.83GB
+推理后显存: 已分配=32.44GB, 已保留=34.24GB, 剩余=14.97GB
+MLLM description: The images depict axolotls, a type of salamander known for their unique appearance and regenerative abilities.
+
+1. **Distinctive Physical Features**: Axolotls have external gills, which appear as feathery appendages on either side of their head. They also possess a broad, flat head with large eyes and a small mouth. Their body is typically elongated and slender, with four short legs and a long tail.
+
+2. **Color Patterns and Markings**: The axolotls in the images display a range of colors, including pink, white, and shades of blue. Some have darker markings or stripes, while others are more uniformly colored. The coloration can vary depending on factors such as diet, age, and environmental conditions.
+
+3. **Size and Proportions**: Axolotls are relatively small, with an average length ranging from 8 to 12 inches (20 to 30 cm). The size depicted in the images appears consistent with this range, although the exact dimensions cannot be determined without additional context.
+
+4. **Behavioral Characteristics**: While not directly observable in the images, axolotls are generally docile creatures that prefer a calm environment. They are known for their ability to regenerate lost
+类别 n01632777 文本特征维度: (512,)
+描述: The images depict axolotls, a type of salamander known for their unique appearance and regenerative ...
+处理类别: n01644373
+[2025-11-25 21:38:11] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-25 21:38:14] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-25 21:38:17] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+[2025-11-25 21:38:20] [显存监控] 已分配=32.44GB, 已保留=34.24GB, 空闲=14.97GB
+wiki desc: Description for n01644373 category.
+推理前显存: 已分配=32.51GB, 已保留=32.91GB, 剩余=14.89GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 15.95 GiB. GPU 0 has a total capacity of 47.40 GiB of which 2.40 GiB is free. Process 2246216 has 4.86 GiB memory in use. Process 2248654 has 4.86 GiB memory in use. Including non-PyTorch memory, this process has 35.25 GiB memory in use. Of the allocated memory 34.53 GiB is allocated by PyTorch, and 422.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 n01644373 文本特征维度: (512,)
+描述: Description for n01644373 category....
+处理类别: n01677366
+[2025-11-25 21:38:23] [显存监控] 已分配=32.44GB, 已保留=34.94GB, 空闲=14.97GB
+[2025-11-25 21:38:26] [显存监控] 已分配=32.44GB, 已保留=34.94GB, 空闲=14.97GB
+[2025-11-25 21:38:29] [显存监控] 已分配=32.44GB, 已保留=34.94GB, 空闲=14.97GB
+[2025-11-25 21:38:32] [显存监控] 已分配=32.44GB, 已保留=34.94GB, 空闲=14.97GB
+wiki desc: Description for n01677366 category.
+推理前显存: 已分配=32.45GB, 已保留=32.86GB, 剩余=14.95GB
+[2025-11-25 21:38:35] [显存监控] 已分配=32.61GB, 已保留=35.13GB, 空闲=14.79GB
+[2025-11-25 21:38:38] [显存监控] 已分配=32.58GB, 已保留=35.13GB, 空闲=14.83GB
+[2025-11-25 21:38:41] [显存监控] 已分配=32.58GB, 已保留=35.13GB, 空闲=14.82GB
+[2025-11-25 21:38:44] [显存监控] 已分配=32.59GB, 已保留=35.13GB, 空闲=14.81GB
+[2025-11-25 21:38:47] [显存监控] 已分配=32.59GB, 已保留=35.13GB, 空闲=14.81GB
+[2025-11-25 21:38:50] [显存监控] 已分配=32.59GB, 已保留=35.13GB, 空闲=14.81GB
+[2025-11-25 21:38:53] [显存监控] 已分配=32.60GB, 已保留=35.13GB, 空闲=14.80GB
+推理后显存: 已分配=32.44GB, 已保留=35.13GB, 剩余=14.97GB
+MLLM description: The images depict iguanas, a group of reptiles characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Iguanas have a robust body with a long tail, spiny scales along the back and neck, and a prominent nuchal crest (a ridge of bony spines). Their heads are large, with a broad snout and a single external nostril. They possess a tympanum (ear drum) located behind the eye.
+
+2. **Color Patterns and Markings**: The coloration can vary widely among species, but many iguanas exhibit vibrant green hues with black or dark markings. Some species may also display patterns of stripes or spots. The nuchal crest is often brightly colored, contrasting with the rest of the body.
+
+3. **Size and Proportions**: Iguanas are generally large reptiles, with some species reaching lengths of over two meters. Their bodies are elongated, with a relatively short neck and a long tail that often accounts for more than half of their total length.
+
+4. **Behavioral Characteristics**: While not explicitly shown in the images, iguanas are known to be arboreal, spending much of their time in trees. They are primarily diurnal and are excellent climbers,
+类别 n01677366 文本特征维度: (512,)
+描述: The images depict iguanas, a group of reptiles characterized by their distinctive physical features:...
+处理类别: n01694178
+[2025-11-25 21:38:56] [显存监控] 已分配=32.44GB, 已保留=35.13GB, 空闲=14.97GB
+[2025-11-25 21:38:59] [显存监控] 已分配=32.44GB, 已保留=35.13GB, 空闲=14.97GB
+  8%|▊         | 15/200 [07:11<1:25:24, 27.70s/it]  8%|▊         | 16/200 [07:24<1:10:57, 23.14s/it]  8%|▊         | 17/200 [07:55<1:17:53, 25.54s/it]

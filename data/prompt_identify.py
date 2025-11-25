@@ -356,12 +356,12 @@ The useful attributes for distinguishing [__SUPERCLASS__] categories in a photo 
 
 
 sun397_how_to = f"""
-Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of a [__SUPERCLASS__].
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__].
 
 Specifically, you can complete the task by following the instructions below:
 1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
 a photo of a bird. You should understand and learn this example carefully.
-2 - List the useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of a [__SUPERCLASS__].
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__].
 3 - Output a Python list object that contains the listed useful attributes.
 
 ===
@@ -376,8 +376,62 @@ The useful attributes for distinguishing bird species in a photo of a bird:
 ===
 
 ===
-<[__SUPERCLASS__] categories>
-The useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of a [__SUPERCLASS__]:
+<[__SUPERCLASS__] [__CLASSUNIT__]>
+The useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__]:
+===
+"""
+
+
+imagenet_a_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['bill shape', 'wing color', 'upperparts color', 'underparts color', 'breast pattern',
+'back color', 'tail shape', 'upper tail color', 'head pattern', 'breast color',
+'throat color', 'eye color', 'bill length', 'forehead color', 'under tail color',
+'nape color', 'belly color', 'wing shape', 'size', 'shape',
+'back pattern', 'tail pattern', 'belly pattern', 'primary color', 'leg color',
+'bill color', 'crown color', 'wing pattern', 'habitat']
+===
+
+===
+<[__SUPERCLASS__] [__CLASSUNIT__]>
+The useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__]:
+===
+"""
+
+
+imagenet_r_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['bill shape', 'wing color', 'upperparts color', 'underparts color', 'breast pattern',
+'back color', 'tail shape', 'upper tail color', 'head pattern', 'breast color',
+'throat color', 'eye color', 'bill length', 'forehead color', 'under tail color',
+'nape color', 'belly color', 'wing shape', 'size', 'shape',
+'back pattern', 'tail pattern', 'belly pattern', 'primary color', 'leg color',
+'bill color', 'crown color', 'wing pattern', 'habitat']
+===
+
+===
+<[__SUPERCLASS__] [__CLASSUNIT__]>
+The useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a photo of a [__SUPERCLASS__]:
 ===
 """
 
@@ -397,4 +451,6 @@ prompts_howto = {
     "caltech256": caltech256_how_to,
     "deepfashion_multimodal": deepfashion_multimodal_how_to,
     "sun397": sun397_how_to,
+    "imagenet_a": imagenet_a_how_to,
+    "imagenet_r": imagenet_r_how_to,
 }

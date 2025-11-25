@@ -28,7 +28,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r
                             如不指定，使用config.yaml中的配置
 
 选项:
@@ -219,9 +219,19 @@ case "${DATASET}" in
         CONFIG_FILE="sun397_all.yml"
         DATASET_DIR="SUN397"
         ;;
+    "imagenet_a")
+        DATASET_NUM="200"
+        CONFIG_FILE="imagenet_a200_all.yml"
+        DATASET_DIR="ImageNet_A"
+        ;;
+    "imagenet_r")
+        DATASET_NUM="200"
+        CONFIG_FILE="imagenet_r200_all.yml"
+        DATASET_DIR="ImageNet_R"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r"
         exit 1
         ;;
 esac

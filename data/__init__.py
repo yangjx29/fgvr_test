@@ -1,4 +1,4 @@
-from data.data_stats import BIRD_STATS, DOG_STATS, FLOWER_STATS, PET_STATS, CAR_STATS, POKEMON_STATS, AIRCRAFT_STATS, EUROSAT_STATS, FOOD_STATS, DTD_STATS, CALTECH101_STATS, CALTECH256_STATS, DEEPFASHION_MULTIMODAL_STATS, SUN397_STATS
+from data.data_stats import BIRD_STATS, DOG_STATS, FLOWER_STATS, PET_STATS, CAR_STATS, POKEMON_STATS, AIRCRAFT_STATS, EUROSAT_STATS, FOOD_STATS, DTD_STATS, CALTECH101_STATS, CALTECH256_STATS, DEEPFASHION_MULTIMODAL_STATS, SUN397_STATS, IMAGENET_A_STATS, IMAGENET_R_STATS
 from data.bird200 import build_bird_prompter, build_bird200_discovery, build_bird200_test, bird_how_to1, bird_how_to2, build_bird200_swav_train
 from data.dog120 import build_dog_prompter, build_dog120_discovery, build_dog120_test, dog_how_to1, dog_how_to2, build_dog120_swav_train
 from data.flower102 import build_flower_prompter, build_flower102_discovery, build_flower102_test, flower_how_to1, flower_how_to2, build_flower102_swav_train
@@ -12,6 +12,8 @@ from data.caltech101 import build_caltech101_prompter, build_caltech101_discover
 from data.caltech256 import build_caltech256_prompter, build_caltech256_discovery, build_caltech256_test, caltech256_how_to1, caltech256_how_to2, build_caltech256_swav_train
 from data.deepfashion_multimodal import build_deepfashion_multimodal_prompter, build_deepfashion_multimodal_discovery, build_deepfashion_multimodal_test, deepfashion_multimodal_how_to1, deepfashion_multimodal_how_to2, build_deepfashion_multimodal_swav_train
 from data.sun397 import build_sun397_prompter, build_sun397_discovery, build_sun397_test, sun397_how_to1, sun397_how_to2, build_sun397_swav_train
+from data.imagenet_a import build_imagenet_a_prompter, build_imagenet_a_discovery, build_imagenet_a_test, imagenet_a_how_to1, imagenet_a_how_to2, build_imagenet_a_swav_train
+from data.imagenet_r import build_imagenet_r_prompter, build_imagenet_r_discovery, build_imagenet_r_test, imagenet_r_how_to1, imagenet_r_how_to2, build_imagenet_r_swav_train
 
 from data.bird200 import _transform as bird_transform
 from data.car196 import _transform as car_transform
@@ -26,6 +28,8 @@ from data.caltech101 import _transform as caltech101_transform
 from data.caltech256 import _transform as caltech256_transform
 from data.deepfashion_multimodal import _transform as deepfashion_multimodal_transform
 from data.sun397 import _transform as sun397_transform
+from data.imagenet_a import _transform as imagenet_a_transform
+from data.imagenet_r import _transform as imagenet_r_transform
 
 from .utils import random_augmentation
 
@@ -55,6 +59,8 @@ HOW_TOS1 = {
     "caltech256": caltech256_how_to1,
     "deepfashion_multimodal": deepfashion_multimodal_how_to1,
     "sun397": sun397_how_to1,
+    "imagenet_a": imagenet_a_how_to1,
+    "imagenet_r": imagenet_r_how_to1,
 }
 
 HOW_TOS2 = {
@@ -71,6 +77,8 @@ HOW_TOS2 = {
     "caltech256": caltech256_how_to2,
     "deepfashion_multimodal": deepfashion_multimodal_how_to2,
     "sun397": sun397_how_to2,
+    "imagenet_a": imagenet_a_how_to2,
+    "imagenet_r": imagenet_r_how_to2,
 }
 
 DATA_STATS = {
@@ -87,6 +95,8 @@ DATA_STATS = {
     "caltech256": CALTECH256_STATS,
     "deepfashion_multimodal": DEEPFASHION_MULTIMODAL_STATS,
     "sun397": SUN397_STATS,
+    "imagenet_a": IMAGENET_A_STATS,
+    "imagenet_r": IMAGENET_R_STATS,
 }
 
 
@@ -104,6 +114,8 @@ PROMPTERS = {
     "caltech256": build_caltech256_prompter,
     "deepfashion_multimodal": build_deepfashion_multimodal_prompter,
     "sun397": build_sun397_prompter,
+    "imagenet_a": build_imagenet_a_prompter,
+    "imagenet_r": build_imagenet_r_prompter,
 }
 
 
@@ -121,6 +133,8 @@ DATA_DISCOVERY = {
     "caltech256": build_caltech256_discovery,
     "deepfashion_multimodal": build_deepfashion_multimodal_discovery,
     "sun397": build_sun397_discovery,
+    "imagenet_a": build_imagenet_a_discovery,
+    "imagenet_r": build_imagenet_r_discovery,
 }
 
 
@@ -138,6 +152,8 @@ DATA_GROUPING = {
     "caltech256": build_caltech256_test,
     "deepfashion_multimodal": build_deepfashion_multimodal_test,
     "sun397": build_sun397_test,
+    "imagenet_a": build_imagenet_a_test,
+    "imagenet_r": build_imagenet_r_test,
 }
 
 
@@ -155,6 +171,8 @@ DATA_TRANSFORM = {
     "caltech256": caltech256_transform,
     "deepfashion_multimodal": deepfashion_multimodal_transform,
     "sun397": sun397_transform,
+    "imagenet_a": imagenet_a_transform,
+    "imagenet_r": imagenet_r_transform,
 }
 
 
@@ -172,6 +190,8 @@ DATA_SWAV = {
     "caltech256": build_caltech256_swav_train,
     "deepfashion_multimodal": build_deepfashion_multimodal_swav_train,
     "sun397": build_sun397_swav_train,
+    "imagenet_a": build_imagenet_a_swav_train,
+    "imagenet_r": build_imagenet_r_swav_train,
 }
 
 DATA_AUGMENTATION = random_augmentation

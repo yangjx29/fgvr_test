@@ -1,0 +1,1458 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=3  # 使用的GPU编号
+Dataset: imagenet_r (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/imagenet_r200/knowledge_base  # 知识库目录
+Results Out: ./results/imagenet_r_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: imagenet_r (imagenet_r200)
+类别数: 200
+实验目录: ./experiments/imagenet_r200
+当前使用的 GPU 为：3
+
+=== Experiment Start Time: 2025-11-25 21:19:48 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/imagenet_r200_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/imagenet_r200/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/ImageNet_R',
+ 'dataset_name': 'imagenet_r',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/imagenet_r200',
+ 'expt_dir_describe': './experiments/imagenet_r200/describe',
+ 'expt_dir_gallery': './experiments/imagenet_r200/gallery',
+ 'expt_dir_grouping': './experiments/imagenet_r200/grouping',
+ 'expt_dir_guess': './experiments/imagenet_r200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/imagenet_r200/gallery/imagenet_r_image_descriptions_attn',
+ 'path_identify_answers': './experiments/imagenet_r200/identify',
+ 'path_llm_gussed_names': './experiments/imagenet_r200/guess/imagenet_r_llm_gussed_names',
+ 'path_llm_prompts': './experiments/imagenet_r200/describe/imagenet_r_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_raw',
+ 'path_references': './experiments/imagenet_r200/gallery/imagenet_r_image_references',
+ 'path_regions': './experiments/imagenet_r200/gallery/imagenet_r_image_regions',
+ 'path_vqa_answers': './experiments/imagenet_r200/describe/imagenet_r_attributes_pairs',
+ 'path_vqa_questions': './experiments/imagenet_r200/describe/imagenet_r_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "imagenet_r200",
+    "num_classes": 200,
+    "config_file": "imagenet_r200_all.yml",
+    "data_dir": "ImageNet_R",
+    "experiment_dir": "imagenet_r200",
+    "stats_file": "imagenet_r200/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/imagenet_r200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/imagenet_r200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float32（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:40<02:41, 40.46s/it]Loading checkpoint shards:  40%|████      | 2/5 [01:19<01:59, 39.75s/it]Loading checkpoint shards:  60%|██████    | 3/5 [01:36<00:58, 29.15s/it]Loading checkpoint shards:  80%|████████  | 4/5 [02:02<00:27, 27.83s/it]Loading checkpoint shards: 100%|██████████| 5/5 [02:09<00:00, 20.32s/it]Loading checkpoint shards: 100%|██████████| 5/5 [02:09<00:00, 25.81s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float32（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-25 21:21:58
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-25 21:23:45
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7f38055870d0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7f3802d82d30>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/imagenet_r200/knowledge_base
+使用数据集: imagenet_r, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-25 21:23:45] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 200 个类别, dog datasets:200
+从 ./experiments/imagenet_r200/knowledge_base 加载知识库...
+知识库已从 ./experiments/imagenet_r200/knowledge_base 加载
+图像知识库类别数: 0
+文本知识库类别数: 0
+类别描述数: 0
+知识库加载完成!
+构建知识库...
+训练样本包含 200 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/200 [00:00<?, ?it/s]处理类别: n01443537
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01443537/goldfish_101.jpg', 0): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01443537/goldfish_126.jpg', 0): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01443537/goldfish_197.jpg', 0): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01443537/goldfish_72.jpg', 0): 'tuple' object has no attribute 'read'
+警告: 类别 n01443537 没有有效的图像特征
+处理类别: n01484850
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01484850/great_white_shark_79.jpg', 1): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01484850/great_white_shark_10.jpg', 1): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01484850/great_white_shark_155.jpg', 1): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01484850/great_white_shark_108.jpg', 1): 'tuple' object has no attribute 'read'
+警告: 类别 n01484850 没有有效的图像特征
+处理类别: n01494475
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01494475/hammerhead_153.jpg', 2): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01494475/hammerhead_68.jpg', 2): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01494475/hammerhead_107.jpg', 2): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01494475/hammerhead_186.jpg', 2): 'tuple' object has no attribute 'read'
+警告: 类别 n01494475 没有有效的图像特征
+处理类别: n01498041
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01498041/stingray_7.jpg', 3): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01498041/stingray_76.jpg', 3): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01498041/stingray_92.jpg', 3): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01498041/stingray_3.jpg', 3): 'tuple' object has no attribute 'read'
+警告: 类别 n01498041 没有有效的图像特征
+处理类别: n01514859
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01514859/hen_59.jpg', 4): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01514859/hen_66.jpg', 4): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01514859/hen_191.jpg', 4): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01514859/hen_159.jpg', 4): 'tuple' object has no attribute 'read'
+警告: 类别 n01514859 没有有效的图像特征
+处理类别: n01518878
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01518878/ostrich_73.jpg', 5): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01518878/ostrich_174.jpg', 5): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01518878/ostrich_165.jpg', 5): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01518878/ostrich_117.jpg', 5): 'tuple' object has no attribute 'read'
+警告: 类别 n01518878 没有有效的图像特征
+处理类别: n01531178
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01531178/goldfinch_90.jpg', 6): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01531178/goldfinch_163.jpg', 6): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01531178/goldfinch_93.jpg', 6): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01531178/goldfinch_79.jpg', 6): 'tuple' object has no attribute 'read'
+警告: 类别 n01531178 没有有效的图像特征
+处理类别: n01534433
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01534433/junco_11.jpg', 7): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01534433/junco_31.jpg', 7): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01534433/junco_25.jpg', 7): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01534433/junco_10.jpg', 7): 'tuple' object has no attribute 'read'
+警告: 类别 n01534433 没有有效的图像特征
+处理类别: n01614925
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01614925/bald_eagle_0.jpg', 8): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01614925/bald_eagle_72.jpg', 8): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01614925/bald_eagle_102.jpg', 8): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01614925/bald_eagle_9.jpg', 8): 'tuple' object has no attribute 'read'
+警告: 类别 n01614925 没有有效的图像特征
+处理类别: n01616318
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01616318/vulture_102.jpg', 9): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01616318/vulture_69.jpg', 9): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01616318/vulture_37.jpg', 9): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01616318/vulture_153.jpg', 9): 'tuple' object has no attribute 'read'
+警告: 类别 n01616318 没有有效的图像特征
+处理类别: n01630670
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01630670/newt_44.jpg', 10): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01630670/newt_28.jpg', 10): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01630670/newt_63.jpg', 10): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01630670/newt_52.jpg', 10): 'tuple' object has no attribute 'read'
+警告: 类别 n01630670 没有有效的图像特征
+处理类别: n01632777
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01632777/axolotl_124.jpg', 11): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01632777/axolotl_90.jpg', 11): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01632777/axolotl_50.jpg', 11): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01632777/axolotl_9.jpg', 11): 'tuple' object has no attribute 'read'
+警告: 类别 n01632777 没有有效的图像特征
+处理类别: n01644373
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01644373/tree_frog_174.jpg', 12): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01644373/tree_frog_16.jpg', 12): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01644373/tree_frog_180.jpg', 12): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01644373/tree_frog_112.jpg', 12): 'tuple' object has no attribute 'read'
+警告: 类别 n01644373 没有有效的图像特征
+处理类别: n01677366
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01677366/iguana_56.jpg', 13): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01677366/iguana_4.jpg', 13): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01677366/iguana_54.jpg', 13): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01677366/iguana_47.jpg', 13): 'tuple' object has no attribute 'read'
+警告: 类别 n01677366 没有有效的图像特征
+处理类别: n01694178
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01694178/African_chameleon_145.jpg', 14): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01694178/African_chameleon_61.jpg', 14): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01694178/African_chameleon_54.jpg', 14): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01694178/African_chameleon_147.jpg', 14): 'tuple' object has no attribute 'read'
+警告: 类别 n01694178 没有有效的图像特征
+处理类别: n01748264
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01748264/cobra_26.jpg', 15): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01748264/cobra_83.jpg', 15): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01748264/cobra_56.jpg', 15): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01748264/cobra_98.jpg', 15): 'tuple' object has no attribute 'read'
+警告: 类别 n01748264 没有有效的图像特征
+处理类别: n01770393
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01770393/scorpion_145.jpg', 16): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01770393/scorpion_14.jpg', 16): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01770393/scorpion_47.jpg', 16): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01770393/scorpion_23.jpg', 16): 'tuple' object has no attribute 'read'
+警告: 类别 n01770393 没有有效的图像特征
+处理类别: n01774750
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01774750/tarantula_25.jpg', 17): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01774750/tarantula_92.jpg', 17): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01774750/tarantula_3.jpg', 17): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01774750/tarantula_22.jpg', 17): 'tuple' object has no attribute 'read'
+警告: 类别 n01774750 没有有效的图像特征
+处理类别: n01784675
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01784675/centipede_102.jpg', 18): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01784675/centipede_77.jpg', 18): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01784675/centipede_72.jpg', 18): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01784675/centipede_98.jpg', 18): 'tuple' object has no attribute 'read'
+警告: 类别 n01784675 没有有效的图像特征
+处理类别: n01806143
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01806143/peacock_40.jpg', 19): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01806143/peacock_100.jpg', 19): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01806143/peacock_155.jpg', 19): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01806143/peacock_57.jpg', 19): 'tuple' object has no attribute 'read'
+警告: 类别 n01806143 没有有效的图像特征
+处理类别: n01820546
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01820546/lorikeet_5.jpg', 20): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01820546/lorikeet_64.jpg', 20): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01820546/lorikeet_32.jpg', 20): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01820546/lorikeet_39.jpg', 20): 'tuple' object has no attribute 'read'
+警告: 类别 n01820546 没有有效的图像特征
+处理类别: n01833805
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01833805/hummingbird_76.jpg', 21): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01833805/hummingbird_26.jpg', 21): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01833805/hummingbird_58.jpg', 21): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01833805/hummingbird_292.jpg', 21): 'tuple' object has no attribute 'read'
+警告: 类别 n01833805 没有有效的图像特征
+处理类别: n01843383
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01843383/toucan_191.jpg', 22): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01843383/toucan_47.jpg', 22): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01843383/toucan_194.jpg', 22): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01843383/toucan_308.jpg', 22): 'tuple' object has no attribute 'read'
+警告: 类别 n01843383 没有有效的图像特征
+处理类别: n01847000
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01847000/duck_125.jpg', 23): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01847000/duck_74.jpg', 23): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01847000/duck_57.jpg', 23): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01847000/duck_78.jpg', 23): 'tuple' object has no attribute 'read'
+警告: 类别 n01847000 没有有效的图像特征
+处理类别: n01855672
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01855672/goose_79.jpg', 24): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01855672/goose_41.jpg', 24): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01855672/goose_30.jpg', 24): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01855672/goose_114.jpg', 24): 'tuple' object has no attribute 'read'
+警告: 类别 n01855672 没有有效的图像特征
+处理类别: n01860187
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01860187/black_swan_72.jpg', 25): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01860187/black_swan_7.jpg', 25): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01860187/black_swan_28.jpg', 25): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01860187/black_swan_15.jpg', 25): 'tuple' object has no attribute 'read'
+警告: 类别 n01860187 没有有效的图像特征
+处理类别: n01882714
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01882714/koala_10.jpg', 26): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01882714/koala_115.jpg', 26): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01882714/koala_129.jpg', 26): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01882714/koala_180.jpg', 26): 'tuple' object has no attribute 'read'
+警告: 类别 n01882714 没有有效的图像特征
+处理类别: n01910747
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01910747/jellyfish_36.jpg', 27): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01910747/jellyfish_306.jpg', 27): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01910747/jellyfish_166.jpg', 27): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01910747/jellyfish_65.jpg', 27): 'tuple' object has no attribute 'read'
+警告: 类别 n01910747 没有有效的图像特征
+处理类别: n01944390
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01944390/snail_190.jpg', 28): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01944390/snail_96.jpg', 28): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01944390/snail_160.jpg', 28): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01944390/snail_208.jpg', 28): 'tuple' object has no attribute 'read'
+警告: 类别 n01944390 没有有效的图像特征
+处理类别: n01983481
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01983481/lobster_66.jpg', 29): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01983481/lobster_0.jpg', 29): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01983481/lobster_29.jpg', 29): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01983481/lobster_4.jpg', 29): 'tuple' object has no attribute 'read'
+警告: 类别 n01983481 没有有效的图像特征
+处理类别: n01986214
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01986214/hermit_crab_69.jpg', 30): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01986214/hermit_crab_33.jpg', 30): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01986214/hermit_crab_21.jpg', 30): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n01986214/hermit_crab_41.jpg', 30): 'tuple' object has no attribute 'read'
+警告: 类别 n01986214 没有有效的图像特征
+处理类别: n02007558
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02007558/flamingo_86.jpg', 31): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02007558/flamingo_338.jpg', 31): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02007558/flamingo_356.jpg', 31): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02007558/flamingo_297.jpg', 31): 'tuple' object has no attribute 'read'
+警告: 类别 n02007558 没有有效的图像特征
+处理类别: n02009912
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02009912/american_egret_63.jpg', 32): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02009912/american_egret_50.jpg', 32): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02009912/american_egret_48.jpg', 32): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02009912/american_egret_32.jpg', 32): 'tuple' object has no attribute 'read'
+警告: 类别 n02009912 没有有效的图像特征
+处理类别: n02051845
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02051845/pelican_81.jpg', 33): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02051845/pelican_6.jpg', 33): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02051845/pelican_17.jpg', 33): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02051845/pelican_102.jpg', 33): 'tuple' object has no attribute 'read'
+警告: 类别 n02051845 没有有效的图像特征
+处理类别: n02056570
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02056570/king_penguin_39.jpg', 34): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02056570/king_penguin_41.jpg', 34): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02056570/king_penguin_55.jpg', 34): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02056570/king_penguin_5.jpg', 34): 'tuple' object has no attribute 'read'
+警告: 类别 n02056570 没有有效的图像特征
+处理类别: n02066245
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02066245/grey_whale_0.jpg', 35): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02066245/grey_whale_38.jpg', 35): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02066245/grey_whale_10.jpg', 35): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02066245/grey_whale_28.jpg', 35): 'tuple' object has no attribute 'read'
+警告: 类别 n02066245 没有有效的图像特征
+处理类别: n02071294
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02071294/killer_whale_128.jpg', 36): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02071294/killer_whale_199.jpg', 36): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02071294/killer_whale_188.jpg', 36): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02071294/killer_whale_117.jpg', 36): 'tuple' object has no attribute 'read'
+警告: 类别 n02071294 没有有效的图像特征
+处理类别: n02077923
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02077923/sea_lion_62.jpg', 37): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02077923/sea_lion_50.jpg', 37): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02077923/sea_lion_28.jpg', 37): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02077923/sea_lion_61.jpg', 37): 'tuple' object has no attribute 'read'
+警告: 类别 n02077923 没有有效的图像特征
+处理类别: n02085620
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02085620/chihuahua_115.jpg', 38): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02085620/chihuahua_127.jpg', 38): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02085620/chihuahua_2.jpg', 38): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02085620/chihuahua_137.jpg', 38): 'tuple' object has no attribute 'read'
+警告: 类别 n02085620 没有有效的图像特征
+处理类别: n02086240
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02086240/shih_tzu_39.jpg', 39): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02086240/shih_tzu_71.jpg', 39): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02086240/shih_tzu_67.jpg', 39): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02086240/shih_tzu_5.jpg', 39): 'tuple' object has no attribute 'read'
+警告: 类别 n02086240 没有有效的图像特征
+处理类别: n02088094
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088094/afghan_hound_74.jpg', 40): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088094/afghan_hound_63.jpg', 40): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088094/afghan_hound_43.jpg', 40): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088094/afghan_hound_59.jpg', 40): 'tuple' object has no attribute 'read'
+警告: 类别 n02088094 没有有效的图像特征
+处理类别: n02088238
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088238/basset_hound_114.jpg', 41): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088238/basset_hound_129.jpg', 41): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088238/basset_hound_71.jpg', 41): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088238/basset_hound_51.jpg', 41): 'tuple' object has no attribute 'read'
+警告: 类别 n02088238 没有有效的图像特征
+处理类别: n02088364
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088364/beagle_75.jpg', 42): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088364/beagle_43.jpg', 42): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088364/beagle_16.jpg', 42): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088364/beagle_73.jpg', 42): 'tuple' object has no attribute 'read'
+警告: 类别 n02088364 没有有效的图像特征
+处理类别: n02088466
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088466/bloodhound_35.jpg', 43): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088466/bloodhound_20.jpg', 43): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088466/bloodhound_7.jpg', 43): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02088466/bloodhound_28.jpg', 43): 'tuple' object has no attribute 'read'
+警告: 类别 n02088466 没有有效的图像特征
+处理类别: n02091032
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091032/italian_greyhound_18.jpg', 44): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091032/italian_greyhound_49.jpg', 44): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091032/italian_greyhound_35.jpg', 44): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091032/italian_greyhound_26.jpg', 44): 'tuple' object has no attribute 'read'
+警告: 类别 n02091032 没有有效的图像特征
+处理类别: n02091134
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091134/whippet_81.jpg', 45): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091134/whippet_60.jpg', 45): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091134/whippet_17.jpg', 45): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02091134/whippet_55.jpg', 45): 'tuple' object has no attribute 'read'
+警告: 类别 n02091134 没有有效的图像特征
+处理类别: n02092339
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02092339/weimaraner_62.jpg', 46): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02092339/weimaraner_45.jpg', 46): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02092339/weimaraner_65.jpg', 46): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02092339/weimaraner_29.jpg', 46): 'tuple' object has no attribute 'read'
+警告: 类别 n02092339 没有有效的图像特征
+处理类别: n02094433
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02094433/yorkshire_terrier_1.jpg', 47): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02094433/yorkshire_terrier_76.jpg', 47): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02094433/yorkshire_terrier_65.jpg', 47): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02094433/yorkshire_terrier_62.jpg', 47): 'tuple' object has no attribute 'read'
+警告: 类别 n02094433 没有有效的图像特征
+处理类别: n02096585
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02096585/boston_terrier_240.jpg', 48): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02096585/boston_terrier_257.jpg', 48): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02096585/boston_terrier_181.jpg', 48): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02096585/boston_terrier_171.jpg', 48): 'tuple' object has no attribute 'read'
+警告: 类别 n02096585 没有有效的图像特征
+处理类别: n02097298
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02097298/scottish_terrier_19.jpg', 49): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02097298/scottish_terrier_39.jpg', 49): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02097298/scottish_terrier_57.jpg', 49): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02097298/scottish_terrier_85.jpg', 49): 'tuple' object has no attribute 'read'
+警告: 类别 n02097298 没有有效的图像特征
+处理类别: n02098286
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02098286/west_highland_white_terrier_48.jpg', 50): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02098286/west_highland_white_terrier_67.jpg', 50): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02098286/west_highland_white_terrier_16.jpg', 50): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02098286/west_highland_white_terrier_52.jpg', 50): 'tuple' object has no attribute 'read'
+警告: 类别 n02098286 没有有效的图像特征
+处理类别: n02099601
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099601/golden_retriever_30.jpg', 51): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099601/golden_retriever_53.jpg', 51): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099601/golden_retriever_109.jpg', 51): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099601/golden_retriever_39.jpg', 51): 'tuple' object has no attribute 'read'
+警告: 类别 n02099601 没有有效的图像特征
+处理类别: n02099712
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099712/labrador_retriever_3.jpg', 52): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099712/labrador_retriever_15.jpg', 52): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099712/labrador_retriever_31.jpg', 52): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02099712/labrador_retriever_42.jpg', 52): 'tuple' object has no attribute 'read'
+警告: 类别 n02099712 没有有效的图像特征
+处理类别: n02102318
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02102318/cocker_spaniels_119.jpg', 53): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02102318/cocker_spaniels_33.jpg', 53): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02102318/cocker_spaniels_107.jpg', 53): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02102318/cocker_spaniels_19.jpg', 53): 'tuple' object has no attribute 'read'
+警告: 类别 n02102318 没有有效的图像特征
+处理类别: n02106030
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106030/collie_39.jpg', 54): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106030/collie_67.jpg', 54): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106030/collie_5.jpg', 54): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106030/collie_47.jpg', 54): 'tuple' object has no attribute 'read'
+警告: 类别 n02106030 没有有效的图像特征
+处理类别: n02106166
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106166/border_collie_32.jpg', 55): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106166/border_collie_14.jpg', 55): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106166/border_collie_27.jpg', 55): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106166/border_collie_41.jpg', 55): 'tuple' object has no attribute 'read'
+警告: 类别 n02106166 没有有效的图像特征
+处理类别: n02106550
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106550/rottweiler_62.jpg', 56): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106550/rottweiler_21.jpg', 56): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106550/rottweiler_60.jpg', 56): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106550/rottweiler_24.jpg', 56): 'tuple' object has no attribute 'read'
+警告: 类别 n02106550 没有有效的图像特征
+处理类别: n02106662
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106662/german_shepherd_dog_91.jpg', 57): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106662/german_shepherd_dog_127.jpg', 57): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106662/german_shepherd_dog_76.jpg', 57): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02106662/german_shepherd_dog_80.jpg', 57): 'tuple' object has no attribute 'read'
+警告: 类别 n02106662 没有有效的图像特征
+处理类别: n02108089
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108089/boxer_36.jpg', 58): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108089/boxer_9.jpg', 58): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108089/boxer_69.jpg', 58): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108089/boxer_0.jpg', 58): 'tuple' object has no attribute 'read'
+警告: 类别 n02108089 没有有效的图像特征
+处理类别: n02108915
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108915/french_bulldog_49.jpg', 59): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108915/french_bulldog_66.jpg', 59): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108915/french_bulldog_0.jpg', 59): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02108915/french_bulldog_3.jpg', 59): 'tuple' object has no attribute 'read'
+警告: 类别 n02108915 没有有效的图像特征
+处理类别: n02109525
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02109525/saint_bernard_9.jpg', 60): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02109525/saint_bernard_42.jpg', 60): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02109525/saint_bernard_10.jpg', 60): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02109525/saint_bernard_30.jpg', 60): 'tuple' object has no attribute 'read'
+警告: 类别 n02109525 没有有效的图像特征
+处理类别: n02110185
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110185/husky_64.jpg', 61): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110185/husky_55.jpg', 61): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110185/husky_45.jpg', 61): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110185/husky_52.jpg', 61): 'tuple' object has no attribute 'read'
+警告: 类别 n02110185 没有有效的图像特征
+处理类别: n02110341
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110341/dalmatian_137.jpg', 62): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110341/dalmatian_53.jpg', 62): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110341/dalmatian_163.jpg', 62): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110341/dalmatian_91.jpg', 62): 'tuple' object has no attribute 'read'
+警告: 类别 n02110341 没有有效的图像特征
+处理类别: n02110958
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110958/pug_195.jpg', 63): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110958/pug_139.jpg', 63): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110958/pug_84.jpg', 63): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02110958/pug_203.jpg', 63): 'tuple' object has no attribute 'read'
+警告: 类别 n02110958 没有有效的图像特征
+处理类别: n02112018
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112018/pomeranian_63.jpg', 64): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112018/pomeranian_62.jpg', 64): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112018/pomeranian_74.jpg', 64): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112018/pomeranian_31.jpg', 64): 'tuple' object has no attribute 'read'
+警告: 类别 n02112018 没有有效的图像特征
+处理类别: n02112137
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112137/chow_chow_35.jpg', 65): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112137/chow_chow_0.jpg', 65): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112137/chow_chow_18.jpg', 65): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02112137/chow_chow_52.jpg', 65): 'tuple' object has no attribute 'read'
+警告: 类别 n02112137 没有有效的图像特征
+处理类别: n02113023
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113023/pembroke_welsh_corgi_56.jpg', 66): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113023/pembroke_welsh_corgi_10.jpg', 66): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113023/pembroke_welsh_corgi_31.jpg', 66): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113023/pembroke_welsh_corgi_18.jpg', 66): 'tuple' object has no attribute 'read'
+警告: 类别 n02113023 没有有效的图像特征
+处理类别: n02113624
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113624/toy_poodle_59.jpg', 67): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113624/toy_poodle_49.jpg', 67): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113624/toy_poodle_7.jpg', 67): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113624/toy_poodle_35.jpg', 67): 'tuple' object has no attribute 'read'
+警告: 类别 n02113624 没有有效的图像特征
+处理类别: n02113799
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113799/standard_poodle_26.jpg', 68): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113799/standard_poodle_29.jpg', 68): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113799/standard_poodle_11.jpg', 68): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02113799/standard_poodle_7.jpg', 68): 'tuple' object has no attribute 'read'
+警告: 类别 n02113799 没有有效的图像特征
+处理类别: n02114367
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02114367/timber_wolf_45.jpg', 69): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02114367/timber_wolf_28.jpg', 69): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02114367/timber_wolf_51.jpg', 69): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02114367/timber_wolf_5.jpg', 69): 'tuple' object has no attribute 'read'
+警告: 类别 n02114367 没有有效的图像特征
+处理类别: n02117135
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02117135/hyena_106.jpg', 70): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02117135/hyena_6.jpg', 70): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02117135/hyena_14.jpg', 70): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02117135/hyena_49.jpg', 70): 'tuple' object has no attribute 'read'
+警告: 类别 n02117135 没有有效的图像特征
+处理类别: n02119022
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02119022/red_fox_95.jpg', 71): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02119022/red_fox_138.jpg', 71): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02119022/red_fox_25.jpg', 71): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02119022/red_fox_142.jpg', 71): 'tuple' object has no attribute 'read'
+警告: 类别 n02119022 没有有效的图像特征
+处理类别: n02123045
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02123045/tabby_cat_0.jpg', 72): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02123045/tabby_cat_76.jpg', 72): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02123045/tabby_cat_65.jpg', 72): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02123045/tabby_cat_6.jpg', 72): 'tuple' object has no attribute 'read'
+警告: 类别 n02123045 没有有效的图像特征
+处理类别: n02128385
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128385/leopard_44.jpg', 73): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128385/leopard_10.jpg', 73): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128385/leopard_53.jpg', 73): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128385/leopard_0.jpg', 73): 'tuple' object has no attribute 'read'
+警告: 类别 n02128385 没有有效的图像特征
+处理类别: n02128757
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128757/snow_leopard_0.jpg', 74): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128757/snow_leopard_13.jpg', 74): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128757/snow_leopard_19.jpg', 74): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02128757/snow_leopard_4.jpg', 74): 'tuple' object has no attribute 'read'
+警告: 类别 n02128757 没有有效的图像特征
+处理类别: n02129165
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129165/lion_107.jpg', 75): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129165/lion_310.jpg', 75): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129165/lion_172.jpg', 75): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129165/lion_283.jpg', 75): 'tuple' object has no attribute 'read'
+警告: 类别 n02129165 没有有效的图像特征
+处理类别: n02129604
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129604/tiger_20.jpg', 76): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129604/tiger_66.jpg', 76): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129604/tiger_31.jpg', 76): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02129604/tiger_166.jpg', 76): 'tuple' object has no attribute 'read'
+警告: 类别 n02129604 没有有效的图像特征
+处理类别: n02130308
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02130308/cheetah_8.jpg', 77): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02130308/cheetah_5.jpg', 77): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02130308/cheetah_116.jpg', 77): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02130308/cheetah_33.jpg', 77): 'tuple' object has no attribute 'read'
+警告: 类别 n02130308 没有有效的图像特征
+处理类别: n02134084
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02134084/polar_bear_58.jpg', 78): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02134084/polar_bear_164.jpg', 78): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02134084/polar_bear_220.jpg', 78): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02134084/polar_bear_153.jpg', 78): 'tuple' object has no attribute 'read'
+警告: 类别 n02134084 没有有效的图像特征
+处理类别: n02138441
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02138441/meerkat_77.jpg', 79): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02138441/meerkat_10.jpg', 79): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02138441/meerkat_55.jpg', 79): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02138441/meerkat_56.jpg', 79): 'tuple' object has no attribute 'read'
+警告: 类别 n02138441 没有有效的图像特征
+处理类别: n02165456
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02165456/ladybug_29.jpg', 80): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02165456/ladybug_60.jpg', 80): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02165456/ladybug_24.jpg', 80): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02165456/ladybug_139.jpg', 80): 'tuple' object has no attribute 'read'
+警告: 类别 n02165456 没有有效的图像特征
+处理类别: n02190166
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02190166/fly_56.jpg', 81): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02190166/fly_13.jpg', 81): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02190166/fly_17.jpg', 81): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02190166/fly_53.jpg', 81): 'tuple' object has no attribute 'read'
+警告: 类别 n02190166 没有有效的图像特征
+处理类别: n02206856
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02206856/bee_221.jpg', 82): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02206856/bee_212.jpg', 82): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02206856/bee_116.jpg', 82): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02206856/bee_188.jpg', 82): 'tuple' object has no attribute 'read'
+警告: 类别 n02206856 没有有效的图像特征
+处理类别: n02219486
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02219486/ant_90.jpg', 83): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02219486/ant_0.jpg', 83): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02219486/ant_100.jpg', 83): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02219486/ant_75.jpg', 83): 'tuple' object has no attribute 'read'
+警告: 类别 n02219486 没有有效的图像特征
+处理类别: n02226429
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02226429/grasshopper_141.jpg', 84): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02226429/grasshopper_6.jpg', 84): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02226429/grasshopper_54.jpg', 84): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02226429/grasshopper_65.jpg', 84): 'tuple' object has no attribute 'read'
+警告: 类别 n02226429 没有有效的图像特征
+处理类别: n02233338
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02233338/cockroach_8.jpg', 85): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02233338/cockroach_3.jpg', 85): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02233338/cockroach_59.jpg', 85): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02233338/cockroach_4.jpg', 85): 'tuple' object has no attribute 'read'
+警告: 类别 n02233338 没有有效的图像特征
+处理类别: n02236044
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02236044/mantis_186.jpg', 86): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02236044/mantis_166.jpg', 86): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02236044/mantis_170.jpg', 86): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02236044/mantis_11.jpg', 86): 'tuple' object has no attribute 'read'
+警告: 类别 n02236044 没有有效的图像特征
+处理类别: n02268443
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02268443/dragonfly_34.jpg', 87): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02268443/dragonfly_111.jpg', 87): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02268443/dragonfly_30.jpg', 87): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02268443/dragonfly_65.jpg', 87): 'tuple' object has no attribute 'read'
+警告: 类别 n02268443 没有有效的图像特征
+处理类别: n02279972
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02279972/monarch_butterfly_10.jpg', 88): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02279972/monarch_butterfly_114.jpg', 88): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02279972/monarch_butterfly_12.jpg', 88): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02279972/monarch_butterfly_66.jpg', 88): 'tuple' object has no attribute 'read'
+警告: 类别 n02279972 没有有效的图像特征
+处理类别: n02317335
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02317335/starfish_101.jpg', 89): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02317335/starfish_81.jpg', 89): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02317335/starfish_131.jpg', 89): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02317335/starfish_164.jpg', 89): 'tuple' object has no attribute 'read'
+警告: 类别 n02317335 没有有效的图像特征
+处理类别: n02325366
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02325366/wood_rabbit_39.jpg', 90): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02325366/wood_rabbit_48.jpg', 90): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02325366/wood_rabbit_15.jpg', 90): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02325366/wood_rabbit_30.jpg', 90): 'tuple' object has no attribute 'read'
+警告: 类别 n02325366 没有有效的图像特征
+处理类别: n02346627
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02346627/porcupine_55.jpg', 91): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02346627/porcupine_48.jpg', 91): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02346627/porcupine_96.jpg', 91): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02346627/porcupine_16.jpg', 91): 'tuple' object has no attribute 'read'
+警告: 类别 n02346627 没有有效的图像特征
+处理类别: n02356798
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02356798/fox_squirrel_59.jpg', 92): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02356798/fox_squirrel_44.jpg', 92): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02356798/fox_squirrel_35.jpg', 92): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02356798/fox_squirrel_62.jpg', 92): 'tuple' object has no attribute 'read'
+警告: 类别 n02356798 没有有效的图像特征
+处理类别: n02363005
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02363005/beaver_135.jpg', 93): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02363005/beaver_70.jpg', 93): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02363005/beaver_131.jpg', 93): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02363005/beaver_12.jpg', 93): 'tuple' object has no attribute 'read'
+警告: 类别 n02363005 没有有效的图像特征
+处理类别: n02364673
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02364673/guinea_pig_77.jpg', 94): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02364673/guinea_pig_27.jpg', 94): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02364673/guinea_pig_46.jpg', 94): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02364673/guinea_pig_100.jpg', 94): 'tuple' object has no attribute 'read'
+警告: 类别 n02364673 没有有效的图像特征
+处理类别: n02391049
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02391049/zebra_137.jpg', 95): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02391049/zebra_132.jpg', 95): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02391049/zebra_110.jpg', 95): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02391049/zebra_40.jpg', 95): 'tuple' object has no attribute 'read'
+警告: 类别 n02391049 没有有效的图像特征
+处理类别: n02395406
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02395406/pig_144.jpg', 96): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02395406/pig_60.jpg', 96): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02395406/pig_120.jpg', 96): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02395406/pig_5.jpg', 96): 'tuple' object has no attribute 'read'
+警告: 类别 n02395406 没有有效的图像特征
+处理类别: n02398521
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02398521/hippopotamus_33.jpg', 97): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02398521/hippopotamus_37.jpg', 97): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02398521/hippopotamus_98.jpg', 97): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02398521/hippopotamus_5.jpg', 97): 'tuple' object has no attribute 'read'
+警告: 类别 n02398521 没有有效的图像特征
+处理类别: n02410509
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02410509/bison_136.jpg', 98): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02410509/bison_115.jpg', 98): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02410509/bison_215.jpg', 98): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02410509/bison_178.jpg', 98): 'tuple' object has no attribute 'read'
+警告: 类别 n02410509 没有有效的图像特征
+处理类别: n02423022
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02423022/gazelle_77.jpg', 99): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02423022/gazelle_128.jpg', 99): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02423022/gazelle_66.jpg', 99): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02423022/gazelle_83.jpg', 99): 'tuple' object has no attribute 'read'
+警告: 类别 n02423022 没有有效的图像特征
+处理类别: n02437616
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02437616/llama_84.jpg', 100): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02437616/llama_145.jpg', 100): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02437616/llama_27.jpg', 100): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02437616/llama_60.jpg', 100): 'tuple' object has no attribute 'read'
+警告: 类别 n02437616 没有有效的图像特征
+处理类别: n02445715
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02445715/skunk_32.jpg', 101): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02445715/skunk_97.jpg', 101): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02445715/skunk_68.jpg', 101): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02445715/skunk_5.jpg', 101): 'tuple' object has no attribute 'read'
+警告: 类别 n02445715 没有有效的图像特征
+处理类别: n02447366
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02447366/badger_59.jpg', 102): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02447366/badger_76.jpg', 102): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02447366/badger_20.jpg', 102): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02447366/badger_98.jpg', 102): 'tuple' object has no attribute 'read'
+警告: 类别 n02447366 没有有效的图像特征
+处理类别: n02480495
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480495/orangutan_16.jpg', 103): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480495/orangutan_11.jpg', 103): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480495/orangutan_77.jpg', 103): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480495/orangutan_44.jpg', 103): 'tuple' object has no attribute 'read'
+警告: 类别 n02480495 没有有效的图像特征
+处理类别: n02480855
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480855/gorilla_29.jpg', 104): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480855/gorilla_144.jpg', 104): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480855/gorilla_191.jpg', 104): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02480855/gorilla_27.jpg', 104): 'tuple' object has no attribute 'read'
+警告: 类别 n02480855 没有有效的图像特征
+处理类别: n02481823
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02481823/chimpanzee_197.jpg', 105): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02481823/chimpanzee_188.jpg', 105): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02481823/chimpanzee_193.jpg', 105): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02481823/chimpanzee_43.jpg', 105): 'tuple' object has no attribute 'read'
+警告: 类别 n02481823 没有有效的图像特征
+处理类别: n02483362
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02483362/gibbon_60.jpg', 106): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02483362/gibbon_2.jpg', 106): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02483362/gibbon_61.jpg', 106): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02483362/gibbon_52.jpg', 106): 'tuple' object has no attribute 'read'
+警告: 类别 n02483362 没有有效的图像特征
+处理类别: n02486410
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02486410/baboon_118.jpg', 107): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02486410/baboon_14.jpg', 107): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02486410/baboon_112.jpg', 107): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02486410/baboon_77.jpg', 107): 'tuple' object has no attribute 'read'
+警告: 类别 n02486410 没有有效的图像特征
+处理类别: n02510455
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02510455/panda_124.jpg', 108): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02510455/panda_40.jpg', 108): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02510455/panda_25.jpg', 108): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02510455/panda_65.jpg', 108): 'tuple' object has no attribute 'read'
+警告: 类别 n02510455 没有有效的图像特征
+处理类别: n02526121
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02526121/eel_30.jpg', 109): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02526121/eel_50.jpg', 109): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02526121/eel_78.jpg', 109): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02526121/eel_48.jpg', 109): 'tuple' object has no attribute 'read'
+警告: 类别 n02526121 没有有效的图像特征
+处理类别: n02607072
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02607072/clown_fish_34.jpg', 110): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02607072/clown_fish_63.jpg', 110): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02607072/clown_fish_33.jpg', 110): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02607072/clown_fish_152.jpg', 110): 'tuple' object has no attribute 'read'
+警告: 类别 n02607072 没有有效的图像特征
+处理类别: n02655020
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02655020/puffer_fish_153.jpg', 111): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02655020/puffer_fish_26.jpg', 111): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02655020/puffer_fish_137.jpg', 111): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02655020/puffer_fish_19.jpg', 111): 'tuple' object has no attribute 'read'
+警告: 类别 n02655020 没有有效的图像特征
+处理类别: n02672831
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02672831/accordion_87.jpg', 112): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02672831/accordion_129.jpg', 112): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02672831/accordion_60.jpg', 112): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02672831/accordion_19.jpg', 112): 'tuple' object has no attribute 'read'
+警告: 类别 n02672831 没有有效的图像特征
+处理类别: n02701002
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02701002/ambulance_76.jpg', 113): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02701002/ambulance_81.jpg', 113): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02701002/ambulance_49.jpg', 113): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02701002/ambulance_68.jpg', 113): 'tuple' object has no attribute 'read'
+警告: 类别 n02701002 没有有效的图像特征
+处理类别: n02749479
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02749479/assault_rifle_16.jpg', 114): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02749479/assault_rifle_55.jpg', 114): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02749479/assault_rifle_8.jpg', 114): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02749479/assault_rifle_38.jpg', 114): 'tuple' object has no attribute 'read'
+警告: 类别 n02749479 没有有效的图像特征
+处理类别: n02769748
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02769748/backpack_28.jpg', 115): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02769748/backpack_57.jpg', 115): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02769748/backpack_5.jpg', 115): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02769748/backpack_26.jpg', 115): 'tuple' object has no attribute 'read'
+警告: 类别 n02769748 没有有效的图像特征
+处理类别: n02793495
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02793495/barn_0.jpg', 116): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02793495/barn_30.jpg', 116): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02793495/barn_53.jpg', 116): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02793495/barn_61.jpg', 116): 'tuple' object has no attribute 'read'
+警告: 类别 n02793495 没有有效的图像特征
+处理类别: n02797295
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02797295/wheelbarrow_76.jpg', 117): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02797295/wheelbarrow_0.jpg', 117): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02797295/wheelbarrow_17.jpg', 117): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02797295/wheelbarrow_70.jpg', 117): 'tuple' object has no attribute 'read'
+警告: 类别 n02797295 没有有效的图像特征
+处理类别: n02802426
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02802426/basketball_107.jpg', 118): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02802426/basketball_113.jpg', 118): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02802426/basketball_110.jpg', 118): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02802426/basketball_117.jpg', 118): 'tuple' object has no attribute 'read'
+警告: 类别 n02802426 没有有效的图像特征
+处理类别: n02808440
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02808440/bathtub_5.jpg', 119): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02808440/bathtub_71.jpg', 119): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02808440/bathtub_42.jpg', 119): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02808440/bathtub_85.jpg', 119): 'tuple' object has no attribute 'read'
+警告: 类别 n02808440 没有有效的图像特征
+处理类别: n02814860
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02814860/lighthouse_99.jpg', 120): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02814860/lighthouse_158.jpg', 120): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02814860/lighthouse_189.jpg', 120): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02814860/lighthouse_157.jpg', 120): 'tuple' object has no attribute 'read'
+警告: 类别 n02814860 没有有效的图像特征
+处理类别: n02823750
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02823750/beer_glass_32.jpg', 121): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02823750/beer_glass_23.jpg', 121): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02823750/beer_glass_57.jpg', 121): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02823750/beer_glass_55.jpg', 121): 'tuple' object has no attribute 'read'
+警告: 类别 n02823750 没有有效的图像特征
+处理类别: n02841315
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02841315/binoculars_44.jpg', 122): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02841315/binoculars_21.jpg', 122): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02841315/binoculars_28.jpg', 122): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02841315/binoculars_77.jpg', 122): 'tuple' object has no attribute 'read'
+警告: 类别 n02841315 没有有效的图像特征
+处理类别: n02843684
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02843684/birdhouse_112.jpg', 123): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02843684/birdhouse_26.jpg', 123): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02843684/birdhouse_66.jpg', 123): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02843684/birdhouse_22.jpg', 123): 'tuple' object has no attribute 'read'
+警告: 类别 n02843684 没有有效的图像特征
+处理类别: n02883205
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02883205/bow_tie_7.jpg', 124): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02883205/bow_tie_51.jpg', 124): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02883205/bow_tie_12.jpg', 124): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02883205/bow_tie_17.jpg', 124): 'tuple' object has no attribute 'read'
+警告: 类别 n02883205 没有有效的图像特征
+处理类别: n02906734
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02906734/broom_109.jpg', 125): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02906734/broom_37.jpg', 125): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02906734/broom_92.jpg', 125): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02906734/broom_67.jpg', 125): 'tuple' object has no attribute 'read'
+警告: 类别 n02906734 没有有效的图像特征
+处理类别: n02909870
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02909870/bucket_30.jpg', 126): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02909870/bucket_150.jpg', 126): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02909870/bucket_147.jpg', 126): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02909870/bucket_59.jpg', 126): 'tuple' object has no attribute 'read'
+警告: 类别 n02909870 没有有效的图像特征
+处理类别: n02939185
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02939185/cauldron_47.jpg', 127): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02939185/cauldron_37.jpg', 127): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02939185/cauldron_72.jpg', 127): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02939185/cauldron_41.jpg', 127): 'tuple' object has no attribute 'read'
+警告: 类别 n02939185 没有有效的图像特征
+处理类别: n02948072
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02948072/candle_252.jpg', 128): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02948072/candle_115.jpg', 128): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02948072/candle_225.jpg', 128): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02948072/candle_52.jpg', 128): 'tuple' object has no attribute 'read'
+警告: 类别 n02948072 没有有效的图像特征
+处理类别: n02950826
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02950826/cannon_28.jpg', 129): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02950826/cannon_59.jpg', 129): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02950826/cannon_66.jpg', 129): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02950826/cannon_29.jpg', 129): 'tuple' object has no attribute 'read'
+警告: 类别 n02950826 没有有效的图像特征
+处理类别: n02951358
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02951358/canoe_14.jpg', 130): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02951358/canoe_60.jpg', 130): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02951358/canoe_89.jpg', 130): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02951358/canoe_47.jpg', 130): 'tuple' object has no attribute 'read'
+警告: 类别 n02951358 没有有效的图像特征
+处理类别: n02966193
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02966193/carousel_41.jpg', 131): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02966193/carousel_21.jpg', 131): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02966193/carousel_67.jpg', 131): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02966193/carousel_89.jpg', 131): 'tuple' object has no attribute 'read'
+警告: 类别 n02966193 没有有效的图像特征
+处理类别: n02980441
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02980441/castle_142.jpg', 132): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02980441/castle_88.jpg', 132): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02980441/castle_29.jpg', 132): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02980441/castle_139.jpg', 132): 'tuple' object has no attribute 'read'
+警告: 类别 n02980441 没有有效的图像特征
+处理类别: n02992529
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02992529/mobile_phone_23.jpg', 133): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02992529/mobile_phone_49.jpg', 133): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02992529/mobile_phone_52.jpg', 133): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n02992529/mobile_phone_58.jpg', 133): 'tuple' object has no attribute 'read'
+警告: 类别 n02992529 没有有效的图像特征
+处理类别: n03124170
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03124170/cowboy_hat_208.jpg', 134): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03124170/cowboy_hat_271.jpg', 134): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03124170/cowboy_hat_220.jpg', 134): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03124170/cowboy_hat_197.jpg', 134): 'tuple' object has no attribute 'read'
+警告: 类别 n03124170 没有有效的图像特征
+处理类别: n03272010
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03272010/electric_guitar_46.jpg', 135): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03272010/electric_guitar_134.jpg', 135): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03272010/electric_guitar_56.jpg', 135): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03272010/electric_guitar_0.jpg', 135): 'tuple' object has no attribute 'read'
+警告: 类别 n03272010 没有有效的图像特征
+处理类别: n03345487
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03345487/fire_engine_67.jpg', 136): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03345487/fire_engine_83.jpg', 136): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03345487/fire_engine_107.jpg', 136): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03345487/fire_engine_35.jpg', 136): 'tuple' object has no attribute 'read'
+警告: 类别 n03345487 没有有效的图像特征
+处理类别: n03372029
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03372029/flute_124.jpg', 137): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03372029/flute_4.jpg', 137): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03372029/flute_57.jpg', 137): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03372029/flute_11.jpg', 137): 'tuple' object has no attribute 'read'
+警告: 类别 n03372029 没有有效的图像特征
+处理类别: n03424325
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03424325/gasmask_168.jpg', 138): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03424325/gasmask_100.jpg', 138): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03424325/gasmask_64.jpg', 138): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03424325/gasmask_99.jpg', 138): 'tuple' object has no attribute 'read'
+警告: 类别 n03424325 没有有效的图像特征
+处理类别: n03452741
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03452741/grand_piano_10.jpg', 139): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03452741/grand_piano_3.jpg', 139): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03452741/grand_piano_53.jpg', 139): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03452741/grand_piano_74.jpg', 139): 'tuple' object has no attribute 'read'
+警告: 类别 n03452741 没有有效的图像特征
+处理类别: n03467068
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03467068/guillotine_28.jpg', 140): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03467068/guillotine_55.jpg', 140): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03467068/guillotine_15.jpg', 140): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03467068/guillotine_6.jpg', 140): 'tuple' object has no attribute 'read'
+警告: 类别 n03467068 没有有效的图像特征
+处理类别: n03481172
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03481172/hammer_5.jpg', 141): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03481172/hammer_86.jpg', 141): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03481172/hammer_46.jpg', 141): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03481172/hammer_66.jpg', 141): 'tuple' object has no attribute 'read'
+警告: 类别 n03481172 没有有效的图像特征
+处理类别: n03494278
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03494278/harmonica_6.jpg', 142): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03494278/harmonica_28.jpg', 142): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03494278/harmonica_33.jpg', 142): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03494278/harmonica_36.jpg', 142): 'tuple' object has no attribute 'read'
+警告: 类别 n03494278 没有有效的图像特征
+处理类别: n03495258
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03495258/harp_68.jpg', 143): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03495258/harp_33.jpg', 143): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03495258/harp_26.jpg', 143): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03495258/harp_5.jpg', 143): 'tuple' object has no attribute 'read'
+警告: 类别 n03495258 没有有效的图像特征
+处理类别: n03498962
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03498962/hatchet_38.jpg', 144): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03498962/hatchet_9.jpg', 144): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03498962/hatchet_8.jpg', 144): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03498962/hatchet_16.jpg', 144): 'tuple' object has no attribute 'read'
+警告: 类别 n03498962 没有有效的图像特征
+处理类别: n03594945
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03594945/jeep_20.jpg', 145): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03594945/jeep_75.jpg', 145): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03594945/jeep_79.jpg', 145): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03594945/jeep_126.jpg', 145): 'tuple' object has no attribute 'read'
+警告: 类别 n03594945 没有有效的图像特征
+处理类别: n03602883
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03602883/joystick_81.jpg', 146): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03602883/joystick_32.jpg', 146): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03602883/joystick_79.jpg', 146): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03602883/joystick_27.jpg', 146): 'tuple' object has no attribute 'read'
+警告: 类别 n03602883 没有有效的图像特征
+处理类别: n03630383
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03630383/lab_coat_74.jpg', 147): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03630383/lab_coat_32.jpg', 147): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03630383/lab_coat_62.jpg', 147): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03630383/lab_coat_18.jpg', 147): 'tuple' object has no attribute 'read'
+警告: 类别 n03630383 没有有效的图像特征
+处理类别: n03649909
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03649909/lawn_mower_3.jpg', 148): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03649909/lawn_mower_74.jpg', 148): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03649909/lawn_mower_10.jpg', 148): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03649909/lawn_mower_32.jpg', 148): 'tuple' object has no attribute 'read'
+警告: 类别 n03649909 没有有效的图像特征
+处理类别: n03676483
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03676483/lipstick_32.jpg', 149): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03676483/lipstick_57.jpg', 149): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03676483/lipstick_13.jpg', 149): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03676483/lipstick_52.jpg', 149): 'tuple' object has no attribute 'read'
+警告: 类别 n03676483 没有有效的图像特征
+处理类别: n03710193
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03710193/mailbox_60.jpg', 150): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03710193/mailbox_44.jpg', 150): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03710193/mailbox_30.jpg', 150): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03710193/mailbox_26.jpg', 150): 'tuple' object has no attribute 'read'
+警告: 类别 n03710193 没有有效的图像特征
+处理类别: n03773504
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03773504/missile_59.jpg', 151): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03773504/missile_38.jpg', 151): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03773504/missile_30.jpg', 151): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03773504/missile_74.jpg', 151): 'tuple' object has no attribute 'read'
+警告: 类别 n03773504 没有有效的图像特征
+处理类别: n03775071
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03775071/mitten_28.jpg', 152): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03775071/mitten_60.jpg', 152): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03775071/mitten_59.jpg', 152): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03775071/mitten_16.jpg', 152): 'tuple' object has no attribute 'read'
+警告: 类别 n03775071 没有有效的图像特征
+处理类别: n03888257
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03888257/parachute_121.jpg', 153): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03888257/parachute_65.jpg', 153): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03888257/parachute_36.jpg', 153): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03888257/parachute_82.jpg', 153): 'tuple' object has no attribute 'read'
+警告: 类别 n03888257 没有有效的图像特征
+处理类别: n03930630
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03930630/pickup_truck_11.jpg', 154): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03930630/pickup_truck_67.jpg', 154): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03930630/pickup_truck_82.jpg', 154): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03930630/pickup_truck_74.jpg', 154): 'tuple' object has no attribute 'read'
+警告: 类别 n03930630 没有有效的图像特征
+处理类别: n03947888
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03947888/pirate_ship_56.jpg', 155): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03947888/pirate_ship_46.jpg', 155): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03947888/pirate_ship_121.jpg', 155): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n03947888/pirate_ship_27.jpg', 155): 'tuple' object has no attribute 'read'
+警告: 类别 n03947888 没有有效的图像特征
+处理类别: n04086273
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04086273/revolver_129.jpg', 156): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04086273/revolver_70.jpg', 156): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04086273/revolver_14.jpg', 156): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04086273/revolver_155.jpg', 156): 'tuple' object has no attribute 'read'
+警告: 类别 n04086273 没有有效的图像特征
+处理类别: n04118538
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04118538/rugby_ball_7.jpg', 157): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04118538/rugby_ball_78.jpg', 157): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04118538/rugby_ball_4.jpg', 157): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04118538/rugby_ball_23.jpg', 157): 'tuple' object has no attribute 'read'
+警告: 类别 n04118538 没有有效的图像特征
+处理类别: n04133789
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04133789/sandal_53.jpg', 158): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04133789/sandal_86.jpg', 158): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04133789/sandal_0.jpg', 158): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04133789/sandal_13.jpg', 158): 'tuple' object has no attribute 'read'
+警告: 类别 n04133789 没有有效的图像特征
+处理类别: n04141076
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04141076/saxophone_231.jpg', 159): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04141076/saxophone_180.jpg', 159): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04141076/saxophone_110.jpg', 159): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04141076/saxophone_111.jpg', 159): 'tuple' object has no attribute 'read'
+警告: 类别 n04141076 没有有效的图像特征
+处理类别: n04146614
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04146614/school_bus_62.jpg', 160): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04146614/school_bus_41.jpg', 160): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04146614/school_bus_107.jpg', 160): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04146614/school_bus_43.jpg', 160): 'tuple' object has no attribute 'read'
+警告: 类别 n04146614 没有有效的图像特征
+处理类别: n04147183
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04147183/schooner_26.jpg', 161): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04147183/schooner_84.jpg', 161): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04147183/schooner_50.jpg', 161): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04147183/schooner_89.jpg', 161): 'tuple' object has no attribute 'read'
+警告: 类别 n04147183 没有有效的图像特征
+处理类别: n04192698
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04192698/shield_82.jpg', 162): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04192698/shield_1.jpg', 162): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04192698/shield_60.jpg', 162): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04192698/shield_69.jpg', 162): 'tuple' object has no attribute 'read'
+警告: 类别 n04192698 没有有效的图像特征
+处理类别: n04254680
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04254680/soccer_ball_77.jpg', 163): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04254680/soccer_ball_169.jpg', 163): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04254680/soccer_ball_43.jpg', 163): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04254680/soccer_ball_69.jpg', 163): 'tuple' object has no attribute 'read'
+警告: 类别 n04254680 没有有效的图像特征
+处理类别: n04266014
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04266014/space_shuttle_55.jpg', 164): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04266014/space_shuttle_217.jpg', 164): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04266014/space_shuttle_211.jpg', 164): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04266014/space_shuttle_224.jpg', 164): 'tuple' object has no attribute 'read'
+警告: 类别 n04266014 没有有效的图像特征
+处理类别: n04275548
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04275548/spider_web_115.jpg', 165): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04275548/spider_web_66.jpg', 165): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04275548/spider_web_138.jpg', 165): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04275548/spider_web_130.jpg', 165): 'tuple' object has no attribute 'read'
+警告: 类别 n04275548 没有有效的图像特征
+处理类别: n04310018
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04310018/steam_locomotive_157.jpg', 166): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04310018/steam_locomotive_222.jpg', 166): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04310018/steam_locomotive_219.jpg', 166): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04310018/steam_locomotive_86.jpg', 166): 'tuple' object has no attribute 'read'
+警告: 类别 n04310018 没有有效的图像特征
+处理类别: n04325704
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04325704/scarf_62.jpg', 167): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04325704/scarf_77.jpg', 167): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04325704/scarf_31.jpg', 167): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04325704/scarf_32.jpg', 167): 'tuple' object has no attribute 'read'
+警告: 类别 n04325704 没有有效的图像特征
+处理类别: n04347754
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04347754/submarine_42.jpg', 168): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04347754/submarine_132.jpg', 168): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04347754/submarine_60.jpg', 168): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04347754/submarine_108.jpg', 168): 'tuple' object has no attribute 'read'
+警告: 类别 n04347754 没有有效的图像特征
+处理类别: n04389033
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04389033/tank_38.jpg', 169): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04389033/tank_201.jpg', 169): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04389033/tank_166.jpg', 169): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04389033/tank_202.jpg', 169): 'tuple' object has no attribute 'read'
+警告: 类别 n04389033 没有有效的图像特征
+处理类别: n04409515
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04409515/tennis_ball_38.jpg', 170): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04409515/tennis_ball_5.jpg', 170): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04409515/tennis_ball_94.jpg', 170): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04409515/tennis_ball_76.jpg', 170): 'tuple' object has no attribute 'read'
+警告: 类别 n04409515 没有有效的图像特征
+处理类别: n04465501
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04465501/tractor_183.jpg', 171): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04465501/tractor_145.jpg', 171): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04465501/tractor_179.jpg', 171): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04465501/tractor_171.jpg', 171): 'tuple' object has no attribute 'read'
+警告: 类别 n04465501 没有有效的图像特征
+处理类别: n04487394
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04487394/trombone_49.jpg', 172): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04487394/trombone_66.jpg', 172): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04487394/trombone_65.jpg', 172): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04487394/trombone_86.jpg', 172): 'tuple' object has no attribute 'read'
+警告: 类别 n04487394 没有有效的图像特征
+处理类别: n04522168
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04522168/vase_110.jpg', 173): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04522168/vase_159.jpg', 173): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04522168/vase_27.jpg', 173): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04522168/vase_5.jpg', 173): 'tuple' object has no attribute 'read'
+警告: 类别 n04522168 没有有效的图像特征
+处理类别: n04536866
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04536866/violin_138.jpg', 174): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04536866/violin_32.jpg', 174): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04536866/violin_87.jpg', 174): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04536866/violin_144.jpg', 174): 'tuple' object has no attribute 'read'
+警告: 类别 n04536866 没有有效的图像特征
+处理类别: n04552348
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04552348/military_aircraft_39.jpg', 175): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04552348/military_aircraft_26.jpg', 175): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04552348/military_aircraft_152.jpg', 175): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04552348/military_aircraft_91.jpg', 175): 'tuple' object has no attribute 'read'
+警告: 类别 n04552348 没有有效的图像特征
+处理类别: n04591713
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04591713/wine_bottle_102.jpg', 176): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04591713/wine_bottle_27.jpg', 176): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04591713/wine_bottle_45.jpg', 176): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n04591713/wine_bottle_85.jpg', 176): 'tuple' object has no attribute 'read'
+警告: 类别 n04591713 没有有效的图像特征
+处理类别: n07614500
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07614500/ice_cream_147.jpg', 177): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07614500/ice_cream_130.jpg', 177): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07614500/ice_cream_193.jpg', 177): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07614500/ice_cream_135.jpg', 177): 'tuple' object has no attribute 'read'
+警告: 类别 n07614500 没有有效的图像特征
+处理类别: n07693725
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07693725/bagel_55.jpg', 178): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07693725/bagel_64.jpg', 178): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07693725/bagel_41.jpg', 178): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07693725/bagel_14.jpg', 178): 'tuple' object has no attribute 'read'
+警告: 类别 n07693725 没有有效的图像特征
+处理类别: n07695742
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07695742/pretzel_64.jpg', 179): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07695742/pretzel_15.jpg', 179): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07695742/pretzel_20.jpg', 179): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07695742/pretzel_98.jpg', 179): 'tuple' object has no attribute 'read'
+警告: 类别 n07695742 没有有效的图像特征
+处理类别: n07697313
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697313/cheeseburger_61.jpg', 180): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697313/cheeseburger_21.jpg', 180): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697313/cheeseburger_274.jpg', 180): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697313/cheeseburger_187.jpg', 180): 'tuple' object has no attribute 'read'
+警告: 类别 n07697313 没有有效的图像特征
+处理类别: n07697537
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697537/hotdog_36.jpg', 181): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697537/hotdog_5.jpg', 181): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697537/hotdog_117.jpg', 181): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07697537/hotdog_18.jpg', 181): 'tuple' object has no attribute 'read'
+警告: 类别 n07697537 没有有效的图像特征
+处理类别: n07714571
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714571/cabbage_31.jpg', 182): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714571/cabbage_42.jpg', 182): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714571/cabbage_62.jpg', 182): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714571/cabbage_39.jpg', 182): 'tuple' object has no attribute 'read'
+警告: 类别 n07714571 没有有效的图像特征
+处理类别: n07714990
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714990/broccoli_140.jpg', 183): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714990/broccoli_20.jpg', 183): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714990/broccoli_112.jpg', 183): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07714990/broccoli_142.jpg', 183): 'tuple' object has no attribute 'read'
+警告: 类别 n07714990 没有有效的图像特征
+处理类别: n07718472
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07718472/cucumber_54.jpg', 184): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07718472/cucumber_61.jpg', 184): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07718472/cucumber_7.jpg', 184): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07718472/cucumber_2.jpg', 184): 'tuple' object has no attribute 'read'
+警告: 类别 n07718472 没有有效的图像特征
+处理类别: n07720875
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07720875/bell_pepper_127.jpg', 185): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07720875/bell_pepper_2.jpg', 185): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07720875/bell_pepper_78.jpg', 185): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07720875/bell_pepper_111.jpg', 185): 'tuple' object has no attribute 'read'
+警告: 类别 n07720875 没有有效的图像特征
+处理类别: n07734744
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07734744/mushroom_218.jpg', 186): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07734744/mushroom_418.jpg', 186): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07734744/mushroom_128.jpg', 186): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07734744/mushroom_14.jpg', 186): 'tuple' object has no attribute 'read'
+警告: 类别 n07734744 没有有效的图像特征
+处理类别: n07742313
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07742313/Granny_Smith_39.jpg', 187): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07742313/Granny_Smith_70.jpg', 187): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07742313/Granny_Smith_56.jpg', 187): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07742313/Granny_Smith_54.jpg', 187): 'tuple' object has no attribute 'read'
+警告: 类别 n07742313 没有有效的图像特征
+处理类别: n07745940
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07745940/strawberry_172.jpg', 188): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07745940/strawberry_107.jpg', 188): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07745940/strawberry_212.jpg', 188): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07745940/strawberry_151.jpg', 188): 'tuple' object has no attribute 'read'
+警告: 类别 n07745940 没有有效的图像特征
+处理类别: n07749582
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07749582/lemon_3.jpg', 189): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07749582/lemon_131.jpg', 189): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07749582/lemon_102.jpg', 189): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07749582/lemon_25.jpg', 189): 'tuple' object has no attribute 'read'
+警告: 类别 n07749582 没有有效的图像特征
+处理类别: n07753275
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753275/pineapple_139.jpg', 190): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753275/pineapple_37.jpg', 190): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753275/pineapple_14.jpg', 190): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753275/pineapple_138.jpg', 190): 'tuple' object has no attribute 'read'
+警告: 类别 n07753275 没有有效的图像特征
+处理类别: n07753592
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753592/banana_211.jpg', 191): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753592/banana_145.jpg', 191): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753592/banana_128.jpg', 191): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07753592/banana_54.jpg', 191): 'tuple' object has no attribute 'read'
+警告: 类别 n07753592 没有有效的图像特征
+处理类别: n07768694
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07768694/pomegranate_10.jpg', 192): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07768694/pomegranate_70.jpg', 192): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07768694/pomegranate_33.jpg', 192): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07768694/pomegranate_111.jpg', 192): 'tuple' object has no attribute 'read'
+警告: 类别 n07768694 没有有效的图像特征
+处理类别: n07873807
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07873807/pizza_146.jpg', 193): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07873807/pizza_83.jpg', 193): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07873807/pizza_68.jpg', 193): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07873807/pizza_107.jpg', 193): 'tuple' object has no attribute 'read'
+警告: 类别 n07873807 没有有效的图像特征
+处理类别: n07880968
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07880968/burrito_36.jpg', 194): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07880968/burrito_19.jpg', 194): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07880968/burrito_5.jpg', 194): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07880968/burrito_6.jpg', 194): 'tuple' object has no attribute 'read'
+警告: 类别 n07880968 没有有效的图像特征
+处理类别: n07920052
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07920052/espresso_61.jpg', 195): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07920052/espresso_22.jpg', 195): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07920052/espresso_7.jpg', 195): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n07920052/espresso_53.jpg', 195): 'tuple' object has no attribute 'read'
+警告: 类别 n07920052 没有有效的图像特征
+处理类别: n09472597
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09472597/volcano_191.jpg', 196): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09472597/volcano_101.jpg', 196): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09472597/volcano_42.jpg', 196): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09472597/volcano_194.jpg', 196): 'tuple' object has no attribute 'read'
+警告: 类别 n09472597 没有有效的图像特征
+处理类别: n09835506
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09835506/baseball_player_156.jpg', 197): 'tuple' object has no attribute 'read'
+100%|██████████| 200/200 [00:00<00:00, 58250.18it/s]
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09835506/baseball_player_106.jpg', 197): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09835506/baseball_player_51.jpg', 197): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n09835506/baseball_player_150.jpg', 197): 'tuple' object has no attribute 'read'
+警告: 类别 n09835506 没有有效的图像特征
+处理类别: n10565667
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n10565667/scuba_diver_108.jpg', 198): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n10565667/scuba_diver_30.jpg', 198): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n10565667/scuba_diver_78.jpg', 198): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n10565667/scuba_diver_44.jpg', 198): 'tuple' object has no attribute 'read'
+警告: 类别 n10565667 没有有效的图像特征
+处理类别: n12267677
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n12267677/acorn_157.jpg', 199): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n12267677/acorn_53.jpg', 199): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n12267677/acorn_165.jpg', 199): 'tuple' object has no attribute 'read'
+提取图像特征失败 ('./datasets/ImageNet_R/images_discovery_all_4/n12267677/acorn_182.jpg', 199): 'tuple' object has no attribute 'read'
+警告: 类别 n12267677 没有有效的图像特征
+构建文本知识库...
+  0%|          | 0/200 [00:00<?, ?it/s]  0%|          | 0/200 [00:11<?, ?it/s]
+处理类别: n01443537
+[2025-11-25 21:23:48] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:23:51] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:23:54] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+wiki desc: Description for n01443537 category.
+Traceback (most recent call last):
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/PIL/Image.py", line 3519, in open
+    fp.seek(0)
+AttributeError: 'tuple' object has no attribute 'seek'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test/discovering.py", line 595, in <module>
+    image_kb, text_kb = system.build_knowledge_base(
+  File "/home/hdl/project/fgvr_test/fast_slow_thinking_system.py", line 185, in build_knowledge_base
+    image_kb, text_kb = self.kb_builder.build_knowledge_base(
+  File "/home/hdl/project/fgvr_test/knowledge_base_builder.py", line 346, in build_knowledge_base
+    text_kb = self.build_text_knowledge_base(mllm_bot, train_samples)
+  File "/home/hdl/project/fgvr_test/knowledge_base_builder.py", line 311, in build_text_knowledge_base
+    description = self.generate_category_description(mllm_bot, category, image_paths)
+  File "/home/hdl/project/fgvr_test/knowledge_base_builder.py", line 211, in generate_category_description
+    images = [Image.open(img_path).convert("RGB") for img_path in sample_images[:3]]  # 最多使用3张图像
+  File "/home/hdl/project/fgvr_test/knowledge_base_builder.py", line 211, in <listcomp>
+    images = [Image.open(img_path).convert("RGB") for img_path in sample_images[:3]]  # 最多使用3张图像
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/PIL/Image.py", line 3521, in open
+    fp = io.BytesIO(fp.read())
+AttributeError: 'tuple' object has no attribute 'read'
+[2025-11-25 21:23:57] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:00] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:03] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:06] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:09] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:12] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:15] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:18] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:21] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:24] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:27] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:30] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:33] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:36] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:39] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:42] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:45] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:48] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:51] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:54] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:24:57] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:00] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:03] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:06] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:09] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:12] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:15] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:18] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:21] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:24] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:27] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:30] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:33] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:36] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:39] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:42] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:45] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:48] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:51] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:54] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:25:57] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[2025-11-25 21:26:00] [显存监控] 已分配=32.43GB, 已保留=32.78GB, 空闲=14.97GB
+[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=1)

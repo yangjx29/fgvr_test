@@ -29,6 +29,8 @@ DATASET_TEST_PATHS = {
     'caltech256': 'caltech256/images_test',
     'deepfashion_multimodal23': 'DeepFashion/images_test',
     'sun397': 'SUN397/images_test',
+    'imagenet_a200': 'ImageNet_A/images_test',
+    'imagenet_r200': 'ImageNet_R/images_test',
 }
 
 
