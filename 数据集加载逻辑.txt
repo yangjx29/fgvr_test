@@ -1,0 +1,496 @@
+先切换到当前工作目录/home/hdl/project/fgvr_test_new
+原版本测试集是在images_test加载的
+原版本检索库图片是从images_discovery_all一系列文件中抽取的：
+├── images_discovery_all             # 默认发现集的类别，与images_discovery_all_3相同
+├── images_discovery_all_1           # 每类从训练集中随机抽取的1张图像
+├── images_discovery_all_2           # 每类从训练集中随机抽取的2张图像
+├── images_discovery_all_3           # 每类从训练集中随机抽取的3张图像
+├── ...
+├── images_discovery_all_10          # 每类从训练集中随机抽取的10张图像
+└── images_discovery_random          # 每类包含从训练集中随机抽取的c张图像(c服从长尾分布)的类别
+
+然后现在要优化逻辑，改为用json文件保存训练集，测试集和发现集discovery_all的信息，然而每个数据集下面的images_split/目录都保存了如下信息，只需要把这些复制并进行简单修改
+在数据集下面的这些内容
+./datasets/[dataset_name]/images_split/
+├── images.json                          # 所有图片的 类别，相对路径 json文件
+├── images_test.json           # 所有测试集图片的 类别，相对路径 json文件
+├── images_val.json           # (如果原本存在验证集划分文件就创建，否则不需要)所有验证集图片的 类别，相对路径 json文件
+├── images_train.json          # 所有训练集图片的 类别，相对路径 json文件
+├── split_[dataset_name]_196_images.json      # 训练集和测试集的划分json文件
+├── images_discovery_all.json             # 默认发现集的类别，与images_discovery_all_3.json相同，相对路径 json文件（每类3张）
+├── images_discovery_all_1.json           # 每类从训练集中随机抽取的1张图像的 类别，相对路径 json文件
+├── images_discovery_all_2.json           # 每类从训练集中随机抽取的2张图像的 类别，相对路径 json文件
+├── images_discovery_all_3.json           # 每类从训练集中随机抽取的3张图像的 类别，相对路径 json文件
+├── ...
+├── images_discovery_all_10.json          # 每类从训练集中随机抽取的10张图像的 类别，相对路径 json文件
+└── images_discovery_random.json          # 每类包含从训练集中随机抽取的c张图像(c服从长尾分布)的 类别，相对路径 json文件
+
+我们需要在./experiments目录下面新建json文件，结构如下
+./experiments/[dataset_name]/images_split/
+├── images.json                          # 所有图片的 类别，相对路径 json文件
+├── images_test.json           # 所有测试集图片的 类别，相对路径 json文件
+├── images_val.json           # (如果原本存在验证集划分文件就创建，否则不需要)所有验证集图片的 类别，相对路径 json文件
+├── images_train.json          # 所有训练集图片的 类别，相对路径 json文件
+├── split_[dataset_name]_196_images.json      # 训练集和测试集的划分json文件
+├── images_discovery_all.json             # 默认发现集的类别，与images_discovery_all_3.json相同，相对路径 json文件（每类3张）
+├── images_discovery_all_1.json           # 每类从训练集中随机抽取的1张图像的 类别，相对路径 json文件
+├── images_discovery_all_2.json           # 每类从训练集中随机抽取的2张图像的 类别，相对路径 json文件
+├── images_discovery_all_3.json           # 每类从训练集中随机抽取的3张图像的 类别，相对路径 json文件
+├── ...
+├── images_discovery_all_10.json          # 每类从训练集中随机抽取的10张图像的 类别，相对路径 json文件
+└── images_discovery_random.json          # 每类包含从训练集中随机抽取的c张图像(c服从长尾分布)的 类别，相对路径 json文件
+如狗数据集我们需要新建./experiments/dogs_120/images_split然后把json文件放进去
+
+
+复制过来之后还要进行相应修改，下面是修改过程：
+首先先了解构建流程，才能知道如何下手修改
+./datasets/[dataset_name]/images_split/目录下每个json文件的构建流程如下：
+每个json文件的工作目录为[dataset_name]/所在路径，即WORK_DIR=/home/hdl/datasets/fgvr_fixed/[dataset_name]/
+(1)***./datasets/[dataset_name]/images_split/images.json构建(所有图片的 类别，相对路径 json文件)
+images_split/images.json记录 类别（一共m个），该类别下的所有图片相对于WORK_DIR的相对路径,json结构示意图如下：
+(类别0名称,0,
+类别0 的 图片1 相对于 WORK_DIR 的相对路径
+类别0 的 图片2 相对于 WORK_DIR 的相对路径
+...
+类别0 的 图片n0(类别0最后一张图片) 相对于 WORK_DIR 的相对路径
+)
+(类别1名称,1,
+类别1 的 图片1 相对于 WORK_DIR 的相对路径
+类别1 的 图片2 相对于 WORK_DIR 的相对路径
+...
+类别1 的 图片n1(类别1最后一张图片) 相对于 WORK_DIR 的相对路径
+)
+...
+(类别m-1名称,m-1,
+类别m-1 的 图片1 相对于 WORK_DIR 的相对路径
+类别m-1 的 图片2 相对于 WORK_DIR 的相对路径
+...
+类别m-1 的 图片n(m-1)(类别m-1最后一张图片) 相对于 WORK_DIR 的相对路径
+)
+示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "images/pitted/00001.jpg",
+      "images/pitted/00002.jpg",
+      "images/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "images/spotted/00001.jpg",
+      "images/spotted/00002.jpg",
+      "images/spotted/00003.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "images/striped/00001.jpg",
+      "images/striped/00002.jpg",
+      "images/striped/00003.jpg"
+    ]
+  ]
+]
+注：图片路径因不同数据集不一样，本示例是"images/striped/00003.jpg"形式，有些数据集可能是"jpg/striped/00003.jpg"形式或者其他
+***./experiments/[dataset_name]/images_split/images.json复制./datasets/[dataset_name]/images_split/images.json里面的内容，然后进行修改的流程：
+只需要把路径进行修改，改为相对于当前工作目录的相对路径
+如images/striped/00003.jpg改为./datasets/[dataset_name]/images_split/images.json
+对于狗，则改为./datasets/datasets/dogs_120/images.json
+下面是完整修改后示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "./datasets/[dataset_name]/images_split/images/pitted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "./datasets/[dataset_name]/images_split/images/spotted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/spotted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/spotted/00003.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "./datasets/[dataset_name]/images_split/images/striped/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00003.jpg"
+    ]
+  ]
+]
+
+
+
+
+(2)images_test.json构建(所有测试集图片的 类别，相对路径 json文件)，images_val.json构建(如果原本存在验证集划分文件就创建，否则不需要)(所有验证集图片的 类别，相对路径 json文件)，images_train.json构建(所有训练集图片的 类别，相对路径 json文件)
+images_split/images_test.json记录 类别（一共m个），该类别下的所有**测试集图片**相对于WORK_DIR的相对路径
+images_split/images_val.json记录 类别（一共m个），该类别下的所有**验证集图片**相对于WORK_DIR的相对路径 
+images_split/images_train.json记录 类别（一共m个），该类别下的所有**训练集图片**相对于WORK_DIR的相对路径
+同样为如下结构：
+类别0
+├── 类别0 的 图片1 相对于 WORK_DIR 的相对路径
+├── 类别0 的 图片2 相对于 WORK_DIR 的相对路径
+├── ...
+└── 类别0 的 图片n0(类别0最后一张图片) 相对于 WORK_DIR 的相对路径
+类别1
+├── 类别1 的 图片1 相对于 WORK_DIR 的相对路径
+├── 类别1 的 图片2 相对于 WORK_DIR 的相对路径
+├── ...
+└── 类别1 的 图片n1(类别1最后一张图片) 相对于 WORK_DIR 的相对路径
+...
+类别m-1
+├── 类别m-1 的 图片1 相对于 WORK_DIR 的相对路径
+├── 类别m-1 的 图片2 相对于 WORK_DIR 的相对路径
+├── ...
+└── 类别m-1 的 图片n(m-1)(类别m-1最后一张图片) 相对于 WORK_DIR 的相对路径
+训练集的json文件示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "images/pitted/00001.jpg",
+      "images/pitted/00002.jpg",
+      "images/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "images/spotted/00001.jpg",
+      "images/spotted/00002.jpg",
+      "images/spotted/00003.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "images/striped/00001.jpg",
+      "images/striped/00002.jpg",
+      "images/striped/00003.jpg"
+    ]
+  ]
+]
+修改示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "./datasets/[dataset_name]/images_split/images_train/pitted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images_train/pitted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images_train/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "./datasets/[dataset_name]/images_split/images_train/spotted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images_train/spotted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images_train/spotted/00003.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "./datasets/[dataset_name]/images_split/images_train/striped/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images_train/striped/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images_train/striped/00003.jpg"
+    ]
+  ]
+]
+
+
+
+(3)split_car_196_images.json构建
+images_split/split_car_196_images.json 记录训练集，验证集（如果有），测试集的划分。记录，三元组下面包含（类别名称，第几个类别，路径）
+结构示意图：
+train
+├── 类别0名称,0,类0图片1相对于WORK_DIR的相对路径.jpg
+├── 类别0名称,0,类0图片2相对于WORK_DIR的相对路径.jpg
+├── ...
+├── 类别0名称,0,类0图片n相对于WORK_DIR的相对路径.jpg
+├── 类别1名称,1,类1图片1相对于WORK_DIR的相对路径.jpg
+├── ...
+└── 类别m名称,m,类m图片n相对于WORK_DIR的相对路径.jpg
+val
+├── 类别0名称,0,类0图片1相对于WORK_DIR的相对路径.jpg
+├── 类别0名称,0,类0图片2相对于WORK_DIR的相对路径.jpg
+├── ...
+├── 类别0名称,0,类0图片n相对于WORK_DIR的相对路径.jpg
+├── 类别1名称,1,类1图片1相对于WORK_DIR的相对路径.jpg
+├── ...
+└── 类别m名称,m,类m图片n相对于WORK_DIR的相对路径.jpg
+test
+├── 类别0名称,0,类0图片1相对于WORK_DIR的相对路径.jpg
+├── 类别0名称,0,类0图片2相对于WORK_DIR的相对路径.jpg
+├── ...
+├── 类别0名称,0,类0图片n相对于WORK_DIR的相对路径.jpg
+├── 类别1名称,1,类1图片1相对于WORK_DIR的相对路径.jpg
+├── ...
+└── 类别m名称,m,类m图片n相对于WORK_DIR的相对路径.jpg
+无验证集示例：
+{
+    "train": [
+        ["pitted", 0, "images/pitted/00000.jpg"],
+        ["pitted", 0, "images/pitted/00002.jpg"],
+        ["pitted", 0, "images/pitted/00004.jpg"],
+        ["spotted", 1, "images/spotted/00006.jpg"],
+        ["spotted", 1, "images/spotted/00007.jpg"]
+    ],
+    "test": [
+        ["pitted", 0, "images/pitted/00001.jpg"],
+        ["spotted", 1, "images/spotted/00003.jpg"],
+        ["spotted", 1, "images/spotted/00005.jpg"]
+    ]
+}
+有验证集示例：
+{
+    "train": [
+        ["pitted", 0, "images/pitted/00000.jpg"],
+        ["pitted", 0, "images/pitted/00002.jpg"],
+        ["pitted", 0, "images/pitted/00004.jpg"],
+        ["spotted", 1, "images/spotted/00006.jpg"],
+        ["spotted", 1, "images/spotted/00007.jpg"]
+    ],
+    "val": [
+        ["pitted", 0, "images/pitted/00001.jpg"],
+        ["pitted", 0, "images/pitted/00003.jpg"],
+        ["spotted", 1, "images/spotted/00005.jpg"],
+        ["spotted", 1, "images/spotted/00009.jpg"]
+    ],
+    "test": [
+        ["pitted", 0, "images/pitted/00008.jpg"],
+        ["spotted", 1, "images/spotted/00010.jpg"],
+        ["spotted", 1, "images/spotted/00011.jpg"]
+    ]
+}
+注：图片路径因不同数据集不一样，本示例是"images/striped/00003.jpg"形式，有些数据集可能是"jpg/striped/00003.jpg"形式或者其他
+***修改示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "./datasets/[dataset_name]/images_split/images/pitted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "./datasets/[dataset_name]/images_split/images/spotted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/spotted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/spotted/00003.jpg"
+    ]
+  ]
+]
+
+
+(4)images_discovery_all*构建
+images_discovery_all.json构建（默认发现集的类别，相对路径 json文件（每类3张））：
+根据images_train.json文件随机从每个类别抽取3张图片（默认），示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "images/pitted/00001.jpg",
+      "images/pitted/00002.jpg",
+      "images/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "images/spotted/00001.jpg",
+      "images/spotted/00002.jpg",
+      "images/spotted/00003.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "images/striped/00001.jpg",
+      "images/striped/00002.jpg",
+      "images/striped/00003.jpg"
+    ]
+  ]
+]
+***修改示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "./datasets/[dataset_name]/images_split/images/pitted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00003.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "./datasets/[dataset_name]/images_split/images/spotted/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/spotted/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/spotted/00003.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "./datasets/[dataset_name]/images_split/images/striped/00001.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00002.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00003.jpg"
+    ]
+  ]
+]
+
+
+images_discovery_all_k.json，k从1到10，每类从训练集中随机抽取的k张图像的 类别，相对路径 json文件
+根据images_train.json文件随机从每个类别抽取k张图片（默认），以k=1示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "images/pitted/00001.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "images/spotted/00001.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "images/striped/00001.jpg"
+    ]
+  ]
+]
+***修改示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "./datasets/[dataset_name]/images_split/images/pitted/00001.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "./datasets/[dataset_name]/images_split/images/spotted/00001.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "./datasets/[dataset_name]/images_split/images/striped/00001.jpg"
+    ]
+  ]
+]
+
+images_discovery_random.json，每类包含从训练集中随机抽取的c张图像(c服从长尾分布)的 类别，相对路径 json文件，示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "images/pitted/00012.jpg",
+      "images/pitted/00037.jpg",
+      "images/pitted/00085.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "images/spotted/00004.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "images/striped/00003.jpg",
+      "images/striped/00028.jpg",
+      "images/striped/00047.jpg",
+      "images/striped/00081.jpg",
+      "images/striped/00099.jpg"
+    ]
+  ]
+]
+***修改示例：
+[
+  [
+    "pitted",
+    0,
+    [
+      "./datasets/[dataset_name]/images_split/images/pitted/00012.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00037.jpg",
+      "./datasets/[dataset_name]/images_split/images/pitted/00085.jpg"
+    ]
+  ],
+  [
+    "spotted",
+    1,
+    [
+      "./datasets/[dataset_name]/images_split/images/spotted/00004.jpg"
+    ]
+  ],
+  [
+    "striped",
+    2,
+    [
+      "./datasets/[dataset_name]/images_split/images/striped/00003.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00028.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00047.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00081.jpg",
+      "./datasets/[dataset_name]/images_split/images/striped/00099.jpg"
+    ]
+  ]
+]
+
+
+
+具体加载：
+对于测试集图片的寻找，使用./datasets/[dataset_name]/images_split/images_test.json（当前脚本使用了测试集，需要）
+对于验证集图片的寻找，使用./datasets/[dataset_name]/images_split/images_val.json（当前脚本尚未使用验证集，不需要）
+对于训练集图片的寻找，使用./datasets/[dataset_name]/images_split/images_train.json（当前脚本尚未直接使用训练集，不需要）
+对于发现集images_discovery_all的寻找，使用./datasets/[dataset_name]/images_split/images_discovery_all.json（当前脚本使用了发现集构建知识库和图片测试，需要）
+对于发现集images_discovery_all_1的寻找，使用./datasets/[dataset_name]/images_split/images_discovery_all_1.json（当前脚本使用了发现集构建知识库和图片测试，需要）
+对于发现集images_discovery_all_2的寻找，使用./datasets/[dataset_name]/images_split/images_discovery_all_2.json（当前脚本使用了发现集构建知识库和图片测试，需要）
+...
+对于发现集images_discovery_all_10的寻找，使用./datasets/[dataset_name]/images_split/images_discovery_all_10.json（当前脚本使用了发现集构建知识库和图片测试，需要）
+对于发现集images_discovery_all_random的寻找，使用./datasets/[dataset_name]/images_split/images_discovery_all_random.json（当前脚本使用了发现集构建知识库和图片测试，需要）
