@@ -149,26 +149,89 @@ def prepare_test_samples(cfg, args):
         
         # 验证测试集
         try:
-            test_stats = validate_test_set(dataset_key, data_root)
-            print(f"✓ 测试集验证成功")
-            print(f"  测试集目录: {test_stats['test_dir']}")
-            print(f"  类别数量: {test_stats['num_classes']}")
-            print(f"  总图像数: {test_stats['total_images']}")
-            print(f"  平均每类: {test_stats['avg_images_per_class']:.1f} 张")
-            print(f"  图像范围: {test_stats['min_images_per_class']} - {test_stats['max_images_per_class']} 张/类")
+            # 获取数据集配置信息
+            dataset_info = get_dataset_info(cfg.get('dataset_name'))
+            experiments_root = dataset_info.get('experiments_root', './experiments')
+            experiment_dir = dataset_info.get('experiment_dir', cfg.get('dataset_name'))
+            
+            # 检查是否有JSON测试文件
+            json_test_file = os.path.join(experiments_root, experiment_dir, 'images_split', 'images_test.json')
+            
+            if os.path.exists(json_test_file):
+                # 使用JSON文件验证
+                with open(json_test_file, 'r', encoding='utf-8') as f:
+                    test_data = json.load(f)
+                
+                total_images = sum(len(entry[2]) if len(entry) >= 3 and isinstance(entry[2], list) else 1 
+                                  for entry in test_data)
+                num_classes = len(set(entry[0] for entry in test_data))
+                
+                test_stats = {
+                    'test_dir': json_test_file,
+                    'num_classes': num_classes,
+                    'total_images': total_images,
+                    'avg_images_per_class': total_images / num_classes if num_classes > 0 else 0,
+                    'min_images_per_class': min(len(entry[2]) if len(entry) >= 3 and isinstance(entry[2], list) else 1 
+                                              for entry in test_data),
+                    'max_images_per_class': max(len(entry[2]) if len(entry) >= 3 and isinstance(entry[2], list) else 1 
+                                              for entry in test_data)
+                }
+                
+                print(f"✓ 测试集验证成功（JSON文件）")
+                print(f"  测试集文件: {test_stats['test_dir']}")
+                print(f"  类别数量: {test_stats['num_classes']}")
+                print(f"  总图像数: {test_stats['total_images']}")
+                print(f"  平均每类: {test_stats['avg_images_per_class']:.1f} 张")
+                print(f"  图像范围: {test_stats['min_images_per_class']} - {test_stats['max_images_per_class']} 张/类")
+            else:
+                # 使用原有目录验证
+                test_stats = validate_test_set(dataset_key, data_root)
+                print(f"✓ 测试集验证成功（目录）")
+                print(f"  测试集目录: {test_stats['test_dir']}")
+                print(f"  类别数量: {test_stats['num_classes']}")
+                print(f"  总图像数: {test_stats['total_images']}")
+                print(f"  平均每类: {test_stats['avg_images_per_class']:.1f} 张")
+                print(f"  图像范围: {test_stats['min_images_per_class']} - {test_stats['max_images_per_class']} 张/类")
         except Exception as e:
             print(colored(f"❌ 测试集验证失败: {e}", "red"))
             raise ValueError(f"测试集验证失败: {e}")
         
         # 获取采样的测试图像
         # 使用全局变量test_data_true_random控制是否使用真随机
-        sampled_images = get_test_images_by_percentage(
-            dataset_key, 
-            data_root, 
-            args.test_percentage,
-            seed=cfg.get('seed', 42),
-            use_true_random=test_data_true_random
-        )
+        if os.path.exists(json_test_file):
+            # 从JSON文件采样
+            print("从JSON文件加载测试数据...")
+            with open(json_test_file, 'r', encoding='utf-8') as f:
+                test_data = json.load(f)
+            
+            # 展平所有图像路径
+            all_images = []
+            for entry in test_data:
+                if len(entry) >= 3:
+                    class_name, class_id, image_paths = entry[0], entry[1], entry[2]
+                    if isinstance(image_paths, list):
+                        for img_path in image_paths:
+                            all_images.append((img_path, class_name))
+                    else:
+                        all_images.append((image_paths, class_name))
+            
+            # 根据百分比采样
+            if args.test_percentage >= 100.0:
+                sampled_images = all_images
+            else:
+                import random
+                random.seed(cfg.get('seed', 42) if not test_data_true_random else None)
+                sample_count = max(1, int(len(all_images) * args.test_percentage / 100))
+                sampled_images = random.sample(all_images, sample_count)
+        else:
+            # 使用原有目录采样方式
+            sampled_images = get_test_images_by_percentage(
+                dataset_key, 
+                data_root, 
+                args.test_percentage,
+                seed=cfg.get('seed', 42),
+                use_true_random=test_data_true_random
+            )
         
         # 组织成字典格式（类别名已经在sample_test_images中标准化）
         for img_path, class_name in sampled_images:

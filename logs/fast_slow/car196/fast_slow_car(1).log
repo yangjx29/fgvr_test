@@ -107,4 +107,175 @@ Using a slow image processor as `use_fast` is unset and a slow processor was sav
 🖥️ 设备: GPU - cuda:0
 🤖 使用 8bit 推理: 否
 🔍 使用数据类型: float16（FP32）
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:42<02:48, 42.08s/it]Loading checkpoint shards:  40%|████      | 2/5 [01:37<02:28, 49.65s/it]Loading checkpoint shards:  60%|██████    | 3/5 [02:29<01:41, 50.98s/it]Loading checkpoint shards:  80%|████████  | 4/5 [03:24<00:52, 52.49s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:42<02:48, 42.08s/it]Loading checkpoint shards:  40%|████      | 2/5 [01:37<02:28, 49.65s/it]Loading checkpoint shards:  60%|██████    | 3/5 [02:29<01:41, 50.98s/it]Loading checkpoint shards:  80%|████████  | 4/5 [03:24<00:52, 52.49s/it]Loading checkpoint shards: 100%|██████████| 5/5 [03:37<00:00, 38.20s/it]Loading checkpoint shards: 100%|██████████| 5/5 [03:37<00:00, 43.45s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 00:47:46
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/car196/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/car196/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1475 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 00:49:19
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7049b8bedc10>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7049b8bed880>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/car196/knowledge_base
+使用数据集: car, 类别数: 196
+✅ 慢思考模块初始化完成，类别映射数量: 196
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 00:49:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/car196/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/car196/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/car196/knowledge_base 加载
+图像知识库类别数: 196
+文本知识库类别数: 196
+类别描述数: 196
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7049b8bed880>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7049b8bedfd0>
+📦 数据集信息: {'full_name': 'car196', 'num_classes': 196, 'config_file': 'car196_all.yml', 'data_dir': 'car_196', 'experiment_dir': 'car196', 'stats_file': 'car196/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/car196/knowledge_base/stats.json', 'experiment_dir_full': './experiments/car196'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Verify the vehicle's body type and context before making a final classification decision. (Trigger: This rule should be recalled when analyzing images of vehicles in a showroom setting or when the body type is ambiguous based on initial visual cues.)
+2. Verify the entire vehicle's design, including the body shape, door configuration, and overall proportions before making a final classification decision. (Trigger: This rule should be recalled when analyzing images of trucks where the grille and headlights are not immediately recognizable or when the vehicle's proportions and body style are ambiguous.)
+3. Focus on specific design features such as the grille and headlights when identifying car models. (Trigger: This rule should be recalled whenever the task involves identifying car models based on visual inspection.)
+
+经验库已从 ./experiments/car196/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_discovery (发现集)
+======================================================================
+测试数据路径: ./experiments/car196/images_split/images_discovery_all_1.json
+说明: 使用discovery集进行评估（每类固定样本数）
+======================================================================
+检测到JSON文件，使用JSON格式加载测试数据
+从JSON文件加载测试数据: ./experiments/car196/images_split/images_discovery_all_1.json
+✓ 从JSON文件加载 196 个类别，共 196 张图像
+test sample keys: ['AM General Hummer SUV 2000', 'Acura RL Sedan 2012', 'Acura TL Sedan 2012', 'Acura TL Type-S 2008', 'Acura TSX Sedan 2012']...
+[fast and slow] 测试数据集包含 196 个类别
+  0%|          | 0/196 [00:00<?, ?it/s][2025-11-27 00:49:20] Processing fast-slow:   0%|          | 0/196 [00:00<?, ?it/s][2025-11-27 00:49:20] Processing fast-slow:   0%|          | 0/196 [00:00<?, ?it/s]
+开始分类图像: ./datasets/car_196/cars_train/07487.jpg
+执行快思考...
+图像检索失败: [Errno 2] No such file or directory: './datasets/car_196/cars_train/07487.jpg'
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 897, in <module>
+    result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)
+  File "/home/hdl/project/fgvr_test_new/fast_slow_thinking_system.py", line 312, in classify_single_image
+    fast_result = self.fast_thinking.fast_thinking_pipeline(query_image_path, top_k)
+  File "/home/hdl/project/fgvr_test_new/fast_thinking_optimized.py", line 464, in fast_thinking_pipeline
+    text_category, text_confidence, text_results = self.image_to_text_retrieval(query_image_path, top_k)
+  File "/home/hdl/project/fgvr_test_new/fast_thinking_optimized.py", line 182, in image_to_text_retrieval
+    query_img_feat = self.kb_builder.retrieval.extract_image_feat(query_image_path)
+  File "/home/hdl/project/fgvr_test_new/retrieval/multimodal_retrieval.py", line 86, in extract_image_feat
+    image = Image.open(image_path).convert("RGB")
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/PIL/Image.py", line 3513, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: './datasets/car_196/cars_train/07487.jpg'
+[2025-11-27 00:49:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:49:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:50:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 00:51:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
