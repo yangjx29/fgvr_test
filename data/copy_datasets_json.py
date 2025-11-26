@@ -12,6 +12,8 @@ import argparse
 import yaml
 from pathlib import Path
 
+# 脚本使用相对路径，工作目录为data/目录所在路径
+
 
 def load_json_file(file_path):
     """Load JSON data from file."""
@@ -57,6 +59,36 @@ def modify_paths_in_json(data, dataset_name):
             # food_101: images/ -> jpg/
             if path.startswith('images/'):
                 path = path.replace('images/', 'jpg/')
+        elif dataset_name == 'CUB_200_2011':
+            # CUB_200_2011: images/ -> CUB_200_2011/images/
+            if path.startswith('images/'):
+                path = path.replace('images/', 'CUB_200_2011/images/')
+        elif dataset_name == 'fgvc_aircraft':
+            # fgvc_aircraft: images/category/image.jpg -> images/image.jpg
+            if path.startswith('images/'):
+                # Remove 'images/' and category subdirectory
+                path_parts = path.split('/')
+                if len(path_parts) >= 3:
+                    # Keep only the filename after removing images/ and category/
+                    path = f"images/{path_parts[-1]}"
+        elif dataset_name == 'dogs_120':
+            # dogs_120: images/category/image.jpg -> Images/nXXXXXX-category/image.jpg
+            if path.startswith('images/'):
+                # Remove 'images/' prefix, keep category and filename
+                path_parts = path.split('/')
+                if len(path_parts) >= 3:
+                    category = path_parts[1]
+                    filename = path_parts[2]
+                    # Find the actual directory name by scanning the Images directory
+                    import os
+                    dataset_root = f"./datasets/{dataset_name}"
+                    images_dir = f"{dataset_root}/Images"
+                    if os.path.exists(images_dir):
+                        # Find directory that contains the category name
+                        for dir_name in os.listdir(images_dir):
+                            if f"-{category}" in dir_name:
+                                path = f"Images/{dir_name}/{filename}"
+                                break
         
         # Convert to full path relative to current working directory
         modified_path = f"./datasets/{dataset_name}/{path}"
