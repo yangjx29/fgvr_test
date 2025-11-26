@@ -179,7 +179,8 @@ else
 fi
 
 KNOWLEDGE_BASE_DIR="./experiments/${EXPERIMENT_DIR}/knowledge_base"
-TEST_DATA_DIR="./datasets/${DATASET_DIR}/images_discovery_all_${TEST_DATA_SUFFIX}"
+# 修改：使用JSON文件而不是目录
+TEST_DATA_JSON="./experiments/${EXPERIMENT_DIR}/images_split/images_discovery_all_${TEST_DATA_SUFFIX}.json"
 RESULTS_OUT="./results/${DATASET}_fast_slow_results.json"
 LOG_DIR="${LOG_BASE_DIR}/pipeline/${EXPERIMENT_DIR}"
 mkdir -p "${LOG_DIR}"
@@ -237,7 +238,7 @@ run_pipeline_bg() {
             echo "Test Percentage: ${TEST_PERCENTAGE}%  # 测试集采样百分比"
         else
             echo "Test Mode: discovery_set  # 使用discovery集, test_data_suffix=${TEST_DATA_SUFFIX}"
-            echo "Test Data Dir: ${TEST_DATA_DIR}  # 测试数据目录"
+            echo "Test Data Json: ${TEST_DATA_JSON}  # 测试数据JSON文件"
         fi
         echo "K-shot: ${KSHOT}  # 检索库使用每个类别的样本数目"
         echo "Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径"
@@ -277,7 +278,7 @@ run_pipeline_bg() {
         python discovering.py --mode=fast_slow \
             --config_file_env=./configs/env_machine.yml \
             --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
-            --test_data_dir=${TEST_DATA_DIR} \
+            --test_data_dir=${TEST_DATA_JSON} \
             --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
             --results_out=${RESULTS_OUT}
         fi

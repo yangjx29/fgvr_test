@@ -187,27 +187,53 @@ class CarPrompter:
         return prompt
 
 
+def load_dataset_config():
+    """Load dataset configuration from YAML file"""
+    import yaml
+    config_path = '/home/hdl/project/fgvr_test_new/configs/datasets_list.yml'
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = yaml.safe_load(f)
+    return config
+
+
+def get_dataset_config(dataset_name='car'):
+    """Get specific dataset configuration"""
+    config = load_dataset_config()
+    return config['dataset_mapping'][dataset_name]
+
+
 class CarDiscovery196:
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-
-        self.class_folders = os.listdir(img_root)  # 100 x 1
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
-
+    def __init__(self, cfg, folder_suffix=''):
+        # Load dataset configuration
+        dataset_config = get_dataset_config('car')
+        experiment_dir = dataset_config['experiment_dir']
+        experiments_root = load_dataset_config().get('experiments_root', './experiments')
+        
+        # Load JSON file based on folder_suffix
+        if folder_suffix:
+            json_file = f'images_discovery_all{folder_suffix}.json'
+        else:
+            json_file = 'images_discovery_all.json'
+            
+        json_path = f'{experiments_root}/{experiment_dir}/images_split/{json_file}'
+        
+        print(f"Loading discovery data from: {json_path}")
+        
+        # Load JSON data
+        import json
+        with open(json_path, 'r', encoding='utf-8') as f:
+            self.json_data = json.load(f)
+        
+        # Extract samples, targets, and subcategories from JSON
         self.samples = []
         self.targets = []
         self.subcategories = []
-        for folder in self.class_folders:
-            label = int(folder.split('/')[-1][:3])
-            # label = label - 1
-            file_names = os.listdir(folder)
-
-            for name in file_names:
-                self.targets.append(label)
-                self.samples.append(os.path.join(folder, name))
-                # 从文件夹名称提取类别名称
-                class_name = folder.split('/')[-1].split('.', 1)[1] if '.' in folder.split('/')[-1] else folder.split('/')[-1]
+        
+        for class_info in self.json_data:
+            class_name, class_id, image_paths = class_info[0], class_info[1], class_info[2]
+            for image_path in image_paths:
+                self.targets.append(class_id)
+                self.samples.append(image_path)
                 self.subcategories.append(class_name)
 
         self.classes = CAR_STATS['class_names']
@@ -233,6 +259,64 @@ class CarDiscovery196:
         target = self.targets[self.index]
         self.index += 1
         return img, target
+
+
+class CarTestDataset(Dataset):
+    """
+    Cars Test Dataset loaded from JSON files
+    """
+    def __init__(self, cfg, transform=None, limit=0):
+        # Load dataset configuration
+        dataset_config = get_dataset_config('car')
+        experiment_dir = dataset_config['experiment_dir']
+        experiments_root = load_dataset_config().get('experiments_root', './experiments')
+        
+        json_path = f'{experiments_root}/{experiment_dir}/images_split/images_test.json'
+        
+        print(f"Loading test data from: {json_path}")
+        
+        # Load JSON data
+        import json
+        with open(json_path, 'r', encoding='utf-8') as f:
+            self.json_data = json.load(f)
+        
+        # Extract samples and targets from JSON
+        self.data = []
+        self.target = []
+        
+        for class_info in self.json_data:
+            class_name, class_id, image_paths = class_info[0], class_info[1], class_info[2]
+            for image_path in image_paths:
+                if limit and len(self.data) >= limit:
+                    break
+                self.data.append(image_path)
+                self.target.append(class_id)
+            if limit and len(self.data) >= limit:
+                break
+
+        self.loader = default_loader
+        self.transform = transform
+        self.uq_idxs = np.array(range(len(self)))
+        self.target_transform = None
+        self.classes = CAR_STATS['class_names']
+
+    def __getitem__(self, idx):
+        image = self.loader(self.data[idx])
+        target = self.target[idx]
+
+        if self.transform is not None:
+            image = self.transform(image)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
+        idx = self.uq_idxs[idx]
+
+        # return image, target, idx
+        return image, target, self.data[idx]  # just for visualization
+
+    def __len__(self):
+        return len(self.data)
 
 
 class CarDataset(Dataset):# done
@@ -304,16 +388,13 @@ def build_car_prompter(cfg: dict):
 
 
 def build_car196_discovery(cfg: dict, folder_suffix=''):
-    set_to_discover = CarDiscovery196(cfg['data_dir'], folder_suffix=folder_suffix)
+    set_to_discover = CarDiscovery196(cfg, folder_suffix=folder_suffix)
     return set_to_discover
 
 
 def build_car196_test(cfg):
-    data_path = pathlib.Path(cfg['data_dir'])
     tfms = _transform(cfg['image_size'])
-
-    dataset = CarDataset(data_path, train=False, transform=tfms)
-
+    dataset = CarTestDataset(cfg, transform=tfms)
     dataloader = DataLoader(dataset, batch_size=cfg['batch_size'], shuffle=True, num_workers=cfg['num_workers'],
                             pin_memory=True)
     return dataloader

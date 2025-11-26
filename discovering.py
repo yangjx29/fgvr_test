@@ -85,6 +85,41 @@ def set_current_dataset(dataset_name: str):
     return CURRENT_DATASET
 
 
+def load_test_data_from_json(json_file_path: str, dataset_name: str = None) -> dict:
+    """从JSON文件加载测试数据"""
+    print(f"从JSON文件加载测试数据: {json_file_path}")
+    
+    if not os.path.exists(json_file_path):
+        raise FileNotFoundError(f"测试数据JSON文件不存在: {json_file_path}")
+    
+    with open(json_file_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    test_samples = defaultdict(list)
+    
+    # 获取数据集名称用于类别名标准化
+    from data.class_name_mapper import standardize_test_class_name
+    
+    for class_entry in data:
+        if len(class_entry) >= 3:
+            class_name, class_id, image_paths = class_entry[0], class_entry[1], class_entry[2]
+            
+            # 标准化类别名称
+            if dataset_name:
+                standardized_class_name = standardize_test_class_name(class_name, dataset_name)
+            else:
+                standardized_class_name = class_name
+            
+            # 添加所有图像路径
+            for img_path in image_paths:
+                test_samples[standardized_class_name].append(img_path)
+    
+    total_images = sum(len(paths) for paths in test_samples.values())
+    print(f"✓ 从JSON文件加载 {len(test_samples)} 个类别，共 {total_images} 张图像")
+    
+    return dict(test_samples)
+
+
 def prepare_test_samples(cfg, args):
     """
     准备测试样本，支持discovery集和test集
@@ -152,35 +187,42 @@ def prepare_test_samples(cfg, args):
         print("="*70)
         print(colored("📊 测试数据来源: images_discovery (发现集)", "cyan", attrs=['bold']))
         print("="*70)
-        print(f"测试数据目录: {args.test_data_dir}")
+        print(f"测试数据路径: {args.test_data_dir}")
         print(f"说明: 使用discovery集进行评估（每类固定样本数）")
         print("="*70)
         
-        # 从test_data_dir加载
-        # 获取数据集名称用于类别名标准化
-        dataset_key = get_dataset_key_for_test(cfg)
-        from data.class_name_mapper import (
-            get_dataset_name_from_key,
-            standardize_test_class_name
-        )
-        dataset_name = get_dataset_name_from_key(dataset_key)
-        
-        for raw_class_name in os.listdir(args.test_data_dir):
-            class_dir = os.path.join(args.test_data_dir, raw_class_name)
-            if os.path.isdir(class_dir):
-                # 标准化类别名称
-                if dataset_name:
-                    class_name = standardize_test_class_name(raw_class_name, dataset_name)
-                else:
-                    class_name = raw_class_name
-                
-                for img_name in os.listdir(class_dir):
-                    if img_name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                        img_path = os.path.join(class_dir, img_name)
-                        test_samples[class_name].append(img_path)
-        
-        total_images = sum(len(paths) for paths in test_samples.values())
-        print(f"✓ 从discovery集加载 {len(test_samples)} 个类别，共 {total_images} 张图像")
+        # 检查是JSON文件还是目录
+        if args.test_data_dir.endswith('.json'):
+            # 从JSON文件加载
+            print("检测到JSON文件，使用JSON格式加载测试数据")
+            test_samples = load_test_data_from_json(args.test_data_dir, cfg.get('dataset_name'))
+        else:
+            # 从目录加载（原有逻辑）
+            print("检测到目录，使用目录格式加载测试数据")
+            # 获取数据集名称用于类别名标准化
+            dataset_key = get_dataset_key_for_test(cfg)
+            from data.class_name_mapper import (
+                get_dataset_name_from_key,
+                standardize_test_class_name
+            )
+            dataset_name = get_dataset_name_from_key(dataset_key)
+            
+            for raw_class_name in os.listdir(args.test_data_dir):
+                class_dir = os.path.join(args.test_data_dir, raw_class_name)
+                if os.path.isdir(class_dir):
+                    # 标准化类别名称
+                    if dataset_name:
+                        class_name = standardize_test_class_name(raw_class_name, dataset_name)
+                    else:
+                        class_name = raw_class_name
+                    
+                    for img_name in os.listdir(class_dir):
+                        if img_name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
+                            img_path = os.path.join(class_dir, img_name)
+                            test_samples[class_name].append(img_path)
+            
+            total_images = sum(len(paths) for paths in test_samples.values())
+            print(f"✓ 从目录加载 {len(test_samples)} 个类别，共 {total_images} 张图像")
     
     return dict(test_samples)
 

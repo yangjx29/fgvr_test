@@ -257,7 +257,8 @@ else
 fi
 
 KNOWLEDGE_BASE_DIR="./experiments/${EXPERIMENT_DIR}/knowledge_base"
-TEST_DATA_DIR="./datasets/${DATASET_DIR}/images_discovery_all_${TEST_DATA_SUFFIX}"
+# 修改：使用JSON文件而不是目录
+TEST_DATA_JSON="./experiments/${EXPERIMENT_DIR}/images_split/images_discovery_all_${TEST_DATA_SUFFIX}.json"
 RESULTS_OUT="./results/${DATASET}_fast_slow_results.json"
 LOG_DIR="${LOG_BASE_DIR}/fast_slow/${EXPERIMENT_DIR}"
 
@@ -334,8 +335,9 @@ if [ ! -d "${KNOWLEDGE_BASE_DIR}" ]; then
     exit 1
 fi
 
-if [ ! -d "${TEST_DATA_DIR}" ]; then
-    print_error "测试数据目录不存在: ${TEST_DATA_DIR}"
+if [ ! -f "${TEST_DATA_JSON}" ]; then
+    print_error "测试数据JSON文件不存在: ${TEST_DATA_JSON}"
+    print_info "请确保JSON文件已复制到experiments目录"
     exit 1
 fi
 
@@ -349,7 +351,7 @@ echo "数据集: ${DATASET}"
 echo "配置文件: ${CONFIG_FILE}"
 echo "运行模式: fast_slow"
 echo "知识库目录: ${KNOWLEDGE_BASE_DIR}"
-echo "测试数据: ${TEST_DATA_DIR}"
+echo "测试数据: ${TEST_DATA_JSON}"
 echo "结果输出: ${RESULTS_OUT}"
 echo "日志文件: ${LOG_FILE}"
 echo "虚拟环境: ${CONDA_ENV}"
@@ -383,7 +385,7 @@ Test Mode: discovery_set  # 使用discovery集
 Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径
 Project Root: ${PROJECT_ROOT}  # 项目根目录
 Knowledge Base Dir: ${KNOWLEDGE_BASE_DIR}  # 知识库目录
-Test Data Dir: ${TEST_DATA_DIR}  # 测试数据目录
+Test Data Json: ${TEST_DATA_JSON}  # 测试数据JSON文件
 Results Out: ${RESULTS_OUT}  # 快慢思考评估结果输出文件
 Config File: ./configs/expts/${CONFIG_FILE}  # 实验配置文件
 Log File: ${LOG_FILE}  # 日志文件路径
@@ -417,7 +419,7 @@ CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discov
     --mode=fast_slow \
     --config_file_env=./configs/env_machine.yml \
     --config_file_expt=./configs/expts/${CONFIG_FILE} \
-    --test_data_dir=${TEST_DATA_DIR} \
+    --test_data_dir=${TEST_DATA_JSON} \
     --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
     --results_out=${RESULTS_OUT}"
 fi
