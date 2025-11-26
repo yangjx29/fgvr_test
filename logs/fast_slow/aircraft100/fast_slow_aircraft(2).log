@@ -1,0 +1,2147 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=7  # 使用的GPU编号
+Dataset: aircraft (num_classes=100)  # 数据集及类别数, test_data_suffix=1  # 测试数据样本后缀
+Test Mode: discovery_set  # 使用discovery集
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test  # 项目根目录
+Knowledge Base Dir: ./experiments/aircraft100/knowledge_base  # 知识库目录
+Test Data Dir: ./datasets/fgvc_aircraft/images_discovery_all_1  # 测试数据目录
+Results Out: ./results/aircraft_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/aircraft100_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test/logs/fast_slow/aircraft100/fast_slow_aircraft(2).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: aircraft (aircraft100)
+类别数: 100
+实验目录: ./experiments/aircraft100
+当前使用的 GPU 为：7
+
+=== Experiment Start Time: 2025-11-26 13:38:28 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/aircraft100_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/aircraft100/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/aircraft_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': './datasets/fgvc_aircraft/images_discovery_all_1',
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 64,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/fgvc_aircraft',
+ 'dataset_name': 'aircraft',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/aircraft100',
+ 'expt_dir_describe': './experiments/aircraft100/describe',
+ 'expt_dir_gallery': './experiments/aircraft100/gallery',
+ 'expt_dir_grouping': './experiments/aircraft100/grouping',
+ 'expt_dir_guess': './experiments/aircraft100/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 100,
+ 'num_novel': 50,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/aircraft100/gallery/aircraft_image_descriptions_attn',
+ 'path_identify_answers': './experiments/aircraft100/identify',
+ 'path_llm_gussed_names': './experiments/aircraft100/guess/aircraft_llm_gussed_names',
+ 'path_llm_prompts': './experiments/aircraft100/describe/aircraft_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/aircraft100/guess/aircraft_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/aircraft100/guess/aircraft_llm_replies_raw',
+ 'path_references': './experiments/aircraft100/gallery/aircraft_image_references',
+ 'path_regions': './experiments/aircraft100/gallery/aircraft_image_regions',
+ 'path_vqa_answers': './experiments/aircraft100/describe/aircraft_attributes_pairs',
+ 'path_vqa_questions': './experiments/aircraft100/describe/aircraft_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "aircraft100",
+    "num_classes": 100,
+    "config_file": "aircraft100_all.yml",
+    "data_dir": "fgvc_aircraft",
+    "experiment_dir": "aircraft100",
+    "stats_file": "aircraft100/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/aircraft100/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/aircraft100"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.22s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.43s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:03,  1.55s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.56s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.25s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.35s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-26 13:38:36
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/aircraft100/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/aircraft100/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 791 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-26 13:38:40
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7c71c5f04eb0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7c71c5f04ee0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/aircraft100/knowledge_base
+使用数据集: aircraft, 类别数: 100
+✅ 慢思考模块初始化完成，类别映射数量: 100
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-26 13:38:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/aircraft100/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/aircraft100/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/aircraft100/knowledge_base 加载
+图像知识库类别数: 100
+文本知识库类别数: 100
+类别描述数: 100
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7c71c5f04ee0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7c71c5f04a30>
+📦 数据集信息: {'full_name': 'aircraft100', 'num_classes': 100, 'config_file': 'aircraft100_all.yml', 'data_dir': 'fgvc_aircraft', 'experiment_dir': 'aircraft100', 'stats_file': 'aircraft100/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/aircraft100/knowledge_base/stats.json', 'experiment_dir_full': './experiments/aircraft100'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Verify specific design features that are unique to the target class before making a prediction. (Trigger: When the aircraft's design includes unique features that are not commonly found in other classes.)
+2. Prioritize distinct tail and engine placement when classifying aircraft based on visual features. (Trigger: When the fuselage shape and window arrangement are similar across candidate classes, but there are unique tail or engine placements.)
+3. Verify the presence of unique design features specific to each class before making a prediction. (Trigger: This rule should be recalled when analyzing images of business jets with T-tails and sleek noses.)
+
+经验库已从 ./experiments/aircraft100/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_discovery (发现集)
+======================================================================
+测试数据目录: ./datasets/fgvc_aircraft/images_discovery_all_1
+说明: 使用discovery集进行评估（每类固定样本数）
+======================================================================
+✓ 从discovery集加载 100 个类别，共 100 张图像
+test sample keys: ['An-12', 'BAE-125', '737-200', 'Embraer Legacy 600', 'Tornado']...
+[fast and slow] 测试数据集包含 100 个类别
+  0%|          | 0/100 [00:00<?, ?it/s][2025-11-26 13:38:40] Processing fast-slow:   0%|          | 0/100 [00:00<?, ?it/s][2025-11-26 13:38:40] Processing fast-slow:   1%|          | 1/100 [00:11<19:38, 11.91s/it][2025-11-26 13:38:52] Processing fast-slow:   1%|          | 1/100 [00:11<19:38, 11.91s/it][2025-11-26 13:38:52] Processing fast-slow:   2%|▏         | 2/100 [00:42<37:52, 23.19s/it][2025-11-26 13:39:23] Processing fast-slow:   2%|▏         | 2/100 [00:42<37:52, 23.19s/it][2025-11-26 13:39:23] Processing fast-slow:   3%|▎         | 3/100 [01:01<33:44, 20.87s/it][2025-11-26 13:39:41] Processing fast-slow:   3%|▎         | 3/100 [01:01<33:44, 20.87s/it][2025-11-26 13:39:41] Processing fast-slow:   4%|▍         | 4/100 [01:19<31:57, 19.97s/it][2025-11-26 13:40:00] Processing fast-slow:   4%|▍         | 4/100 [01:19<31:57, 19.97s/it]开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/An-12/1962770.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/An-12/1962770.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ATR-72', 'DHC-8-300', 'ATR-42', 'DHC-8-100', '737-500', 'A319', 'BAE-125', 'ERJ_135', 'A320', 'ERJ_145', 'An-12', 'Dornier_328', 'Fokker_50', 'Falcon_900', 'BAE_146-200', 'Saab_2000']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:38:43] [显存监控] 已分配=17.05GB, 已保留=20.99GB, 空闲=30.35GB
+[2025-11-26 13:38:46] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+[2025-11-26 13:38:49] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+[2025-11-26 13:38:52] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.99GB, 剩余=30.50GB
+分类完成: An-12 (置信度: 0.0081)
+总耗时: 11.90秒
+succ. pred cate:An-12, true cate:An-12, used_slow:True, confidence:0.0081
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/BAE-125/1228464.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/BAE-125/1228464.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_560', 'Cessna_525', 'Embraer_Legacy_600', 'Gulfstream_IV', 'Beechcraft_1900', 'Gulfstream_V', 'Cessna_208', 'Yak-42', 'Challenger_600', 'Metroliner', 'Model_B200', 'BAE-125', 'Falcon_2000', 'Falcon_900', 'Global_Express']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:38:55] [显存监控] 已分配=17.18GB, 已保留=28.38GB, 空闲=30.22GB
+[2025-11-26 13:38:58] [显存监控] 已分配=17.18GB, 已保留=28.38GB, 空闲=30.22GB
+[2025-11-26 13:39:01] [显存监控] 已分配=17.08GB, 已保留=28.38GB, 空闲=30.32GB
+[2025-11-26 13:39:04] [显存监控] 已分配=17.09GB, 已保留=28.38GB, 空闲=30.32GB
+[2025-11-26 13:39:07] [显存监控] 已分配=17.09GB, 已保留=28.38GB, 空闲=30.31GB
+推理后显存: 已分配=16.91GB, 已保留=28.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:39:10] [显存监控] 已分配=17.18GB, 已保留=28.37GB, 空闲=30.23GB
+[2025-11-26 13:39:13] [显存监控] 已分配=17.18GB, 已保留=28.37GB, 空闲=30.23GB
+[2025-11-26 13:39:16] [显存监控] 已分配=17.10GB, 已保留=28.38GB, 空闲=30.30GB
+[2025-11-26 13:39:19] [显存监控] 已分配=17.07GB, 已保留=28.38GB, 空闲=30.33GB
+[2025-11-26 13:39:22] [显存监控] 已分配=17.08GB, 已保留=28.38GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=28.38GB, 剩余=30.50GB
+分类完成: Beechcraft 1900 (置信度: 0.8500)
+总耗时: 31.09秒
+succ. pred cate:Beechcraft 1900, true cate:BAE-125, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-200/0065422.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-200/0065422.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-9-30', '707-320', 'DC-8', 'MD-90', '767-200', 'MD-87', 'MD-80', '757-300', '757-200', '767-300', '737-200', 'A310', 'Tu-154', '737-300', '727-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:39:25] [显存监控] 已分配=17.01GB, 已保留=18.22GB, 空闲=30.39GB
+[2025-11-26 13:39:28] [显存监控] 已分配=17.00GB, 已保留=18.22GB, 空闲=30.41GB
+[2025-11-26 13:39:31] [显存监控] 已分配=17.00GB, 已保留=18.22GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.22GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:39:34] [显存监控] 已分配=17.00GB, 已保留=18.22GB, 空闲=30.41GB
+[2025-11-26 13:39:37] [显存监控] 已分配=17.00GB, 已保留=18.22GB, 空闲=30.41GB
+[2025-11-26 13:39:40] [显存监控] 已分配=17.00GB, 已保留=18.22GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.22GB, 剩余=30.50GB
+分类完成: MD-80 (置信度: 0.8500)
+总耗时: 18.10秒
+succ. pred cate:MD-80, true cate:737-200, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Embraer_Legacy_600/1420606.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Embraer_Legacy_600/1420606.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'Gulfstream_IV', 'Gulfstream_V', 'ERJ_145', 'CRJ-900', 'ERJ_135', 'CRJ-700', 'CRJ-200', 'DHC-8-100', 'MD-80', 'Falcon_2000', 'Falcon_900', 'Global_Express', 'Cessna_525', 'Cessna_560', 'BAE-125', 'Challenger_600']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:39:43] [显存监控] 已分配=16.91GB, 已保留=18.22GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:39:46] [显存监控] 已分配=17.02GB, 已保留=19.19GB, 空闲=30.38GB
+[2025-11-26 13:39:49] [显存监控] 已分配=17.02GB, 已保留=19.19GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.19GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'ERJ_145' -> 'ERJ 145'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:39:52] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:39:55] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:39:58] [显存监控] 已分配=17.02GB, 已保留=19.17GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: ERJ_145 (置信度: 0.8500)
+总耗时: 18.60秒
+failed. pred cate:ERJ_145, true cate:Embraer Legacy 600, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Tornado/1376345.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Tornado/1376345.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Eurofighter_Typhoon', 'F-16A__B', 'Saab_2000', 'Yak-42', 'BAE_146-200', 'Tu-154', 'Tu-134', 'BAE_146-300', 'BAE-125', 'An-12', 'Tornado', 'Spitfire', 'DHC-1', 'F__A-18', 'Hawk_T1', 'DR-400', 'C-47', 'DC-6']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:40:01] [显存监控] 已分配=16.91GB, 已保留=19.17GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:40:04] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:40:07] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+模糊匹配类别修正: 'F-16A__B' -> 'F-16A/B'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:40:10] [显存监控] 已分配=16.91GB, 已保留=19.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:40:13] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:40:16] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: F-16A__B (置信度: 0.8500)
+总耗时: 19.04秒
+[2025-11-26 13:40:00] Processing fast-slow:   5%|▌         | 5/100 [01:38<31:05, 19.64s/it][2025-11-26 13:40:19] Processing fast-slow:   5%|▌         | 5/100 [01:38<31:05, 19.64s/it][2025-11-26 13:40:19] Processing fast-slow:   6%|▌         | 6/100 [01:48<25:18, 16.15s/it][2025-11-26 13:40:29] Processing fast-slow:   6%|▌         | 6/100 [01:48<25:18, 16.15s/it][2025-11-26 13:40:29] Processing fast-slow:   7%|▋         | 7/100 [01:48<16:54, 10.91s/it][2025-11-26 13:40:29] Processing fast-slow:   7%|▋         | 7/100 [01:48<16:54, 10.91s/it][2025-11-26 13:40:29] Processing fast-slow:   8%|▊         | 8/100 [02:11<22:33, 14.71s/it][2025-11-26 13:40:51] Processing fast-slow:   8%|▊         | 8/100 [02:11<22:33, 14.71s/it][2025-11-26 13:40:51] Processing fast-slow:   9%|▉         | 9/100 [02:29<23:54, 15.76s/it][2025-11-26 13:41:10] Processing fast-slow:   9%|▉         | 9/100 [02:29<23:54, 15.76s/it][2025-11-26 13:41:10] Processing fast-slow:  10%|█         | 10/100 [02:50<26:22, 17.58s/it][2025-11-26 13:41:31] Processing fast-slow:  10%|█         | 10/100 [02:50<26:22, 17.58s/it]failed. pred cate:F-16A__B, true cate:Tornado, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-87/1227256.jpg
+执行快思考...
+[2025-11-26 13:40:19] [显存监控] 已分配=16.91GB, 已保留=19.17GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-87/1227256.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-87', 'MD-80', 'CRJ-900', 'MD-90', 'ATR-72', 'CRJ-700', 'ERJ_145', 'A321', '757-200', 'ERJ_135', '737-600', 'Fokker_100', 'E-190', 'E-195', '737-800', 'Falcon_900', 'A320']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:40:22] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:40:25] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:40:28] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: MD-87 (置信度: 0.1164)
+总耗时: 9.38秒
+succ. pred cate:MD-87, true cate:MD-87, used_slow:True, confidence:0.1164
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A380/1508047.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: A380 (置信度: 0.2243)
+总耗时: 0.11秒
+succ. pred cate:A380, true cate:A380, used_slow:False, confidence:0.2243
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Global_Express/1800217.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Global_Express/1800217.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'ERJ_135', 'CRJ-700', 'CRJ-900', 'ERJ_145', 'CRJ-200', 'Gulfstream_IV', 'MD-80', 'MD-87', 'Saab_340', 'Global_Express', 'Falcon_900', 'Falcon_2000', 'Cessna_525', 'Cessna_560', 'Gulfstream_V', 'Beechcraft_1900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:40:31] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:40:34] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:40:37] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:40:40] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:40:43] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:40:46] [显存监控] 已分配=17.05GB, 已保留=20.75GB, 空闲=30.35GB
+[2025-11-26 13:40:49] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.75GB, 剩余=30.50GB
+分类完成: CRJ-900 (置信度: 0.9500)
+总耗时: 22.87秒
+failed. pred cate:CRJ-900, true cate:Global Express, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/EMB-120/1407503.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/EMB-120/1407503.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'Beechcraft_1900', 'DHC-8-100', 'Gulfstream_IV', 'Cessna_525', 'Cessna_560', 'ERJ_145', 'ERJ_135', 'CRJ-900', 'Saab_340', 'Global_Express', 'BAE-125', 'Falcon_900', 'Gulfstream_V', 'Dornier_328', 'Falcon_2000']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:40:52] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:40:55] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:40:58] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:41:01] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:41:04] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:41:07] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Embraer Legacy 600 (置信度: 0.8500)
+总耗时: 18.06秒
+succ. pred cate:Embraer Legacy 600, true cate:EMB-120, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Model_B200/1254089.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Model_B200/1254089.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_560', 'Cessna_525', 'Embraer_Legacy_600', 'Gulfstream_IV', 'Beechcraft_1900', 'Gulfstream_V', 'Cessna_208', 'DHC-8-100', 'DHC-6', 'Metroliner', 'Model_B200', 'BAE-125', 'Falcon_2000', 'Falcon_900', 'Dornier_328']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:41:10] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:41:13] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:41:16] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:41:19] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:41:22] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:41:25] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:41:28] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Beechcraft 1900 (置信度: 0.8500)
+总耗时: 21.67秒
+failed. pred cate:Beechcraft 1900, true cate:Model B200, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_560/1889545.jpg
+执行快思考...
+[2025-11-26 13:41:31] [显存监控] 已分配=16.91GB, 已保留=19.17GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_560/1889545.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Gulfstream_IV', 'Embraer_Legacy_600', 'Cessna_560', 'Cessna_525', 'Gulfstream_V', 'Beechcraft_1900', 'Challenger_600', 'ERJ_145', 'ERJ_135', 'Yak-42', 'BAE-125', 'Global_Express', 'Falcon_900', 'Falcon_2000', 'Model_B200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:41:34] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:41:37] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:41:40] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Embraer_Legacy_600' -> 'Embraer Legacy 600'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:41:31] Processing fast-slow:  11%|█         | 11/100 [03:09<26:43, 18.02s/it][2025-11-26 13:41:50] Processing fast-slow:  11%|█         | 11/100 [03:09<26:43, 18.02s/it][2025-11-26 13:41:50] Processing fast-slow:  12%|█▏        | 12/100 [03:38<31:09, 21.25s/it][2025-11-26 13:42:19] Processing fast-slow:  12%|█▏        | 12/100 [03:38<31:09, 21.25s/it][2025-11-26 13:42:19] Processing fast-slow:  13%|█▎        | 13/100 [03:51<27:18, 18.83s/it][2025-11-26 13:42:32] Processing fast-slow:  13%|█▎        | 13/100 [03:51<27:18, 18.83s/it][2025-11-26 13:42:32] Processing fast-slow:  14%|█▍        | 14/100 [04:03<23:49, 16.62s/it][2025-11-26 13:42:44] Processing fast-slow:  14%|█▍        | 14/100 [04:03<23:49, 16.62s/it][2025-11-26 13:42:44] Processing fast-slow:  15%|█▌        | 15/100 [04:14<21:12, 14.97s/it][2025-11-26 13:42:55] Processing fast-slow:  15%|█▌        | 15/100 [04:14<21:12, 14.97s/it][2025-11-26 13:41:43] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:41:46] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:41:49] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Embraer Legacy 600 (置信度: 0.9000)
+总耗时: 19.00秒
+succ. pred cate:Embraer Legacy 600, true cate:Cessna 560, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-10/0610689.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-10/0610689.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['707-320', 'DC-8', 'L-1011', 'DC-9-30', '727-200', '757-300', 'MD-90', '747-300', '747-200', '747-400', '737-200', 'DC-10', '747-100', 'A310', 'A300B4', 'MD-80']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:41:52] [显存监控] 已分配=17.14GB, 已保留=26.26GB, 空闲=30.26GB
+[2025-11-26 13:41:55] [显存监控] 已分配=17.14GB, 已保留=26.26GB, 空闲=30.26GB
+[2025-11-26 13:41:58] [显存监控] 已分配=17.07GB, 已保留=26.26GB, 空闲=30.33GB
+[2025-11-26 13:42:01] [显存监控] 已分配=17.07GB, 已保留=26.26GB, 空闲=30.33GB
+[2025-11-26 13:42:04] [显存监控] 已分配=17.08GB, 已保留=26.26GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=26.26GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:42:07] [显存监控] 已分配=17.14GB, 已保留=26.26GB, 空闲=30.26GB
+[2025-11-26 13:42:10] [显存监控] 已分配=17.14GB, 已保留=26.26GB, 空闲=30.26GB
+[2025-11-26 13:42:13] [显存监控] 已分配=17.06GB, 已保留=26.26GB, 空闲=30.35GB
+[2025-11-26 13:42:16] [显存监控] 已分配=17.06GB, 已保留=26.26GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.26GB, 剩余=30.50GB
+分类完成: DC-10 (置信度: 0.8500)
+总耗时: 28.63秒
+succ. pred cate:DC-10, true cate:DC-10, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Gulfstream_IV/0514738.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Gulfstream_IV/0514738.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Gulfstream_IV', 'Gulfstream_V', 'Embraer_Legacy_600', 'Challenger_600', 'CRJ-900', 'Metroliner', 'CRJ-200', 'CRJ-700', 'ERJ_135', 'ERJ_145', 'Global_Express', 'BAE-125', 'Cessna_560', 'Falcon_2000', 'Cessna_525', 'Falcon_900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:42:19] [显存监控] 已分配=16.91GB, 已保留=26.26GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 13:42:22] [显存监控] 已分配=17.14GB, 已保留=26.23GB, 空闲=30.26GB
+[2025-11-26 13:42:25] [显存监控] 已分配=17.07GB, 已保留=26.23GB, 空闲=30.34GB
+[2025-11-26 13:42:28] [显存监控] 已分配=17.07GB, 已保留=26.23GB, 空闲=30.33GB
+[2025-11-26 13:42:31] [显存监控] 已分配=17.07GB, 已保留=26.23GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=26.23GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Gulfstream_IV' -> 'Gulfstream IV'
+分类完成: Gulfstream IV (置信度: 0.1561)
+总耗时: 13.28秒
+succ. pred cate:Gulfstream IV, true cate:Gulfstream IV, used_slow:True, confidence:0.1561
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A310/0127637.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A310/0127637.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A340-200', 'A310', 'A340-600', 'A340-300', 'A340-500', 'A330-200', '767-200', '767-300', '767-400', 'DC-10', '707-320', 'Tu-154', '747-100', 'DC-9-30', '737-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:42:34] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+[2025-11-26 13:42:37] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+[2025-11-26 13:42:40] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+[2025-11-26 13:42:43] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.87GB, 剩余=30.50GB
+分类完成: A340-300 (置信度: 0.1001)
+总耗时: 11.51秒
+succ. pred cate:A340-300, true cate:A310, used_slow:True, confidence:0.1001
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/PA-28/1798545.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/PA-28/1798545.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_525', 'Cessna_208', 'Cessna_560', 'Cessna_172', 'Yak-42', 'Beechcraft_1900', 'PA-28', 'DHC-1', 'DHC-6', 'Dornier_328', 'SR-20', 'DR-400', 'Model_B200', 'Embraer_Legacy_600']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 13:42:46] [显存监控] 已分配=17.07GB, 已保留=22.16GB, 空闲=30.33GB
+[2025-11-26 13:42:49] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.36GB
+[2025-11-26 13:42:52] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Cessna_172' -> 'Cessna 172'
+分类完成: Cessna 172 (置信度: 0.1247)
+总耗时: 11.13秒
+succ. pred cate:Cessna 172, true cate:PA-28, used_slow:True, confidence:0.1247
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Fokker_70/1521758.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Fokker_70/1521758.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['CRJ-900', 'CRJ-200', 'CRJ-700', 'ERJ_135', 'ERJ_145', 'MD-87', '757-200', '737-500', 'MD-80', '737-200', 'ATR-72', 'Falcon_900', 'E-195', 'Falcon_2000', '737-800', 'Fokker_100']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:42:55] [显存监控] 已分配=16.91GB, 已保留=22.16GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:42:58] [显存监控] 已分配=17.18GB, 已保留=28.38GB, 空闲=30.22GB
+[2025-11-26 13:43:01] [显存监控] 已分配=17.18GB, 已保留=28.38GB, 空闲=30.22GB
+[2025-11-26 13:43:04] [显存监控] 已分配=17.08GB, 已保留=28.39GB, 空闲=30.32GB
+[2025-11-26 13:43:07] [显存监控] 已分配=17.09GB, 已保留=28.39GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=28.39GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Fokker_100' -> 'Fokker 100'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:43:10] [显存监控] 已分配=16.91GB, 已保留=28.39GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:43:13] [显存监控] 已分配=17.18GB, 已保留=28.37GB, 空闲=30.23GB
+[2025-11-26 13:43:16] [显存监控] 已分配=17.07GB, 已保留=28.37GB, 空闲=30.33GB
+[2025-11-26 13:43:19] [显存监控] 已分配=17.07GB, 已保留=28.38GB, 空闲=30.33GB
+[2025-11-26 13:43:22] [显存监控] 已分配=17.08GB, 已保留=28.38GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=28.38GB, 剩余=30.50GB
+分类完成: ERJ_145 (置信度: 0.8500)
+总耗时: 30.02秒
+[2025-11-26 13:42:55] Processing fast-slow:  16%|█▌        | 16/100 [04:44<27:17, 19.50s/it][2025-11-26 13:43:25] Processing fast-slow:  16%|█▌        | 16/100 [04:44<27:17, 19.50s/it][2025-11-26 13:43:25] Processing fast-slow:  17%|█▋        | 17/100 [04:56<23:46, 17.18s/it][2025-11-26 13:43:37] Processing fast-slow:  17%|█▋        | 17/100 [04:56<23:46, 17.18s/it][2025-11-26 13:43:37] Processing fast-slow:  18%|█▊        | 18/100 [05:06<20:34, 15.05s/it][2025-11-26 13:43:47] Processing fast-slow:  18%|█▊        | 18/100 [05:06<20:34, 15.05s/it][2025-11-26 13:43:47] Processing fast-slow:  19%|█▉        | 19/100 [05:28<23:24, 17.33s/it][2025-11-26 13:44:09] Processing fast-slow:  19%|█▉        | 19/100 [05:28<23:24, 17.33s/it][2025-11-26 13:44:09] Processing fast-slow:  20%|██        | 20/100 [05:40<20:38, 15.48s/it][2025-11-26 13:44:20] Processing fast-slow:  20%|██        | 20/100 [05:40<20:38, 15.48s/it][2025-11-26 13:44:20] Processing fast-slow:  21%|██        | 21/100 [05:50<18:32, 14.08s/it][2025-11-26 13:44:31] Processing fast-slow:  21%|██        | 21/100 [05:50<18:32, 14.08s/it][2025-11-26 13:44:31] Processing fast-slow:  22%|██▏       | 22/100 [06:10<20:24, 15.70s/it][2025-11-26 13:44:51] Processing fast-slow:  22%|██▏       | 22/100 [06:10<20:24, 15.70s/it]succ. pred cate:ERJ_145, true cate:Fokker 70, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/757-300/0496749.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/757-300/0496749.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['777-300', 'A330-200', 'A380', 'A340-300', 'A340-500', '767-400', '777-200', 'A330-300', 'A340-600', 'A340-200', 'A310', '757-300', '747-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:43:25] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:43:28] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+[2025-11-26 13:43:31] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+[2025-11-26 13:43:34] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.87GB, 剩余=30.50GB
+分类完成: 777-200 (置信度: 0.0989)
+总耗时: 11.80秒
+succ. pred cate:777-200, true cate:757-300, used_slow:True, confidence:0.0989
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-200/0894316.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-200/0894316.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A340-300', 'A340-200', 'A340-500', 'A300B4', 'A330-300', 'A340-600', 'A380', 'A330-200', 'L-1011', '747-300', '747-200', '767-200', '767-400', 'A310', 'An-12']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:43:37] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:43:40] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:43:43] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:43:46] [显存监控] 已分配=17.03GB, 已保留=18.92GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: 747-300 (置信度: 0.0909)
+总耗时: 10.10秒
+succ. pred cate:747-300, true cate:747-200, used_slow:True, confidence:0.0909
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A320/1553898.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A320/1553898.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-87', 'MD-80', '737-800', 'A310', 'A319', 'A321', 'A320', 'A300B4', '737-200', 'A330-300', '737-300', '737-600', '757-300', 'A340-500', 'BAE_146-300', '737-500', '767-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 13:43:49] [显存监控] 已分配=17.07GB, 已保留=22.16GB, 空闲=30.33GB
+[2025-11-26 13:43:52] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.36GB
+[2025-11-26 13:43:55] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:43:58] [显存监控] 已分配=16.91GB, 已保留=22.16GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 13:44:01] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 13:44:04] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 13:44:07] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+分类完成: A320 (置信度: 0.9500)
+总耗时: 22.65秒
+succ. pred cate:A320, true cate:A320, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-400/1532634.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-400/1532634.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['777-300', '767-400', '767-200', '777-200', 'A340-600', '767-300', '757-200', 'A330-200', 'A340-200', 'A340-500', '737-900', '747-400', 'CRJ-700', 'A340-300', '757-300', 'A300B4', '737-400', 'MD-90']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:44:10] [显存监控] 已分配=17.03GB, 已保留=20.13GB, 空闲=30.37GB
+[2025-11-26 13:44:13] [显存监控] 已分配=17.03GB, 已保留=20.13GB, 空闲=30.38GB
+[2025-11-26 13:44:16] [显存监控] 已分配=17.03GB, 已保留=20.14GB, 空闲=30.38GB
+[2025-11-26 13:44:19] [显存监控] 已分配=17.03GB, 已保留=20.14GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.14GB, 剩余=30.50GB
+分类完成: 767-200 (置信度: 0.1026)
+总耗时: 11.16秒
+succ. pred cate:767-200, true cate:737-400, used_slow:True, confidence:0.1026
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-80/1036880.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-80/1036880.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['757-200', '737-800', '737-600', '757-300', '737-200', '767-200', '737-900', '737-400', '737-700', 'A321', 'A320', 'MD-87', '737-300', 'A319', 'Saab_340', '737-500']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:44:22] [显存监控] 已分配=17.05GB, 已保留=18.92GB, 空闲=30.35GB
+[2025-11-26 13:44:25] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:44:28] [显存监控] 已分配=17.03GB, 已保留=18.92GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: 757-200 (置信度: 0.1057)
+总耗时: 10.82秒
+succ. pred cate:757-200, true cate:MD-80, used_slow:True, confidence:0.1057
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A318/1376172.jpg
+执行快思考...
+[2025-11-26 13:44:31] [显存监控] 已分配=16.91GB, 已保留=18.92GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A318/1376172.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', 'A320', '737-600', 'ATR-72', '737-900', '737-700', '737-800', 'A321', '737-200', 'ERJ_145', 'E-190', '767-200', 'E-195', 'Fokker_100', 'Saab_2000', 'Falcon_900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:44:34] [显存监控] 已分配=17.05GB, 已保留=19.18GB, 空闲=30.36GB
+[2025-11-26 13:44:37] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:44:40] [显存监控] 已分配=16.91GB, 已保留=19.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:44:43] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:44:46] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:44:49] [显存监控] 已分配=17.02GB, 已保留=19.17GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: A320 (置信度: 0.9500)
+总耗时: 19.49秒
+succ. pred cate:A320, true cate:A318, used_slow:True, confidence:0.9500
+[2025-11-26 13:44:51] Processing fast-slow:  23%|██▎       | 23/100 [06:27<20:39, 16.09s/it][2025-11-26 13:45:08] Processing fast-slow:  23%|██▎       | 23/100 [06:27<20:39, 16.09s/it][2025-11-26 13:45:08] Processing fast-slow:  24%|██▍       | 24/100 [06:46<21:24, 16.90s/it][2025-11-26 13:45:27] Processing fast-slow:  24%|██▍       | 24/100 [06:46<21:24, 16.90s/it][2025-11-26 13:45:27] Processing fast-slow:  24%|██▍       | 24/100 [06:46<21:24, 16.90s/it][2025-11-26 13:45:27] Processing fast-slow:  26%|██▌       | 26/100 [07:07<17:20, 14.06s/it][2025-11-26 13:45:48] Processing fast-slow:  26%|██▌       | 26/100 [07:07<17:20, 14.06s/it][2025-11-26 13:45:48] Processing fast-slow:  27%|██▋       | 27/100 [07:28<19:05, 15.69s/it][2025-11-26 13:46:09] Processing fast-slow:  27%|██▋       | 27/100 [07:28<19:05, 15.69s/it][2025-11-26 13:46:09] Processing fast-slow:  28%|██▊       | 28/100 [07:40<17:51, 14.89s/it][2025-11-26 13:46:21] Processing fast-slow:  28%|██▊       | 28/100 [07:40<17:51, 14.89s/it]开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Metroliner/0091366.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Metroliner/0091366.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-9-30', 'DC-8', 'MD-90', 'A300B4', '707-320', '727-200', 'MD-87', 'MD-80', 'BAE-125', 'A310', 'Metroliner', 'Il-76', 'Yak-42', 'DC-6', 'An-12']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:44:52] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+[2025-11-26 13:44:55] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+[2025-11-26 13:44:58] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.05GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:45:01] [显存监控] 已分配=16.96GB, 已保留=17.73GB, 空闲=30.45GB
+[2025-11-26 13:45:04] [显存监控] 已分配=16.96GB, 已保留=18.04GB, 空闲=30.44GB
+[2025-11-26 13:45:07] [显存监控] 已分配=17.01GB, 已保留=18.04GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+分类完成: DC-9-30 (置信度: 0.8500)
+总耗时: 17.00秒
+failed. pred cate:DC-9-30, true cate:Metroliner, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Tu-134/0062669.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Tu-134/0062669.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['707-320', 'DC-9-30', 'DC-8', 'Tu-154', 'Tu-134', '727-200', 'MD-90', 'L-1011', 'DC-10', '757-200', '737-200', 'MD-87', 'A310', 'Il-76']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:45:10] [显存监控] 已分配=17.01GB, 已保留=18.04GB, 空闲=30.39GB
+[2025-11-26 13:45:13] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+[2025-11-26 13:45:16] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:45:19] [显存监控] 已分配=16.96GB, 已保留=18.04GB, 空闲=30.44GB
+[2025-11-26 13:45:22] [显存监控] 已分配=16.96GB, 已保留=18.04GB, 空闲=30.44GB
+[2025-11-26 13:45:25] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.05GB, 剩余=30.50GB
+分类完成: Tu-134 (置信度: 0.8500)
+总耗时: 18.77秒
+succ. pred cate:Tu-134, true cate:Tu-134, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/F__A-18/1596392.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: F-16A__B (置信度: 0.2309)
+总耗时: 0.10秒
+succ. pred cate:F-16A__B, true cate:F A 18, used_slow:False, confidence:0.2309
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DR-400/1222829.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DR-400/1222829.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_208', 'Cessna_172', 'Cessna_525', 'Cessna_560', 'Beechcraft_1900', 'DHC-1', 'Fokker_50', 'PA-28', 'Dornier_328', 'Fokker_100', 'SR-20', 'DR-400', 'Model_B200', 'DH-82', 'C-130']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:45:28] [显存监控] 已分配=17.46GB, 已保留=19.18GB, 空闲=29.94GB
+[2025-11-26 13:45:31] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:45:34] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+模糊匹配类别修正: 'Robin DR-400' -> 'DR-400'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:45:37] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:45:40] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:45:43] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:45:46] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Robin DR400 (置信度: 0.9500)
+总耗时: 21.42秒
+succ. pred cate:Robin DR400, true cate:DR-400, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/C-47/0953525.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/C-47/0953525.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Saab_340', 'Saab_2000', 'DC-9-30', 'BAE-125', 'Beechcraft_1900', 'DC-6', 'Fokker_70', 'Fokker_50', 'MD-90', 'Gulfstream_IV', 'Il-76', 'DC-8', 'An-12', 'C-47', 'Falcon_900', 'Metroliner', 'C-130', '727-200', 'Yak-42']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:45:49] [显存监控] 已分配=17.01GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:45:52] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:45:55] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:45:58] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:46:01] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:46:04] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:46:07] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: DC-6 (置信度: 0.9500)
+总耗时: 20.64秒
+succ. pred cate:DC-6, true cate:C-47, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-600/1204296.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-600/1204296.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A380', '747-300', 'A330-200', '747-200', '777-300', 'A340-300', '747-400', 'A340-600', '747-100', 'A330-300', 'A340-500', '777-200', 'MD-11', 'A310']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:46:10] [显存监控] 已分配=16.95GB, 已保留=19.18GB, 空闲=30.45GB
+[2025-11-26 13:46:13] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:46:16] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:46:19] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+模糊匹配类别修正: 'A3' -> 'A380'
+分类完成: A380 (置信度: 0.1427)
+总耗时: 12.60秒
+succ. pred cate:A380, true cate:A340-600, used_slow:True, confidence:0.1427
+[2025-11-26 13:46:21] Processing fast-slow:  29%|██▉       | 29/100 [07:53<16:45, 14.16s/it][2025-11-26 13:46:34] Processing fast-slow:  29%|██▉       | 29/100 [07:53<16:45, 14.16s/it][2025-11-26 13:46:34] Processing fast-slow:  30%|███       | 30/100 [08:11<17:56, 15.38s/it][2025-11-26 13:46:52] Processing fast-slow:  30%|███       | 30/100 [08:11<17:56, 15.38s/it][2025-11-26 13:46:52] Processing fast-slow:  31%|███       | 31/100 [08:30<18:50, 16.38s/it][2025-11-26 13:47:11] Processing fast-slow:  31%|███       | 31/100 [08:30<18:50, 16.38s/it][2025-11-26 13:47:11] Processing fast-slow:  32%|███▏      | 32/100 [08:41<16:37, 14.67s/it][2025-11-26 13:47:21] Processing fast-slow:  32%|███▏      | 32/100 [08:41<16:37, 14.67s/it][2025-11-26 13:47:21] Processing fast-slow:  33%|███▎      | 33/100 [08:59<17:38, 15.79s/it][2025-11-26 13:47:40] Processing fast-slow:  33%|███▎      | 33/100 [08:59<17:38, 15.79s/it]开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-11/1123299.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-11/1123299.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'L-1011', '737-500', 'A340-600', 'A340-500', '707-320', 'A340-300', 'A340-200', 'A330-200', 'A330-300', '777-200', 'A310', '757-200', 'DC-10', 'A380', 'Tu-154', '737-800']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:46:22] [显存监控] 已分配=17.01GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:46:25] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:46:28] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:46:31] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+分类完成: A340-500 (置信度: 0.0955)
+总耗时: 12.20秒
+failed. pred cate:A340-500, true cate:MD-11, used_slow:True, confidence:0.0955
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/C-130/0875344.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/C-130/0875344.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['BAE-125', 'Il-76', 'DHC-8-300', 'Beechcraft_1900', 'Cessna_208', 'BAE_146-300', 'E-170', 'DC-8', 'Cessna_525', 'Cessna_560', 'C-130', 'An-12', 'DC-6', 'Fokker_50', 'EMB-120', 'Metroliner', 'Yak-42', 'DC-3', 'Dornier_328']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:46:34] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:46:37] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:46:40] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:46:43] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.41GB
+[2025-11-26 13:46:46] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:46:49] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: Cessna_525 (置信度: 0.8500)
+总耗时: 18.55秒
+failed. pred cate:Cessna_525, true cate:C-130, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-8/1338156.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-8/1338156.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['707-320', 'DC-8', 'DC-9-30', '757-300', 'DC-6', '757-200', 'A310', 'L-1011', 'DC-10', '767-300', '737-200', '727-200', '747-100', 'Yak-42', 'MD-80', '767-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:46:52] [显存监控] 已分配=16.91GB, 已保留=18.92GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:46:55] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:46:58] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:47:01] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:47:04] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:47:07] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:47:10] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: DC-8 (置信度: 0.8500)
+总耗时: 18.87秒
+succ. pred cate:DC-8, true cate:DC-8, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/757-200/0863830.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/757-200/0863830.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', 'A300B4', 'A330-200', 'A330-300', '767-200', '767-400', '737-800', 'A340-300', '767-300', 'A340-600', 'A340-200', 'A340-500', '757-200', '747-200', '737-600', '747-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:47:13] [显存监控] 已分配=17.02GB, 已保留=19.49GB, 空闲=30.38GB
+[2025-11-26 13:47:16] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+[2025-11-26 13:47:19] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+分类完成: 767-300 (置信度: 0.0903)
+总耗时: 10.48秒
+succ. pred cate:767-300, true cate:757-200, used_slow:True, confidence:0.0903
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-3/0540048.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-3/0540048.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Beechcraft_1900', 'ATR-42', 'ATR-72', 'Cessna_525', 'Cessna_560', 'DC-9-30', 'DC-6', 'BAE-125', '707-320', 'Cessna_208', 'Il-76', 'An-12', 'Tu-134', 'MD-87', 'Metroliner', 'Yak-42', 'Tu-154', 'DHC-6']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:47:22] [显存监控] 已分配=17.01GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:47:25] [显存监控] 已分配=17.03GB, 已保留=19.18GB, 空闲=30.37GB
+[2025-11-26 13:47:28] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:47:31] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:47:34] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:47:37] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: DC-3 (置信度: 0.8500)
+总耗时: 18.50秒
+succ. pred cate:DC-3, true cate:DC-3, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/SR-20/1623436.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/SR-20/1623436.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_560', 'Cessna_525', 'Cessna_208', 'Cessna_172', 'Beechcraft_1900', 'PA-28', 'DHC-1', 'DHC-6', 'Model_B200', 'Challenger_600', 'SR-20', 'DR-400', 'BAE-125', 'Gulfstream_V']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:47:40] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-26 13:47:43] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:47:46] [显存监控] 已分配=17.05GB, 已保留=19.18GB, 空闲=30.36GB
+[2025-11-26 13:47:40] Processing fast-slow:  34%|███▍      | 34/100 [09:18<18:27, 16.78s/it][2025-11-26 13:47:59] Processing fast-slow:  34%|███▍      | 34/100 [09:18<18:27, 16.78s/it][2025-11-26 13:47:59] Processing fast-slow:  35%|███▌      | 35/100 [09:46<21:41, 20.02s/it][2025-11-26 13:48:27] Processing fast-slow:  35%|███▌      | 35/100 [09:46<21:41, 20.02s/it][2025-11-26 13:48:27] Processing fast-slow:  36%|███▌      | 36/100 [10:03<20:23, 19.12s/it][2025-11-26 13:48:44] Processing fast-slow:  36%|███▌      | 36/100 [10:03<20:23, 19.12s/it][2025-11-26 13:48:44] Processing fast-slow:  37%|███▋      | 37/100 [10:14<17:30, 16.67s/it][2025-11-26 13:48:55] Processing fast-slow:  37%|███▋      | 37/100 [10:14<17:30, 16.67s/it][2025-11-26 13:48:55] Processing fast-slow:  38%|███▊      | 38/100 [10:22<14:36, 14.14s/it][2025-11-26 13:49:03] Processing fast-slow:  38%|███▊      | 38/100 [10:22<14:36, 14.14s/it][2025-11-26 13:49:03] Processing fast-slow:  39%|███▉      | 39/100 [10:33<13:33, 13.33s/it][2025-11-26 13:49:14] Processing fast-slow:  39%|███▉      | 39/100 [10:33<13:33, 13.33s/it][2025-11-26 13:47:49] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+模糊匹配类别修正: 'Cirrus SR-20' -> 'SR-20'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:47:52] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:47:55] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:47:58] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Cirrus SR22 (置信度: 0.9000)
+总耗时: 19.15秒
+succ. pred cate:Cirrus SR22, true cate:SR-20, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-500/0657761.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-500/0657761.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Saab_340', 'A320', 'E-190', 'ERJ_135', 'A321', 'A319', 'ERJ_145', '737-500', 'Saab_2000', '737-900', '737-600', 'ATR-72', 'Falcon_900', 'Falcon_2000', 'E-195', 'Fokker_50', 'Global_Express']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:48:01] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:48:04] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:48:07] [显存监控] 已分配=17.08GB, 已保留=27.83GB, 空闲=30.32GB
+[2025-11-26 13:48:10] [显存监控] 已分配=17.09GB, 已保留=27.83GB, 空闲=30.32GB
+[2025-11-26 13:48:13] [显存监控] 已分配=17.09GB, 已保留=27.83GB, 空闲=30.31GB
+推理后显存: 已分配=16.91GB, 已保留=27.83GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:48:16] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:48:19] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:48:22] [显存监控] 已分配=17.07GB, 已保留=27.82GB, 空闲=30.33GB
+[2025-11-26 13:48:25] [显存监控] 已分配=17.07GB, 已保留=27.82GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=27.82GB, 剩余=30.50GB
+分类完成: Boeing 737-500 (置信度: 0.9000)
+总耗时: 27.72秒
+succ. pred cate:Boeing 737-500, true cate:737-500, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Fokker_50/0066425.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Fokker_50/0066425.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ERJ_145', 'ATR-72', 'ERJ_135', 'DHC-8-100', 'DHC-8-300', 'MD-80', 'Beechcraft_1900', 'Saab_340', 'MD-87', 'MD-90', 'An-12', 'CRJ-700', 'Falcon_900', 'Fokker_50', 'DC-9-30', 'ATR-42', '727-200', 'Metroliner']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:48:28] [显存监控] 已分配=16.99GB, 已保留=18.32GB, 空闲=30.41GB
+[2025-11-26 13:48:31] [显存监控] 已分配=16.99GB, 已保留=18.32GB, 空闲=30.41GB
+[2025-11-26 13:48:34] [显存监控] 已分配=16.99GB, 已保留=18.32GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.32GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:48:37] [显存监控] 已分配=16.98GB, 已保留=18.04GB, 空闲=30.42GB
+[2025-11-26 13:48:40] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+[2025-11-26 13:48:43] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+分类完成: DHC-8-300 (置信度: 0.8500)
+总耗时: 16.98秒
+failed. pred cate:DHC-8-300, true cate:Fokker 50, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DH-82/0735046.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DH-82/0735046.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DH-82', 'Cessna_172', 'Fokker_100', 'Cessna_208', 'Fokker_50', 'DHC-1', 'Fokker_70', 'PA-28', 'DHC-6', 'Dornier_328', 'Spitfire', 'C-47', 'DR-400', 'SR-20', 'DC-3']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:48:46] [显存监控] 已分配=17.03GB, 已保留=20.29GB, 空闲=30.38GB
+[2025-11-26 13:48:49] [显存监控] 已分配=17.02GB, 已保留=20.29GB, 空闲=30.38GB
+[2025-11-26 13:48:52] [显存监控] 已分配=17.03GB, 已保留=20.29GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.29GB, 剩余=30.50GB
+分类完成: DH-82 (置信度: 0.1342)
+总耗时: 10.90秒
+succ. pred cate:DH-82, true cate:DH-82, used_slow:True, confidence:0.1342
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Gulfstream_V/1857543.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Gulfstream_V/1857543.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Gulfstream_IV', 'Gulfstream_V', 'Embraer_Legacy_600', 'Challenger_600', 'Cessna_560', 'Falcon_2000', 'Cessna_525', 'CRJ-900', 'ERJ_145', 'ERJ_135', 'Global_Express', 'Falcon_900', 'BAE-125']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:48:55] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:48:58] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:49:01] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Gulfstream_V' -> 'Gulfstream V'
+分类完成: Gulfstream V (置信度: 0.1418)
+总耗时: 8.20秒
+succ. pred cate:Gulfstream V, true cate:Gulfstream V, used_slow:True, confidence:0.1418
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/E-170/1909787.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/E-170/1909787.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ERJ_135', 'ERJ_145', '737-500', 'MD-80', 'CRJ-900', 'MD-87', '737-300', 'CRJ-700', 'MD-90', 'A320', 'Falcon_900', 'ATR-72', 'Fokker_100', '737-600', 'E-195', 'Saab_340', 'E-190', 'Falcon_2000']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:49:04] [显存监控] 已分配=17.01GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:49:07] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:49:10] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:49:13] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'ERJ_135' -> 'ERJ 135'
+分类完成: ERJ 135 (置信度: 0.1138)
+总耗时: 11.45秒
+succ. pred cate:ERJ 135, true cate:E-170, used_slow:True, confidence:0.1138
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/777-300/2069690.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+[2025-11-26 13:49:14] Processing fast-slow:  40%|████      | 40/100 [10:53<15:14, 15.23s/it][2025-11-26 13:49:34] Processing fast-slow:  40%|████      | 40/100 [10:53<15:14, 15.23s/it][2025-11-26 13:49:34] Processing fast-slow:  41%|████      | 41/100 [11:02<13:12, 13.43s/it][2025-11-26 13:49:43] Processing fast-slow:  41%|████      | 41/100 [11:02<13:12, 13.43s/it][2025-11-26 13:49:43] Processing fast-slow:  42%|████▏     | 42/100 [11:11<11:39, 12.06s/it][2025-11-26 13:49:52] Processing fast-slow:  42%|████▏     | 42/100 [11:11<11:39, 12.06s/it][2025-11-26 13:49:52] Processing fast-slow:  43%|████▎     | 43/100 [11:31<13:42, 14.44s/it][2025-11-26 13:50:12] Processing fast-slow:  43%|████▎     | 43/100 [11:31<13:42, 14.44s/it][2025-11-26 13:50:12] Processing fast-slow:  44%|████▍     | 44/100 [11:51<15:02, 16.12s/it][2025-11-26 13:50:32] Processing fast-slow:  44%|████▍     | 44/100 [11:51<15:02, 16.12s/it]开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/777-300/2069690.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A380', 'A340-500', 'A330-300', 'A330-200', 'A340-300', 'A300B4', 'A340-200', 'A340-600', 'Global_Express', '777-300', '777-200', '747-300', '767-400', '747-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:49:16] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:49:19] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:49:22] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:49:25] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:49:28] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:49:31] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Boeing 777-300ER (置信度: 0.9500)
+总耗时: 19.68秒
+succ. pred cate:Boeing 777-300ER, true cate:777-300, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_172/2072465.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_172/2072465.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_208', 'Cessna_172', 'Cessna_525', 'Cessna_560', 'PA-28', 'Beechcraft_1900', 'DHC-1', 'Model_B200', 'Dornier_328', 'DHC-6', 'SR-20', 'DR-400', 'DH-82']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:49:34] [显存监控] 已分配=16.91GB, 已保留=19.17GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:49:37] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:49:40] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Cessna_172' -> 'Cessna 172'
+分类完成: Cessna 172 (置信度: 0.1459)
+总耗时: 9.20秒
+succ. pred cate:Cessna 172, true cate:Cessna 172, used_slow:True, confidence:0.1459
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Fokker_100/0907347.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Fokker_100/0907347.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-87', 'MD-80', 'MD-90', 'DC-9-30', 'ERJ_145', 'ERJ_135', 'CRJ-700', 'CRJ-900', '737-200', '757-200', 'Fokker_100', 'Tu-134', 'Beechcraft_1900', 'Boeing_717', 'Falcon_900', 'Global_Express']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:49:43] [显存监控] 已分配=16.91GB, 已保留=19.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:49:46] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:49:49] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: MD-87 (置信度: 0.1261)
+总耗时: 8.88秒
+failed. pred cate:MD-87, true cate:Fokker 100, used_slow:True, confidence:0.1261
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Falcon_2000/0468262.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Falcon_2000/0468262.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'Gulfstream_IV', 'ERJ_145', 'ERJ_135', 'Beechcraft_1900', 'CRJ-900', 'CRJ-700', 'CRJ-200', 'Metroliner', 'MD-80', 'Global_Express', 'BAE-125', 'Falcon_900', 'Cessna_525', 'Cessna_560', 'Falcon_2000', 'Gulfstream_V', 'Challenger_600']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:49:52] [显存监控] 已分配=16.91GB, 已保留=18.92GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:49:55] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+[2025-11-26 13:49:58] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+[2025-11-26 13:50:01] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.34GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Falcon_2000' -> 'Falcon 2000'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:50:04] [显存监控] 已分配=17.00GB, 已保留=19.32GB, 空闲=30.40GB
+[2025-11-26 13:50:07] [显存监控] 已分配=17.00GB, 已保留=19.32GB, 空闲=30.40GB
+[2025-11-26 13:50:10] [显存监控] 已分配=17.00GB, 已保留=19.32GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.32GB, 剩余=30.50GB
+分类完成: ERJ_145 (置信度: 0.8500)
+总耗时: 19.97秒
+failed. pred cate:ERJ_145, true cate:Falcon 2000, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Yak-42/1544139.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Yak-42/1544139.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-80', 'MD-87', 'Tu-154', 'Tu-134', 'CRJ-900', 'ERJ_135', 'CRJ-700', 'MD-90', 'CRJ-200', 'ERJ_145', 'Falcon_900', 'Falcon_2000', 'Global_Express', 'ATR-72', 'An-12', 'Fokker_100', 'E-195', 'Gulfstream_V']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:50:13] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:50:16] [显存监控] 已分配=17.05GB, 已保留=19.18GB, 空闲=30.36GB
+[2025-11-26 13:50:19] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:50:22] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:50:25] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:50:28] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:50:31] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Tu-154 (置信度: 0.8500)
+总耗时: 20.04秒
+succ. pred cate:Tu-154, true cate:Yak-42, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-800/0900469.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-800/0900469.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-700', '737-400', '737-900', '737-200', '737-800', '737-600', '757-300', '767-400', '737-500', 'A320', 'Boeing_717', 'A319', 'CRJ-700', 'MD-11', '767-200', '777-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:50:34] [显存监控] 已分配=17.20GB, 已保留=30.15GB, 空闲=30.20GB
+[2025-11-26 13:50:37] [显存监控] 已分配=17.20GB, 已保留=30.15GB, 空闲=30.20GB
+[2025-11-26 13:50:32] Processing fast-slow:  45%|████▌     | 45/100 [12:23<19:09, 20.89s/it][2025-11-26 13:51:04] Processing fast-slow:  45%|████▌     | 45/100 [12:23<19:09, 20.89s/it][2025-11-26 13:51:04] Processing fast-slow:  46%|████▌     | 46/100 [12:35<16:16, 18.09s/it][2025-11-26 13:51:16] Processing fast-slow:  46%|████▌     | 46/100 [12:35<16:16, 18.09s/it][2025-11-26 13:51:16] Processing fast-slow:  47%|████▋     | 47/100 [12:52<15:40, 17.75s/it][2025-11-26 13:51:33] Processing fast-slow:  47%|████▋     | 47/100 [12:52<15:40, 17.75s/it][2025-11-26 13:51:33] Processing fast-slow:  48%|████▊     | 48/100 [13:24<19:14, 22.21s/it][2025-11-26 13:52:05] Processing fast-slow:  48%|████▊     | 48/100 [13:24<19:14, 22.21s/it][2025-11-26 13:52:05] Processing fast-slow:  49%|████▉     | 49/100 [13:42<17:48, 20.96s/it][2025-11-26 13:52:23] Processing fast-slow:  49%|████▉     | 49/100 [13:42<17:48, 20.96s/it][2025-11-26 13:50:40] [显存监控] 已分配=17.09GB, 已保留=30.15GB, 空闲=30.31GB
+[2025-11-26 13:50:43] [显存监控] 已分配=17.10GB, 已保留=30.15GB, 空闲=30.31GB
+[2025-11-26 13:50:46] [显存监控] 已分配=17.10GB, 已保留=30.15GB, 空闲=30.30GB
+推理后显存: 已分配=16.91GB, 已保留=30.15GB, 剩余=30.50GB
+模糊匹配类别修正: 'Boeing_737-800' -> 'Boeing 717'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:50:50] [显存监控] 已分配=28.49GB, 已保留=30.14GB, 空闲=18.91GB
+[2025-11-26 13:50:53] [显存监控] 已分配=17.20GB, 已保留=30.14GB, 空闲=30.20GB
+[2025-11-26 13:50:56] [显存监控] 已分配=16.97GB, 已保留=30.14GB, 空闲=30.43GB
+[2025-11-26 13:50:59] [显存监控] 已分配=17.08GB, 已保留=30.15GB, 空闲=30.32GB
+[2025-11-26 13:51:02] [显存监控] 已分配=17.09GB, 已保留=30.15GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=30.15GB, 剩余=30.50GB
+分类完成: 737-800 (置信度: 0.9500)
+总耗时: 32.05秒
+succ. pred cate:737-800, true cate:737-800, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-600/1726606.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-600/1726606.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', 'A320', '737-300', 'A319', '737-600', '737-800', 'A321', '737-200', '737-900', '737-400', 'BAE_146-300', 'Saab_2000', 'E-190', 'ATR-72', '767-200', 'DHC-8-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:51:05] [显存监控] 已分配=16.91GB, 已保留=30.15GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-26 13:51:08] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:51:11] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:51:14] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: 737-500 (置信度: 0.1298)
+总耗时: 11.55秒
+succ. pred cate:737-500, true cate:737-600, used_slow:True, confidence:0.1298
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Beechcraft_1900/0048340.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Beechcraft_1900/0048340.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-80', 'MD-87', 'DHC-8-100', 'Beechcraft_1900', 'Metroliner', 'Gulfstream_IV', 'MD-90', 'DHC-8-300', 'Gulfstream_V', 'Boeing_717', 'Embraer_Legacy_600', 'Global_Express', 'Challenger_600', 'Saab_340', 'Falcon_2000', 'Cessna_560']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:51:17] [显存监控] 已分配=16.98GB, 已保留=18.36GB, 空闲=30.42GB
+[2025-11-26 13:51:20] [显存监控] 已分配=17.00GB, 已保留=18.36GB, 空闲=30.41GB
+[2025-11-26 13:51:23] [显存监控] 已分配=17.00GB, 已保留=18.36GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.36GB, 剩余=30.50GB
+模糊匹配类别修正: 'Embraer ERJ-145' -> 'ERJ 145'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:51:26] [显存监控] 已分配=17.00GB, 已保留=18.36GB, 空闲=30.41GB
+[2025-11-26 13:51:29] [显存监控] 已分配=17.01GB, 已保留=18.36GB, 空闲=30.39GB
+[2025-11-26 13:51:32] [显存监控] 已分配=17.00GB, 已保留=18.36GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.36GB, 剩余=30.50GB
+分类完成: Beechcraft_1900 (置信度: 0.8500)
+总耗时: 16.95秒
+succ. pred cate:Beechcraft_1900, true cate:Beechcraft 1900, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-700/1503761.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-700/1503761.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A320', 'A319', 'E-190', '737-500', '737-800', 'A300B4', 'A321', '707-320', '737-400', '737-900', '737-600', '757-200', 'ATR-72', 'CRJ-900', 'CRJ-200', 'Fokker_100', 'Fokker_70']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:51:35] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:51:38] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:51:41] [显存监控] 已分配=17.08GB, 已保留=27.83GB, 空闲=30.32GB
+[2025-11-26 13:51:44] [显存监控] 已分配=17.08GB, 已保留=27.83GB, 空闲=30.32GB
+[2025-11-26 13:51:47] [显存监控] 已分配=17.09GB, 已保留=27.83GB, 空闲=30.31GB
+推理后显存: 已分配=16.91GB, 已保留=27.83GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:51:50] [显存监控] 已分配=16.91GB, 已保留=27.83GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:51:53] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:51:56] [显存监控] 已分配=17.17GB, 已保留=27.82GB, 空闲=30.23GB
+[2025-11-26 13:51:59] [显存监控] 已分配=17.07GB, 已保留=27.82GB, 空闲=30.33GB
+[2025-11-26 13:52:02] [显存监控] 已分配=17.07GB, 已保留=27.82GB, 空闲=30.33GB
+[2025-11-26 13:52:05] [显存监控] 已分配=17.08GB, 已保留=27.82GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=27.82GB, 剩余=30.50GB
+分类完成: 737-800 (置信度: 0.9500)
+总耗时: 32.62秒
+succ. pred cate:737-800, true cate:737-700, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Hawk_T1/1822339.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Hawk_T1/1822339.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Saab_2000', 'EMB-120', 'Hawk_T1', 'Saab_340', 'BAE_146-200', 'F-16A__B', 'Falcon_2000', 'Yak-42', 'BAE_146-300', 'Embraer_Legacy_600', 'F__A-18', 'Tornado', 'Eurofighter_Typhoon', 'Model_B200', 'C-130', 'DHC-1', 'Spitfire', 'SR-20']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:52:08] [显存监控] 已分配=17.02GB, 已保留=19.17GB, 空闲=30.38GB
+[2025-11-26 13:52:11] [显存监控] 已分配=17.02GB, 已保留=19.17GB, 空闲=30.38GB
+[2025-11-26 13:52:14] [显存监控] 已分配=17.04GB, 已保留=19.17GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Hawk_T1' -> 'Hawk T1'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:52:17] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:52:20] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:52:23] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Hawk T1 (置信度: 0.9500)
+总耗时: 18.03秒
+succ. pred cate:Hawk T1, true cate:Hawk T1, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A319/1818746.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A319/1818746.jpg
+[2025-11-26 13:52:23] Processing fast-slow:  50%|█████     | 50/100 [14:04<17:39, 21.19s/it][2025-11-26 13:52:45] Processing fast-slow:  50%|█████     | 50/100 [14:04<17:39, 21.19s/it][2025-11-26 13:52:45] Processing fast-slow:  51%|█████     | 51/100 [14:14<14:28, 17.72s/it][2025-11-26 13:52:55] Processing fast-slow:  51%|█████     | 51/100 [14:14<14:28, 17.72s/it][2025-11-26 13:52:55] Processing fast-slow:  52%|█████▏    | 52/100 [14:26<12:46, 15.96s/it][2025-11-26 13:53:07] Processing fast-slow:  52%|█████▏    | 52/100 [14:26<12:46, 15.96s/it][2025-11-26 13:53:07] Processing fast-slow:  53%|█████▎    | 53/100 [14:45<13:19, 17.00s/it][2025-11-26 13:53:26] Processing fast-slow:  53%|█████▎    | 53/100 [14:45<13:19, 17.00s/it][2025-11-26 13:53:26] Processing fast-slow:  54%|█████▍    | 54/100 [15:03<13:11, 17.22s/it][2025-11-26 13:53:44] Processing fast-slow:  54%|█████▍    | 54/100 [15:03<13:11, 17.22s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', '737-300', 'A320', '737-800', 'A319', 'A300B4', 'A321', '737-900', '737-400', '737-700', 'ATR-72', '737-600', 'E-195', 'E-190', 'CRJ-900', '767-200', 'Fokker_100']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:52:26] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 13:52:29] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:52:32] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:52:35] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:52:38] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 13:52:41] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 13:52:44] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.75GB, 剩余=30.50GB
+分类完成: A320 (置信度: 0.9000)
+总耗时: 21.73秒
+succ. pred cate:A320, true cate:A319, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-9-30/0746111.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-9-30/0746111.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-9-30', '707-320', 'Tu-154', 'Tu-134', 'MD-87', 'MD-80', 'DC-8', 'ERJ_145', 'ERJ_135', 'MD-90', 'Il-76', 'An-12', 'Falcon_900', '727-200', 'A310', 'Falcon_2000']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:52:47] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:52:50] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:52:53] [显存监控] 已分配=17.05GB, 已保留=18.92GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: DC-9-30 (置信度: 0.1108)
+总耗时: 9.62秒
+succ. pred cate:DC-9-30, true cate:DC-9-30, used_slow:True, confidence:0.1108
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-200/1568114.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-200/1568114.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A330-200', 'A330-300', 'A340-300', 'A340-200', 'A340-500', 'A300B4', 'A340-600', 'A380', '767-200', '767-300', '767-400', '747-300', 'A310', '747-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:52:56] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:52:59] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:53:02] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:53:05] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+分类完成: A340-300 (置信度: 0.1110)
+总耗时: 11.87秒
+succ. pred cate:A340-300, true cate:A340-200, used_slow:True, confidence:0.1110
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Boeing_717/1351340.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Boeing_717/1351340.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-80', 'MD-87', 'MD-90', '737-500', '757-200', '737-800', '757-300', '737-600', '737-200', '737-400', 'Boeing_717', 'Global_Express', '737-700', 'Embraer_Legacy_600', 'CRJ-900', 'A319', 'CRJ-700']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:53:08] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:53:11] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 13:53:14] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.75GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Boeing_717' -> 'Boeing 717'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:53:17] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:53:20] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 13:53:23] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 13:53:26] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.75GB, 剩余=30.50GB
+分类完成: MD-80 (置信度: 0.9500)
+总耗时: 19.43秒
+failed. pred cate:MD-80, true cate:Boeing 717, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/707-320/1427680.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/707-320/1427680.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['L-1011', '707-320', 'DC-8', '747-200', 'DC-10', '747-300', '747-100', '747-400', 'A340-200', 'A340-600', '737-200', 'A310', 'A300B4', '727-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:53:29] [显存监控] 已分配=17.04GB, 已保留=19.33GB, 空闲=30.36GB
+[2025-11-26 13:53:32] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.34GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:53:35] [显存监控] 已分配=16.91GB, 已保留=19.34GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:53:38] [显存监控] 已分配=17.00GB, 已保留=19.32GB, 空闲=30.40GB
+[2025-11-26 13:53:41] [显存监控] 已分配=17.00GB, 已保留=19.32GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.32GB, 剩余=30.50GB
+分类完成: Boeing 707-320 (置信度: 0.8500)
+总耗时: 17.71秒
+succ. pred cate:Boeing 707-320, true cate:707-320, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-900/2071807.jpg
+执行快思考...
+[2025-11-26 13:53:44] [显存监控] 已分配=16.91GB, 已保留=19.32GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-900/2071807.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', '737-300', 'A320', 'A319', '737-600', '737-800', '737-700', '737-900', '737-400', '737-200', '757-200', 'A340-500', '777-200', 'A340-300', 'A330-200', 'Fokker_100']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:53:47] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 13:53:50] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:53:53] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: 737-900 (置信度: 0.0880)
+总耗时: 11.54秒
+[2025-11-26 13:53:44] Processing fast-slow:  55%|█████▌    | 55/100 [15:14<11:38, 15.51s/it][2025-11-26 13:53:55] Processing fast-slow:  55%|█████▌    | 55/100 [15:14<11:38, 15.51s/it][2025-11-26 13:53:55] Processing fast-slow:  56%|█████▌    | 56/100 [15:35<12:26, 16.97s/it][2025-11-26 13:54:16] Processing fast-slow:  56%|█████▌    | 56/100 [15:35<12:26, 16.97s/it][2025-11-26 13:54:16] Processing fast-slow:  57%|█████▋    | 57/100 [15:54<12:46, 17.82s/it][2025-11-26 13:54:35] Processing fast-slow:  57%|█████▋    | 57/100 [15:54<12:46, 17.82s/it][2025-11-26 13:54:35] Processing fast-slow:  58%|█████▊    | 58/100 [16:14<12:49, 18.33s/it][2025-11-26 13:54:55] Processing fast-slow:  58%|█████▊    | 58/100 [16:14<12:49, 18.33s/it][2025-11-26 13:54:55] Processing fast-slow:  59%|█████▉    | 59/100 [16:33<12:39, 18.52s/it][2025-11-26 13:55:14] Processing fast-slow:  59%|█████▉    | 59/100 [16:33<12:39, 18.52s/it]succ. pred cate:737-900, true cate:737-900, used_slow:True, confidence:0.0880
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/CRJ-900/2154432.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/CRJ-900/2154432.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', '737-300', '707-320', 'Yak-42', 'MD-87', 'ERJ_135', 'ERJ_145', 'MD-80', '757-200', 'MD-90', 'E-195', 'Falcon_900', 'CRJ-200', 'CRJ-900', 'Fokker_100', 'E-190', 'DC-9-30', 'ATR-72', 'A320']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:53:56] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:53:59] [显存监控] 已分配=17.05GB, 已保留=20.76GB, 空闲=30.35GB
+[2025-11-26 13:54:02] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:54:05] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:54:08] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 13:54:11] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 13:54:14] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.75GB, 剩余=30.50GB
+分类完成: ERJ_145 (置信度: 0.8500)
+总耗时: 20.37秒
+succ. pred cate:ERJ_145, true cate:CRJ-900, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Dornier_328/0997581.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Dornier_328/0997581.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ATR-72', 'DHC-8-100', 'DHC-8-300', 'ATR-42', 'ERJ_145', 'ERJ_135', 'Beechcraft_1900', 'A319', 'Saab_340', 'A320', 'BAE_146-200', 'Dornier_328', 'An-12', 'Falcon_900', '737-600', 'Saab_2000', 'Fokker_50', 'Model_B200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:54:17] [显存监控] 已分配=17.01GB, 已保留=19.49GB, 空闲=30.39GB
+[2025-11-26 13:54:20] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+[2025-11-26 13:54:23] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+[2025-11-26 13:54:26] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:54:29] [显存监控] 已分配=17.02GB, 已保留=19.48GB, 空闲=30.38GB
+[2025-11-26 13:54:32] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+[2025-11-26 13:54:35] [显存监控] 已分配=17.02GB, 已保留=19.48GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: DHC-8-300 (置信度: 0.9000)
+总耗时: 19.80秒
+succ. pred cate:DHC-8-300, true cate:Dornier 328, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Saab_2000/0763431.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Saab_2000/0763431.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ERJ_135', 'ATR-72', 'DHC-8-100', 'ERJ_145', 'Saab_340', 'CRJ-700', 'DHC-8-300', 'Embraer_Legacy_600', 'CRJ-900', 'ATR-42', 'E-195', 'Falcon_900', 'Saab_2000', 'Dornier_328', 'BAE_146-200', 'Falcon_2000']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:54:38] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:54:41] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:54:44] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Saab_340' -> 'Saab 340'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:54:47] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.41GB
+[2025-11-26 13:54:50] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:54:53] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: DHC-8-300 (置信度: 0.8500)
+总耗时: 19.52秒
+succ. pred cate:DHC-8-300, true cate:Saab 2000, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/BAE_146-200/0992232.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/BAE_146-200/0992232.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ERJ_145', 'ERJ_135', 'MD-87', 'ATR-72', 'Beechcraft_1900', 'E-190', 'Saab_340', 'Tu-154', 'Yak-42', 'MD-80', 'Falcon_900', 'An-12', 'BAE_146-300', 'Falcon_2000', 'Fokker_100', 'DHC-8-300', 'Tu-134']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:54:56] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:54:59] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:55:02] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'BAE_146-300' -> 'BAE 146-300'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:55:05] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:55:08] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:55:11] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:55:14] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: ERJ_145 (置信度: 0.9500)
+总耗时: 18.94秒
+succ. pred cate:ERJ_145, true cate:BAE 146-200, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/CRJ-700/0917341.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/CRJ-700/0917341.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['CRJ-700', 'CRJ-900', 'ERJ_145', 'ERJ_135', 'CRJ-200', 'MD-80', 'MD-87', 'MD-90', 'Metroliner', '757-200', 'Global_Express', 'Falcon_2000', 'Falcon_900', 'Beechcraft_1900', 'Boeing_717', 'Embraer_Legacy_600', 'E-195']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:55:17] [显存监控] 已分配=17.16GB, 已保留=27.27GB, 空闲=30.24GB
+[2025-11-26 13:55:20] [显存监控] 已分配=17.16GB, 已保留=27.27GB, 空闲=30.25GB
+[2025-11-26 13:55:23] [显存监控] 已分配=17.08GB, 已保留=27.27GB, 空闲=30.32GB
+[2025-11-26 13:55:26] [显存监控] 已分配=17.08GB, 已保留=27.27GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=27.27GB, 剩余=30.50GB
+分类完成: CRJ-700 (置信度: 0.1179)
+[2025-11-26 13:55:14] Processing fast-slow:  60%|██████    | 60/100 [16:47<11:23, 17.08s/it][2025-11-26 13:55:28] Processing fast-slow:  60%|██████    | 60/100 [16:47<11:23, 17.08s/it][2025-11-26 13:55:28] Processing fast-slow:  61%|██████    | 61/100 [17:05<11:15, 17.33s/it][2025-11-26 13:55:45] Processing fast-slow:  61%|██████    | 61/100 [17:05<11:15, 17.33s/it][2025-11-26 13:55:45] Processing fast-slow:  62%|██████▏   | 62/100 [17:22<11:04, 17.49s/it][2025-11-26 13:56:03] Processing fast-slow:  62%|██████▏   | 62/100 [17:22<11:04, 17.49s/it][2025-11-26 13:56:03] Processing fast-slow:  63%|██████▎   | 63/100 [17:32<09:16, 15.05s/it][2025-11-26 13:56:13] Processing fast-slow:  63%|██████▎   | 63/100 [17:32<09:16, 15.05s/it][2025-11-26 13:56:13] Processing fast-slow:  64%|██████▍   | 64/100 [17:42<08:06, 13.51s/it][2025-11-26 13:56:23] Processing fast-slow:  64%|██████▍   | 64/100 [17:42<08:06, 13.51s/it][2025-11-26 13:56:23] Processing fast-slow:  65%|██████▌   | 65/100 [17:50<06:59, 11.99s/it][2025-11-26 13:56:31] Processing fast-slow:  65%|██████▌   | 65/100 [17:50<06:59, 11.99s/it]总耗时: 13.72秒
+succ. pred cate:CRJ-700, true cate:CRJ-700, used_slow:True, confidence:0.1179
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Saab_340/2222402.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Saab_340/2222402.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DHC-8-100', 'ATR-72', '737-500', 'Saab_340', 'DHC-8-300', '737-300', 'ATR-42', 'A321', 'A320', 'MD-80', '737-800', 'MD-87', 'Saab_2000', 'CRJ-200', 'Dornier_328', 'CRJ-900', 'BAE_146-200', 'E-195']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-26 13:55:29] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:55:32] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:55:35] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Saab_340' -> 'Saab 340'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:55:38] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:55:41] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:55:44] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: DHC-8-300 (置信度: 0.8500)
+总耗时: 17.92秒
+succ. pred cate:DHC-8-300, true cate:Saab 340, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-8-300/0062697.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-8-300/0062697.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'Gulfstream_IV', 'Beechcraft_1900', 'MD-80', 'MD-87', 'ERJ_135', 'MD-90', 'ERJ_145', 'DHC-8-100', 'DC-9-30', 'Il-76', 'An-12', 'Yak-42', 'Metroliner', 'Cessna_560', 'Challenger_600', 'Falcon_900', 'Global_Express']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:55:47] [显存监控] 已分配=16.99GB, 已保留=18.16GB, 空闲=30.41GB
+[2025-11-26 13:55:50] [显存监控] 已分配=16.99GB, 已保留=18.16GB, 空闲=30.41GB
+[2025-11-26 13:55:53] [显存监控] 已分配=16.99GB, 已保留=18.16GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.16GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:55:56] [显存监控] 已分配=16.96GB, 已保留=17.82GB, 空闲=30.44GB
+[2025-11-26 13:55:59] [显存监控] 已分配=16.96GB, 已保留=17.90GB, 空闲=30.44GB
+[2025-11-26 13:56:02] [显存监控] 已分配=16.99GB, 已保留=17.90GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.90GB, 剩余=30.50GB
+分类完成: DHC-8-100 (置信度: 0.9000)
+总耗时: 17.85秒
+succ. pred cate:DHC-8-100, true cate:DHC-8-300, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-90/2244549.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/MD-90/2244549.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['MD-90', 'MD-80', 'MD-87', '737-400', '737-200', '767-400', '767-200', '737-600', '737-800', '737-700', 'CRJ-700', 'ERJ_145', 'A320', '737-900', '757-300', 'E-195', 'Fokker_100', 'E-190']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:05] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:56:08] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 13:56:11] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: MD-90 (置信度: 0.1187)
+总耗时: 9.36秒
+succ. pred cate:MD-90, true cate:MD-90, used_slow:True, confidence:0.1187
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-1/1940512.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-1/1940512.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DH-82', 'Fokker_100', 'Fokker_50', 'Spitfire', 'DHC-1', 'Cessna_208', 'Fokker_70', 'Cessna_172', 'EMB-120', 'DHC-6', 'C-47', 'DR-400', 'PA-28', 'SR-20', 'DC-3', 'DC-6']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:14] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:56:17] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:56:20] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+分类完成: DHC-1 (置信度: 0.0984)
+总耗时: 9.92秒
+succ. pred cate:DHC-1, true cate:DHC-1, used_slow:True, confidence:0.0984
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ATR-72/0783933.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ATR-72/0783933.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ATR-72', 'DHC-8-100', 'ATR-42', 'DHC-8-300', '737-500', 'Saab_340', 'A320', '737-300', '737-600', 'A319', 'An-12', 'Dornier_328', 'E-195', 'Fokker_50', 'Saab_2000', 'BAE_146-200', 'MD-87', 'Falcon_900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:56:23] [显存监控] 已分配=16.91GB, 已保留=19.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:26] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:56:29] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: ATR-72 (置信度: 0.1404)
+总耗时: 8.44秒
+succ. pred cate:ATR-72, true cate:ATR-72, used_slow:True, confidence:0.1404
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A300B4/0102223.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A300B4/0102223.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-9-30', 'MD-90', 'Global_Express', 'DC-8', 'MD-80', 'MD-87', '767-300', '767-200', '767-400', '757-300', 'Il-76', 'A300B4', '727-200', '707-320', 'A310', 'An-12', 'DC-6']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:32] [显存监控] 已分配=16.97GB, 已保留=18.04GB, 空闲=30.43GB
+[2025-11-26 13:56:35] [显存监控] 已分配=16.99GB, 已保留=18.40GB, 空闲=30.41GB
+[2025-11-26 13:56:38] [显存监控] 已分配=17.01GB, 已保留=18.40GB, 空闲=30.39GB
+[2025-11-26 13:56:41] [显存监控] 已分配=16.99GB, 已保留=18.40GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.40GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:44] [显存监控] 已分配=16.99GB, 已保留=18.11GB, 空闲=30.41GB
+[2025-11-26 13:56:31] Processing fast-slow:  66%|██████▌   | 66/100 [18:08<07:42, 13.61s/it][2025-11-26 13:56:48] Processing fast-slow:  66%|██████▌   | 66/100 [18:08<07:42, 13.61s/it][2025-11-26 13:56:48] Processing fast-slow:  67%|██████▋   | 67/100 [18:25<08:04, 14.68s/it][2025-11-26 13:57:06] Processing fast-slow:  67%|██████▋   | 67/100 [18:25<08:04, 14.68s/it][2025-11-26 13:57:06] Processing fast-slow:  68%|██████▊   | 68/100 [18:35<07:07, 13.36s/it][2025-11-26 13:57:16] Processing fast-slow:  68%|██████▊   | 68/100 [18:35<07:07, 13.36s/it][2025-11-26 13:57:16] Processing fast-slow:  69%|██████▉   | 69/100 [18:54<07:42, 14.92s/it][2025-11-26 13:57:34] Processing fast-slow:  69%|██████▉   | 69/100 [18:54<07:42, 14.92s/it][2025-11-26 13:57:34] Processing fast-slow:  70%|███████   | 70/100 [19:16<08:38, 17.28s/it][2025-11-26 13:57:57] Processing fast-slow:  70%|███████   | 70/100 [19:16<08:38, 17.28s/it][2025-11-26 13:56:47] [显存监控] 已分配=16.99GB, 已保留=18.11GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.11GB, 剩余=30.50GB
+分类完成: MD-80 (置信度: 0.8000)
+总耗时: 17.40秒
+failed. pred cate:MD-80, true cate:A300B4, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ERJ_135/0227129.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ERJ_135/0227129.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-9-30', 'MD-90', 'MD-87', '707-320', 'MD-80', 'Tu-134', 'Tu-154', 'DC-8', '727-200', 'ERJ_135', 'Il-76', 'An-12', 'Yak-42', 'Falcon_900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:50] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:56:53] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 13:56:56] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'ERJ_135' -> 'ERJ 135'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:56:59] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:57:02] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 13:57:05] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: ERJ_135 (置信度: 0.8500)
+总耗时: 17.18秒
+succ. pred cate:ERJ_135, true cate:ERJ 135, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A330-200/1992921.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A330-200/1992921.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A340-500', 'A330-200', 'A340-300', 'A340-600', 'A340-200', 'A330-300', '767-200', '767-400', '767-300', 'A320', '737-600', '747-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:57:08] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:57:11] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 13:57:14] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: A330-200 (置信度: 0.1059)
+总耗时: 10.27秒
+succ. pred cate:A330-200, true cate:A330-200, used_slow:True, confidence:0.1059
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Falcon_900/1256114.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Falcon_900/1256114.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'Gulfstream_IV', 'ERJ_145', 'ERJ_135', 'CRJ-900', 'CRJ-200', 'CRJ-700', 'Gulfstream_V', 'MD-80', 'Tu-154', 'Falcon_900', 'Global_Express', 'Falcon_2000', 'Cessna_525', 'Challenger_600', 'Cessna_560', 'BAE-125']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:57:17] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:57:20] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:57:23] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Falcon_900' -> 'Falcon 900'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:57:26] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:57:29] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:57:32] [显存监控] 已分配=17.02GB, 已保留=19.17GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Dassault Falcon 900EX (置信度: 0.9000)
+总耗时: 18.55秒
+succ. pred cate:Dassault Falcon 900EX, true cate:Falcon 900, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-6/1384617.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-6/1384617.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DHC-8-100', 'Cessna_525', 'Cessna_560', 'Cessna_208', 'Dornier_328', 'DHC-6', 'DHC-8-300', 'ATR-72', 'Beechcraft_1900', 'ATR-42', 'An-12', 'Model_B200', 'SR-20', 'Fokker_50']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:57:35] [显存监控] 已分配=16.91GB, 已保留=19.17GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 13:57:38] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 13:57:41] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 13:57:44] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Dornier_328' -> 'Dornier 328'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 13:57:47] [显存监控] 已分配=17.07GB, 已保留=22.16GB, 空闲=30.33GB
+[2025-11-26 13:57:50] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 13:57:53] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 13:57:56] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+分类完成: DHC-6 (置信度: 0.9500)
+总耗时: 22.79秒
+succ. pred cate:DHC-6, true cate:DHC-6, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Eurofighter_Typhoon/1940255.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Eurofighter_Typhoon/1940255.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['F-16A__B', 'Eurofighter_Typhoon', 'F__A-18', 'Hawk_T1', 'Saab_2000', 'BAE_146-200', 'E-170', 'E-195', 'EMB-120', 'Model_B200', 'Tornado', 'Gulfstream_V', 'DHC-1', 'Il-76', 'C-130', 'Cessna_525']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:57:59] [显存监控] 已分配=17.04GB, 已保留=20.76GB, 空闲=30.36GB
+[2025-11-26 13:58:02] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 13:58:05] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:58:08] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 13:58:11] [显存监控] 已分配=17.02GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 13:58:14] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.75GB, 剩余=30.50GB
+分类完成: Eurofighter Typhoon (置信度: 0.9500)
+总耗时: 18.26秒
+[2025-11-26 13:57:57] Processing fast-slow:  71%|███████   | 71/100 [19:35<08:29, 17.57s/it][2025-11-26 13:58:16] Processing fast-slow:  71%|███████   | 71/100 [19:35<08:29, 17.57s/it][2025-11-26 13:58:16] Processing fast-slow:  72%|███████▏  | 72/100 [19:55<08:35, 18.39s/it][2025-11-26 13:58:36] Processing fast-slow:  72%|███████▏  | 72/100 [19:55<08:35, 18.39s/it][2025-11-26 13:58:36] Processing fast-slow:  73%|███████▎  | 73/100 [20:13<08:13, 18.29s/it][2025-11-26 13:58:54] Processing fast-slow:  73%|███████▎  | 73/100 [20:13<08:13, 18.29s/it][2025-11-26 13:58:54] Processing fast-slow:  74%|███████▍  | 74/100 [20:28<07:32, 17.40s/it][2025-11-26 13:59:09] Processing fast-slow:  74%|███████▍  | 74/100 [20:28<07:32, 17.40s/it][2025-11-26 13:59:09] Processing fast-slow:  75%|███████▌  | 75/100 [20:49<07:40, 18.40s/it][2025-11-26 13:59:30] Processing fast-slow:  75%|███████▌  | 75/100 [20:49<07:40, 18.40s/it]succ. pred cate:Eurofighter Typhoon, true cate:Eurofighter Typhoon, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/E-195/1519022.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/E-195/1519022.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['737-500', 'A320', '737-800', 'A319', '737-300', 'A321', '737-600', '737-900', '737-700', '737-400', 'E-195', 'E-190', 'ATR-72', '767-200', 'Saab_2000']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:58:17] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 13:58:20] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:58:23] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:58:26] [显存监控] 已分配=16.91GB, 已保留=19.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:58:29] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:58:32] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:58:35] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: A320 (置信度: 0.8500)
+总耗时: 20.31秒
+failed. pred cate:A320, true cate:E-195, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Il-76/0979868.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Il-76/0979868.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['BAE-125', 'Tu-134', 'Tu-154', 'Embraer_Legacy_600', 'Il-76', 'Falcon_2000', 'Challenger_600', 'MD-80', 'Yak-42', 'ATR-72', 'An-12', 'Falcon_900', 'Cessna_525', 'Global_Express', 'Gulfstream_IV', 'Cessna_560']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:58:38] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:58:41] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:58:44] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:58:47] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:58:50] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:58:53] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Il-76 (置信度: 0.9500)
+总耗时: 18.03秒
+succ. pred cate:Il-76, true cate:Il-76, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/BAE_146-300/0136162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/BAE_146-300/0136162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DHC-8-100', 'Boeing_717', 'DHC-8-300', 'MD-80', 'MD-87', 'Saab_340', 'BAE-125', 'Embraer_Legacy_600', 'MD-90', 'Beechcraft_1900', 'An-12', 'ATR-42', 'CRJ-700', 'Falcon_900', 'ATR-72', 'Global_Express', 'Il-76', 'Metroliner', 'Falcon_2000', '737-500']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:58:56] [显存监控] 已分配=17.04GB, 已保留=19.01GB, 空闲=30.36GB
+[2025-11-26 13:58:59] [显存监控] 已分配=17.02GB, 已保留=19.01GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.01GB, 剩余=30.50GB
+模糊匹配类别修正: 'BAE-146' -> 'BAE 146-300'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 13:59:02] [显存监控] 已分配=16.91GB, 已保留=19.01GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:05] [显存监控] 已分配=17.02GB, 已保留=19.02GB, 空闲=30.39GB
+[2025-11-26 13:59:08] [显存监控] 已分配=17.00GB, 已保留=19.02GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.02GB, 剩余=30.50GB
+分类完成: Boeing_717 (置信度: 0.9500)
+总耗时: 15.32秒
+succ. pred cate:Boeing_717, true cate:BAE 146-300, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-100/1008872.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-100/1008872.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['L-1011', '707-320', '747-200', 'DC-8', '747-100', '747-300', '747-400', 'DC-10', 'A300B4', 'A340-200', '737-200', 'A310', '727-200', '767-200', 'DC-9-30']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:11] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:59:14] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:59:17] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:59:20] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:23] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:59:26] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:59:29] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: 747-200 (置信度: 0.9000)
+总耗时: 20.76秒
+succ. pred cate:747-200, true cate:747-100, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ATR-42/1890576.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ATR-42/1890576.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DHC-8-100', 'ATR-72', 'DHC-8-300', 'ATR-42', 'Saab_340', 'Beechcraft_1900', 'Saab_2000', 'ERJ_145', 'ERJ_135', 'CRJ-900', 'Dornier_328', 'BAE_146-200', 'An-12', 'Fokker_50', 'Falcon_900', 'Falcon_2000', 'E-195']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:32] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:59:35] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 13:59:38] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:41] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:59:44] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 13:59:47] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+[2025-11-26 13:59:30] Processing fast-slow:  76%|███████▌  | 76/100 [21:06<07:14, 18.10s/it][2025-11-26 13:59:47] Processing fast-slow:  76%|███████▌  | 76/100 [21:06<07:14, 18.10s/it][2025-11-26 13:59:47] Processing fast-slow:  77%|███████▋  | 77/100 [21:15<05:48, 15.15s/it][2025-11-26 13:59:56] Processing fast-slow:  77%|███████▋  | 77/100 [21:15<05:48, 15.15s/it][2025-11-26 13:59:56] Processing fast-slow:  78%|███████▊  | 78/100 [21:26<05:07, 13.99s/it][2025-11-26 14:00:07] Processing fast-slow:  78%|███████▊  | 78/100 [21:26<05:07, 13.99s/it][2025-11-26 14:00:07] Processing fast-slow:  79%|███████▉  | 79/100 [21:46<05:33, 15.88s/it][2025-11-26 14:00:27] Processing fast-slow:  79%|███████▉  | 79/100 [21:46<05:33, 15.88s/it][2025-11-26 14:00:27] Processing fast-slow:  80%|████████  | 80/100 [21:55<04:33, 13.68s/it][2025-11-26 14:00:36] Processing fast-slow:  80%|████████  | 80/100 [21:55<04:33, 13.68s/it][2025-11-26 14:00:36] Processing fast-slow:  81%|████████  | 81/100 [22:15<04:55, 15.55s/it][2025-11-26 14:00:56] Processing fast-slow:  81%|████████  | 81/100 [22:15<04:55, 15.55s/it]分类完成: ATR-72 (置信度: 0.9500)
+总耗时: 17.38秒
+succ. pred cate:ATR-72, true cate:ATR-42, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-8-100/0114402.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DHC-8-100/0114402.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Beechcraft_1900', 'Metroliner', 'Cessna_560', 'Cessna_525', 'Cessna_208', 'BAE-125', 'Yak-42', 'DHC-8-100', 'ATR-72', 'MD-80', 'An-12', 'Il-76', 'Model_B200', 'Falcon_900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:50] [显存监控] 已分配=16.99GB, 已保留=18.14GB, 空闲=30.41GB
+[2025-11-26 13:59:53] [显存监控] 已分配=17.01GB, 已保留=18.14GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=18.14GB, 剩余=30.50GB
+分类完成: DHC-8-100 (置信度: 0.0884)
+总耗时: 8.28秒
+succ. pred cate:DHC-8-100, true cate:DHC-8-100, used_slow:True, confidence:0.0884
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Tu-154/1320913.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Tu-154/1320913.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['707-320', 'A300B4', 'A340-500', 'A340-300', 'A340-600', '737-500', 'A340-200', 'E-190', 'ERJ_135', 'ERJ_145', '737-600', '737-800', '747-300', 'A319', '767-400', '747-200', '757-300', 'Fokker_100']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 13:59:56] [显存监控] 已分配=16.91GB, 已保留=18.14GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 13:59:59] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 14:00:02] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 14:00:05] [显存监控] 已分配=17.04GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: 737-500 (置信度: 0.0950)
+总耗时: 11.27秒
+succ. pred cate:737-500, true cate:Tu-154, used_slow:True, confidence:0.0950
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/CRJ-200/1633873.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/CRJ-200/1633873.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ERJ_145', '737-500', 'ERJ_135', 'MD-87', 'MD-80', 'CRJ-700', '737-300', 'DHC-8-100', '757-200', 'E-190', 'Falcon_900', 'CRJ-900', 'CRJ-200', 'Global_Express', 'Saab_2000', 'Fokker_100', 'A340-600']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:00:08] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 14:00:11] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:00:14] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:00:17] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:00:20] [显存监控] 已分配=17.01GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:00:23] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:00:26] [显存监控] 已分配=17.02GB, 已保留=19.17GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: CRJ-700 (置信度: 0.0970)
+总耗时: 20.31秒
+succ. pred cate:CRJ-700, true cate:CRJ-200, used_slow:True, confidence:0.0970
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/767-200/2171010.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/767-200/2171010.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['707-320', 'A300B4', 'A340-600', 'A340-200', 'A340-300', 'L-1011', '747-200', 'A340-500', '747-300', '767-200', 'DC-10', 'A310', 'A380', '777-300', 'Tu-154', '767-400']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:00:29] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:00:32] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:00:35] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+分类完成: A340-300 (置信度: 0.0997)
+总耗时: 8.54秒
+succ. pred cate:A340-300, true cate:767-200, used_slow:True, confidence:0.0997
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-400/1018463.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-400/1018463.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A340-600', '707-320', 'A340-200', 'A340-500', '747-200', 'A340-300', '777-200', 'A330-200', '767-200', '777-300', '747-400', 'A310', '767-400', 'DC-10']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:00:38] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:00:41] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:00:44] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:00:47] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:00:50] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:00:53] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: 747-200 (置信度: 0.9000)
+总耗时: 19.90秒
+succ. pred cate:747-200, true cate:747-400, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/L-1011/0783899.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/L-1011/0783899.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-8', '707-320', 'DC-9-30', '757-300', 'A340-200', 'A310', '757-200', 'A340-600', 'A340-500', '767-300', '737-200', '747-100', 'L-1011', '727-200', 'A300B4', 'DC-10']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 14:00:56] [显存监控] 已分配=16.91GB, 已保留=19.17GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:00:59] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:01:02] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:01:05] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:01:08] [显存监控] 已分配=16.93GB, 已保留=19.17GB, 空闲=30.47GB
+[2025-11-26 14:00:56] Processing fast-slow:  82%|████████▏ | 82/100 [22:35<05:04, 16.93s/it][2025-11-26 14:01:16] Processing fast-slow:  82%|████████▏ | 82/100 [22:35<05:04, 16.93s/it][2025-11-26 14:01:16] Processing fast-slow:  83%|████████▎ | 83/100 [22:45<04:12, 14.85s/it][2025-11-26 14:01:26] Processing fast-slow:  83%|████████▎ | 83/100 [22:45<04:12, 14.85s/it][2025-11-26 14:01:26] Processing fast-slow:  84%|████████▍ | 84/100 [23:04<04:19, 16.20s/it][2025-11-26 14:01:45] Processing fast-slow:  84%|████████▍ | 84/100 [23:04<04:19, 16.20s/it][2025-11-26 14:01:45] Processing fast-slow:  85%|████████▌ | 85/100 [23:18<03:50, 15.39s/it][2025-11-26 14:01:59] Processing fast-slow:  85%|████████▌ | 85/100 [23:18<03:50, 15.39s/it][2025-11-26 14:01:59] Processing fast-slow:  86%|████████▌ | 86/100 [23:38<03:57, 16.99s/it][2025-11-26 14:02:19] Processing fast-slow:  86%|████████▌ | 86/100 [23:38<03:57, 16.99s/it][2025-11-26 14:02:19] Processing fast-slow:  87%|████████▋ | 87/100 [24:00<03:57, 18.31s/it][2025-11-26 14:02:41] Processing fast-slow:  87%|████████▋ | 87/100 [24:00<03:57, 18.31s/it][2025-11-26 14:01:11] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:01:14] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: L-1011 TriStar (置信度: 0.9500)
+总耗时: 20.15秒
+succ. pred cate:L-1011 TriStar, true cate:L-1011, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Challenger_600/1387066.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Challenger_600/1387066.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', 'Gulfstream_IV', 'Beechcraft_1900', 'Gulfstream_V', 'ERJ_145', 'ERJ_135', 'Cessna_560', 'Cessna_525', 'Challenger_600', 'CRJ-900', 'Global_Express', 'Falcon_900', 'Falcon_2000', 'BAE-125']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:01:17] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 14:01:20] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:01:23] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Embraer_Legacy_600' -> 'Embraer Legacy 600'
+分类完成: Embraer Legacy 600 (置信度: 0.1607)
+总耗时: 10.01秒
+succ. pred cate:Embraer Legacy 600, true cate:Challenger 600, used_slow:True, confidence:0.1607
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A321/1616512.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A321/1616512.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['757-300', '767-200', '737-800', '757-200', '767-300', '707-320', '737-200', '767-400', 'DC-9-30', '737-900', 'MD-87', 'Tu-154', 'A310', 'A320', 'Fokker_100', 'A340-600', 'Saab_340']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 14:01:26] [显存监控] 已分配=16.91GB, 已保留=19.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:01:29] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:01:32] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:01:35] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:01:38] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:01:41] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+[2025-11-26 14:01:44] [显存监控] 已分配=17.00GB, 已保留=19.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.17GB, 剩余=30.50GB
+分类完成: Airbus A321 (置信度: 0.9500)
+总耗时: 19.34秒
+succ. pred cate:Airbus A321, true cate:A321, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/E-190/1762097.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/E-190/1762097.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Embraer_Legacy_600', '737-500', 'ERJ_135', 'ERJ_145', 'Gulfstream_IV', 'DHC-8-100', '707-320', '737-300', 'Boeing_717', 'Saab_340', 'Falcon_900', 'Falcon_2000', 'Global_Express', 'Cessna_525', 'Gulfstream_V', 'MD-87', 'ATR-72', 'Dornier_328']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-26 14:01:47] [显存监控] 已分配=17.14GB, 已保留=25.78GB, 空闲=30.27GB
+[2025-11-26 14:01:50] [显存监控] 已分配=17.14GB, 已保留=25.78GB, 空闲=30.27GB
+[2025-11-26 14:01:53] [显存监控] 已分配=17.07GB, 已保留=25.78GB, 空闲=30.33GB
+[2025-11-26 14:01:56] [显存监控] 已分配=17.07GB, 已保留=25.78GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=25.78GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Embraer_Legacy_600' -> 'Embraer Legacy 600'
+分类完成: Embraer Legacy 600 (置信度: 0.1182)
+总耗时: 13.51秒
+failed. pred cate:Embraer Legacy 600, true cate:E-190, used_slow:True, confidence:0.1182
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/777-200/1379983.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/777-200/1379983.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A340-200', 'A340-500', 'A340-300', 'A330-200', 'A330-300', 'A380', 'A340-600', '767-300', '777-300', '767-400', '767-200', '747-200', 'A310', '747-300', '757-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 14:01:59] [显存监控] 已分配=16.91GB, 已保留=25.78GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-26 14:02:02] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 14:02:05] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 14:02:08] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:02:11] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 14:02:14] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.38GB
+[2025-11-26 14:02:17] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: Boeing 777-300 (置信度: 0.9500)
+总耗时: 20.71秒
+succ. pred cate:Boeing 777-300, true cate:777-200, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/767-400/1031445.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/767-400/1031445.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A330-300', 'A330-200', 'A340-300', 'A340-200', 'A340-500', '767-200', '767-400', 'A340-600', '767-300', '757-300', 'A310', '747-200', '737-600', '737-700']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:02:20] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 14:02:23] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 14:02:26] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 14:02:29] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:02:32] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 14:02:35] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 14:02:38] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: Boeing 767-300 (置信度: 0.9000)
+总耗时: 21.39秒
+succ. pred cate:Boeing 767-300, true cate:767-400, used_slow:True, confidence:0.9000
+[2025-11-26 14:02:41] Processing fast-slow:  88%|████████▊ | 88/100 [24:23<03:56, 19.67s/it][2025-11-26 14:03:04] Processing fast-slow:  88%|████████▊ | 88/100 [24:23<03:56, 19.67s/it][2025-11-26 14:03:04] Processing fast-slow:  89%|████████▉ | 89/100 [24:32<03:01, 16.53s/it][2025-11-26 14:03:13] Processing fast-slow:  89%|████████▉ | 89/100 [24:32<03:01, 16.53s/it][2025-11-26 14:03:13] Processing fast-slow:  90%|█████████ | 90/100 [24:52<02:56, 17.64s/it][2025-11-26 14:03:33] Processing fast-slow:  90%|█████████ | 90/100 [24:52<02:56, 17.64s/it][2025-11-26 14:03:33] Processing fast-slow:  90%|█████████ | 90/100 [24:52<02:56, 17.64s/it][2025-11-26 14:03:33] Processing fast-slow:  92%|█████████▏| 92/100 [25:14<01:55, 14.49s/it][2025-11-26 14:03:55] Processing fast-slow:  92%|█████████▏| 92/100 [25:14<01:55, 14.49s/it][2025-11-26 14:03:55] Processing fast-slow:  93%|█████████▎| 93/100 [25:25<01:35, 13.70s/it][2025-11-26 14:04:06] Processing fast-slow:  93%|█████████▎| 93/100 [25:25<01:35, 13.70s/it]开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ERJ_145/1468398.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/ERJ_145/1468398.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ATR-72', 'DHC-8-100', 'DHC-8-300', '737-500', '737-600', 'ATR-42', '737-900', '737-800', '737-400', 'MD-80', 'E-195', 'Fokker_100', 'MD-87', 'Falcon_900', 'Boeing_717', 'A319', 'Tu-134']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 14:02:41] [显存监控] 已分配=16.91GB, 已保留=18.92GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 14:02:44] [显存监控] 已分配=17.07GB, 已保留=22.16GB, 空闲=30.33GB
+[2025-11-26 14:02:47] [显存监控] 已分配=17.07GB, 已保留=22.16GB, 空闲=30.33GB
+[2025-11-26 14:02:50] [显存监控] 已分配=17.04GB, 已保留=22.16GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-26 14:02:53] [显存监控] 已分配=17.07GB, 已保留=22.16GB, 空闲=30.33GB
+[2025-11-26 14:02:56] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 14:02:59] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+[2025-11-26 14:03:02] [显存监控] 已分配=17.03GB, 已保留=22.16GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.16GB, 剩余=30.50GB
+分类完成: DHC-8-300 (置信度: 0.9000)
+总耗时: 22.87秒
+failed. pred cate:DHC-8-300, true cate:ERJ 145, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-6/0091297.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/DC-6/0091297.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['DC-6', 'DC-3', 'C-47', 'Beechcraft_1900', 'DHC-6', 'BAE-125', 'Fokker_50', 'DC-8', 'DC-9-30', 'Dornier_328', 'C-130', 'Il-76', 'An-12', 'Metroliner']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:03:05] [显存监控] 已分配=16.99GB, 已保留=18.14GB, 空闲=30.41GB
+[2025-11-26 14:03:08] [显存监控] 已分配=17.01GB, 已保留=18.14GB, 空闲=30.39GB
+[2025-11-26 14:03:11] [显存监控] 已分配=16.99GB, 已保留=18.14GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.14GB, 剩余=30.50GB
+分类完成: DC-6 (置信度: 0.1408)
+总耗时: 9.20秒
+succ. pred cate:DC-6, true cate:DC-6, used_slow:True, confidence:0.1408
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-300/0278443.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/737-300/0278443.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', '707-320', '737-500', 'MD-87', 'DC-9-30', 'L-1011', 'MD-80', '767-300', 'MD-90', '757-300', 'A310', '767-400', '767-200', '757-200', 'DC-8', 'Fokker_70', '747-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:03:14] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+[2025-11-26 14:03:17] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+[2025-11-26 14:03:20] [显存监控] 已分配=17.02GB, 已保留=18.87GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.87GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-26 14:03:23] [显存监控] 已分配=16.91GB, 已保留=18.87GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:03:26] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+[2025-11-26 14:03:29] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+[2025-11-26 14:03:32] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.87GB, 剩余=30.50GB
+分类完成: 737-500 (置信度: 0.8500)
+总耗时: 20.21秒
+succ. pred cate:737-500, true cate:737-300, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Spitfire/1173868.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Spitfire (置信度: 0.3607)
+总耗时: 0.05秒
+succ. pred cate:Spitfire, true cate:Spitfire, used_slow:False, confidence:0.3607
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/767-300/0481979.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/767-300/0481979.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'L-1011', 'A380', 'A330-200', 'A330-300', 'A340-500', 'A340-300', 'A340-600', 'A340-200', '707-320', '747-200', '767-400', 'A310', '777-200', 'Fokker_70', '777-300', '747-300']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:03:35] [显存监控] 已分配=17.05GB, 已保留=20.99GB, 空闲=30.35GB
+[2025-11-26 14:03:38] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+[2025-11-26 14:03:41] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+[2025-11-26 14:03:44] [显存监控] 已分配=17.04GB, 已保留=20.99GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.99GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:03:47] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+[2025-11-26 14:03:50] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+[2025-11-26 14:03:53] [显存监控] 已分配=17.03GB, 已保留=20.99GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.99GB, 剩余=30.50GB
+分类完成: A380 (置信度: 0.9500)
+总耗时: 21.58秒
+succ. pred cate:A380, true cate:767-300, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A330-300/0857160.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A330-300/0857160.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', '737-500', '707-320', 'A320', 'A321', 'A330-200', 'A330-300', 'A340-300', 'A319', '737-800', '767-200', '737-600', 'A310', 'A318', '767-400', '757-300', 'MD-87', '747-200', 'Falcon_900']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:03:56] [显存监控] 已分配=17.01GB, 已保留=19.33GB, 空闲=30.39GB
+[2025-11-26 14:03:59] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+[2025-11-26 14:04:02] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+[2025-11-26 14:04:05] [显存监控] 已分配=17.02GB, 已保留=19.34GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.34GB, 剩余=30.50GB
+分类完成: A330-300 (置信度: 0.0925)
+总耗时: 11.32秒
+succ. pred cate:A330-300, true cate:A330-300, used_slow:True, confidence:0.0925
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/727-200/0732456.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/727-200/0732456.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-26 14:04:06] Processing fast-slow:  94%|█████████▍| 94/100 [25:44<01:30, 15.06s/it][2025-11-26 14:04:25] Processing fast-slow:  94%|█████████▍| 94/100 [25:44<01:30, 15.06s/it][2025-11-26 14:04:25] Processing fast-slow:  95%|█████████▌| 95/100 [25:56<01:10, 14.12s/it][2025-11-26 14:04:36] Processing fast-slow:  95%|█████████▌| 95/100 [25:56<01:10, 14.12s/it][2025-11-26 14:04:36] Processing fast-slow:  96%|█████████▌| 96/100 [26:07<00:53, 13.46s/it][2025-11-26 14:04:48] Processing fast-slow:  96%|█████████▌| 96/100 [26:07<00:53, 13.46s/it][2025-11-26 14:04:48] Processing fast-slow:  97%|█████████▋| 97/100 [26:08<00:29,  9.71s/it][2025-11-26 14:04:49] Processing fast-slow:  97%|█████████▋| 97/100 [26:08<00:29,  9.71s/it][2025-11-26 14:04:49] Processing fast-slow:  98%|█████████▊| 98/100 [26:21<00:21, 10.73s/it][2025-11-26 14:05:02] Processing fast-slow:  98%|█████████▊| 98/100 [26:21<00:21, 10.73s/it][2025-11-26 14:05:02] Processing fast-slow:  99%|█████████▉| 99/100 [26:31<00:10, 10.43s/it][2025-11-26 14:05:11] Processing fast-slow:  99%|█████████▉| 99/100 [26:31<00:10, 10.43s/it][2025-11-26 14:05:11] Processing fast-slow: 100%|██████████| 100/100 [26:41<00:00, 10.40s/it][2025-11-26 14:05:11] Processing fast-slow: 100%|██████████| 100/100 [26:41<00:00, 16.01s/it]
+快思考Top-10候选类别: ['707-320', 'Tu-134', 'DC-8', 'Tu-154', 'DC-10', 'DC-9-30', 'L-1011', 'MD-90', '747-200', 'MD-11', 'Il-76', 'DC-6', '727-200', 'An-12', 'C-130', 'Yak-42']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:04:08] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 14:04:11] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+[2025-11-26 14:04:14] [显存监控] 已分配=17.02GB, 已保留=18.92GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:04:17] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.41GB
+[2025-11-26 14:04:20] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+[2025-11-26 14:04:23] [显存监控] 已分配=17.00GB, 已保留=18.92GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=18.92GB, 剩余=30.50GB
+分类完成: DC-8 (置信度: 0.8500)
+总耗时: 18.88秒
+failed. pred cate:DC-8, true cate:727-200, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-300/1325476.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/747-300/1325476.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['707-320', 'A340-200', 'A340-600', 'A300B4', '767-200', '747-200', 'L-1011', '757-200', '777-200', 'A340-500', 'A310', 'A340-300', '747-300', 'MD-87', 'DC-10']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:04:26] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 14:04:29] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:04:32] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:04:35] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+分类完成: 747-300 (置信度: 0.0061)
+总耗时: 11.60秒
+succ. pred cate:747-300, true cate:747-300, used_slow:True, confidence:0.0061
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-300/0529811.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-300/0529811.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A330-200', 'A340-300', 'A340-500', 'A340-600', 'A330-300', 'A340-200', 'A380', '777-300', '747-300', '767-400', '777-200', 'A320']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:04:38] [显存监控] 已分配=17.00GB, 已保留=19.18GB, 空闲=30.40GB
+[2025-11-26 14:04:41] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:04:44] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:04:47] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+分类完成: A340-300 (置信度: 0.1064)
+总耗时: 11.78秒
+succ. pred cate:A340-300, true cate:A340-300, used_slow:True, confidence:0.1064
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/F-16A__B/1259625.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: F-16A__B (置信度: 0.2579)
+总耗时: 0.32秒
+succ. pred cate:F-16A__B, true cate:F 16A B, used_slow:False, confidence:0.2579
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-500/1758713.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/A340-500/1758713.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['A300B4', 'A330-300', '767-200', '767-400', 'A330-200', 'A340-600', '767-300', '757-300', '737-500', '777-300', 'A340-500', 'A340-200', 'A310', 'A340-300', '737-800', '747-200']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:04:50] [显存监控] 已分配=17.04GB, 已保留=20.75GB, 空闲=30.36GB
+[2025-11-26 14:04:53] [显存监控] 已分配=17.03GB, 已保留=20.75GB, 空闲=30.37GB
+[2025-11-26 14:04:56] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+[2025-11-26 14:04:59] [显存监控] 已分配=17.03GB, 已保留=20.76GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.76GB, 剩余=30.50GB
+分类完成: A300B4 (置信度: 0.1115)
+总耗时: 13.23秒
+succ. pred cate:A300B4, true cate:A340-500, used_slow:True, confidence:0.1115
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_208/0796297.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_208/0796297.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_208', 'Cessna_525', 'Cessna_560', 'Beechcraft_1900', 'Cessna_172', 'DHC-6', 'PA-28', 'Fokker_50', 'DHC-1', 'DH-82', 'Model_B200', 'SR-20', 'Dornier_328', 'DC-3', 'DR-400', 'DC-6']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-26 14:05:02] [显存监控] 已分配=16.91GB, 已保留=20.76GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:05:05] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:05:08] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:05:11] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Cessna_208' -> 'Cessna 208'
+分类完成: Cessna 208 (置信度: 0.1323)
+总耗时: 9.70秒
+succ. pred cate:Cessna 208, true cate:Cessna 208, used_slow:True, confidence:0.1323
+开始分类图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_525/1878581.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/fgvc_aircraft/images_discovery_all_1/Cessna_525/1878581.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cessna_560', 'Cessna_525', 'Gulfstream_IV', 'Embraer_Legacy_600', 'Beechcraft_1900', 'Gulfstream_V', 'Cessna_208', 'Metroliner', 'Challenger_600', 'ERJ_135', 'BAE-125', 'Model_B200', 'Falcon_2000', 'Falcon_900', 'Global_Express']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-26 14:05:14] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:05:17] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+[2025-11-26 14:05:20] [显存监控] 已分配=17.02GB, 已保留=19.18GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.18GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Cessna_560' -> 'Cessna 560'
+分类完成: Cessna 560 (置信度: 0.1324)
+总耗时: 10.33秒
+succ. pred cate:Cessna 560, true cate:Cessna 525, used_slow:True, confidence:0.1324
+✅ 正确预测总数: 84
+  - 其中仅快思考正确: 4
+  - 其中慢思考触发且正确: 80
+❌ 错误预测总数: 16
+📊 慢思考触发数量: 96
+[fast and slow] 总体准确率: 0.8400 (84/100)
+[fast and slow] 快思考准确率: 1.0000
+[fast and slow] 慢思考触发比例: 0.9600
+[fast and slow] 慢思考准确率: 0.8333
+✓ 分类结果已保存到: ./experiments/aircraft100/classify/classify_result.json
+  总样本数: 100
+📁 分类结果已保存到: ./experiments/aircraft100/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-26 14:05:22 ===
+=== Total Runtime: 0小时 26分 53.34秒 ===
+
