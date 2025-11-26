@@ -300,4 +300,4 @@ run_pipeline_bg() {
 PID_PIPELINE=$(run_pipeline_bg)
 print_success "Pipeline 已启动 (完全后台), PID=${PID_PIPELINE}"
 print_info "日志文件: ${LOG_FILE}"
-echo "实时查看日志: tail -f ${LOG_FILE}"
+echo "实时查看日志: tail -f '${LOG_FILE}'"

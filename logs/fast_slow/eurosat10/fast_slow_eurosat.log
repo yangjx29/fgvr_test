@@ -1,0 +1,1253 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=7  # 使用的GPU编号
+Dataset: eurosat (num_classes=10)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/eurosat10/knowledge_base  # 知识库目录
+Results Out: ./results/eurosat_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/eurosat10_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/eurosat10/fast_slow_eurosat.log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: eurosat (eurosat10)
+类别数: 10
+实验目录: ./experiments/eurosat10
+当前使用的 GPU 为：7
+
+=== Experiment Start Time: 2025-11-27 01:36:11 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/eurosat10_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/eurosat10/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/eurosat_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/eurosat',
+ 'dataset_name': 'eurosat',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/eurosat10',
+ 'expt_dir_describe': './experiments/eurosat10/describe',
+ 'expt_dir_gallery': './experiments/eurosat10/gallery',
+ 'expt_dir_grouping': './experiments/eurosat10/grouping',
+ 'expt_dir_guess': './experiments/eurosat10/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 5,
+ 'num_classes': 10,
+ 'num_novel': 5,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/eurosat10/gallery/eurosat_image_descriptions_attn',
+ 'path_identify_answers': './experiments/eurosat10/identify',
+ 'path_llm_gussed_names': './experiments/eurosat10/guess/eurosat_llm_gussed_names',
+ 'path_llm_prompts': './experiments/eurosat10/describe/eurosat_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/eurosat10/guess/eurosat_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/eurosat10/guess/eurosat_llm_replies_raw',
+ 'path_references': './experiments/eurosat10/gallery/eurosat_image_references',
+ 'path_regions': './experiments/eurosat10/gallery/eurosat_image_regions',
+ 'path_vqa_answers': './experiments/eurosat10/describe/eurosat_attributes_pairs',
+ 'path_vqa_questions': './experiments/eurosat10/describe/eurosat_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "eurosat10",
+    "num_classes": 10,
+    "config_file": "eurosat10_all.yml",
+    "data_dir": "eurosat",
+    "experiment_dir": "eurosat10",
+    "stats_file": "eurosat10/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/eurosat10/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/eurosat10"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.15s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.31s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.35s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.07s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.18s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 01:36:18
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/eurosat10/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/eurosat10/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 71 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 01:37:40
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x77352b711100>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x77352b711040>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/eurosat10/knowledge_base
+使用数据集: eurosat, 类别数: 10
+✅ 慢思考模块初始化完成，类别映射数量: 10
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 01:37:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/eurosat10/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/eurosat10/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/eurosat10/knowledge_base 加载
+图像知识库类别数: 10
+文本知识库类别数: 10
+类别描述数: 10
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x77352b711040>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x77352b7113a0>
+📦 数据集信息: {'full_name': 'eurosat10', 'num_classes': 10, 'config_file': 'eurosat10_all.yml', 'data_dir': 'eurosat', 'experiment_dir': 'eurosat10', 'stats_file': 'eurosat10/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/eurosat10/knowledge_base/stats.json', 'experiment_dir_full': './experiments/eurosat10'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/eurosat10/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: eurosat10
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/eurosat10/images_split/images_test.json
+  类别数量: 10
+  总图像数: 8100
+  平均每类: 810.0 张
+  图像范围: 600 - 900 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 81 张图像，覆盖 10 个类别
+  平均每类: 8.1 张
+======================================================================
+test sample keys: ['Pasture', 'River', 'HerbaceousVegetation', 'Forest', 'AnnualCrop']...
+[fast and slow] 测试数据集包含 10 个类别
+  0%|          | 0/10 [00:00<?, ?it/s][2025-11-27 01:37:40] Processing fast-slow:   0%|          | 0/10 [00:00<?, ?it/s][2025-11-27 01:37:40] Processing fast-slow:  10%|█         | 1/10 [00:02<00:23,  2.65s/it][2025-11-27 01:37:42] Processing fast-slow:  10%|█         | 1/10 [00:02<00:23,  2.65s/it][2025-11-27 01:37:42] Processing fast-slow:  20%|██        | 2/10 [00:14<01:02,  7.81s/it][2025-11-27 01:37:54] Processing fast-slow:  20%|██        | 2/10 [00:14<01:02,  7.81s/it]开始分类图像: ./datasets/eurosat/images/Pasture/Pasture_646.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3787)
+总耗时: 0.47秒
+failed. pred cate:PermanentCrop, true cate:Pasture, used_slow:False, confidence:0.3787
+开始分类图像: ./datasets/eurosat/images/Pasture/Pasture_694.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pasture (置信度: 0.2026)
+总耗时: 0.28秒
+succ. pred cate:Pasture, true cate:Pasture, used_slow:False, confidence:0.2026
+开始分类图像: ./datasets/eurosat/images/Pasture/Pasture_1997.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.4124)
+总耗时: 0.54秒
+failed. pred cate:PermanentCrop, true cate:Pasture, used_slow:False, confidence:0.4124
+开始分类图像: ./datasets/eurosat/images/Pasture/Pasture_1103.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3135)
+总耗时: 0.44秒
+failed. pred cate:PermanentCrop, true cate:Pasture, used_slow:False, confidence:0.3135
+开始分类图像: ./datasets/eurosat/images/Pasture/Pasture_473.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.2627)
+总耗时: 0.59秒
+failed. pred cate:PermanentCrop, true cate:Pasture, used_slow:False, confidence:0.2627
+开始分类图像: ./datasets/eurosat/images/Pasture/Pasture_781.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3786)
+总耗时: 0.32秒
+failed. pred cate:PermanentCrop, true cate:Pasture, used_slow:False, confidence:0.3786
+开始分类图像: ./datasets/eurosat/images/River/River_1209.jpg
+执行快思考...
+[2025-11-27 01:37:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/River/River_1209.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'River', 'Highway', 'Pasture', 'AnnualCrop', 'Industrial', 'SeaLake', 'Residential', 'HerbaceousVegetation', 'Forest']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:37:46] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:37:49] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:37:52] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: River (置信度: 0.8500)
+总耗时: 10.61秒
+succ. pred cate:River, true cate:River, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/River/River_2074.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: River (置信度: 0.2958)
+总耗时: 0.35秒
+succ. pred cate:River, true cate:River, used_slow:False, confidence:0.2958
+开始分类图像: ./datasets/eurosat/images/River/River_1135.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: River (置信度: 0.3260)
+总耗时: 0.13秒
+succ. pred cate:River, true cate:River, used_slow:False, confidence:0.3260
+开始分类图像: ./datasets/eurosat/images/River/River_112.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: River (置信度: 0.4523)
+总耗时: 0.11秒
+succ. pred cate:River, true cate:River, used_slow:False, confidence:0.4523
+开始分类图像: ./datasets/eurosat/images/River/River_1077.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: River (置信度: 0.3358)
+总耗时: 0.12秒
+succ. pred cate:River, true cate:River, used_slow:False, confidence:0.3358
+开始分类图像: ./datasets/eurosat/images/River/River_83.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.4900)
+总耗时: 0.11秒
+failed. pred cate:PermanentCrop, true cate:River, used_slow:False, confidence:0.4900
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_850.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_850.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'SeaLake', 'HerbaceousVegetation', 'Highway', 'River', 'AnnualCrop', 'Residential', 'Industrial', 'Forest']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:37:55] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:37:58] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'HerbaceousVegetation' -> 'Herbaceous Vegetation Land'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:01] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:38:04] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 10.83秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2378.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2378.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['River', 'PermanentCrop', 'AnnualCrop', 'Pasture', 'SeaLake', 'Highway', 'Forest', 'Residential', 'HerbaceousVegetation', 'Industrial']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:07] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: River (置信度: 0.1813)
+总耗时: 2.85秒
+failed. pred cate:River, true cate:HerbaceousVegetation, used_slow:True, confidence:0.1813
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2226.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3253)
+总耗时: 0.05秒
+failed. pred cate:PermanentCrop, true cate:HerbaceousVegetation, used_slow:False, confidence:0.3253
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2517.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2517.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'River', 'HerbaceousVegetation', 'AnnualCrop', 'Forest', 'Residential', 'Industrial', 'Highway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:10] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.16GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:13] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:38:16] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8000)
+总耗时: 9.18秒
+failed. pred cate:SeaLake, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_1535.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_1535.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'River', 'Pasture', 'AnnualCrop', 'SeaLake', 'Residential', 'Forest', 'HerbaceousVegetation', 'Industrial', 'Highway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:19] [显存监控] 已分配=16.94GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:22] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 7.54秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_1218.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_1218.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'River', 'Highway', 'AnnualCrop', 'Pasture', 'SeaLake', 'Residential', 'Forest', 'Industrial', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:25] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.48GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:28] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.48GB
+[2025-11-27 01:38:31] [显存监控] 已分配=16.94GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 7.14秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_303.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_303.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'River', 'AnnualCrop', 'SeaLake', 'Forest', 'HerbaceousVegetation', 'Highway', 'Residential', 'Industrial']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:34] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:37] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 7.44秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2648.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2648.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Forest', 'River', 'AnnualCrop', 'SeaLake', 'Residential', 'HerbaceousVegetation', 'Pasture', 'Industrial', 'Highway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:40] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:43] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.48GB
+[2025-11-27 01:38:46] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8500)
+总耗时: 9.04秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2417.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2417.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'AnnualCrop', 'HerbaceousVegetation', 'Forest', 'Industrial', 'River', 'Highway', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:49] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:38:52] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'HerbaceousVegetation' -> 'Herbaceous Vegetation Land'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:38:55] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8000)
+总耗时: 9.79秒
+failed. pred cate:SeaLake, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2104.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_2104.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'River', 'Pasture', 'AnnualCrop', 'Forest', 'Highway', 'HerbaceousVegetation', 'Residential', 'Industrial']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 01:38:58] [显存监控] 已分配=16.91GB, 已保留=17.30GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:01] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:04] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.29GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 7.42秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+[2025-11-27 01:37:54] Processing fast-slow:  30%|███       | 3/10 [01:41<05:08, 44.04s/it][2025-11-27 01:39:21] Processing fast-slow:  30%|███       | 3/10 [01:41<05:08, 44.04s/it]开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_1286.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_1286.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'SeaLake', 'River', 'AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Residential', 'Industrial', 'Highway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:07] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:10] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 7.54秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_78.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/HerbaceousVegetation/HerbaceousVegetation_78.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'River', 'AnnualCrop', 'HerbaceousVegetation', 'Forest', 'Residential', 'Industrial', 'Highway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:13] [显存监控] 已分配=16.92GB, 已保留=17.17GB, 空闲=30.48GB
+[2025-11-27 01:39:16] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:19] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 8.34秒
+failed. pred cate:Forest, true cate:HerbaceousVegetation, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_1187.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_1187.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Highway', 'SeaLake', 'Pasture', 'River', 'Industrial', 'Forest', 'Residential', 'AnnualCrop', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:22] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:39:25] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:28] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:39:31] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: HerbaceousVegetation (置信度: 0.8000)
+总耗时: 11.07秒
+failed. pred cate:HerbaceousVegetation, true cate:Forest, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_2984.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_2984.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'River', 'Forest', 'SeaLake', 'AnnualCrop', 'Highway', 'HerbaceousVegetation', 'Industrial', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:34] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:37] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:39:40] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 8.36秒
+succ. pred cate:Forest, true cate:Forest, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_1304.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_1304.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Forest', 'SeaLake', 'Pasture', 'Highway', 'AnnualCrop', 'HerbaceousVegetation', 'Industrial', 'River', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:43] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'HerbaceousVegetation' -> 'Herbaceous Vegetation Land'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:46] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:39:49] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 9.43秒
+failed. pred cate:SeaLake, true cate:Forest, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_2467.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_2467.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'Highway', 'Forest', 'River', 'Industrial', 'AnnualCrop', 'HerbaceousVegetation', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:52] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:55] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:39:58] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 8.39秒
+failed. pred cate:SeaLake, true cate:Forest, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_1427.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_1427.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'River', 'Forest', 'Highway', 'AnnualCrop', 'HerbaceousVegetation', 'Industrial', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:01] [显存监控] 已分配=16.94GB, 已保留=17.30GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:04] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:40:07] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 9.08秒
+failed. pred cate:SeaLake, true cate:Forest, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_997.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_997.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'River', 'Forest', 'Highway', 'AnnualCrop', 'HerbaceousVegetation', 'Industrial', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:10] [显存监控] 已分配=16.94GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:13] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 7.48秒
+failed. pred cate:SeaLake, true cate:Forest, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_2510.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_2510.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'Forest', 'SeaLake', 'Highway', 'HerbaceousVegetation', 'AnnualCrop', 'River', 'Industrial', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:16] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.48GB
+[2025-11-27 01:40:19] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:22] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8500)
+总耗时: 8.61秒
+succ. pred cate:Forest, true cate:Forest, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_2278.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_2278.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'SeaLake', 'Pasture', 'Forest', 'River', 'AnnualCrop', 'Highway', 'Industrial', 'HerbaceousVegetation', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:25] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:28] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.48GB
+[2025-11-27 01:40:31] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 8.68秒
+failed. pred cate:SeaLake, true cate:Forest, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_2932.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_2932.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'AnnualCrop', 'River', 'Forest', 'SeaLake', 'HerbaceousVegetation', 'Residential', 'Highway', 'Industrial']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:34] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:37] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:40:40] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 8.32秒
+succ. pred cate:Forest, true cate:Forest, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_2265.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_2265.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Highway', 'Industrial', 'SeaLake', 'Pasture', 'Residential', 'Forest', 'AnnualCrop', 'River', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:43] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:46] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Forest (置信度: 0.8000)
+总耗时: 8.13秒
+succ. pred cate:Forest, true cate:Forest, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Forest/Forest_1526.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Forest/Forest_1526.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'Forest', 'SeaLake', 'AnnualCrop', 'Highway', 'River', 'Industrial', 'HerbaceousVegetation', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:49] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.48GB
+[2025-11-27 01:40:52] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:40:55] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+[2025-11-27 01:39:21] Processing fast-slow:  40%|████      | 4/10 [03:20<06:35, 65.97s/it][2025-11-27 01:41:01] Processing fast-slow:  40%|████      | 4/10 [03:20<06:35, 65.97s/it]快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:40:58] [显存监控] 已分配=16.94GB, 已保留=17.29GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: HerbaceousVegetation (置信度: 0.8000)
+总耗时: 12.02秒
+failed. pred cate:HerbaceousVegetation, true cate:Forest, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_1021.jpg
+执行快思考...
+[2025-11-27 01:41:01] [显存监控] 已分配=16.91GB, 已保留=17.30GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_1021.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Highway', 'Residential', 'Industrial', 'AnnualCrop', 'Pasture', 'SeaLake', 'Forest', 'River', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:04] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: '[HerbaceousVegetation]' -> 'Herbaceous Vegetation Land'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:07] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:41:10] [显存监控] 已分配=16.94GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: HerbaceousVegetation (置信度: 0.8000)
+总耗时: 9.77秒
+failed. pred cate:HerbaceousVegetation, true cate:AnnualCrop, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_503.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_503.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'AnnualCrop', 'Industrial', 'Pasture', 'Highway', 'Forest', 'Residential', 'SeaLake', 'HerbaceousVegetation', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:13] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:16] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: HerbaceousVegetation (置信度: 0.8000)
+总耗时: 7.17秒
+failed. pred cate:HerbaceousVegetation, true cate:AnnualCrop, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_1302.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.5270)
+总耗时: 0.37秒
+succ. pred cate:PermanentCrop, true cate:AnnualCrop, used_slow:False, confidence:0.5270
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_2851.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_2851.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Industrial', 'PermanentCrop', 'Residential', 'Forest', 'SeaLake', 'Pasture', 'HerbaceousVegetation', 'Highway', 'AnnualCrop', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:19] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:41:22] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'HerbaceousVegetation' -> 'Herbaceous Vegetation Land'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:25] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: HerbaceousVegetation (置信度: 0.8000)
+总耗时: 9.80秒
+failed. pred cate:HerbaceousVegetation, true cate:AnnualCrop, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_498.jpg
+执行快思考...
+[2025-11-27 01:41:28] [显存监控] 已分配=16.91GB, 已保留=17.30GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_498.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Pasture', 'AnnualCrop', 'Forest', 'SeaLake', 'Industrial', 'Residential', 'River', 'HerbaceousVegetation', 'Highway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:31] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'PermanentCrop' -> 'Permanent Crop Land'
+分类完成: Permanent Crop Land (置信度: 0.0000)
+总耗时: 5.22秒
+succ. pred cate:Permanent Crop Land, true cate:AnnualCrop, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_1627.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.2972)
+总耗时: 0.40秒
+succ. pred cate:PermanentCrop, true cate:AnnualCrop, used_slow:False, confidence:0.2972
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_2010.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3749)
+总耗时: 0.36秒
+succ. pred cate:PermanentCrop, true cate:AnnualCrop, used_slow:False, confidence:0.3749
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_2317.jpg
+执行快思考...
+[2025-11-27 01:41:34] [显存监控] 已分配=16.91GB, 已保留=17.32GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_2317.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Residential', 'Industrial', 'Pasture', 'SeaLake', 'AnnualCrop', 'HerbaceousVegetation', 'Forest', 'Highway', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:37] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'None]' -> 'Forest'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:40] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.48GB
+[2025-11-27 01:41:43] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Residential (置信度: 0.8000)
+总耗时: 9.77秒
+failed. pred cate:Residential, true cate:AnnualCrop, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_382.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_382.jpg
+[2025-11-27 01:41:01] Processing fast-slow:  50%|█████     | 5/10 [04:10<05:00, 60.06s/it][2025-11-27 01:41:50] Processing fast-slow:  50%|█████     | 5/10 [04:10<05:00, 60.06s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Forest', 'AnnualCrop', 'Pasture', 'Industrial', 'Residential', 'SeaLake', 'HerbaceousVegetation', 'Highway', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: '[HerbaceousVegetation]' -> 'Herbaceous Vegetation Land'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:46] [显存监控] 已分配=16.93GB, 已保留=17.28GB, 空闲=30.48GB
+[2025-11-27 01:41:49] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Residential (置信度: 0.8000)
+总耗时: 6.30秒
+failed. pred cate:Residential, true cate:AnnualCrop, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_624.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3609)
+总耗时: 0.11秒
+succ. pred cate:PermanentCrop, true cate:AnnualCrop, used_slow:False, confidence:0.3609
+开始分类图像: ./datasets/eurosat/images/AnnualCrop/AnnualCrop_98.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3035)
+总耗时: 0.28秒
+succ. pred cate:PermanentCrop, true cate:AnnualCrop, used_slow:False, confidence:0.3035
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_1754.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.2827)
+总耗时: 0.19秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.2827
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_1095.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Industrial/Industrial_1095.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Industrial', 'Residential', 'PermanentCrop', 'River', 'Highway', 'Pasture', 'SeaLake', 'AnnualCrop', 'HerbaceousVegetation', 'Forest']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:52] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:41:55] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'Industrial' -> 'Industrial Buildings'
+分类完成: Industrial Buildings (置信度: 0.0000)
+总耗时: 5.62秒
+succ. pred cate:Industrial Buildings, true cate:Industrial, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_202.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.4242)
+总耗时: 0.56秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.4242
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_867.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.4664)
+总耗时: 0.26秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.4664
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_1679.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Industrial/Industrial_1679.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Industrial', 'Residential', 'PermanentCrop', 'Highway', 'SeaLake', 'Forest', 'Pasture', 'River', 'AnnualCrop', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:41:58] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'Industrial' -> 'Industrial Buildings'
+分类完成: Industrial Buildings (置信度: 0.0000)
+总耗时: 3.05秒
+succ. pred cate:Industrial Buildings, true cate:Industrial, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_2184.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Industrial (置信度: 0.2595)
+总耗时: 0.15秒
+succ. pred cate:Industrial, true cate:Industrial, used_slow:False, confidence:0.2595
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_355.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Industrial/Industrial_355.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Industrial', 'Residential', 'AnnualCrop', 'Pasture', 'River', 'SeaLake', 'Highway', 'HerbaceousVegetation', 'Forest']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:01] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'Residential' -> 'Residential Buildings'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:04] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:42:07] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Residential (置信度: 0.8000)
+总耗时: 7.86秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_1373.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.2980)
+总耗时: 0.27秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.2980
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_2488.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.2176)
+总耗时: 0.04秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.2176
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_1914.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.5264)
+总耗时: 0.22秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.5264
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_497.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.2496)
+总耗时: 0.28秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.2496
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_2106.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Industrial/Industrial_2106.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['River', 'Residential', 'Industrial', 'Highway', 'PermanentCrop', 'SeaLake', 'AnnualCrop', 'Pasture', 'HerbaceousVegetation', 'Forest']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:10] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'Industrial' -> 'Industrial Buildings'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 01:41:50] Processing fast-slow:  60%|██████    | 6/10 [04:36<03:14, 48.56s/it][2025-11-27 01:42:16] Processing fast-slow:  60%|██████    | 6/10 [04:36<03:14, 48.56s/it][2025-11-27 01:42:16] Processing fast-slow:  70%|███████   | 7/10 [04:38<01:39, 33.26s/it][2025-11-27 01:42:18] Processing fast-slow:  70%|███████   | 7/10 [04:38<01:39, 33.26s/it]推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:13] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:42:16] [显存监控] 已分配=16.94GB, 已保留=17.29GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Residential (置信度: 0.8000)
+总耗时: 7.66秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Industrial/Industrial_1279.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.2718)
+总耗时: 0.10秒
+succ. pred cate:Residential, true cate:Industrial, used_slow:False, confidence:0.2718
+开始分类图像: ./datasets/eurosat/images/PermanentCrop/PermanentCrop_1880.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.4245)
+总耗时: 0.03秒
+succ. pred cate:PermanentCrop, true cate:PermanentCrop, used_slow:False, confidence:0.4245
+开始分类图像: ./datasets/eurosat/images/PermanentCrop/PermanentCrop_1895.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.2555)
+总耗时: 0.54秒
+succ. pred cate:PermanentCrop, true cate:PermanentCrop, used_slow:False, confidence:0.2555
+开始分类图像: ./datasets/eurosat/images/PermanentCrop/PermanentCrop_1293.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.2885)
+总耗时: 0.41秒
+succ. pred cate:PermanentCrop, true cate:PermanentCrop, used_slow:False, confidence:0.2885
+开始分类图像: ./datasets/eurosat/images/PermanentCrop/PermanentCrop_171.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.2647)
+总耗时: 0.49秒
+succ. pred cate:PermanentCrop, true cate:PermanentCrop, used_slow:False, confidence:0.2647
+开始分类图像: ./datasets/eurosat/images/PermanentCrop/PermanentCrop_594.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3335)
+总耗时: 0.02秒
+succ. pred cate:PermanentCrop, true cate:PermanentCrop, used_slow:False, confidence:0.3335
+开始分类图像: ./datasets/eurosat/images/PermanentCrop/PermanentCrop_417.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.3041)
+总耗时: 0.25秒
+succ. pred cate:PermanentCrop, true cate:PermanentCrop, used_slow:False, confidence:0.3041
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_666.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_666.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Forest', 'Pasture', 'AnnualCrop', 'HerbaceousVegetation', 'Industrial', 'Highway', 'River', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:19] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: '[SeaLake]' -> 'Sea or Lake'
+分类完成: Sea or Lake (置信度: 0.0000)
+总耗时: 2.30秒
+succ. pred cate:Sea or Lake, true cate:SeaLake, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_2651.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_2651.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Pasture', 'Industrial', 'Forest', 'AnnualCrop', 'HerbaceousVegetation', 'Highway', 'River', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:22] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: '[SeaLake]' -> 'Sea or Lake'
+分类完成: Sea or Lake (置信度: 0.0000)
+总耗时: 2.59秒
+succ. pred cate:Sea or Lake, true cate:SeaLake, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_1467.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_1467.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Pasture', 'Forest', 'HerbaceousVegetation', 'Highway', 'AnnualCrop', 'River', 'Industrial', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:25] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: '[SeaLake]' -> 'Sea or Lake'
+分类完成: Sea or Lake (置信度: 0.0000)
+总耗时: 2.60秒
+succ. pred cate:Sea or Lake, true cate:SeaLake, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_855.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_855.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'River', 'Pasture', 'AnnualCrop', 'Forest', 'Industrial', 'Highway', 'HerbaceousVegetation', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:28] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+分类完成: Sea or Lake (置信度: 0.0000)
+总耗时: 3.62秒
+succ. pred cate:Sea or Lake, true cate:SeaLake, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_2772.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_2772.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Pasture', 'Industrial', 'Forest', 'AnnualCrop', 'HerbaceousVegetation', 'Highway', 'River', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:31] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+[2025-11-27 01:42:34] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+分类完成: Sea or Lake (置信度: 0.0000)
+总耗时: 4.96秒
+succ. pred cate:Sea or Lake, true cate:SeaLake, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_2091.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_2091.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Industrial', 'Pasture', 'AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Residential', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Forest'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:18] Processing fast-slow:  80%|████████  | 8/10 [05:11<01:06, 33.34s/it][2025-11-27 01:42:52] Processing fast-slow:  80%|████████  | 8/10 [05:11<01:06, 33.34s/it][2025-11-27 01:42:52] Processing fast-slow:  90%|█████████ | 9/10 [05:23<00:26, 26.52s/it][2025-11-27 01:43:03] Processing fast-slow:  90%|█████████ | 9/10 [05:23<00:26, 26.52s/it][2025-11-27 01:42:37] [显存监控] 已分配=16.93GB, 已保留=17.28GB, 空闲=30.48GB
+[2025-11-27 01:42:40] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 6.85秒
+succ. pred cate:SeaLake, true cate:SeaLake, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_866.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_866.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Industrial', 'Pasture', 'Forest', 'HerbaceousVegetation', 'AnnualCrop', 'Highway', 'Residential', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:43] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: '[None]' -> 'Forest'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:46] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 6.92秒
+succ. pred cate:SeaLake, true cate:SeaLake, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/eurosat/images/SeaLake/SeaLake_1970.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/SeaLake/SeaLake_1970.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['SeaLake', 'PermanentCrop', 'Highway', 'River', 'Pasture', 'Forest', 'AnnualCrop', 'Industrial', 'HerbaceousVegetation', 'Residential']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:49] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+分类完成: Sea or Lake (置信度: 0.0000)
+总耗时: 3.67秒
+succ. pred cate:Sea or Lake, true cate:SeaLake, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/Residential/Residential_1060.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Residential/Residential_1060.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Residential', 'PermanentCrop', 'River', 'AnnualCrop', 'Industrial', 'Highway', 'Pasture', 'Forest', 'SeaLake', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:52] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.48GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'Residential' -> 'Residential Buildings'
+分类完成: Residential Buildings (置信度: 0.0000)
+总耗时: 2.67秒
+succ. pred cate:Residential Buildings, true cate:Residential, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/Residential/Residential_2603.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.4534)
+总耗时: 0.22秒
+succ. pred cate:Residential, true cate:Residential, used_slow:False, confidence:0.4534
+开始分类图像: ./datasets/eurosat/images/Residential/Residential_2568.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Residential (置信度: 0.2800)
+总耗时: 0.23秒
+succ. pred cate:Residential, true cate:Residential, used_slow:False, confidence:0.2800
+开始分类图像: ./datasets/eurosat/images/Residential/Residential_1559.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Residential/Residential_1559.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Forest', 'AnnualCrop', 'River', 'Highway', 'Pasture', 'SeaLake', 'HerbaceousVegetation', 'Residential', 'Industrial']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:42:55] [显存监控] 已分配=17.04GB, 已保留=17.30GB, 空闲=30.37GB
+[2025-11-27 01:42:58] [显存监控] 已分配=16.94GB, 已保留=17.30GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'Bird' -> 'Highway or Road'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:43:01] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8000)
+总耗时: 8.40秒
+succ. pred cate:SeaLake, true cate:Residential, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Highway/Highway_895.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Highway/Highway_895.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['PermanentCrop', 'Residential', 'Industrial', 'Pasture', 'AnnualCrop', 'Highway', 'Forest', 'SeaLake', 'HerbaceousVegetation', 'River']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:43:04] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:43:07] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.48GB
+[2025-11-27 01:43:10] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: Residential (置信度: 0.8000)
+总耗时: 8.21秒
+failed. pred cate:Residential, true cate:Highway, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/eurosat/images/Highway/Highway_485.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: PermanentCrop (置信度: 0.2305)
+总耗时: 0.03秒
+failed. pred cate:PermanentCrop, true cate:Highway, used_slow:False, confidence:0.2305
+开始分类图像: ./datasets/eurosat/images/Highway/Highway_54.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Highway/Highway_54.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Highway', 'PermanentCrop', 'River', 'Pasture', 'Forest', 'AnnualCrop', 'HerbaceousVegetation', 'SeaLake', 'Residential', 'Industrial']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:43:13] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+模糊匹配类别修正: 'Highway' -> 'Highway or Road'
+分类完成: Highway or Road (置信度: 0.0000)
+总耗时: 2.97秒
+succ. pred cate:Highway or Road, true cate:Highway, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/eurosat/images/Highway/Highway_671.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/eurosat/images/Highway/Highway_671.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 01:43:03] Processing fast-slow: 100%|██████████| 10/10 [05:42<00:00, 24.32s/it][2025-11-27 01:43:03] Processing fast-slow: 100%|██████████| 10/10 [05:42<00:00, 34.28s/it]
+快思考Top-10候选类别: ['PermanentCrop', 'Highway', 'AnnualCrop', 'Pasture', 'River', 'Industrial', 'Residential', 'SeaLake', 'Forest', 'HerbaceousVegetation']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:43:16] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.31GB, 剩余=30.50GB
+模糊匹配类别修正: 'SeaLake' -> 'Sea or Lake'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:43:19] [显存监控] 已分配=16.93GB, 已保留=17.29GB, 空闲=30.47GB
+[2025-11-27 01:43:22] [显存监控] 已分配=16.93GB, 已保留=17.30GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.30GB, 剩余=30.50GB
+分类完成: SeaLake (置信度: 0.8500)
+总耗时: 8.18秒
+failed. pred cate:SeaLake, true cate:Highway, used_slow:True, confidence:0.8500
+✅ 正确预测总数: 48
+  - 其中仅快思考正确: 27
+  - 其中慢思考触发且正确: 21
+❌ 错误预测总数: 33
+📊 慢思考触发数量: 46
+[fast and slow] 总体准确率: 0.5926 (48/81)
+[fast and slow] 快思考准确率: 0.7714
+[fast and slow] 慢思考触发比例: 0.5679
+[fast and slow] 慢思考准确率: 0.4565
+✓ 分类结果已保存到: ./experiments/eurosat10/classify/classify_result.json
+  总样本数: 81
+📁 分类结果已保存到: ./experiments/eurosat10/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 01:43:23 ===
+=== Total Runtime: 0小时 7分 11.54秒 ===
+

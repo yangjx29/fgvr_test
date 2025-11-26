@@ -1,0 +1,346 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=3  # 使用的GPU编号
+Dataset: caltech101 (num_classes=101)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/caltech101/knowledge_base  # 知识库目录
+Results Out: ./results/caltech101_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/caltech101_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/caltech101/fast_slow_caltech101(3).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: caltech101 (caltech101)
+类别数: 101
+实验目录: ./experiments/caltech101
+当前使用的 GPU 为：3
+
+=== Experiment Start Time: 2025-11-27 01:50:00 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/caltech101_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/caltech101/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/caltech101_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/caltech101',
+ 'dataset_name': 'caltech101',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/caltech101',
+ 'expt_dir_describe': './experiments/caltech101/describe',
+ 'expt_dir_gallery': './experiments/caltech101/gallery',
+ 'expt_dir_grouping': './experiments/caltech101/grouping',
+ 'expt_dir_guess': './experiments/caltech101/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 101,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/caltech101/gallery/caltech101_image_descriptions_attn',
+ 'path_identify_answers': './experiments/caltech101/identify',
+ 'path_llm_gussed_names': './experiments/caltech101/guess/caltech101_llm_gussed_names',
+ 'path_llm_prompts': './experiments/caltech101/describe/caltech101_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/caltech101/guess/caltech101_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/caltech101/guess/caltech101_llm_replies_raw',
+ 'path_references': './experiments/caltech101/gallery/caltech101_image_references',
+ 'path_regions': './experiments/caltech101/gallery/caltech101_image_regions',
+ 'path_vqa_answers': './experiments/caltech101/describe/caltech101_attributes_pairs',
+ 'path_vqa_questions': './experiments/caltech101/describe/caltech101_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "caltech101",
+    "num_classes": 101,
+    "config_file": "caltech101_all.yml",
+    "data_dir": "caltech101",
+    "experiment_dir": "caltech101",
+    "stats_file": "caltech101/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/caltech101/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/caltech101"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.18s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.26s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:02,  1.40s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.50s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.21s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.28s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 01:50:07
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/caltech101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/caltech101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 510 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 01:51:58
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x79cbb330f250>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x79cbb330f280>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/caltech101/knowledge_base
+使用数据集: caltech101, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 01:51:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/caltech101/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/caltech101/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/caltech101/knowledge_base 加载
+图像知识库类别数: 100
+文本知识库类别数: 100
+类别描述数: 100
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x79cbb330f280>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x79cbb330f160>
+📦 数据集信息: {'full_name': 'caltech101', 'num_classes': 101, 'config_file': 'caltech101_all.yml', 'data_dir': 'caltech101', 'experiment_dir': 'caltech101', 'stats_file': 'caltech101/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/caltech101/knowledge_base/stats.json', 'experiment_dir_full': './experiments/caltech101'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/caltech101/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: caltech101
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/caltech101/images_split/images_test.json
+  类别数量: 102
+  总图像数: 2737
+  平均每类: 26.8 张
+  图像范围: 9 - 240 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 27 张图像，覆盖 23 个类别
+  平均每类: 1.2 张
+======================================================================
+test sample keys: ['crayfish', 'hawksbill', 'ewer', 'airplanes', 'tick']...
+[fast and slow] 测试数据集包含 23 个类别
+  0%|          | 0/23 [00:00<?, ?it/s][2025-11-27 01:51:58] Processing fast-slow:   0%|          | 0/23 [00:00<?, ?it/s][2025-11-27 01:51:58] Processing fast-slow:   4%|▍         | 1/23 [00:05<01:53,  5.14s/it][2025-11-27 01:52:03] Processing fast-slow:   4%|▍         | 1/23 [00:05<01:53,  5.14s/it][2025-11-27 01:52:04] Processing fast-slow:   4%|▍         | 1/23 [00:05<01:53,  5.14s/it][2025-11-27 01:52:04] Processing fast-slow:  13%|█▎        | 3/23 [00:15<01:45,  5.30s/it][2025-11-27 01:52:14] Processing fast-slow:  13%|█▎        | 3/23 [00:15<01:45,  5.30s/it][2025-11-27 01:52:14] Processing fast-slow:  17%|█▋        | 4/23 [00:33<02:59,  9.45s/it][2025-11-27 01:52:32] Processing fast-slow:  17%|█▋        | 4/23 [00:33<02:59,  9.45s/it][2025-11-27 01:52:32] Processing fast-slow:  17%|█▋        | 4/23 [00:33<02:59,  9.45s/it][2025-11-27 01:52:32] Processing fast-slow:  26%|██▌       | 6/23 [00:37<01:39,  5.86s/it][2025-11-27 01:52:36] Processing fast-slow:  26%|██▌       | 6/23 [00:37<01:39,  5.86s/it]开始分类图像: ./datasets/caltech101/101_ObjectCategories/crayfish/image_0055.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/crayfish/image_0055.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Crayfish', 'Scorpion', 'Tick', 'Crab', 'Lobster', 'Ant', 'Mayfly', 'Kangaroo', 'Faces', 'Rooster', 'Sea Horse', 'Trilobite', 'Crocodile', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:01] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Crayfish (置信度: 0.1742)
+总耗时: 5.12秒
+succ. pred cate:Crayfish, true cate:crayfish, used_slow:True, confidence:0.1742
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/crayfish/image_0022.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Crayfish (置信度: 0.3042)
+总耗时: 0.02秒
+succ. pred cate:Crayfish, true cate:crayfish, used_slow:False, confidence:0.3042
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/hawksbill/image_0014.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Hawksbill (置信度: 0.6737)
+总耗时: 0.02秒
+succ. pred cate:Hawksbill, true cate:hawksbill, used_slow:False, confidence:0.6737
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ewer/image_0002.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/ewer/image_0002.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Euphonium', 'Ewer', 'Trilobite', 'Anchor', 'Menorah', 'Scorpion', 'Lamp', 'Nautilus', 'Crayfish', 'Elephant', 'Buddha', 'Octopus', 'Chandelier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:04] [显存监控] 已分配=16.93GB, 已保留=17.37GB, 空闲=30.47GB
+[2025-11-27 01:52:07] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:10] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 01:52:13] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Ewer (置信度: 0.8500)
+总耗时: 10.68秒
+succ. pred cate:Ewer, true cate:ewer, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0573.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0573.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Helicopter', 'Car Side', 'Camera', 'Snoopy', 'Pigeon', 'Bonsai', 'Euphonium', 'Faces', 'Saxophone', 'Ferry', 'Ketch', 'Schooner', 'Minaret', 'Wrench', 'Crocodile', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:16] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Airplane' -> 'Airplanes'
+分类完成: Airplanes (置信度: 0.1200)
+总耗时: 4.34秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1200
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0570.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0570.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Snoopy', 'Airplanes', 'Faces', 'Saxophone', 'Pigeon', 'Camera', 'Wild Cat', 'Car Side', 'Dolphin', 'Ferry', 'Ketch', 'Schooner', 'Crocodile Head', 'Minaret', 'Ceiling Fan', 'Crocodile']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:19] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+[2025-11-27 01:52:22] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:25] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.64秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0692.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0692.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Helicopter', 'Umbrella', 'Car Side', 'Euphonium', 'Scissors', 'Laptop', 'Electric Guitar', 'Dolphin', 'Wheelchair', 'Ferry', 'Ketch', 'Wrench', 'Motorbikes', 'Minaret', 'Crocodile Head', 'Leopards']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:52:28] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 01:52:31] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Airplane' -> 'Airplanes'
+分类完成: Airplanes (置信度: 0.1503)
+总耗时: 4.33秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1503
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/tick/image_0017.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Tick (置信度: 0.6863)
+总耗时: 0.02秒
+succ. pred cate:Tick, true cate:tick, used_slow:False, confidence:0.6863
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0419.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0419.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Stop Sign', 'Laptop', 'Crocodile', 'Pyramid', 'Grand Piano', 'Electric Guitar', 'Accordion', 'Yin Yang', 'Camera', 'Pagoda', 'Buddha', 'Sunflower', 'Wrench', 'Panda', 'Anchor', 'Brain', 'Trilobite', 'Scissors']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:52:34] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1079)
+总耗时: 4.41秒
+succ. pred cate:Faces, true cate:Faces, used_slow:True, confidence:0.1079
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0200.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.7118)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.7118
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/car_side/image_0102.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Car Side (置信度: 0.8353)
+总耗时: 0.02秒
+[2025-11-27 01:52:36] Processing fast-slow:  26%|██▌       | 6/23 [00:37<01:39,  5.86s/it][2025-11-27 01:52:36] Processing fast-slow:  26%|██▌       | 6/23 [00:37<01:39,  5.86s/it][2025-11-27 01:52:36] Processing fast-slow:  39%|███▉      | 9/23 [00:46<01:00,  4.30s/it][2025-11-27 01:52:44] Processing fast-slow:  39%|███▉      | 9/23 [00:46<01:00,  4.30s/it][2025-11-27 01:52:45] Processing fast-slow:  39%|███▉      | 9/23 [00:46<01:00,  4.30s/it][2025-11-27 01:52:45] Processing fast-slow:  39%|███▉      | 9/23 [00:46<01:00,  4.30s/it][2025-11-27 01:52:45] Processing fast-slow:  39%|███▉      | 9/23 [00:46<01:00,  4.30s/it]

@@ -2,11 +2,14 @@
 """
 Script to copy JSON files from datasets directory to experiments directory
 with modified paths to be relative to the current working directory.
+Supports all datasets defined in datasets_list.yml configuration.
 """
 
 import os
 import json
 import shutil
+import argparse
+import yaml
 from pathlib import Path
 
 
@@ -33,6 +36,37 @@ def modify_paths_in_json(data, dataset_name):
     Returns:
         Modified JSON data
     """
+    def fix_path(path, dataset_name):
+        """Fix path for datasets with special directory structures"""
+        original_path = path
+        
+        # Special path mappings for different datasets
+        if dataset_name == 'caltech101':
+            # caltech101: images/ -> 101_ObjectCategories/
+            if path.startswith('images/'):
+                path = path.replace('images/', '101_ObjectCategories/')
+        elif dataset_name == 'flowers_102':
+            # flowers_102: images/category/image.jpg -> jpg/image.jpg
+            if path.startswith('images/'):
+                # Remove 'images/' and category subdirectory
+                path_parts = path.split('/')
+                if len(path_parts) >= 3:
+                    # Keep only the filename after removing images/ and category/
+                    path = f"jpg/{path_parts[-1]}"
+        elif dataset_name == 'food_101':
+            # food_101: images/ -> jpg/
+            if path.startswith('images/'):
+                path = path.replace('images/', 'jpg/')
+        
+        # Convert to full path relative to current working directory
+        modified_path = f"./datasets/{dataset_name}/{path}"
+        
+        # Debug info for path changes
+        if original_path != path:
+            print(f"  Path fix: {original_path} -> {path}")
+        
+        return modified_path
+    
     if isinstance(data, list):
         # Handle images.json format: [[class_name, class_id, [image_paths]], ...]
         modified_data = []
@@ -41,8 +75,7 @@ def modify_paths_in_json(data, dataset_name):
                 class_name, class_id, image_paths = class_info[0], class_info[1], class_info[2]
                 modified_paths = []
                 for path in image_paths:
-                    # Convert relative path to full path relative to current working directory
-                    modified_path = f"./datasets/{dataset_name}/{path}"
+                    modified_path = fix_path(path, dataset_name)
                     modified_paths.append(modified_path)
                 modified_data.append([class_name, class_id, modified_paths])
             else:
@@ -59,7 +92,7 @@ def modify_paths_in_json(data, dataset_name):
                     if isinstance(item, list) and len(item) >= 3:
                         class_name, class_id, image_path = item[0], item[1], item[2]
                         # Convert single image path
-                        modified_path = f"./datasets/{dataset_name}/{image_path}"
+                        modified_path = fix_path(image_path, dataset_name)
                         modified_split_data.append([class_name, class_id, modified_path])
                     else:
                         modified_split_data.append(item)
@@ -143,35 +176,98 @@ def copy_dataset_json_files(dataset_name, source_dir, target_dir):
         print(f"  Skipped files: {', '.join(skipped_files)}")
 
 
+def get_datasets_from_config(config_file, specific_dataset=None):
+    """
+    Get dataset configurations from YAML file.
+    
+    Args:
+        config_file: Path to the YAML configuration file
+        specific_dataset: If provided, only return this dataset
+    
+    Returns:
+        List of dataset configurations
+    """
+    with open(config_file, 'r', encoding='utf-8') as f:
+        config = yaml.safe_load(f)
+    
+    experiments_root = config.get('experiments_root', './experiments')
+    dataset_mapping = config.get('dataset_mapping', {})
+    
+    datasets = []
+    
+    # All supported datasets
+    supported_datasets = [
+        'car', 'pet', 'aircraft', 'eurosat', 'food', 'dtd', 
+        'caltech101', 'caltech256', 'deepfashion_multimodal', 
+        'sun397', 'imagenet_a', 'imagenet_r', 'dog', 'bird', 'flower'
+    ]
+    
+    # Filter datasets based on specific_dataset or use all supported
+    datasets_to_process = [specific_dataset] if specific_dataset else supported_datasets
+    
+    for dataset_key in datasets_to_process:
+        if dataset_key in dataset_mapping:
+            dataset_config = dataset_mapping[dataset_key]
+            data_dir = dataset_config['data_dir']
+            
+            # Handle special subdirectory for CUB_200_2011
+            if 'special_subdir' in dataset_config:
+                source_dir = f'/home/hdl/project/fgvr_test_new/datasets/{data_dir}/{dataset_config["special_subdir"]}/images_split'
+            else:
+                source_dir = f'/home/hdl/project/fgvr_test_new/datasets/{data_dir}/images_split'
+            
+            datasets.append({
+                'key': dataset_key,
+                'name': data_dir,
+                'source_dir': source_dir,
+                'target_dir': f'/home/hdl/project/fgvr_test_new/{experiments_root}/{dataset_config["experiment_dir"]}/images_split'
+            })
+        else:
+            print(f"Warning: Dataset '{dataset_key}' not found in configuration")
+    
+    return datasets
+
+
 def main():
     """Main function to copy JSON files for datasets."""
     
-    # Load dataset configuration from YAML
-    config_file = '/home/hdl/project/fgvr_test_new/configs/datasets_list.yml'
-    with open(config_file, 'r', encoding='utf-8') as f:
-        import yaml
-        config = yaml.safe_load(f)
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Copy JSON files for datasets')
+    parser.add_argument('--dataset', type=str, help='Specific dataset to process (e.g., pet, car, aircraft)')
+    parser.add_argument('--config', type=str, default='/home/hdl/project/fgvr_test_new/configs/datasets_list.yml',
+                       help='Path to configuration file')
+    args = parser.parse_args()
     
-    # Define dataset configurations based on YAML mapping
-    experiments_root = config.get('experiments_root', './experiments')
-    datasets = []
-    
-    # Add car dataset as specified
-    car_config = config['dataset_mapping']['car']
-    datasets.append({
-        'name': 'car_196',
-        'source_dir': f'/home/hdl/project/fgvr_test_new/datasets/{car_config["data_dir"]}/images_split',
-        'target_dir': f'/home/hdl/project/fgvr_test_new/{experiments_root}/{car_config["experiment_dir"]}/images_split'
-    })
+    config_file = args.config
     
     print("Starting JSON file copying process...")
     print("=" * 50)
     
+    if args.dataset:
+        print(f"Processing specific dataset: {args.dataset}")
+    else:
+        print("Processing all supported datasets")
+    
+    # Get datasets from configuration
+    datasets = get_datasets_from_config(config_file, args.dataset)
+    
+    if not datasets:
+        print("No datasets found to process!")
+        return
+    
+    print(f"Found {len(datasets)} dataset(s) to process")
+    print("-" * 50)
+    
     for dataset in datasets:
-        print(f"\nProcessing dataset: {dataset['name']}")
+        print(f"\nProcessing dataset: {dataset['key']} ({dataset['name']})")
         print(f"Source: {dataset['source_dir']}")
         print(f"Target: {dataset['target_dir']}")
         print("-" * 30)
+        
+        # Check if source directory exists
+        if not os.path.exists(dataset['source_dir']):
+            print(f"  ✗ Source directory does not exist: {dataset['source_dir']}")
+            continue
         
         copy_dataset_json_files(
             dataset_name=dataset['name'],

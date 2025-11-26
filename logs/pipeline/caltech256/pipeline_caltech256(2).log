@@ -1,0 +1,2036 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=0  # 使用的GPU编号
+Dataset: caltech256 (num_classes=256)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/caltech256/knowledge_base  # 知识库目录
+Results Out: ./results/caltech256_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: caltech256 (caltech256)
+类别数: 257
+实验目录: ./experiments/caltech256
+当前使用的 GPU 为：0
+
+=== Experiment Start Time: 2025-11-27 01:34:01 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/caltech256_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/caltech256/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 96,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/caltech256',
+ 'dataset_name': 'caltech256',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/caltech256',
+ 'expt_dir_describe': './experiments/caltech256/describe',
+ 'expt_dir_gallery': './experiments/caltech256/gallery',
+ 'expt_dir_grouping': './experiments/caltech256/grouping',
+ 'expt_dir_guess': './experiments/caltech256/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 128,
+ 'num_classes': 257,
+ 'num_novel': 129,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/caltech256/gallery/caltech256_image_descriptions_attn',
+ 'path_identify_answers': './experiments/caltech256/identify',
+ 'path_llm_gussed_names': './experiments/caltech256/guess/caltech256_llm_gussed_names',
+ 'path_llm_prompts': './experiments/caltech256/describe/caltech256_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/caltech256/guess/caltech256_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/caltech256/guess/caltech256_llm_replies_raw',
+ 'path_references': './experiments/caltech256/gallery/caltech256_image_references',
+ 'path_regions': './experiments/caltech256/gallery/caltech256_image_regions',
+ 'path_vqa_answers': './experiments/caltech256/describe/caltech256_attributes_pairs',
+ 'path_vqa_questions': './experiments/caltech256/describe/caltech256_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "caltech256",
+    "num_classes": 257,
+    "config_file": "caltech256_all.yml",
+    "data_dir": "caltech256",
+    "experiment_dir": "caltech256",
+    "stats_file": "caltech256/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/caltech256/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/caltech256"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.14s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.28s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.33s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.36s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.09s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.19s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 01:34:08
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/caltech256/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/caltech256/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1406 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 01:34:11
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x736dba7a80a0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x736dba7112b0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/caltech256/knowledge_base
+使用数据集: caltech256, 类别数: 257
+✅ 慢思考模块初始化完成，类别映射数量: 257
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 01:34:11] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建知识库，包含 257 个类别, dog datasets:257
+从 ./experiments/caltech256/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/caltech256/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/caltech256/knowledge_base 加载
+图像知识库类别数: 257
+文本知识库类别数: 257
+类别描述数: 257
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+构建知识库...
+训练样本包含 257 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/257 [00:00<?, ?it/s]  0%|          | 1/257 [00:01<04:42,  1.10s/it]  1%|          | 2/257 [00:01<03:19,  1.28it/s]  1%|          | 3/257 [00:02<02:27,  1.72it/s]  2%|▏         | 5/257 [00:02<01:29,  2.82it/s]  2%|▏         | 6/257 [00:03<02:25,  1.72it/s]  3%|▎         | 7/257 [00:03<02:07,  1.96it/s]  3%|▎         | 8/257 [00:04<02:48,  1.48it/s]  4%|▍         | 10/257 [00:05<01:45,  2.33it/s]  4%|▍         | 11/257 [00:06<02:23,  1.72it/s]  5%|▌         | 13/257 [00:06<01:56,  2.10it/s]  5%|▌         | 14/257 [00:07<02:03,  1.96it/s]  6%|▌         | 15/257 [00:07<01:50,  2.19it/s]  6%|▌         | 16/257 [00:08<01:38,  2.45it/s]  7%|▋         | 17/257 [00:08<02:07,  1.88it/s]  7%|▋         | 18/257 [00:09<01:46,  2.25it/s]  7%|▋         | 19/257 [00:09<01:34,  2.53it/s]  8%|▊         | 20/257 [00:10<02:20,  1.69it/s]  8%|▊         | 21/257 [00:10<01:54,  2.06it/s]  9%|▊         | 22/257 [00:11<01:53,  2.08it/s]  9%|▉         | 23/257 [00:12<02:42,  1.44it/s]  9%|▉         | 24/257 [00:12<02:17,  1.70it/s] 10%|▉         | 25/257 [00:12<01:42,  2.25it/s] 10%|█         | 26/257 [00:13<01:45,  2.19it/s] 11%|█         | 27/257 [00:13<01:41,  2.26it/s] 11%|█         | 28/257 [00:13<01:19,  2.89it/s] 11%|█▏        | 29/257 [00:14<01:24,  2.69it/s] 12%|█▏        | 30/257 [00:15<01:57,  1.94it/s] 12%|█▏        | 31/257 [00:15<02:05,  1.80it/s] 12%|█▏        | 32/257 [00:16<01:56,  1.93it/s] 13%|█▎        | 33/257 [00:16<02:07,  1.75it/s] 13%|█▎        | 34/257 [00:17<01:42,  2.17it/s] 14%|█▎        | 35/257 [00:17<01:39,  2.24it/s] 14%|█▍        | 36/257 [00:18<01:40,  2.19it/s] 14%|█▍        | 37/257 [00:18<02:14,  1.63it/s] 15%|█▍        | 38/257 [00:19<01:46,  2.06it/s] 15%|█▌        | 39/257 [00:19<01:46,  2.04it/s] 16%|█▌        | 40/257 [00:20<01:39,  2.18it/s] 16%|█▌        | 41/257 [00:20<01:47,  2.01it/s] 16%|█▋        | 42/257 [00:21<02:11,  1.63it/s] 17%|█▋        | 43/257 [00:22<02:51,  1.25it/s] 17%|█▋        | 44/257 [00:23<02:20,  1.52it/s] 18%|█▊        | 46/257 [00:24<02:04,  1.70it/s] 18%|█▊        | 47/257 [00:25<02:50,  1.23it/s] 19%|█▊        | 48/257 [00:25<02:11,  1.59it/s] 19%|█▉        | 49/257 [00:26<01:54,  1.82it/s] 19%|█▉        | 50/257 [00:26<01:55,  1.80it/s] 20%|█▉        | 51/257 [00:27<02:23,  1.44it/s] 20%|██        | 52/257 [00:27<01:48,  1.89it/s] 21%|██        | 53/257 [00:28<01:34,  2.15it/s] 21%|██        | 54/257 [00:28<01:21,  2.48it/s] 21%|██▏       | 55/257 [00:29<01:42,  1.97it/s] 22%|██▏       | 56/257 [00:29<01:21,  2.47it/s] 22%|██▏       | 57/257 [00:30<01:51,  1.79it/s] 23%|██▎       | 58/257 [00:31<02:14,  1.48it/s] 23%|██▎       | 59/257 [00:31<01:44,  1.89it/s] 23%|██▎       | 60/257 [00:31<01:20,  2.43it/s] 24%|██▎       | 61/257 [00:31<01:10,  2.76it/s] 24%|██▍       | 62/257 [00:31<00:55,  3.48it/s] 25%|██▍       | 63/257 [00:32<01:00,  3.22it/s] 25%|██▍       | 64/257 [00:32<00:57,  3.37it/s] 25%|██▌       | 65/257 [00:32<00:49,  3.91it/s] 26%|██▌       | 66/257 [00:32<00:42,  4.47it/s] 26%|██▌       | 67/257 [00:33<00:47,  4.02it/s] 26%|██▋       | 68/257 [00:33<01:13,  2.58it/s] 27%|██▋       | 69/257 [00:34<01:05,  2.86it/s] 27%|██▋       | 70/257 [00:34<00:53,  3.53it/s] 28%|██▊       | 72/257 [00:34<00:42,  4.33it/s] 29%|██▉       | 74/257 [00:35<00:46,  3.92it/s] 29%|██▉       | 75/257 [00:35<00:57,  3.16it/s] 30%|██▉       | 76/257 [00:36<01:08,  2.65it/s] 30%|██▉       | 77/257 [00:36<00:58,  3.06it/s] 30%|███       | 78/257 [00:36<01:07,  2.65it/s] 31%|███       | 80/257 [00:37<00:43,  4.10it/s] 32%|███▏      | 81/257 [00:37<01:08,  2.57it/s] 32%|███▏      | 82/257 [00:38<01:34,  1.85it/s] 32%|███▏      | 83/257 [00:39<01:31,  1.90it/s] 33%|███▎      | 84/257 [00:39<01:33,  1.84it/s] 33%|███▎      | 85/257 [00:40<01:24,  2.03it/s] 33%|███▎      | 86/257 [00:42<02:28,  1.15it/s] 34%|███▍      | 87/257 [00:42<02:06,  1.34it/s] 34%|███▍      | 88/257 [00:42<01:44,  1.62it/s] 35%|███▍      | 89/257 [00:43<01:35,  1.75it/s] 35%|███▌      | 90/257 [00:43<01:24,  1.97it/s] 35%|███▌      | 91/257 [00:44<01:47,  1.54it/s] 36%|███▌      | 92/257 [00:45<01:32,  1.78it/s] 36%|███▌      | 93/257 [00:45<01:24,  1.93it/s] 37%|███▋      | 94/257 [00:45<01:12,  2.23it/s] 37%|███▋      | 95/257 [00:45<01:03,  2.57it/s] 37%|███▋      | 96/257 [00:46<00:54,  2.96it/s] 38%|███▊      | 97/257 [00:46<00:43,  3.65it/s] 38%|███▊      | 98/257 [00:46<00:44,  3.61it/s] 39%|███▊      | 99/257 [00:47<01:12,  2.17it/s]处理类别: Washing Machine
+类别 Washing Machine 图像特征维度: (512,)
+处理类别: Hot Tub
+类别 Hot Tub 图像特征维度: (512,)
+处理类别: Chandelier 101
+类别 Chandelier 101 图像特征维度: (512,)
+处理类别: Bowling Pin
+类别 Bowling Pin 图像特征维度: (512,)
+处理类别: Greyhound
+类别 Greyhound 图像特征维度: (512,)
+处理类别: Grapes
+[2025-11-27 01:34:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Grapes 图像特征维度: (512,)
+处理类别: Fried Egg
+类别 Fried Egg 图像特征维度: (512,)
+处理类别: Necktie
+类别 Necktie 图像特征维度: (512,)
+处理类别: Video Projector
+类别 Video Projector 图像特征维度: (512,)
+处理类别: Boxing Glove
+类别 Boxing Glove 图像特征维度: (512,)
+处理类别: Dice
+[2025-11-27 01:34:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Dice 图像特征维度: (512,)
+处理类别: Megaphone
+类别 Megaphone 图像特征维度: (512,)
+处理类别: Tricycle
+类别 Tricycle 图像特征维度: (512,)
+处理类别: Lathe
+类别 Lathe 图像特征维度: (512,)
+处理类别: Palm Tree
+类别 Palm Tree 图像特征维度: (512,)
+处理类别: Superman
+类别 Superman 图像特征维度: (512,)
+处理类别: Homer Simpson
+[2025-11-27 01:34:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Homer Simpson 图像特征维度: (512,)
+处理类别: Football Helmet
+类别 Football Helmet 图像特征维度: (512,)
+处理类别: Llama 101
+类别 Llama 101 图像特征维度: (512,)
+处理类别: Beer Mug
+类别 Beer Mug 图像特征维度: (512,)
+处理类别: Pci Card
+类别 Pci Card 图像特征维度: (512,)
+处理类别: Grand Piano 101
+类别 Grand Piano 101 图像特征维度: (512,)
+处理类别: Spaghetti
+[2025-11-27 01:34:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Spaghetti 图像特征维度: (512,)
+处理类别: Minaret
+类别 Minaret 图像特征维度: (512,)
+处理类别: Laptop 101
+类别 Laptop 101 图像特征维度: (512,)
+处理类别: Bathtub
+类别 Bathtub 图像特征维度: (512,)
+处理类别: Lightbulb
+类别 Lightbulb 图像特征维度: (512,)
+处理类别: Spoon
+类别 Spoon 图像特征维度: (512,)
+处理类别: Hot Air Balloon
+类别 Hot Air Balloon 图像特征维度: (512,)
+处理类别: House Fly
+[2025-11-27 01:34:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 House Fly 图像特征维度: (512,)
+处理类别: Bonsai 101
+类别 Bonsai 101 图像特征维度: (512,)
+处理类别: Basketball Hoop
+类别 Basketball Hoop 图像特征维度: (512,)
+处理类别: Camel
+类别 Camel 图像特征维度: (512,)
+处理类别: Soccer Ball
+类别 Soccer Ball 图像特征维度: (512,)
+处理类别: Trilobite 101
+类别 Trilobite 101 图像特征维度: (512,)
+处理类别: Welding Mask
+[2025-11-27 01:34:29] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Welding Mask 图像特征维度: (512,)
+处理类别: Fireworks
+类别 Fireworks 图像特征维度: (512,)
+处理类别: Microwave
+类别 Microwave 图像特征维度: (512,)
+处理类别: Horse
+类别 Horse 图像特征维度: (512,)
+处理类别: Refrigerator
+类别 Refrigerator 图像特征维度: (512,)
+处理类别: Zebra
+类别 Zebra 图像特征维度: (512,)
+处理类别: Hibiscus
+[2025-11-27 01:34:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Hibiscus 图像特征维度: (512,)
+处理类别: Snail
+类别 Snail 图像特征维度: (512,)
+处理类别: Sushi
+类别 Sushi 图像特征维度: (512,)
+处理类别: Photocopier
+类别 Photocopier 图像特征维度: (512,)
+处理类别: Giraffe
+[2025-11-27 01:34:35] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Giraffe 图像特征维度: (512,)
+处理类别: Bulldozer
+类别 Bulldozer 图像特征维度: (512,)
+处理类别: Cd
+类别 Cd 图像特征维度: (512,)
+处理类别: Rifle
+类别 Rifle 图像特征维度: (512,)
+处理类别: Tomato
+类别 Tomato 图像特征维度: (512,)
+处理类别: Tuning Fork
+[2025-11-27 01:34:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Tuning Fork 图像特征维度: (512,)
+处理类别: Roulette Wheel
+类别 Roulette Wheel 图像特征维度: (512,)
+处理类别: Paper Shredder
+类别 Paper Shredder 图像特征维度: (512,)
+处理类别: Porcupine
+类别 Porcupine 图像特征维度: (512,)
+处理类别: Helicopter 101
+类别 Helicopter 101 图像特征维度: (512,)
+处理类别: Chopsticks
+类别 Chopsticks 图像特征维度: (512,)
+处理类别: Frisbee
+[2025-11-27 01:34:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Frisbee 图像特征维度: (512,)
+处理类别: Yo Yo
+类别 Yo Yo 图像特征维度: (512,)
+处理类别: Picnic Table
+类别 Picnic Table 图像特征维度: (512,)
+处理类别: Tweezer
+类别 Tweezer 图像特征维度: (512,)
+处理类别: Ewer 101
+类别 Ewer 101 图像特征维度: (512,)
+处理类别: Pram
+类别 Pram 图像特征维度: (512,)
+处理类别: Coin
+类别 Coin 图像特征维度: (512,)
+处理类别: Sword
+类别 Sword 图像特征维度: (512,)
+处理类别: Playing Card
+类别 Playing Card 图像特征维度: (512,)
+处理类别: Cereal Box
+类别 Cereal Box 图像特征维度: (512,)
+处理类别: Lightning
+[2025-11-27 01:34:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Lightning 图像特征维度: (512,)
+处理类别: Sheet Music
+类别 Sheet Music 图像特征维度: (512,)
+处理类别: Iris
+类别 Iris 图像特征维度: (512,)
+处理类别: Screwdriver
+类别 Screwdriver 图像特征维度: (512,)
+处理类别: Self Propelled Lawn Mower
+类别 Self Propelled Lawn Mower 图像特征维度: (512,)
+处理类别: Speed Boat
+类别 Speed Boat 图像特征维度: (512,)
+处理类别: Soda Can
+类别 Soda Can 图像特征维度: (512,)
+处理类别: Birdbath
+类别 Birdbath 图像特征维度: (512,)
+处理类别: Calculator
+类别 Calculator 图像特征维度: (512,)
+处理类别: Hawksbill 101
+[2025-11-27 01:34:47] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Hawksbill 101 图像特征维度: (512,)
+处理类别: Airplanes 101
+类别 Airplanes 101 图像特征维度: (512,)
+处理类别: Watermelon
+类别 Watermelon 图像特征维度: (512,)
+处理类别: French Horn
+类别 French Horn 图像特征维度: (512,)
+处理类别: Revolver 101
+类别 Revolver 101 图像特征维度: (512,)
+处理类别: Tennis Court
+类别 Tennis Court 图像特征维度: (512,)
+处理类别: Owl
+类别 Owl 图像特征维度: (512,)
+处理类别: Buddha 101
+[2025-11-27 01:34:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Buddha 101 图像特征维度: (512,)
+处理类别: Clutter
+类别 Clutter 图像特征维度: (512,)
+处理类别: Radio Telescope
+类别 Radio Telescope 图像特征维度: (512,)
+处理类别: Gas Pump
+[2025-11-27 01:34:53] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Gas Pump 图像特征维度: (512,)
+处理类别: Fire Truck
+类别 Fire Truck 图像特征维度: (512,)
+处理类别: Centipede
+类别 Centipede 图像特征维度: (512,)
+处理类别: Breadmaker
+类别 Breadmaker 图像特征维度: (512,)
+处理类别: Backpack
+类别 Backpack 图像特征维度: (512,)
+处理类别: Snowmobile
+类别 Snowmobile 图像特征维度: (512,)
+处理类别: Microscope
+[2025-11-27 01:34:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Microscope 图像特征维度: (512,)
+处理类别: Tambourine
+类别 Tambourine 图像特征维度: (512,)
+处理类别: Knife
+类别 Knife 图像特征维度: (512,)
+处理类别: Tripod
+类别 Tripod 图像特征维度: (512,)
+处理类别: School Bus
+类别 School Bus 图像特征维度: (512,)
+处理类别: Saturn
+类别 Saturn 图像特征维度: (512,)
+处理类别: Teepee
+类别 Teepee 图像特征维度: (512,)
+处理类别: Cormorant
+类别 Cormorant 图像特征维度: (512,)
+处理类别: Billiards
+ 39%|███▉      | 100/257 [00:47<01:03,  2.48it/s] 39%|███▉      | 101/257 [00:48<01:10,  2.22it/s] 40%|███▉      | 102/257 [00:48<01:13,  2.10it/s] 40%|████      | 103/257 [00:49<01:12,  2.12it/s] 40%|████      | 104/257 [00:49<01:02,  2.46it/s] 41%|████      | 105/257 [00:49<00:51,  2.93it/s] 41%|████      | 106/257 [00:50<01:24,  1.79it/s] 42%|████▏     | 107/257 [00:51<01:10,  2.12it/s] 42%|████▏     | 108/257 [00:51<00:55,  2.68it/s] 42%|████▏     | 109/257 [00:51<00:46,  3.19it/s] 43%|████▎     | 110/257 [00:52<01:09,  2.10it/s] 43%|████▎     | 111/257 [00:52<01:00,  2.41it/s] 44%|████▎     | 112/257 [00:52<00:47,  3.08it/s] 44%|████▍     | 113/257 [00:56<03:13,  1.34s/it] 44%|████▍     | 114/257 [00:56<02:36,  1.10s/it] 45%|████▍     | 115/257 [00:57<02:02,  1.16it/s] 45%|████▌     | 116/257 [00:57<01:56,  1.21it/s] 46%|████▌     | 117/257 [00:58<01:30,  1.55it/s] 46%|████▌     | 118/257 [00:58<01:10,  1.97it/s] 46%|████▋     | 119/257 [00:58<00:59,  2.31it/s] 47%|████▋     | 121/257 [00:59<00:43,  3.13it/s] 47%|████▋     | 122/257 [00:59<00:55,  2.44it/s] 48%|████▊     | 123/257 [01:00<00:55,  2.40it/s] 48%|████▊     | 124/257 [01:00<00:51,  2.58it/s] 49%|████▊     | 125/257 [01:01<00:58,  2.26it/s] 49%|████▉     | 127/257 [01:01<00:39,  3.25it/s] 50%|████▉     | 128/257 [01:02<00:51,  2.48it/s] 50%|█████     | 129/257 [01:02<00:46,  2.76it/s] 51%|█████     | 130/257 [01:02<00:48,  2.60it/s] 51%|█████     | 131/257 [01:03<00:50,  2.51it/s] 51%|█████▏    | 132/257 [01:04<01:14,  1.68it/s] 52%|█████▏    | 133/257 [01:04<01:20,  1.54it/s] 53%|█████▎    | 135/257 [01:05<00:57,  2.14it/s] 53%|█████▎    | 136/257 [01:05<00:48,  2.51it/s] 53%|█████▎    | 137/257 [01:06<00:56,  2.14it/s] 54%|█████▎    | 138/257 [01:06<01:01,  1.93it/s] 54%|█████▍    | 139/257 [01:07<00:49,  2.40it/s] 55%|█████▍    | 141/257 [01:08<01:00,  1.90it/s] 56%|█████▌    | 143/257 [01:09<00:49,  2.29it/s] 56%|█████▌    | 144/257 [01:09<00:42,  2.67it/s] 56%|█████▋    | 145/257 [01:09<00:46,  2.43it/s] 57%|█████▋    | 147/257 [01:10<00:54,  2.02it/s] 58%|█████▊    | 148/257 [01:11<01:03,  1.73it/s] 58%|█████▊    | 150/257 [01:12<00:45,  2.34it/s] 59%|█████▉    | 152/257 [01:13<00:47,  2.22it/s] 60%|█████▉    | 153/257 [01:13<00:42,  2.46it/s] 60%|█████▉    | 154/257 [01:13<00:44,  2.33it/s] 60%|██████    | 155/257 [01:14<00:43,  2.33it/s] 61%|██████    | 156/257 [01:14<00:35,  2.84it/s] 61%|██████▏   | 158/257 [01:14<00:29,  3.34it/s] 62%|██████▏   | 159/257 [01:15<00:30,  3.23it/s] 62%|██████▏   | 160/257 [01:15<00:28,  3.36it/s] 63%|██████▎   | 161/257 [01:16<00:37,  2.59it/s] 63%|██████▎   | 162/257 [01:16<00:43,  2.20it/s] 63%|██████▎   | 163/257 [01:17<00:37,  2.50it/s] 64%|██████▍   | 164/257 [01:17<00:43,  2.16it/s] 64%|██████▍   | 165/257 [01:18<00:48,  1.91it/s] 65%|██████▍   | 166/257 [01:18<00:44,  2.06it/s] 65%|██████▍   | 167/257 [01:19<00:47,  1.89it/s] 65%|██████▌   | 168/257 [01:20<00:57,  1.54it/s] 66%|██████▌   | 169/257 [01:21<01:05,  1.34it/s] 66%|██████▌   | 170/257 [01:22<01:09,  1.25it/s] 67%|██████▋   | 171/257 [01:22<01:00,  1.42it/s] 67%|██████▋   | 172/257 [01:23<00:51,  1.66it/s] 67%|██████▋   | 173/257 [01:23<00:51,  1.62it/s] 68%|██████▊   | 174/257 [01:24<01:04,  1.28it/s] 68%|██████▊   | 175/257 [01:25<00:55,  1.46it/s] 68%|██████▊   | 176/257 [01:27<01:27,  1.08s/it] 69%|██████▉   | 177/257 [01:27<01:09,  1.16it/s] 69%|██████▉   | 178/257 [01:28<01:08,  1.15it/s] 70%|██████▉   | 179/257 [01:29<00:56,  1.37it/s] 70%|███████   | 180/257 [01:29<00:48,  1.58it/s] 71%|███████   | 182/257 [01:29<00:27,  2.70it/s] 71%|███████   | 183/257 [01:30<00:29,  2.49it/s] 72%|███████▏  | 184/257 [01:30<00:35,  2.08it/s] 72%|███████▏  | 185/257 [01:31<00:45,  1.58it/s] 72%|███████▏  | 186/257 [01:32<00:40,  1.75it/s] 73%|███████▎  | 187/257 [01:32<00:31,  2.24it/s] 73%|███████▎  | 188/257 [01:32<00:30,  2.30it/s] 74%|███████▎  | 189/257 [01:33<00:34,  1.98it/s] 74%|███████▍  | 191/257 [01:33<00:22,  2.94it/s] 75%|███████▍  | 192/257 [01:34<00:24,  2.65it/s] 75%|███████▌  | 193/257 [01:35<00:33,  1.94it/s] 75%|███████▌  | 194/257 [01:35<00:29,  2.12it/s] 76%|███████▌  | 195/257 [01:35<00:25,  2.45it/s] 76%|███████▋  | 196/257 [01:35<00:21,  2.79it/s] 77%|███████▋  | 197/257 [01:36<00:22,  2.72it/s]类别 Billiards 图像特征维度: (512,)
+处理类别: Umbrella 101
+[2025-11-27 01:34:59] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Umbrella 101 图像特征维度: (512,)
+处理类别: Triceratops
+类别 Triceratops 图像特征维度: (512,)
+处理类别: Fern
+类别 Fern 图像特征维度: (512,)
+处理类别: Eyeglasses
+类别 Eyeglasses 图像特征维度: (512,)
+处理类别: Scorpion 101
+类别 Scorpion 101 图像特征维度: (512,)
+处理类别: Tennis Shoes
+类别 Tennis Shoes 图像特征维度: (512,)
+处理类别: Smokestack
+[2025-11-27 01:35:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Smokestack 图像特征维度: (512,)
+处理类别: Praying Mantis
+类别 Praying Mantis 图像特征维度: (512,)
+处理类别: Mussels
+类别 Mussels 图像特征维度: (512,)
+处理类别: Telephone Box
+类别 Telephone Box 图像特征维度: (512,)
+处理类别: Raccoon
+类别 Raccoon 图像特征维度: (512,)
+处理类别: Dumb Bell
+类别 Dumb Bell 图像特征维度: (512,)
+处理类别: Spider
+[2025-11-27 01:35:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Spider 图像特征维度: (512,)
+处理类别: Pez Dispenser
+类别 Pez Dispenser 图像特征维度: (512,)
+处理类别: Iguana
+[2025-11-27 01:35:08] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Iguana 图像特征维度: (512,)
+处理类别: Sextant
+类别 Sextant 图像特征维度: (512,)
+处理类别: Paperclip
+类别 Paperclip 图像特征维度: (512,)
+处理类别: Menorah 101
+类别 Menorah 101 图像特征维度: (512,)
+处理类别: Ketch 101
+类别 Ketch 101 图像特征维度: (512,)
+处理类别: Comet
+类别 Comet 图像特征维度: (512,)
+处理类别: Doorknob
+类别 Doorknob 图像特征维度: (512,)
+处理类别: Butterfly
+类别 Butterfly 图像特征维度: (512,)
+处理类别: Rainbow
+[2025-11-27 01:35:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Rainbow 图像特征维度: (512,)
+处理类别: Sunflower 101
+类别 Sunflower 101 图像特征维度: (512,)
+处理类别: Pyramid
+类别 Pyramid 图像特征维度: (512,)
+处理类别: Baseball Glove
+类别 Baseball Glove 图像特征维度: (512,)
+处理类别: Hammock
+类别 Hammock 图像特征维度: (512,)
+处理类别: Ibis 101
+类别 Ibis 101 图像特征维度: (512,)
+处理类别: Motorbikes 101
+类别 Motorbikes 101 图像特征维度: (512,)
+处理类别: Fire Extinguisher
+类别 Fire Extinguisher 图像特征维度: (512,)
+处理类别: Gorilla
+[2025-11-27 01:35:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Gorilla 图像特征维度: (512,)
+处理类别: Octopus
+类别 Octopus 图像特征维度: (512,)
+处理类别: Steering Wheel
+类别 Steering Wheel 图像特征维度: (512,)
+处理类别: Car Side 101
+类别 Car Side 101 图像特征维度: (512,)
+处理类别: Cartman
+类别 Cartman 图像特征维度: (512,)
+处理类别: People
+类别 People 图像特征维度: (512,)
+处理类别: Saddle
+[2025-11-27 01:35:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Saddle 图像特征维度: (512,)
+处理类别: Cannon
+类别 Cannon 图像特征维度: (512,)
+处理类别: Yarmulke
+类别 Yarmulke 图像特征维度: (512,)
+处理类别: Rotary Phone
+类别 Rotary Phone 图像特征维度: (512,)
+处理类别: Harp
+类别 Harp 图像特征维度: (512,)
+处理类别: Bowling Ball
+类别 Bowling Ball 图像特征维度: (512,)
+处理类别: Ak47
+[2025-11-27 01:35:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Ak47 图像特征维度: (512,)
+处理类别: Kayak
+类别 Kayak 图像特征维度: (512,)
+处理类别: Toaster
+类别 Toaster 图像特征维度: (512,)
+处理类别: Head Phones
+类别 Head Phones 图像特征维度: (512,)
+处理类别: Hourglass
+类别 Hourglass 图像特征维度: (512,)
+处理类别: Skunk
+类别 Skunk 图像特征维度: (512,)
+处理类别: Skateboard
+[2025-11-27 01:35:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Skateboard 图像特征维度: (512,)
+处理类别: Windmill
+类别 Windmill 图像特征维度: (512,)
+处理类别: Light House
+类别 Light House 图像特征维度: (512,)
+处理类别: Mandolin
+类别 Mandolin 图像特征维度: (512,)
+处理类别: Tombstone
+类别 Tombstone 图像特征维度: (512,)
+处理类别: American Flag
+类别 American Flag 图像特征维度: (512,)
+处理类别: Wheelbarrow
+类别 Wheelbarrow 图像特征维度: (512,)
+处理类别: Vcr
+类别 Vcr 图像特征维度: (512,)
+处理类别: Eiffel Tower
+类别 Eiffel Tower 图像特征维度: (512,)
+处理类别: Computer Monitor
+[2025-11-27 01:35:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Computer Monitor 图像特征维度: (512,)
+处理类别: Coffin
+类别 Coffin 图像特征维度: (512,)
+处理类别: Tennis Ball
+类别 Tennis Ball 图像特征维度: (512,)
+处理类别: Teapot
+类别 Teapot 图像特征维度: (512,)
+处理类别: Elephant 101
+类别 Elephant 101 图像特征维度: (512,)
+处理类别: Mars
+类别 Mars 图像特征维度: (512,)
+处理类别: Swiss Army Knife
+类别 Swiss Army Knife 图像特征维度: (512,)
+处理类别: Golf Ball
+[2025-11-27 01:35:29] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Golf Ball 图像特征维度: (512,)
+处理类别: Tower Pisa
+类别 Tower Pisa 图像特征维度: (512,)
+处理类别: Cake
+类别 Cake 图像特征维度: (512,)
+处理类别: Waterfall
+类别 Waterfall 图像特征维度: (512,)
+处理类别: Hot Dog
+[2025-11-27 01:35:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Hot Dog 图像特征维度: (512,)
+处理类别: Teddy Bear
+类别 Teddy Bear 图像特征维度: (512,)
+处理类别: Wine Bottle
+类别 Wine Bottle 图像特征维度: (512,)
+处理类别: Palm Pilot
+类别 Palm Pilot 图像特征维度: (512,)
+处理类别: Touring Bike
+类别 Touring Bike 图像特征维度: (512,)
+处理类别: Galaxy
+[2025-11-27 01:35:35] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Galaxy 图像特征维度: (512,)
+处理类别: Ladder
+类别 Ladder 图像特征维度: (512,)
+处理类别: Frog
+[2025-11-27 01:35:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Frog 图像特征维度: (512,)
+处理类别: Binoculars
+类别 Binoculars 图像特征维度: (512,)
+处理类别: Guitar Pick
+类别 Guitar Pick 图像特征维度: (512,)
+处理类别: Duck
+类别 Duck 图像特征维度: (512,)
+处理类别: Fire Hydrant
+类别 Fire Hydrant 图像特征维度: (512,)
+处理类别: Boom Box
+类别 Boom Box 图像特征维度: (512,)
+处理类别: Electric Guitar 101
+类别 Electric Guitar 101 图像特征维度: (512,)
+处理类别: Minotaur
+[2025-11-27 01:35:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Minotaur 图像特征维度: (512,)
+处理类别: Bear
+类别 Bear 图像特征维度: (512,)
+处理类别: Harmonica
+类别 Harmonica 图像特征维度: (512,)
+处理类别: Xylophone
+类别 Xylophone 图像特征维度: (512,)
+处理类别: Unicorn
+类别 Unicorn 图像特征维度: (512,)
+处理类别: Hamburger
+类别 Hamburger 图像特征维度: (512,)
+处理类别: Elk
+[2025-11-27 01:35:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Elk 图像特征维度: (512,)
+处理类别: Faces Easy 101
+类别 Faces Easy 101 图像特征维度: (512,)
+处理类别: Kangaroo 101
+类别 Kangaroo 101 图像特征维度: (512,)
+处理类别: Segway
+类别 Segway 图像特征维度: (512,)
+处理类别: Cactus
+类别 Cactus 图像特征维度: (512,)
+处理类别: Horseshoe Crab
+类别 Horseshoe Crab 图像特征维度: (512,)
+处理类别: Joy Stick
+类别 Joy Stick 图像特征维度: (512,)
+处理类别: Coffee Mug
+[2025-11-27 01:35:47] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Coffee Mug 图像特征维度: (512,)
+处理类别: Harpsichord
+类别 Harpsichord 图像特征维度: (512,)
+ 77%|███████▋  | 198/257 [01:36<00:25,  2.35it/s] 77%|███████▋  | 199/257 [01:37<00:27,  2.15it/s] 78%|███████▊  | 200/257 [01:37<00:20,  2.74it/s] 78%|███████▊  | 201/257 [01:38<00:27,  2.00it/s] 79%|███████▊  | 202/257 [01:38<00:25,  2.16it/s] 79%|███████▉  | 203/257 [01:39<00:22,  2.42it/s] 79%|███████▉  | 204/257 [01:39<00:26,  2.03it/s] 80%|███████▉  | 205/257 [01:40<00:31,  1.67it/s] 80%|████████  | 206/257 [01:40<00:24,  2.05it/s] 81%|████████  | 207/257 [01:42<00:35,  1.42it/s] 81%|████████  | 208/257 [01:43<00:39,  1.23it/s] 81%|████████▏ | 209/257 [01:44<00:41,  1.17it/s] 82%|████████▏ | 210/257 [01:44<00:37,  1.24it/s] 82%|████████▏ | 211/257 [01:44<00:28,  1.62it/s] 82%|████████▏ | 212/257 [01:45<00:25,  1.79it/s] 83%|████████▎ | 214/257 [01:46<00:19,  2.20it/s] 84%|████████▎ | 215/257 [01:46<00:17,  2.46it/s] 84%|████████▍ | 216/257 [01:46<00:14,  2.93it/s] 85%|████████▍ | 218/257 [01:46<00:09,  4.17it/s] 85%|████████▌ | 219/257 [01:47<00:11,  3.44it/s] 86%|████████▌ | 220/257 [01:47<00:12,  2.90it/s] 86%|████████▌ | 221/257 [01:47<00:12,  2.95it/s] 87%|████████▋ | 223/257 [01:48<00:07,  4.49it/s] 87%|████████▋ | 224/257 [01:48<00:09,  3.52it/s] 88%|████████▊ | 225/257 [01:49<00:12,  2.47it/s] 88%|████████▊ | 226/257 [01:49<00:12,  2.39it/s] 88%|████████▊ | 227/257 [01:50<00:13,  2.25it/s] 89%|████████▊ | 228/257 [01:50<00:10,  2.69it/s] 89%|████████▉ | 229/257 [01:51<00:13,  2.04it/s] 89%|████████▉ | 230/257 [01:51<00:12,  2.13it/s] 90%|████████▉ | 231/257 [01:52<00:12,  2.17it/s] 90%|█████████ | 232/257 [01:52<00:10,  2.31it/s] 91%|█████████ | 234/257 [01:52<00:07,  3.06it/s] 91%|█████████▏| 235/257 [01:53<00:06,  3.51it/s] 92%|█████████▏| 236/257 [01:53<00:06,  3.21it/s] 92%|█████████▏| 237/257 [01:54<00:09,  2.13it/s] 93%|█████████▎| 238/257 [01:55<00:10,  1.89it/s] 93%|█████████▎| 239/257 [01:55<00:09,  1.89it/s] 93%|█████████▎| 240/257 [01:55<00:07,  2.18it/s] 94%|█████████▍| 241/257 [01:56<00:09,  1.72it/s] 94%|█████████▍| 242/257 [01:57<00:08,  1.86it/s] 95%|█████████▍| 243/257 [01:57<00:07,  1.95it/s] 95%|█████████▌| 245/257 [01:57<00:03,  3.18it/s] 96%|█████████▌| 246/257 [01:58<00:04,  2.35it/s] 96%|█████████▌| 247/257 [01:59<00:05,  1.81it/s] 96%|█████████▋| 248/257 [01:59<00:04,  2.00it/s] 97%|█████████▋| 249/257 [02:00<00:04,  1.83it/s] 97%|█████████▋| 250/257 [02:00<00:02,  2.36it/s] 98%|█████████▊| 251/257 [02:01<00:02,  2.11it/s] 98%|█████████▊| 252/257 [02:02<00:04,  1.23it/s] 98%|█████████▊| 253/257 [02:03<00:02,  1.53it/s] 99%|█████████▉| 254/257 [02:03<00:02,  1.49it/s] 99%|█████████▉| 255/257 [02:03<00:01,  1.89it/s]100%|█████████▉| 256/257 [02:04<00:00,  1.95it/s]100%|██████████| 257/257 [02:04<00:00,  1.93it/s]100%|██████████| 257/257 [02:04<00:00,  2.06it/s]
+处理类别: Chess Board
+类别 Chess Board 图像特征维度: (512,)
+处理类别: Ostrich
+类别 Ostrich 图像特征维度: (512,)
+处理类别: Computer Keyboard
+类别 Computer Keyboard 图像特征维度: (512,)
+处理类别: Toad
+类别 Toad 图像特征维度: (512,)
+处理类别: Ipod
+类别 Ipod 图像特征维度: (512,)
+处理类别: Syringe
+[2025-11-27 01:35:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Syringe 图像特征维度: (512,)
+处理类别: Cockroach
+类别 Cockroach 图像特征维度: (512,)
+处理类别: Hummingbird
+类别 Hummingbird 图像特征维度: (512,)
+处理类别: Stirrups
+类别 Stirrups 图像特征维度: (512,)
+处理类别: Goose
+[2025-11-27 01:35:53] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Goose 图像特征维度: (512,)
+处理类别: Skyscraper
+类别 Skyscraper 图像特征维度: (512,)
+处理类别: Goat
+类别 Goat 图像特征维度: (512,)
+处理类别: License Plate
+类别 License Plate 图像特征维度: (512,)
+处理类别: Frying Pan
+[2025-11-27 01:35:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Frying Pan 图像特征维度: (512,)
+处理类别: Canoe
+类别 Canoe 图像特征维度: (512,)
+处理类别: T Shirt
+类别 T Shirt 图像特征维度: (512,)
+处理类别: Bat
+类别 Bat 图像特征维度: (512,)
+处理类别: Crab 101
+类别 Crab 101 图像特征维度: (512,)
+处理类别: Penguin
+类别 Penguin 图像特征维度: (512,)
+处理类别: Treadmill
+类别 Treadmill 图像特征维度: (512,)
+处理类别: Mailbox
+类别 Mailbox 图像特征维度: (512,)
+处理类别: Car Tire
+类别 Car Tire 图像特征维度: (512,)
+处理类别: Cowboy Hat
+类别 Cowboy Hat 图像特征维度: (512,)
+处理类别: Flashlight
+[2025-11-27 01:35:59] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Flashlight 图像特征维度: (512,)
+处理类别: Covered Wagon
+类别 Covered Wagon 图像特征维度: (512,)
+处理类别: Fighter Jet
+类别 Fighter Jet 图像特征维度: (512,)
+处理类别: Tennis Racket
+类别 Tennis Racket 图像特征维度: (512,)
+处理类别: Traffic Light
+类别 Traffic Light 图像特征维度: (512,)
+处理类别: Top Hat
+类别 Top Hat 图像特征维度: (512,)
+处理类别: Computer Mouse
+类别 Computer Mouse 图像特征维度: (512,)
+处理类别: Starfish 101
+类别 Starfish 101 图像特征维度: (512,)
+处理类别: Stained Glass
+[2025-11-27 01:36:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Stained Glass 图像特征维度: (512,)
+处理类别: Floppy Disk
+类别 Floppy Disk 图像特征维度: (512,)
+处理类别: Baseball Bat
+类别 Baseball Bat 图像特征维度: (512,)
+处理类别: Drinking Straw
+类别 Drinking Straw 图像特征维度: (512,)
+处理类别: Leopards 101
+类别 Leopards 101 图像特征维度: (512,)
+处理类别: Dog
+类别 Dog 图像特征维度: (512,)
+处理类别: Mountain Bike
+类别 Mountain Bike 图像特征维度: (512,)
+处理类别: Chimp
+类别 Chimp 图像特征维度: (512,)
+处理类别: Goldfish
+[2025-11-27 01:36:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Goldfish 图像特征维度: (512,)
+处理类别: Ice Cream Cone
+类别 Ice Cream Cone 图像特征维度: (512,)
+处理类别: Killer Whale
+类别 Killer Whale 图像特征维度: (512,)
+处理类别: Dolphin 101
+类别 Dolphin 101 图像特征维度: (512,)
+处理类别: Human Skeleton
+类别 Human Skeleton 图像特征维度: (512,)
+处理类别: Golden Gate Bridge
+[2025-11-27 01:36:08] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Golden Gate Bridge 图像特征维度: (512,)
+处理类别: Blimp
+类别 Blimp 图像特征维度: (512,)
+处理类别: Socks
+类别 Socks 图像特征维度: (512,)
+处理类别: Mushroom
+类别 Mushroom 图像特征维度: (512,)
+处理类别: Snake
+类别 Snake 图像特征维度: (512,)
+处理类别: Brain 101
+类别 Brain 101 图像特征维度: (512,)
+处理类别: Watch 101
+类别 Watch 101 图像特征维度: (512,)
+处理类别: Diamond Ring
+[2025-11-27 01:36:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Diamond Ring 图像特征维度: (512,)
+处理类别: Conch
+类别 Conch 图像特征维度: (512,)
+处理类别: Grasshopper
+类别 Grasshopper 图像特征维度: (512,)
+处理类别: Swan
+类别 Swan 图像特征维度: (512,)
+处理类别: Sneaker
+[2025-11-27 01:36:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Sneaker 图像特征维度: (512,)
+处理类别: Desk Globe
+类别 Desk Globe 图像特征维度: (512,)
+处理类别: Mattress
+类别 Mattress 图像特征维度: (512,)
+处理类别: Jesus Christ
+类别 Jesus Christ 图像特征维度: (512,)
+处理类别: Theodolite
+类别 Theodolite 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/257 [00:00<?, ?it/s]  0%|          | 1/257 [00:24<1:44:47, 24.56s/it]  1%|          | 2/257 [00:46<1:38:17, 23.13s/it]  1%|          | 3/257 [01:05<1:28:51, 20.99s/it]处理类别: Washing Machine
+[2025-11-27 01:36:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 01:36:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 01:36:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 01:36:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for Washing Machine category.
+推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
+[2025-11-27 01:36:29] [显存监控] 已分配=17.22GB, 已保留=31.63GB, 空闲=30.18GB
+[2025-11-27 01:36:32] [显存监控] 已分配=17.22GB, 已保留=31.63GB, 空闲=30.18GB
+[2025-11-27 01:36:35] [显存监控] 已分配=17.07GB, 已保留=31.63GB, 空闲=30.33GB
+[2025-11-27 01:36:38] [显存监控] 已分配=17.08GB, 已保留=31.63GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=31.63GB, 剩余=30.50GB
+MLLM description: The first image depicts a wooden toy washing machine with a light wood finish, featuring a circular window, two small black doors at the bottom, and decorative scalloped edges at the top and bottom. It has a simple design with no visible buttons or controls.
+
+The second image shows a real, modern washing machine in a cream color with a rectangular shape. It has a control panel with multiple buttons and dials, and a door with a transparent window. The machine is larger than the toy version and has a more functional appearance.
+
+The third image displays another real washing machine, predominantly white with a wooden panel on the side. It also has a control panel with buttons and a transparent door window. This machine is slightly taller and narrower compared to the second one, and it appears to have a more compact design.
+
+In summary, the toy washing machine is smaller, simpler, and made of wood, while the real machines are larger, more complex, and made of plastic or metal. The toy lacks functional controls and buttons, whereas the real machines have them. The toy's design is more decorative, while the real machines prioritize functionality.
+类别 Washing Machine 文本特征维度: (512,)
+描述: The first image depicts a wooden toy washing machine with a light wood finish, featuring a circular ...
+处理类别: Hot Tub
+[2025-11-27 01:36:41] [显存监控] 已分配=16.91GB, 已保留=31.63GB, 空闲=30.50GB
+[2025-11-27 01:36:44] [显存监控] 已分配=16.91GB, 已保留=31.63GB, 空闲=30.50GB
+[2025-11-27 01:36:47] [显存监控] 已分配=16.91GB, 已保留=31.63GB, 空闲=30.50GB
+[2025-11-27 01:36:50] [显存监控] 已分配=16.91GB, 已保留=31.63GB, 空闲=30.50GB
+wiki desc: Description for Hot Tub category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 01:36:53] [显存监控] 已分配=17.15GB, 已保留=26.88GB, 空闲=30.25GB
+[2025-11-27 01:36:56] [显存监控] 已分配=17.05GB, 已保留=26.88GB, 空闲=30.36GB
+[2025-11-27 01:36:59] [显存监控] 已分配=17.05GB, 已保留=26.88GB, 空闲=30.35GB
+[2025-11-27 01:37:02] [显存监控] 已分配=17.06GB, 已保留=26.88GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=26.88GB, 剩余=30.50GB
+MLLM description: Here's a detailed description of the hot tubs in the provided images:
+
+### Image 1: Hot Tub in a Natural Setting
+
+**Distinctive Physical Features:**  
+- The hot tub has a rectangular shape with rounded edges.  
+- It is covered with a textured blue top, possibly made of acrylic or fiberglass.  
+- The sides are clad in vertical wooden panels, giving it a natural wood appearance.  
+
+**Color Patterns and Markings:**  
+- The top is predominantly blue with a speckled texture.  
+- The sides are a warm, reddish-brown wood tone.  
+
+**Size and Proportions:**  
+- The hot tub appears to be medium-sized, designed for a small group of people.  
+- It is placed outdoors, suggesting it is meant for relaxation in a natural environment.  
+
+**Behavioral Characteristics:**  
+- There are no people visible in this image, so no behavioral characteristics can be observed.  
+
+**Unique Identifying Traits:**  
+- The combination of the blue top and wooden sides gives it a unique aesthetic.  
+- The placement in a natural setting suggests it is used for outdoor relaxation.  
+
+---
+
+### Image 2: Hot Tub at Night with People
+
+**Distinctive Physical Features:**  
+- This hot tub is circular
+类别 Hot Tub 文本特征维度: (512,)
+描述: Here's a detailed description of the hot tubs in the provided images:
+
+### Image 1: Hot Tub in a Nat...
+处理类别: Chandelier 101
+[2025-11-27 01:37:05] [显存监控] 已分配=16.91GB, 已保留=26.88GB, 空闲=30.50GB
+[2025-11-27 01:37:08] [显存监控] 已分配=16.91GB, 已保留=26.88GB, 空闲=30.50GB
+[2025-11-27 01:37:11] [显存监控] 已分配=16.91GB, 已保留=26.88GB, 空闲=30.50GB
+wiki desc: Description for Chandelier 101 category.
+[2025-11-27 01:37:14] [显存监控] 已分配=16.91GB, 已保留=26.88GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:37:17] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-27 01:37:20] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: Chandelier 101 showcases a unique blend of elegance and opulence. Here's a detailed breakdown:
+
+1. **Distinctive Physical Features**: This chandelier is characterized by its intricate design, featuring a central column with a floral motif at the top, adorned with small crystals. The arms extend outward in a curved fashion, each ending in a glass shade. The chandelier is embellished with hanging crystals, adding to its luxurious appearance.
+
+2. **Color Patterns and Markings**: The chandelier predominantly features a clear crystal finish, with hints of purple and gold accents. The central column has a purple hue, while the arms and shades have a subtle gold tone. The hanging crystals are transparent, catching light and creating a dazzling effect.
+
+3. **Size and Proportions**: The chandelier appears to be medium-sized, suitable for a dining room or living area. It has a balanced proportion, with the central column being slightly taller than the arms, which are evenly spaced outwards. The hanging crystals add vertical length, enhancing the overall height.
+
+4. **Behavioral Characteristics**: As a chandelier, it does not exhibit any behavioral characteristics. Its function is purely decorative and lighting-related.
+
+5. **Unique Identifying Traits**: The combination of the floral motif,
+类别 Chandelier 101 文本特征维度: (512,)
+描述: Chandelier 101 showcases a unique blend of elegance and opulence. Here's a detailed breakdown:
+
+1. *...
+处理类别: Bowling Pin
+[2025-11-27 01:37:23] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-27 01:37:26] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-27 01:37:29] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Bowling Pin category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:37:32] [显存监控] 已分配=16.93GB, 已保留=17.40GB, 空闲=30.47GB
+[2025-11-27 01:37:35] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.47GB
+[2025-11-27 01:37:38] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+  2%|▏         | 4/257 [01:22<1:22:44, 19.62s/it]  2%|▏         | 5/257 [01:39<1:18:55, 18.79s/it]  2%|▏         | 6/257 [01:57<1:16:32, 18.30s/it]  3%|▎         | 7/257 [02:12<1:12:40, 17.44s/it]MLLM description: The images depict bowling pins, which are distinct objects used in the sport of bowling. Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Bowling pins are typically made of wood or plastic and have a conical shape with a wider base tapering to a narrower top. They are designed to be knocked down by a ball thrown by a bowler.
+
+2. **Color Patterns and Markings**: The first image shows a single white bowling pin with red stripes near the top and a logo on its side. The second image displays three worn-out bowling pins in sepia tones, with visible signs of use such as scratches and discoloration. The third image presents three bowling pins in bright colors: two red and one green, each with a black triangle marking near the top.
+
+3. **Size and Proportions**: Bowling pins are standardized in size and shape. They are approximately 16 inches tall and 2.75 inches wide at the base. The pins in the images appear to adhere to these dimensions.
+
+4. **Behavioral Characteristics**: Bowling pins do not exhibit any behavioral characteristics since they are inanimate objects. However, their placement and arrangement can indicate different scenarios, such as a spare or a strike.
+
+5. **
+类别 Bowling Pin 文本特征维度: (512,)
+描述: The images depict bowling pins, which are distinct objects used in the sport of bowling. Here's a br...
+处理类别: Greyhound
+[2025-11-27 01:37:41] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+[2025-11-27 01:37:44] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+[2025-11-27 01:37:47] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+wiki desc: Description for Greyhound category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:37:50] [显存监控] 已分配=16.93GB, 已保留=17.40GB, 空闲=30.47GB
+[2025-11-27 01:37:53] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+MLLM description: Greyhounds are characterized by their sleek, athletic build, long legs, and narrow bodies. Their distinctive physical features include a deep chest, long neck, and a narrow head with a short muzzle. They have a lean, muscular body structure, which is ideal for speed and agility.
+
+In terms of color patterns and markings, Greyhounds can come in various shades, including white, black, brown, and combinations thereof. Some Greyhounds may also have distinct markings such as spots or patches on their coat. The coloration can vary widely among individuals within the breed.
+
+Greyhounds are typically medium to large-sized dogs, with males generally being larger than females. Their size and proportions contribute to their exceptional speed and endurance, making them well-suited for activities like racing and hunting.
+
+Behaviorally, Greyhounds are known for their gentle and calm demeanor. They are often described as quiet and reserved, especially when compared to other dog breeds. However, they can be quite affectionate towards their owners and may form strong bonds with them. Greyhounds are also highly trainable and can excel in obedience training due to their intelligence and eagerness to please.
+
+One unique identifying trait of Greyhounds is their long, slender tail, which is often carried low while at rest.
+类别 Greyhound 文本特征维度: (512,)
+描述: Greyhounds are characterized by their sleek, athletic build, long legs, and narrow bodies. Their dis...
+处理类别: Grapes
+[2025-11-27 01:37:56] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+[2025-11-27 01:37:59] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+[2025-11-27 01:38:02] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+[2025-11-27 01:38:05] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+wiki desc: Description for Grapes category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:38:08] [显存监控] 已分配=16.93GB, 已保留=17.46GB, 空闲=30.47GB
+[2025-11-27 01:38:11] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+MLLM description: The images depict grapes, a fruit known for their distinctive appearance and cultural significance in winemaking and culinary arts.
+
+1. **Distinctive Physical Features**: Grapes are characterized by their small, round to oval-shaped berries clustered together on a vine. Each berry is typically covered with a thin skin and contains a small seed inside. The texture can vary from smooth to slightly rough depending on the variety.
+
+2. **Color Patterns and Markings**: The color of grapes can range widely, from pale green to deep purple or red. In the images, the grapes display a rich dark purple hue, which is typical of many varieties used in wine production. Some grapes may have a slight blush or speckled pattern, as seen in the third image where the grapes have a pinkish-red coloration.
+
+3. **Size and Proportions**: Grapes come in various sizes, but they are generally small compared to other fruits like apples or oranges. The clusters in the images appear to be medium-sized, with each grape being roughly the size of a small pea. The proportion between the berries and the cluster structure is consistent across all images.
+
+4. **Behavioral Characteristics**: Grapes do not exhibit any behavioral characteristics since they are inanimate objects. However, the images show them
+类别 Grapes 文本特征维度: (512,)
+描述: The images depict grapes, a fruit known for their distinctive appearance and cultural significance i...
+处理类别: Fried Egg
+[2025-11-27 01:38:14] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-27 01:38:17] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-27 01:38:20] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-27 01:38:23] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+wiki desc: Description for Fried Egg category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:38:26] [显存监控] 已分配=17.00GB, 已保留=19.62GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.62GB, 剩余=30.50GB
+MLLM description: The Fried Egg in Image 2 is characterized by its distinctively round shape with a slightly irregular outline, indicative of being cooked in a pan or skillet. The egg white is fully set around the yolk, which is bright yellow and centrally positioned, maintaining a smooth, rounded appearance. The color pattern is uniform, with the white surrounding the yolk without any additional toppings or garnishes. The size appears relatively small compared to the plate it's served on, emphasizing the simplicity of the dish. There are no behavioral characteristics as eggs are inanimate objects. The unique identifying trait is the classic fried egg presentation, with a clear separation between the white and yolk, and a slightly crispy edge where the white has set.
+类别 Fried Egg 文本特征维度: (512,)
+描述: The Fried Egg in Image 2 is characterized by its distinctively round shape with a slightly irregular...
+处理类别: Necktie
+[2025-11-27 01:38:29] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 01:38:32] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 01:38:35] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 01:38:38] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+wiki desc: Description for Necktie category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 01:38:41] [显存监控] 已分配=17.12GB, 已保留=24.75GB, 空闲=30.29GB
+[2025-11-27 01:38:44] [显存监控] 已分配=17.03GB, 已保留=24.75GB, 空闲=30.37GB
+[2025-11-27 01:38:47] [显存监控] 已分配=17.04GB, 已保留=24.75GB, 空闲=30.37GB
+  3%|▎         | 8/257 [02:33<1:17:00, 18.56s/it]  4%|▎         | 9/257 [02:51<1:15:38, 18.30s/it]  4%|▍         | 10/257 [03:09<1:14:16, 18.04s/it]  4%|▍         | 11/257 [03:28<1:15:49, 18.50s/it]推理后显存: 已分配=16.91GB, 已保留=24.75GB, 剩余=30.50GB
+MLLM description: ### Description of Neckties:
+
+#### **Image 1: Solid Navy Blue Tie**
+- **Distinctive Physical Features:** This tie is a solid navy blue with no visible patterns or designs. It appears to have a smooth texture and a standard width and length typical for men's neckties.
+- **Color Patterns and Markings:** The tie is entirely navy blue without any additional colors or markings.
+- **Size and Proportions:** Standard size for a men's necktie, likely around 3 inches wide and 60 inches long when fully extended.
+- **Behavioral Characteristics:** Not applicable as it is an inanimate object.
+- **Unique Identifying Traits:** The simplicity of its design makes it versatile for various occasions.
+
+---
+
+#### **Image 2: Dark Teal Tie with Gold Symbols**
+- **Distinctive Physical Features:** This tie is dark teal with gold-colored symbols printed on it. The symbols appear to be circular and triangular shapes, possibly representing a logo or emblem.
+- **Color Patterns and Markings:** The tie has a consistent dark teal background with evenly spaced gold symbols scattered across the fabric.
+- **Size and Proportions:** Standard size for a men's necktie, similar to Image 1.
+- **Behavioral Characteristics:** Not applicable
+类别 Necktie 文本特征维度: (512,)
+描述: ### Description of Neckties:
+
+#### **Image 1: Solid Navy Blue Tie**
+- **Distinctive Physical Feature...
+处理类别: Video Projector
+[2025-11-27 01:38:50] [显存监控] 已分配=16.91GB, 已保留=24.75GB, 空闲=30.50GB
+[2025-11-27 01:38:53] [显存监控] 已分配=16.91GB, 已保留=24.75GB, 空闲=30.50GB
+[2025-11-27 01:38:56] [显存监控] 已分配=16.91GB, 已保留=24.75GB, 空闲=30.50GB
+[2025-11-27 01:38:59] [显存监控] 已分配=16.91GB, 已保留=24.75GB, 空闲=30.50GB
+wiki desc: Description for Video Projector category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:39:02] [显存监控] 已分配=16.96GB, 已保留=17.88GB, 空闲=30.44GB
+[2025-11-27 01:39:05] [显存监控] 已分配=16.96GB, 已保留=17.88GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.88GB, 剩余=30.50GB
+MLLM description: The images depict video projectors, which are devices used to display images or videos onto a screen. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**:
+   - All three projectors have a rectangular body with a lens at the front, designed to project light onto a screen.
+   - They feature ventilation grilles on the sides or back, indicating the need for airflow to cool the internal components.
+   - The lenses are prominent, with varying designs suggesting different optical capabilities.
+
+2. **Color Patterns and Markings**:
+   - The first projector is primarily white with black text and markings, including the brand name "Optoma."
+   - The second projector is white with a blue lens and a logo near the top.
+   - The third projector has a beige body with a black base and a multi-lens setup, possibly indicating a 3D or multi-image projection capability.
+
+3. **Size and Proportions**:
+   - The projectors vary in size, with the first being the largest, followed by the second, and then the third, which appears smaller and more compact.
+   - The proportions are consistent with typical projector design, with a wide base and a narrower top housing the lens.
+
+4. **Behavioral Characteristics
+类别 Video Projector 文本特征维度: (512,)
+描述: The images depict video projectors, which are devices used to display images or videos onto a screen...
+处理类别: Boxing Glove
+[2025-11-27 01:39:08] [显存监控] 已分配=16.91GB, 已保留=17.88GB, 空闲=30.50GB
+[2025-11-27 01:39:11] [显存监控] 已分配=16.91GB, 已保留=17.88GB, 空闲=30.50GB
+[2025-11-27 01:39:14] [显存监控] 已分配=16.91GB, 已保留=17.88GB, 空闲=30.50GB
+[2025-11-27 01:39:17] [显存监控] 已分配=16.91GB, 已保留=17.88GB, 空闲=30.50GB
+wiki desc: Description for Boxing Glove category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:39:20] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 01:39:23] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+MLLM description: The images depict boxing gloves, which are specialized pieces of equipment designed for the sport of boxing. Here's a detailed description focusing on their distinctive features:
+
+1. **Distinctive Physical Features**: Boxing gloves are padded to protect both the boxer and their opponent during a match. They have a distinct shape with a rounded palm and a reinforced thumb area for added protection.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The glove is predominantly black with a striking red graphic design featuring a fierce face, likely representing a character or logo. The design includes bold lines and vibrant colors, making it visually striking.  
+   - Image 2: This glove is primarily red with gold accents and text, including a signature on the side. The gold text and trim add a classic touch, while the red color is bold and eye-catching.  
+   - Image 3: The glove is black with white and silver detailing, including a prominent logo on the backhand. The simplicity of the design contrasts with the more elaborate designs in the other images.
+
+3. **Size and Proportions**: Boxing gloves come in various sizes to fit different hand sizes and preferences of boxers. While the exact size cannot be determined from the images alone, the gloves appear to be standard
+类别 Boxing Glove 文本特征维度: (512,)
+描述: The images depict boxing gloves, which are specialized pieces of equipment designed for the sport of...
+处理类别: Dice
+[2025-11-27 01:39:26] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:39:29] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:39:32] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:39:35] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+wiki desc: Description for Dice category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 01:39:38] [显存监控] 已分配=17.00GB, 已保留=20.91GB, 空闲=30.40GB
+[2025-11-27 01:39:41] [显存监控] 已分配=17.00GB, 已保留=20.91GB, 空闲=30.40GB
+[2025-11-27 01:39:44] [显存监控] 已分配=17.03GB, 已保留=20.91GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.91GB, 剩余=30.50GB
+MLLM description: The images showcase dice in various forms, each with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: A die-shaped game board with multiple smaller dice embedded within it, resembling a keyboard layout.  
+   - Image 2: Standard six-sided dice, uniformly shaped and sized, with black dots marking the numbers.  
+   - Image 3: Transparent dice with internal markings, featuring a bird and text ("8 Pecks" and "↑"), adding a playful element.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: Brown and yellow color scheme with a grid-like pattern for the smaller dice.  
+   - Image 2: Yellow dice with black dots, representing the standard color combination.  
+   - Image 3: Transparent dice with internal colors (red, green, purple) and black dots, along with a colorful bird graphic.
+
+3. **Size and Proportions**:  
+   - Image 1: The die-shaped board is larger than the individual dice, with a rectangular shape and a grid of smaller dice.  
+   - Image 2: The dice are small and uniform in size, designed for easy handling.  
+   - Image 3: The dice are slightly larger than the standard
+类别 Dice 文本特征维度: (512,)
+描述: The images showcase dice in various forms, each with distinct characteristics:
+
+1. **Distinctive Phy...
+处理类别: Megaphone
+[2025-11-27 01:39:47] [显存监控] 已分配=16.91GB, 已保留=20.91GB, 空闲=30.50GB
+[2025-11-27 01:39:50] [显存监控] 已分配=16.91GB, 已保留=20.91GB, 空闲=30.50GB
+  5%|▍         | 12/257 [03:45<1:13:52, 18.09s/it]  5%|▌         | 13/257 [04:03<1:12:56, 17.94s/it]  5%|▌         | 14/257 [04:29<1:23:07, 20.52s/it][2025-11-27 01:39:53] [显存监控] 已分配=16.91GB, 已保留=20.91GB, 空闲=30.50GB
+wiki desc: Description for Megaphone category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:39:56] [显存监控] 已分配=16.92GB, 已保留=17.25GB, 空闲=30.48GB
+[2025-11-27 01:39:59] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.27GB, 剩余=30.50GB
+MLLM description: The images depict various types of megaphones, each with distinct physical features:
+
+1. **Distinctive Physical Features**:  
+   - **Image 1**: A handheld megaphone with a blue horn and a white body. It has a simple design with a single handle and a loop for hanging or attaching to a belt.  
+   - **Image 2**: A larger, more robust megaphone with a silver horn and a white body. It appears to have a more industrial design, possibly with a built-in microphone and a power cord, suggesting it's battery-operated.  
+   - **Image 3**: Another handheld megaphone, this one with a light blue horn and a white body. It also has a single handle and a loop for carrying.
+
+2. **Color Patterns and Markings**:  
+   - **Image 1**: Predominantly blue and white, with a red and yellow logo on the side.  
+   - **Image 2**: Silver and white, with no visible logos or markings.  
+   - **Image 3**: Light blue and white, with a simple design and no visible logos.
+
+3. **Size and Proportions**:  
+   - **Image 1**: Smaller in size, likely designed for
+类别 Megaphone 文本特征维度: (512,)
+描述: The images depict various types of megaphones, each with distinct physical features:
+
+1. **Distincti...
+处理类别: Tricycle
+[2025-11-27 01:40:02] [显存监控] 已分配=16.91GB, 已保留=17.27GB, 空闲=30.50GB
+[2025-11-27 01:40:05] [显存监控] 已分配=16.91GB, 已保留=17.27GB, 空闲=30.50GB
+[2025-11-27 01:40:08] [显存监控] 已分配=16.91GB, 已保留=17.27GB, 空闲=30.50GB
+[2025-11-27 01:40:11] [显存监控] 已分配=16.91GB, 已保留=17.27GB, 空闲=30.50GB
+wiki desc: Description for Tricycle category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:40:14] [显存监控] 已分配=16.94GB, 已保留=17.65GB, 空闲=30.46GB
+[2025-11-27 01:40:17] [显存监控] 已分配=16.94GB, 已保留=17.65GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.67GB, 剩余=30.50GB
+MLLM description: The images depict a tricycle, a three-wheeled bicycle designed for children or individuals with mobility challenges. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: A tricycle has three wheels arranged in a triangular configuration, with two smaller wheels at the front and one larger wheel at the back. This design provides better stability and balance compared to a standard bicycle.
+
+2. **Color Patterns and Markings**: The tricycles shown in the images have varying color schemes. One is predominantly yellow with black accents, while another is white with a pink background. The third image shows a person wearing a white suit, sitting on a red and yellow tricycle.
+
+3. **Size and Proportions**: The tricycles appear to be small in size, suitable for children or individuals with limited mobility. They are not as large as adult bicycles and have a more compact frame.
+
+4. **Behavioral Characteristics**: The images do not provide information about the behavior of the tricycles themselves, as they are inanimate objects. However, the presence of people riding them suggests that they are used for transportation or recreational purposes.
+
+5. **Unique Identifying Traits**: The tricycle's unique identifying traits include its three-wheeled design, which sets
+类别 Tricycle 文本特征维度: (512,)
+描述: The images depict a tricycle, a three-wheeled bicycle designed for children or individuals with mobi...
+处理类别: Lathe
+[2025-11-27 01:40:20] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+[2025-11-27 01:40:23] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+[2025-11-27 01:40:26] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+[2025-11-27 01:40:29] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+wiki desc: Description for Lathe category.
+图像过大 (1750x1400)，缩小到 (1680x1344) 以节省显存
+推理前显存: 已分配=16.93GB, 已保留=17.13GB, 剩余=30.47GB
+[2025-11-27 01:40:32] [显存监控] 已分配=17.30GB, 已保留=37.54GB, 空闲=30.10GB
+[2025-11-27 01:40:35] [显存监控] 已分配=17.30GB, 已保留=37.54GB, 空闲=30.10GB
+[2025-11-27 01:40:38] [显存监控] 已分配=17.10GB, 已保留=37.54GB, 空闲=30.30GB
+[2025-11-27 01:40:41] [显存监控] 已分配=17.11GB, 已保留=37.55GB, 空闲=30.30GB
+[2025-11-27 01:40:44] [显存监控] 已分配=17.11GB, 已保留=37.55GB, 空闲=30.29GB
+推理后显存: 已分配=16.91GB, 已保留=37.55GB, 剩余=30.50GB
+MLLM description: ### Image 1: Lathe Machine
+
+**Distinctive Physical Features:**  
+- The machine has a robust, black body with metallic components.  
+- It features a vertical column with a circular dial for precise adjustments.  
+- There is a horizontal bed with a carriage that can move along it.  
+- A chuck or tailstock is present at one end, used to hold workpieces.  
+
+**Color Patterns and Markings:**  
+- Predominantly black with metallic accents.  
+- Some parts have red markings, likely indicating adjustment points or safety features.  
+
+**Size and Proportions:**  
+- The lathe appears compact yet substantial in size, designed for precision work.  
+- The vertical column is tall relative to its base, emphasizing height over width.  
+
+**Behavioral Characteristics:**  
+- The machine is stationary; it does not exhibit movement unless actively operated by a user.  
+
+**Unique Identifying Traits:**  
+- The combination of a vertical column, horizontal bed, and adjustable carriage is characteristic of a lathe.  
+- The presence of a chuck or tailstock allows for securing and rotating workpieces.  
+
+
+
+### Image 2: Lathe Machine
+
+**Distinctive Physical Features:**  
+- This machine has a more modern design compared to the
+类别 Lathe 文本特征维度: (512,)
+描述: ### Image 1: Lathe Machine
+
+**Distinctive Physical Features:**  
+- The machine has a robust, black b...
+处理类别: Palm Tree
+[2025-11-27 01:40:47] [显存监控] 已分配=16.91GB, 已保留=37.55GB, 空闲=30.50GB
+[2025-11-27 01:40:50] [显存监控] 已分配=16.91GB, 已保留=37.55GB, 空闲=30.50GB
+[2025-11-27 01:40:53] [显存监控] 已分配=16.91GB, 已保留=37.55GB, 空闲=30.50GB
+[2025-11-27 01:40:56] [显存监控] 已分配=16.91GB, 已保留=37.55GB, 空闲=30.50GB
+wiki desc: Description for Palm Tree category.
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 01:40:59] [显存监控] 已分配=16.95GB, 已保留=17.91GB, 空闲=30.45GB
+[2025-11-27 01:41:02] [显存监控] 已分配=16.96GB, 已保留=17.91GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.91GB, 剩余=30.50GB
+  6%|▌         | 15/257 [04:47<1:18:49, 19.55s/it]  6%|▌         | 16/257 [05:06<1:17:58, 19.41s/it]  7%|▋         | 17/257 [05:23<1:15:03, 18.77s/it]  7%|▋         | 18/257 [05:39<1:11:55, 18.06s/it]MLLM description: The images depict palm trees with distinctive physical features:
+
+1. **Distinctive Physical Features**: All three images show palm trees with long, slender trunks and large, fan-shaped leaves at the top. The leaves are typically green and have a waxy texture.
+
+2. **Color Patterns and Markings**: The leaves in all images are predominantly green, with some variation in shade depending on the lighting conditions. There are no visible markings or patterns on the leaves.
+
+3. **Size and Proportions**: The palm trees vary in size across the images. The first image shows a group of palm trees of varying heights, while the second and third images focus on individual palm trees. The second image presents a taller palm tree, and the third image shows a shorter palm tree.
+
+4. **Behavioral Characteristics**: Palm trees do not exhibit any specific behavioral characteristics as they are stationary plants.
+
+5. **Unique Identifying Traits**: The unique identifying traits of palm trees include their tall, slender trunks and large, fan-shaped leaves. Additionally, the presence of coconuts on some palm trees can be a distinguishing feature, although none of the images show coconuts.
+类别 Palm Tree 文本特征维度: (512,)
+描述: The images depict palm trees with distinctive physical features:
+
+1. **Distinctive Physical Features...
+处理类别: Superman
+[2025-11-27 01:41:05] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+[2025-11-27 01:41:08] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+[2025-11-27 01:41:11] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+[2025-11-27 01:41:14] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+wiki desc: Description for Superman category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:41:17] [显存监控] 已分配=16.96GB, 已保留=17.95GB, 空闲=30.45GB
+[2025-11-27 01:41:20] [显存监控] 已分配=16.96GB, 已保留=17.95GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.95GB, 剩余=30.50GB
+MLLM description: The images depict Christopher Reeve as Superman in various scenes and promotional materials. Here's a breakdown of his distinctive features:
+
+1. **Distinctive Physical Features**: Christopher Reeve portrays Superman with a muscular build, particularly emphasizing his chest and arms to convey strength. His facial features include a strong jawline, piercing eyes, and a confident expression.
+
+2. **Color Patterns and Markings**: Superman is consistently dressed in a blue and red costume with a prominent yellow "S" emblem on the chest. The color scheme is bold and iconic, representing his identity as a superhero.
+
+3. **Size and Proportions**: Superman is depicted as a tall and imposing figure, towering over other characters or objects in the scene. His size is exaggerated compared to humans, reflecting his superhuman stature.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these stills, Superman's typical behavior includes flying, using his superpowers, and standing protectively. His posture and expressions suggest readiness for action and heroism.
+
+5. **Unique Identifying Traits**: The iconic "S" emblem on his chest serves as a clear identifier of Superman. Additionally, his confident stance and heroic demeanor are consistent across the images, reinforcing his role as a protector and symbol of justice.
+类别 Superman 文本特征维度: (512,)
+描述: The images depict Christopher Reeve as Superman in various scenes and promotional materials. Here's ...
+处理类别: Homer Simpson
+[2025-11-27 01:41:23] [显存监控] 已分配=16.91GB, 已保留=17.95GB, 空闲=30.50GB
+[2025-11-27 01:41:26] [显存监控] 已分配=16.91GB, 已保留=17.95GB, 空闲=30.50GB
+[2025-11-27 01:41:29] [显存监控] 已分配=16.91GB, 已保留=17.95GB, 空闲=30.50GB
+[2025-11-27 01:41:32] [显存监控] 已分配=16.91GB, 已保留=17.95GB, 空闲=30.50GB
+wiki desc: Description for Homer Simpson category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:41:35] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-27 01:41:38] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+MLLM description: The images depict Homer Simpson, a character from the animated series *The Simpsons*. Here's a detailed description:
+
+1. **Distinctive Physical Features**: 
+   - Homer has a round head with a prominent, slightly wavy hairstyle.
+   - His face is characterized by a large, square nose, thick eyebrows, and a wide mouth often in an expression of surprise or frustration.
+   - He typically wears a white shirt with a collar.
+
+2. **Color Patterns and Markings**:
+   - Homer's skin is yellow, which is consistent across all images.
+   - There are no significant color variations or patterns; his appearance remains uniform throughout these frames.
+
+3. **Size and Proportions**:
+   - Homer is consistently depicted as a medium-sized adult male, maintaining a similar size relative to other characters in the show.
+   - His body proportions are exaggerated compared to real-life humans, with a larger head and shorter limbs typical of cartoon characters.
+
+4. **Behavioral Characteristics**:
+   - In the first image, Homer appears to be in a state of distress or exhaustion, holding his head and looking tired.
+   - In the second image, he seems to be in a domestic setting, possibly interacting with his family, as indicated by the presence of another character
+类别 Homer Simpson 文本特征维度: (512,)
+描述: The images depict Homer Simpson, a character from the animated series *The Simpsons*. Here's a detai...
+处理类别: Football Helmet
+[2025-11-27 01:41:41] [显存监控] 已分配=16.91GB, 已保留=17.35GB, 空闲=30.50GB
+[2025-11-27 01:41:44] [显存监控] 已分配=16.91GB, 已保留=17.35GB, 空闲=30.50GB
+[2025-11-27 01:41:47] [显存监控] 已分配=16.91GB, 已保留=17.35GB, 空闲=30.50GB
+wiki desc: Description for Football Helmet category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:41:50] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.48GB
+[2025-11-27 01:41:53] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+MLLM description: The images depict three distinct football helmets, each with unique characteristics:
+
+1. **Helmet 1**: This helmet is predominantly red with white accents, including a white faceguard and a white chin strap. It has a classic design with a rounded shape and a relatively small size compared to the others. The faceguard is a prominent feature, covering the entire face area.
+
+2. **Helmet 2**: This helmet is orange with a white stripe running along the top and a white faceguard. It also features a white chin strap. The helmet's design is more streamlined and modern compared to the first one, with a slightly larger size. The orange color is bold and eye-catching.
+
+3. **Helmet 3**: This helmet is black with a green and yellow logo resembling a jaguar's head. It has a black faceguard and a black chin strap. The helmet is the largest among the three, with a more robust and angular design. The black color gives it a sleek and professional appearance.
+
+In summary, the helmets differ in their colors, designs, and sizes, making them easily distinguishable from one another.
+类别 Football Helmet 文本特征维度: (512,)
+描述: The images depict three distinct football helmets, each with unique characteristics:
+
+1. **Helmet 1*...
+处理类别: Llama 101
+[2025-11-27 01:41:56] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:41:59] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:42:02] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:42:05] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+wiki desc: Description for Llama 101 category.
+  7%|▋         | 19/257 [05:57<1:10:44, 17.84s/it]  8%|▊         | 20/257 [06:14<1:09:58, 17.72s/it]  8%|▊         | 21/257 [06:32<1:09:14, 17.61s/it]推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:42:08] [显存监控] 已分配=16.93GB, 已保留=17.42GB, 空闲=30.47GB
+[2025-11-27 01:42:11] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+MLLM description: The images depict llamas, a distinct species within the camelid family. Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Llamas have a long neck, a slender body, and a small head with a narrow muzzle. They possess a pair of large, forward-facing ears and a short tail. Their legs are relatively short compared to their body size.
+
+2. **Color Patterns and Markings**: Llamas can vary in color, including white, brown, black, and combinations thereof. The image shows a white llama with a dark mane and a red saddlebag, while another image displays a brown and white llama. The third image shows a llama with a mix of brown and white fur.
+
+3. **Size and Proportions**: Llamas are generally medium-sized animals, larger than sheep but smaller than alpacas or camels. They have a sturdy build with a broad chest and a deep ribcage. The images show llamas standing upright, showcasing their height and proportionate body structure.
+
+4. **Behavioral Characteristics**: While not explicitly shown in these images, llamas are known to be social animals, often found in herds. They are generally calm and docile, but can become aggressive if
+类别 Llama 101 文本特征维度: (512,)
+描述: The images depict llamas, a distinct species within the camelid family. Here's a breakdown of their ...
+处理类别: Beer Mug
+[2025-11-27 01:42:14] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:42:17] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:42:20] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:42:23] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+wiki desc: Description for Beer Mug category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:42:26] [显存监控] 已分配=16.94GB, 已保留=17.66GB, 空闲=30.46GB
+[2025-11-27 01:42:29] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+MLLM description: The images depict three distinct beer mugs with unique characteristics:
+
+1. **Image 1:** This mug is ceramic or clay, featuring a rustic design with a brownish-orange hue. It has a handle on one side and a spout on the opposite. The body of the mug is decorated with blue and white illustrations depicting a scene with figures around a table, possibly suggesting a historical or cultural theme.
+
+2. **Image 2:** This mug is made of clear glass with a metallic handle. It has an intricate etched design on its surface, including a circular emblem with text in Cyrillic script, a harp, and other symbols. The glass appears to have a reflective quality due to the light source.
+
+3. **Image 3:** This mug is also made of clear glass, but it has a more modern and minimalist design. It features a gold rim at the top and a red and white label with text and a logo. The handle is simple and straight, and the overall shape is cylindrical with a slight taper towards the bottom.
+
+**Key Visual Characteristics:**
+
+* **Distinctive Physical Features:** The first mug has a traditional, handcrafted appearance with a handle and spout, while the second and third mugs are more modern and sleek, with a
+类别 Beer Mug 文本特征维度: (512,)
+描述: The images depict three distinct beer mugs with unique characteristics:
+
+1. **Image 1:** This mug is...
+处理类别: Pci Card
+[2025-11-27 01:42:32] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+[2025-11-27 01:42:35] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+[2025-11-27 01:42:38] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+wiki desc: Description for Pci Card category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:42:41] [显存监控] 已分配=16.91GB, 已保留=17.28GB, 空闲=30.49GB
+[2025-11-27 01:42:44] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.47GB
+[2025-11-27 01:42:47] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+MLLM description: The images depict three distinct PCI cards, each with unique characteristics:
+
+1. **Image 1:** This card is green with black components and has a prominent "PCI" marking in white text near the top left corner. It features multiple black knobs or switches, likely for audio control, and a large central chip. The card has a silver bracket at the bottom, suggesting it's designed to fit into a computer's PCI slot.
+
+2. **Image 2:** This card is primarily blue with silver components. It has a smaller size compared to the first card and appears to have fewer components. The card includes a series of small silver knobs or switches, possibly for audio control, and a central chip. The card also has a silver bracket at the bottom.
+
+3. **Image 3:** This card is green with a mix of black and silver components. It has a larger size than the previous two and features a central chip surrounded by several black rectangular components, which could be memory chips. The card has a silver bracket at the bottom and a DVI connector on the left side, indicating its use for video output.
+
+**Key Visual Characteristics:**
+
+* **Distinctive Physical Features:** Each card has a unique arrangement of components, including knobs, switches, chips, and connectors
+类别 Pci Card 文本特征维度: (512,)
+描述: The images depict three distinct PCI cards, each with unique characteristics:
+
+1. **Image 1:** This ...
+处理类别: Grand Piano 101
+[2025-11-27 01:42:50] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:42:53] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:42:56] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+wiki desc: Description for Grand Piano 101 category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:42:59] [显存监控] 已分配=16.93GB, 已保留=17.40GB, 空闲=30.47GB
+[2025-11-27 01:43:02] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.47GB
+[2025-11-27 01:43:05] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+MLLM description: The Grand Piano 101 category is characterized by its elegant and refined design. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The pianos in this category feature a polished black finish with a glossy sheen, giving them a luxurious appearance. They have a classic, curved shape with a prominent fallboard that can be raised or lowered to access the keys.
+
+2. **Color Patterns and Markings**: The color pattern is predominantly black, with some models featuring subtle wood grain patterns or decorative inlays. Some pianos may also have gold or silver accents around the logo or on the fallboard.
+
+3. **Size and Proportions**: These pianos are typically mid-sized, designed for both home and professional use. They are larger than upright pianos but smaller than concert grand pianos. The proportions are balanced, with a wide keyboard and a substantial base.
+
+4. **Behavioral Characteristics**: As musical instruments, these pianos do not exhibit behavioral characteristics like movement or sound production. However, their functionality is evident through the action of pressing the keys, which produces sound when the hammers strike the strings.
+
+5. **Unique Identifying Traits**: The most distinguishing trait of Grand Piano 101 is its overall aesthetic appeal
+类别 Grand Piano 101 文本特征维度: (512,)
+  9%|▊         | 22/257 [06:49<1:08:34, 17.51s/it]  9%|▉         | 23/257 [07:09<1:11:34, 18.35s/it]  9%|▉         | 24/257 [07:29<1:12:56, 18.78s/it] 10%|▉         | 25/257 [07:43<1:07:10, 17.37s/it] 10%|█         | 26/257 [08:01<1:07:56, 17.65s/it]描述: The Grand Piano 101 category is characterized by its elegant and refined design. Here's a breakdown ...
+处理类别: Spaghetti
+[2025-11-27 01:43:08] [显存监控] 已分配=16.91GB, 已保留=17.41GB, 空闲=30.50GB
+[2025-11-27 01:43:11] [显存监控] 已分配=16.91GB, 已保留=17.41GB, 空闲=30.50GB
+[2025-11-27 01:43:14] [显存监控] 已分配=16.91GB, 已保留=17.41GB, 空闲=30.50GB
+wiki desc: Description for Spaghetti category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 01:43:17] [显存监控] 已分配=17.08GB, 已保留=23.04GB, 空闲=30.32GB
+[2025-11-27 01:43:20] [显存监控] 已分配=17.05GB, 已保留=23.04GB, 空闲=30.35GB
+[2025-11-27 01:43:23] [显存监控] 已分配=17.03GB, 已保留=23.04GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=23.04GB, 剩余=30.50GB
+MLLM description: The images depict spaghetti, a type of pasta characterized by its long, thin, cylindrical shape. Here's a detailed description capturing the distinctive features:
+
+1. **Distinctive Physical Features**: Spaghetti is made from flour, water, and sometimes eggs, giving it a smooth, slightly glossy surface. It has a uniform thickness throughout its length.
+
+2. **Color Patterns and Markings**: The color of spaghetti is typically a pale yellow or off-white, depending on the type of flour used. There are no distinct markings or patterns; the surface is smooth and uniform.
+
+3. **Size and Proportions**: Spaghetti is long and thin, with each strand being approximately 2-3 mm in diameter and several centimeters in length. The strands are evenly distributed across the plate or bowl.
+
+4. **Behavioral Characteristics**: Spaghetti is flexible and can be easily bent or twirled around a fork. It is commonly served with various sauces, as seen in the images, and can be cooked al dente, meaning it is firm to the bite yet tender inside.
+
+5. **Unique Identifying Traits**: The defining trait of spaghetti is its elongated, cylindrical shape, which distinguishes it from other types of pasta such as fettuccine, penne,
+类别 Spaghetti 文本特征维度: (512,)
+描述: The images depict spaghetti, a type of pasta characterized by its long, thin, cylindrical shape. Her...
+处理类别: Minaret
+[2025-11-27 01:43:26] [显存监控] 已分配=16.91GB, 已保留=23.04GB, 空闲=30.50GB
+[2025-11-27 01:43:29] [显存监控] 已分配=16.91GB, 已保留=23.04GB, 空闲=30.50GB
+[2025-11-27 01:43:32] [显存监控] 已分配=16.91GB, 已保留=23.04GB, 空闲=30.50GB
+[2025-11-27 01:43:35] [显存监控] 已分配=16.91GB, 已保留=23.04GB, 空闲=30.50GB
+wiki desc: Description for Minaret category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:43:38] [显存监控] 已分配=17.01GB, 已保留=19.54GB, 空闲=30.39GB
+[2025-11-27 01:43:41] [显存监控] 已分配=17.00GB, 已保留=19.54GB, 空闲=30.40GB
+[2025-11-27 01:43:44] [显存监控] 已分配=17.01GB, 已保留=19.54GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=19.54GB, 剩余=30.50GB
+MLLM description: The images depict three distinct minarets with varying architectural styles and materials.
+
+1. **Qutub Minar (Image 1)**: This minaret is made of red sandstone and features a cylindrical shape with a series of balconies or terraces around its upper portion. It has a tapering design, becoming narrower as it rises. The base is wider than the top, creating a sense of verticality. The structure is surrounded by greenery, and the sky appears overcast. The minaret's color is a reddish-brown hue, typical of sandstone construction in India.
+
+2. **Taj Mahal Minaret (Image 2)**: This minaret is constructed from white marble, giving it a stark contrast to the red sandstone of the Qutub Minar. It is also cylindrical but appears more slender and taller compared to the Qutub Minar. The minaret is part of the Taj Mahal complex, which includes domes and arches in the background. The sky is partly cloudy, and the overall color scheme is dominated by the white marble and the blue-gray tones of the sky.
+
+3. **Eger Minaret (Image 3)**: This minaret is built from light-colored stone, possibly limestone
+类别 Minaret 文本特征维度: (512,)
+描述: The images depict three distinct minarets with varying architectural styles and materials.
+
+1. **Qut...
+处理类别: Laptop 101
+[2025-11-27 01:43:47] [显存监控] 已分配=16.91GB, 已保留=19.54GB, 空闲=30.50GB
+[2025-11-27 01:43:50] [显存监控] 已分配=16.91GB, 已保留=19.54GB, 空闲=30.50GB
+[2025-11-27 01:43:53] [显存监控] 已分配=16.91GB, 已保留=19.54GB, 空闲=30.50GB
+wiki desc: Description for Laptop 101 category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:43:56] [显存监控] 已分配=16.93GB, 已保留=17.63GB, 空闲=30.47GB
+[2025-11-27 01:43:59] [显存监控] 已分配=16.94GB, 已保留=17.63GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.63GB, 剩余=30.50GB
+MLLM description: Laptop 101 is a compact, black laptop with a sleek design. It has a glossy finish and a slim profile, making it portable and easy to carry around. The laptop's screen displays a graph, suggesting it might be used for data analysis or scientific purposes. The keyboard appears to have a standard layout, and there are several ports on the side, including USB and audio jacks. The laptop is connected to an external device via a white cable, indicating it may be used in conjunction with other equipment. Overall, Laptop 101 is a versatile and functional device with a modern and professional appearance.
+类别 Laptop 101 文本特征维度: (512,)
+描述: Laptop 101 is a compact, black laptop with a sleek design. It has a glossy finish and a slim profile...
+处理类别: Bathtub
+[2025-11-27 01:44:02] [显存监控] 已分配=16.91GB, 已保留=17.63GB, 空闲=30.50GB
+[2025-11-27 01:44:05] [显存监控] 已分配=16.91GB, 已保留=17.63GB, 空闲=30.50GB
+[2025-11-27 01:44:08] [显存监控] 已分配=16.91GB, 已保留=17.63GB, 空闲=30.50GB
+wiki desc: Description for Bathtub category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:44:11] [显存监控] 已分配=16.93GB, 已保留=17.41GB, 空闲=30.47GB
+[2025-11-27 01:44:14] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.47GB
+[2025-11-27 01:44:17] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+MLLM description: The images depict bathtubs with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+   - Image 1: A hot tub with bubbling water, suggesting it's in use. The person inside is holding a drink, indicating leisure or relaxation.  
+   - Image 2: A modern, oval-shaped bathtub with a sleek design, placed in a clean, clinical-looking bathroom.  
+   - Image 3: A vintage-style bathtub draped with lace and floral decorations, giving it a romantic or ceremonial appearance.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The water is a greenish-blue hue, typical of hot tubs.  
+   - Image 2: The bathtub is white with a light blue stripe around its rim.  
+   - Image 3: The bathtub is white, covered with lace, and decorated with pink flowers and greenery.
+
+3. **Size and Proportions**:  
+   - Image 1: The hot tub appears larger than the standard bathtub, designed to accommodate multiple people comfortably.  
+   - Image 2: The modern bathtub is medium-sized, suitable for one or two people.  
+   - Image 3: The vintage bathtub is also medium-sized, with a more ornate and
+类别 Bathtub 文本特征维度: (512,)
+描述: The images depict bathtubs with distinct characteristics:
+
+1. **Distinctive Physical Features**:  
+ ...
+处理类别: Lightbulb
+[2025-11-27 01:44:20] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:44:23] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:44:26] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+wiki desc: Description for Lightbulb category.
+ 11%|█         | 27/257 [08:19<1:07:11, 17.53s/it] 11%|█         | 28/257 [08:39<1:10:45, 18.54s/it] 11%|█▏        | 29/257 [08:57<1:08:54, 18.13s/it]推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:44:29] [显存监控] 已分配=16.93GB, 已保留=17.39GB, 空闲=30.47GB
+[2025-11-27 01:44:32] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+MLLM description: The images depict light bulbs with distinct physical features:
+
+* **Distinctive Physical Features:** All three light bulbs have a glass or translucent bulb housing, a metal base, and a filament inside. The first image shows a classic incandescent bulb with a simple design, while the second and third images display modern LED bulbs with a more complex structure.
+
+* **Color Patterns and Markings:** The first image's bulb is a plain white, while the second and third images feature a frosted or textured surface, giving them a slightly different appearance. The third image also has a black screw base, which is not present in the first two images.
+
+* **Size and Proportions:** The size and proportions of the bulbs appear to be similar across all three images, suggesting they are standard household light bulbs. However, the actual dimensions would need to be measured for precise comparison.
+
+* **Behavioral Characteristics:** As inanimate objects, light bulbs do not exhibit any behavioral characteristics. They are powered by electricity to emit light.
+
+* **Unique Identifying Traits:** The unique identifying traits of these light bulbs include their shape, material composition, and the presence of a filament or LED chips inside. The first image's bulb is a classic incandescent bulb, while the second and third images showcase
+类别 Lightbulb 文本特征维度: (512,)
+描述: The images depict light bulbs with distinct physical features:
+
+* **Distinctive Physical Features:**...
+处理类别: Spoon
+[2025-11-27 01:44:35] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+[2025-11-27 01:44:38] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+[2025-11-27 01:44:41] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+[2025-11-27 01:44:44] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+wiki desc: Description for Spoon category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 01:44:47] [显存监控] 已分配=17.12GB, 已保留=24.97GB, 空闲=30.28GB
+[2025-11-27 01:44:50] [显存监控] 已分配=17.03GB, 已保留=24.97GB, 空闲=30.37GB
+[2025-11-27 01:44:53] [显存监控] 已分配=17.04GB, 已保留=24.97GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=24.97GB, 剩余=30.50GB
+MLLM description: ### Description of the Spoon Category:
+
+#### 1. **Distinctive Physical Features:**
+   - **Shape:** The spoon has a traditional, rounded bowl with a slightly curved handle, designed for easy grip and use.
+   - **Material:** It appears to be made of polished metal, likely stainless steel or silver, giving it a reflective and shiny surface.
+   - **Handle Design:** The handle is elongated and tapers slightly towards the end, ending in a small, decorative element featuring a pink gemstone.
+
+#### 2. **Color Patterns and Markings:**
+   - **Primary Color:** The spoon is predominantly silver, reflecting light and showcasing its metallic sheen.
+   - **Accent Color:** A small pink gemstone is embedded near the base of the handle, adding a pop of color and a touch of elegance.
+
+#### 3. **Size and Proportions:**
+   - **Proportions:** The spoon is medium-sized, suitable for general eating purposes. The bowl is proportionally large enough to hold food comfortably while the handle is long enough to provide a secure grip.
+   - **Length:** The total length of the spoon, including the handle, appears to be around 8-9 inches, which is standard for most utensils.
+
+
+类别 Spoon 文本特征维度: (512,)
+描述: ### Description of the Spoon Category:
+
+#### 1. **Distinctive Physical Features:**
+   - **Shape:** T...
+处理类别: Hot Air Balloon
+[2025-11-27 01:44:56] [显存监控] 已分配=16.91GB, 已保留=24.97GB, 空闲=30.50GB
+[2025-11-27 01:44:59] [显存监控] 已分配=16.91GB, 已保留=24.97GB, 空闲=30.50GB
+[2025-11-27 01:45:02] [显存监控] 已分配=16.91GB, 已保留=24.97GB, 空闲=30.50GB
+[2025-11-27 01:45:05] [显存监控] 已分配=16.91GB, 已保留=24.97GB, 空闲=30.50GB
+wiki desc: Description for Hot Air Balloon category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:45:08] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-27 01:45:11] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+MLLM description: The images depict hot air balloons, which are characterized by their large, rounded shape and basket-like structure suspended beneath a large, gas-filled envelope. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: All three images show a balloon with a basket attached to its base. The basket is typically made of woven material and is designed to hold passengers and a burner. The envelope, or balloon itself, is made of lightweight fabric and is filled with heated air, causing it to rise.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The balloon has a solid dark color, possibly black or dark brown, with a visible flame inside the envelope, indicating the burner is active.  
+   - Image 2: This balloon is predominantly red with white stripes and the word "Wisconsin" written in white letters.  
+   - Image 3: The balloon displays a vibrant pattern of alternating colors, including red, yellow, and black, creating a striped effect.
+
+3. **Size and Proportions**: The size of the balloons appears consistent across all images, suggesting they are of similar capacity. The baskets are proportionally small relative to the overall size of the balloons, emphasizing the vastness of the envelopes.
+
+4. **
+类别 Hot Air Balloon 文本特征维度: (512,)
+描述: The images depict hot air balloons, which are characterized by their large, rounded shape and basket...
+处理类别: House Fly
+[2025-11-27 01:45:14] [显存监控] 已分配=16.91GB, 已保留=17.33GB, 空闲=30.50GB
+[2025-11-27 01:45:17] [显存监控] 已分配=16.91GB, 已保留=17.33GB, 空闲=30.50GB
+[2025-11-27 01:45:20] [显存监控] 已分配=16.91GB, 已保留=17.33GB, 空闲=30.50GB
+[2025-11-27 01:45:23] [显存监控] 已分配=16.91GB, 已保留=17.33GB, 空闲=30.50GB
+wiki desc: Description for House Fly category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:45:26] [显存监控] 已分配=16.93GB, 已保留=17.36GB, 空闲=30.47GB
+[2025-11-27 01:45:29] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+MLLM description: The House Fly (Musca domestica) is a small to medium-sized fly, typically measuring between 6-8 mm in length. Its body is robust and compact, with a dark brown or black coloration. The thorax is covered with short, dense hairs, giving it a slightly fuzzy appearance. The abdomen is segmented and also has a dark coloration, often with lighter bands or stripes.
+
+The wings are transparent with a slight golden tint near the base, and they are held flat against the body when at rest. The eyes are large and globular, with a reddish-brown hue, and they are positioned on either side of the head, allowing the fly to have excellent binocular vision. The legs are sturdy and hairy, aiding in walking and grasping surfaces.
+
+Behaviorally, House Flies are known for their strong flying ability and their habit of landing on various surfaces, including food, plants, and human skin. They are attracted to sweet substances and are often found around garbage bins, fruit, and other decaying organic matter. 
+
+In terms of identification, the House Fly can be distinguished by its overall shape, size, and coloration. It is one of the most common flies found worldwide and is easily recognizable due to its distinctive appearance.
+ 12%|█▏        | 30/257 [09:14<1:07:39, 17.88s/it] 12%|█▏        | 31/257 [09:32<1:07:54, 18.03s/it] 12%|█▏        | 32/257 [09:49<1:06:05, 17.62s/it] 13%|█▎        | 33/257 [10:07<1:05:48, 17.63s/it]类别 House Fly 文本特征维度: (512,)
+描述: The House Fly (Musca domestica) is a small to medium-sized fly, typically measuring between 6-8 mm i...
+处理类别: Bonsai 101
+[2025-11-27 01:45:32] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-27 01:45:35] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-27 01:45:38] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-27 01:45:41] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+wiki desc: Description for Bonsai 101 category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:45:44] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-27 01:45:47] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+MLLM description: The images depict bonsai trees, which are miniature versions of full-sized trees, cultivated in containers. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**: All three bonsai trees exhibit a compact, well-pruned form with a strong trunk and branches that are carefully trained to create an aesthetically pleasing shape. The trees have a dense foliage, with leaves that are small and tightly packed, giving them a lush appearance.
+
+2. **Color Patterns and Markings**: The trees' foliage is predominantly green, with some variation in shade depending on the species and lighting conditions. There are no significant color markings or patterns visible in these images.
+
+3. **Size and Proportions**: The trees are small in size, as expected for bonsai, but they maintain a proportionate balance between their trunk, branches, and foliage. The trees appear to be mature, indicating that they have been cultivated for a considerable time.
+
+4. **Behavioral Characteristics**: As inanimate objects, bonsai trees do not exhibit any behavioral characteristics. However, their growth and maintenance require human intervention, including pruning, shaping, and repotting.
+
+5. **Unique Identifying Traits**: The key identifying traits of these bonsai trees include their compact size, well-trained
+类别 Bonsai 101 文本特征维度: (512,)
+描述: The images depict bonsai trees, which are miniature versions of full-sized trees, cultivated in cont...
+处理类别: Basketball Hoop
+[2025-11-27 01:45:50] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-27 01:45:53] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-27 01:45:56] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+wiki desc: Description for Basketball Hoop category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:45:59] [显存监控] 已分配=16.93GB, 已保留=17.28GB, 空闲=30.48GB
+[2025-11-27 01:46:02] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+[2025-11-27 01:46:05] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+MLLM description: The images depict basketball hoops with distinct physical features:
+
+* **Distinctive Physical Features:** All three images show a standard basketball hoop consisting of a backboard, a rim, and a net. The backboard is rectangular and white with a green border, while the rim is circular and black. The net is made up of multiple loops of string.
+
+* **Color Patterns and Markings:** The backboard in all images has a consistent color pattern: white with a green border. The rim is uniformly black. The net is white with black strings.
+
+* **Size and Proportions:** The size of the basketball hoop appears to be standard across all images. The backboard is large enough to cover the rim and net completely, and the rim is positioned at a standard height above the ground.
+
+* **Behavioral Characteristics:** The images do not show any behavioral characteristics as they are static photographs of the basketball hoop.
+
+* **Unique Identifying Traits:** The basketball hoop is the only object present in each image, making it easy to identify. The combination of the backboard, rim, and net is unique to basketball hoops and distinguishes them from other sports equipment or objects.
+类别 Basketball Hoop 文本特征维度: (512,)
+描述: The images depict basketball hoops with distinct physical features:
+
+* **Distinctive Physical Featur...
+处理类别: Camel
+[2025-11-27 01:46:08] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:46:11] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+[2025-11-27 01:46:14] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+wiki desc: Description for Camel category.
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 01:46:17] [显存监控] 已分配=16.94GB, 已保留=17.74GB, 空闲=30.46GB
+[2025-11-27 01:46:20] [显存监控] 已分配=16.95GB, 已保留=17.75GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.75GB, 剩余=30.50GB
+MLLM description: The images depict camels, a large, even-toed ungulate native to the deserts of Africa and Asia. Here's a detailed description of their distinctive features:
+
+1. **Distinctive Physical Features**: Camels have a robust, stocky body with a hump on their back, which can contain fat stores for energy during long periods without food or water. Their legs are short and sturdy, with large hooves adapted for walking on soft sand. They have a long neck, a large head, and a pair of small horns. Their ears are large and flared, and they have a thick, shaggy coat that helps protect them from the harsh desert environment.
+
+2. **Color Patterns and Markings**: Camels come in various shades of brown, ranging from light sandy beige to dark reddish-brown. Some may have lighter patches on their faces, legs, or humps. The coloration can vary depending on the individual camel and its age, as well as the time of year.
+
+3. **Size and Proportions**: Camels are large animals, typically standing around 6-7 feet tall at the shoulder and weighing between 800-1,500 pounds. Males tend to be larger than females. Their
+类别 Camel 文本特征维度: (512,)
+描述: The images depict camels, a large, even-toed ungulate native to the deserts of Africa and Asia. Here...
+处理类别: Soccer Ball
+[2025-11-27 01:46:23] [显存监控] 已分配=16.91GB, 已保留=17.75GB, 空闲=30.50GB
+[2025-11-27 01:46:26] [显存监控] 已分配=16.91GB, 已保留=17.75GB, 空闲=30.50GB
+[2025-11-27 01:46:29] [显存监控] 已分配=16.91GB, 已保留=17.75GB, 空闲=30.50GB
+[2025-11-27 01:46:32] [显存监控] 已分配=16.91GB, 已保留=17.75GB, 空闲=30.50GB
+wiki desc: Description for Soccer Ball category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:46:35] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.48GB
+[2025-11-27 01:46:38] [显存监控] 已分配=16.93GB, 已保留=17.27GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.28GB, 剩余=30.50GB
+ 13%|█▎        | 34/257 [10:24<1:05:06, 17.52s/it] 14%|█▎        | 35/257 [10:42<1:05:52, 17.80s/it] 14%|█▍        | 36/257 [10:59<1:04:48, 17.59s/it] 14%|█▍        | 37/257 [11:18<1:05:51, 17.96s/it]MLLM description: The images depict soccer balls, which are spherical in shape with a distinct pentagonal pattern of black and white panels. Here's a detailed breakdown:
+
+1. **Distinctive Physical Features**: Soccer balls are inflated, spherical objects designed to be kicked during play. They have a smooth surface with pentagonal panels, each panel bordered by seams where adjacent panels meet.
+
+2. **Color Patterns and Markings**: The primary color scheme is black and white, adhering to FIFA regulations. However, some variations exist, such as the inclusion of other colors or logos, as seen in Image 2 and Image 3. These additional colors or designs do not alter the fundamental pentagonal pattern.
+
+3. **Size and Proportions**: Soccer balls are standardized in size and weight to ensure fair play across different leagues and age groups. The standard size is typically around 5 inches in diameter for adult-sized balls, though smaller sizes exist for youth leagues. The proportions remain consistent, maintaining a perfect sphere.
+
+4. **Behavioral Characteristics**: As sports equipment, soccer balls are primarily used for kicking. Their aerodynamic design allows them to travel long distances when kicked with force. They can bounce and roll, depending on their surface texture and the playing surface.
+
+5. **Unique Identifying Traits**:
+类别 Soccer Ball 文本特征维度: (512,)
+描述: The images depict soccer balls, which are spherical in shape with a distinct pentagonal pattern of b...
+处理类别: Trilobite 101
+[2025-11-27 01:46:41] [显存监控] 已分配=16.91GB, 已保留=17.28GB, 空闲=30.50GB
+[2025-11-27 01:46:44] [显存监控] 已分配=16.91GB, 已保留=17.28GB, 空闲=30.50GB
+[2025-11-27 01:46:47] [显存监控] 已分配=16.91GB, 已保留=17.28GB, 空闲=30.50GB
+[2025-11-27 01:46:50] [显存监控] 已分配=16.91GB, 已保留=17.28GB, 空闲=30.50GB
+wiki desc: Description for Trilobite 101 category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:46:53] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 01:46:56] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+MLLM description: The provided images depict Trilobites, which are extinct marine arthropods known for their distinctive segmented exoskeletons. Here's a detailed description focusing on the key visual characteristics:
+
+### 1. **Distinctive Physical Features:**
+   - **Segmented Body:** Trilobites have a tripartite body divided into three main sections: the cephalon (head), thorax (middle section), and pygidium (tail).
+   - **Exoskeleton:** Their exoskeleton is hard and segmented, providing protection and support.
+   - **Legs and Appendages:** They possess multiple pairs of legs and appendages, often ending in claws or spines.
+
+### 2. **Color Patterns and Markings:**
+   - **Image 1:** The trilobite appears to have a dark, almost purplish hue with lighter, possibly beige or tan, markings along its segments. These markings could represent natural coloration or fossilization patterns.
+   - **Image 2:** This specimen shows a darker background with a lighter-colored trilobite. The markings are less distinct compared to Image 1, suggesting possible variations in preservation or lighting.
+   - **Image 3:** This illustration is monochromatic, with
+类别 Trilobite 101 文本特征维度: (512,)
+描述: The provided images depict Trilobites, which are extinct marine arthropods known for their distincti...
+处理类别: Welding Mask
+[2025-11-27 01:46:59] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:47:02] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:47:05] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-27 01:47:08] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+wiki desc: Description for Welding Mask category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 01:47:11] [显存监控] 已分配=16.93GB, 已保留=17.25GB, 空闲=30.48GB
+[2025-11-27 01:47:14] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.26GB, 剩余=30.50GB
+MLLM description: The images depict welding masks, which are safety devices worn to protect the eyes and face during welding activities.
+
+1. **Distinctive Physical Features**:  
+   - All three images show a mask with a visor or lens designed to filter out harmful ultraviolet and infrared radiation emitted by welding arcs.  
+   - The masks have a headband or strap mechanism for securing them to the wearer's head.  
+
+2. **Color Patterns and Markings**:  
+   - The first image shows a green mask with a black strap.  
+   - The second image presents an orange mask with a black visor and a small rectangular window.  
+   - The third image displays a black mask with a transparent visor and a handle-like protrusion at the bottom.  
+
+3. **Size and Proportions**:  
+   - The masks appear to be relatively compact and lightweight, designed to fit comfortably over the head while providing adequate coverage for the eyes and face.  
+   - The size is consistent across all images, suggesting they are standard sizes for welding masks.  
+
+4. **Behavioral Characteristics**:  
+   - These masks are not inherently "behaving" as they are inanimate objects. However, their design implies functionality: the visor automatically darkens when exposed to bright light
+类别 Welding Mask 文本特征维度: (512,)
+描述: The images depict welding masks, which are safety devices worn to protect the eyes and face during w...
+处理类别: Fireworks
+[2025-11-27 01:47:17] [显存监控] 已分配=16.91GB, 已保留=17.26GB, 空闲=30.50GB
+[2025-11-27 01:47:20] [显存监控] 已分配=16.91GB, 已保留=17.26GB, 空闲=30.50GB
+[2025-11-27 01:47:23] [显存监控] 已分配=16.91GB, 已保留=17.26GB, 空闲=30.50GB
+[2025-11-27 01:47:26] [显存监控] 已分配=16.91GB, 已保留=17.26GB, 空闲=30.50GB
+wiki desc: Description for Fireworks category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:47:29] [显存监控] 已分配=16.95GB, 已保留=18.04GB, 空闲=30.45GB
+[2025-11-27 01:47:32] [显存监控] 已分配=16.96GB, 已保留=18.04GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+MLLM description: The images depict fireworks with distinct physical features, color patterns, size, and behavior. 
+
+1. **Distinctive Physical Features:** The fireworks in all three images have a spherical or circular shape, with radiating lines or streaks emanating from the center. This is characteristic of many fireworks designs.
+
+2. **Color Patterns and Markings:** The fireworks display a variety of colors, including shades of orange, white, and red. The first image has a predominantly orange hue, while the second and third images feature white and red colors. The streaks and lines also vary in color, adding to the visual complexity.
+
+3. **Size and Proportions:** The fireworks appear relatively large compared to their surroundings, indicating they were likely launched at a significant height. The size and proportions remain consistent across the three images, suggesting they were captured during the same event.
+
+4. **Behavioral Characteristics:** The fireworks exhibit a dynamic and explosive behavior, with the central sphere expanding outward and emitting streaks of light. The streaks appear to be created by the rapid release of particles or gases, creating a visually striking effect.
+
+5. **Unique Identifying Traits:** The fireworks' unique identifying traits include their spherical shape, radiating lines or streaks, and the combination of colors and
+类别 Fireworks 文本特征维度: (512,)
+描述: The images depict fireworks with distinct physical features, color patterns, size, and behavior. 
+
+1...
+处理类别: Microwave
+[2025-11-27 01:47:35] [显存监控] 已分配=16.91GB, 已保留=18.04GB, 空闲=30.50GB
+ 15%|█▍        | 38/257 [11:36<1:04:51, 17.77s/it] 15%|█▌        | 39/257 [11:54<1:05:00, 17.89s/it] 16%|█▌        | 40/257 [12:14<1:07:01, 18.53s/it][2025-11-27 01:47:38] [显存监控] 已分配=16.91GB, 已保留=18.04GB, 空闲=30.50GB
+[2025-11-27 01:47:41] [显存监控] 已分配=16.91GB, 已保留=18.04GB, 空闲=30.50GB
+[2025-11-27 01:47:44] [显存监控] 已分配=16.91GB, 已保留=18.04GB, 空闲=30.50GB
+wiki desc: Description for Microwave category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:47:47] [显存监控] 已分配=16.93GB, 已保留=17.37GB, 空闲=30.47GB
+[2025-11-27 01:47:50] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+MLLM description: The images depict three distinct microwave ovens with varying designs and features:
+
+1. **Image 1**: This microwave has a sleek, modern design with a stainless steel finish. It features a digital control panel with multiple buttons and a large display screen. The door is hinged on the left side and has a handle for easy opening. The overall size appears to be larger compared to the others, suggesting it might be designed for commercial or heavy-duty use.
+
+2. **Image 2**: This microwave is smaller in size and has a more compact design. It is predominantly white with black accents around the door and control panel. The control panel includes a series of buttons and a small display screen. The door is also hinged on the left side, but the handle is integrated into the door frame. This model seems to be a standard household microwave.
+
+3. **Image 3**: This microwave has a more contemporary look with a stainless steel front and a black door. The control panel is located on the left side and features a digital display and numerous buttons. The door is hinged on the right side, which is different from the other two models. The overall design suggests a balance between functionality and aesthetics, likely targeting a modern home kitchen.
+
+In summary, the key distinguishing features
+类别 Microwave 文本特征维度: (512,)
+描述: The images depict three distinct microwave ovens with varying designs and features:
+
+1. **Image 1**:...
+处理类别: Horse
+[2025-11-27 01:47:53] [显存监控] 已分配=16.91GB, 已保留=17.38GB, 空闲=30.50GB
+[2025-11-27 01:47:56] [显存监控] 已分配=16.91GB, 已保留=17.38GB, 空闲=30.50GB
+[2025-11-27 01:47:59] [显存监控] 已分配=16.91GB, 已保留=17.38GB, 空闲=30.50GB
+[2025-11-27 01:48:02] [显存监控] 已分配=16.91GB, 已保留=17.38GB, 空闲=30.50GB
+wiki desc: Description for Horse category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:48:05] [显存监控] 已分配=16.96GB, 已保留=18.59GB, 空闲=30.44GB
+[2025-11-27 01:48:08] [显存监控] 已分配=17.00GB, 已保留=18.59GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.59GB, 剩余=30.50GB
+MLLM description: The images depict horses with distinct characteristics:
+
+1. **Distinctive Physical Features**: Horses in these images exhibit typical equine features such as a long neck, mane, tail, and hooves. They have a muscular build, with strong legs and a broad chest.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The horse is brown with a darker mane and tail, and it appears to be pulling a carriage with people seated behind it.  
+   - Image 2: This horse is white with a black bridle and halter, standing indoors near a wooden structure.  
+   - Image 3: The horse has a light brown coat with a white blaze down its face, and the rider is wearing a red top and a black helmet.
+
+3. **Size and Proportions**: All three horses appear to be adult-sized, with a balanced body structure typical of domesticated horses. Their heads are proportionate to their bodies, and they have a sturdy stance.
+
+4. **Behavioral Characteristics**:  
+   - Image 1: The horse is actively pulling a carriage, suggesting it is trained for work or transportation.  
+   - Image 2: The horse is stationary, possibly waiting or resting.  
+   - Image 3
+类别 Horse 文本特征维度: (512,)
+描述: The images depict horses with distinct characteristics:
+
+1. **Distinctive Physical Features**: Horse...
+处理类别: Refrigerator
+[2025-11-27 01:48:11] [显存监控] 已分配=16.91GB, 已保留=18.59GB, 空闲=30.50GB
+[2025-11-27 01:48:14] [显存监控] 已分配=16.91GB, 已保留=18.59GB, 空闲=30.50GB
+[2025-11-27 01:48:17] [显存监控] 已分配=16.91GB, 已保留=18.59GB, 空闲=30.50GB
+[2025-11-27 01:48:20] [显存监控] 已分配=16.91GB, 已保留=18.59GB, 空闲=30.50GB
+wiki desc: Description for Refrigerator category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:48:23] [显存监控] 已分配=16.98GB, 已保留=18.21GB, 空闲=30.42GB
+[2025-11-27 01:48:26] [显存监控] 已分配=16.96GB, 已保留=18.23GB, 空闲=30.44GB
+[2025-11-27 01:48:29] [显存监控] 已分配=16.97GB, 已保留=18.23GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.23GB, 剩余=30.50GB
+MLLM description: The images depict refrigerators with distinct characteristics:
+
+1. **Distinctive Physical Features**:
+   - Image 1: A double-door refrigerator with glass doors, likely designed for display purposes. The interior is empty, showcasing the shelves and compartments.
+   - Image 2: A single-door refrigerator with a glass door, featuring a vertical design. It has a label listing its dimensions and features.
+   - Image 3: A standard two-door refrigerator with a white exterior and gray accents. It appears to be a used appliance, as indicated by the visible wear and the "B16" sticker.
+
+2. **Color Patterns and Markings**:
+   - Image 1: Primarily white with black trim around the doors and base.
+   - Image 2: White body with a blue and white logo on the door, along with text detailing specifications.
+   - Image 3: White body with gray handles and a yellow "B16" sticker on the front.
+
+3. **Size and Proportions**:
+   - Image 1: Appears larger due to the double doors and multiple shelves.
+   - Image 2: Smaller than the first image, with a single door and a more compact design.
+   - Image 3: Standard size for
+类别 Refrigerator 文本特征维度: (512,)
+描述: The images depict refrigerators with distinct characteristics:
+
+1. **Distinctive Physical Features**...
+处理类别: Zebra
+[2025-11-27 01:48:32] [显存监控] 已分配=16.91GB, 已保留=18.23GB, 空闲=30.50GB
+[2025-11-27 01:48:35] [显存监控] 已分配=16.91GB, 已保留=18.23GB, 空闲=30.50GB
+[2025-11-27 01:48:38] [显存监控] 已分配=16.91GB, 已保留=18.23GB, 空闲=30.50GB
+wiki desc: Description for Zebra category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 01:48:41] [显存监控] 已分配=17.07GB, 已保留=22.43GB, 空闲=30.33GB
+[2025-11-27 01:48:44] [显存监控] 已分配=17.03GB, 已保留=22.43GB, 空闲=30.37GB
+[2025-11-27 01:48:47] [显存监控] 已分配=17.03GB, 已保留=22.43GB, 空闲=30.37GB
+[2025-11-27 01:48:50] [显存监控] 已分配=17.03GB, 已保留=22.43GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.43GB, 剩余=30.50GB
+ 16%|█▌        | 41/257 [12:34<1:08:27, 19.01s/it] 16%|█▋        | 42/257 [12:54<1:09:42, 19.45s/it] 17%|█▋        | 43/257 [13:20<1:15:53, 21.28s/it] 17%|█▋        | 44/257 [13:38<1:11:52, 20.24s/it]MLLM description: The images depict zebras, which are easily recognizable by their distinctive black-and-white striped coats. Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Zebras have a robust body structure with a short neck and a large head. They possess a mane, which is typically shorter than that of horses, and a tail with a tuft of hair at the end.
+
+2. **Color Patterns and Markings**: The most striking feature of zebras is their unique black-and-white stripes. These stripes vary in width and pattern across different individuals and species. The stripes are continuous and do not form any distinct shapes or patterns, unlike some other animals like giraffes. The stripes are also unique to each individual zebra, much like human fingerprints.
+
+3. **Size and Proportions**: Zebras are medium-sized mammals, generally larger than horses but smaller than donkeys. They have a compact body with a relatively short neck and legs. Their ears are large and pointed, and they have a short mane along their neck.
+
+4. **Behavioral Characteristics**: Zebras are social animals and live in groups called harems or herds. They are herbivores and primarily graze on grasses. They are known for their strong sense of
+类别 Zebra 文本特征维度: (512,)
+描述: The images depict zebras, which are easily recognizable by their distinctive black-and-white striped...
+处理类别: Hibiscus
+[2025-11-27 01:48:53] [显存监控] 已分配=16.91GB, 已保留=22.43GB, 空闲=30.50GB
+[2025-11-27 01:48:56] [显存监控] 已分配=16.91GB, 已保留=22.43GB, 空闲=30.50GB
+[2025-11-27 01:48:59] [显存监控] 已分配=16.91GB, 已保留=22.43GB, 空闲=30.50GB
+wiki desc: Description for Hibiscus category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 01:49:02] [显存监控] 已分配=17.08GB, 已保留=22.95GB, 空闲=30.32GB
+[2025-11-27 01:49:05] [显存监控] 已分配=17.03GB, 已保留=22.96GB, 空闲=30.37GB
+[2025-11-27 01:49:08] [显存监控] 已分配=17.03GB, 已保留=22.96GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.96GB, 剩余=30.50GB
+MLLM description: The Hibiscus flowers in these images exhibit several distinctive features:
+
+1. **Distinctive Physical Features**: The petals of Hibiscus are typically broad and flat, with a slightly ruffled or wavy edge. They can vary in shape depending on the species, but generally, they are large and showy.
+
+2. **Color Patterns and Markings**: The petals display vibrant colors ranging from deep reds to soft pinks, often with a gradient effect. Some varieties may have white or yellow centers, while others feature intricate patterns or stripes within the petals. The center of the flower is usually a darker hue, often contrasting sharply with the petals.
+
+3. **Size and Proportions**: Hibiscus flowers are generally large, with each petal being substantial in size. The overall diameter of the flower can range from a few centimeters to over 10 cm, depending on the species. The proportion between the petals and the center is balanced, creating a harmonious appearance.
+
+4. **Behavioral Characteristics**: While not directly observable in still images, Hibiscus flowers are known to attract pollinators such as bees and butterflies due to their bright colors and sweet nectar. They are also sensitive to temperature changes; cooler temperatures can cause them to wilt.
+
+
+类别 Hibiscus 文本特征维度: (512,)
+描述: The Hibiscus flowers in these images exhibit several distinctive features:
+
+1. **Distinctive Physica...
+处理类别: Snail
+[2025-11-27 01:49:11] [显存监控] 已分配=16.91GB, 已保留=22.96GB, 空闲=30.50GB
+[2025-11-27 01:49:14] [显存监控] 已分配=16.91GB, 已保留=22.96GB, 空闲=30.50GB
+[2025-11-27 01:49:17] [显存监控] 已分配=16.91GB, 已保留=22.96GB, 空闲=30.50GB
+[2025-11-27 01:49:20] [显存监控] 已分配=16.91GB, 已保留=22.96GB, 空闲=30.50GB
+wiki desc: Description for Snail category.
+推理前显存: 已分配=16.93GB, 已保留=17.13GB, 剩余=30.47GB
+[2025-11-27 01:49:23] [显存监控] 已分配=17.26GB, 已保留=34.49GB, 空闲=30.14GB
+[2025-11-27 01:49:26] [显存监控] 已分配=17.26GB, 已保留=34.49GB, 空闲=30.14GB
+[2025-11-27 01:49:29] [显存监控] 已分配=17.09GB, 已保留=34.49GB, 空闲=30.32GB
+[2025-11-27 01:49:32] [显存监控] 已分配=17.09GB, 已保留=34.49GB, 空闲=30.31GB
+[2025-11-27 01:49:35] [显存监控] 已分配=17.10GB, 已保留=34.49GB, 空闲=30.30GB
+推理后显存: 已分配=16.91GB, 已保留=34.49GB, 剩余=30.50GB
+MLLM description: ### Comprehensive Description of Snails
+
+#### Image 1: Single Snail on a Concrete Surface
+1. **Distinctive Physical Features**: The snail in this image has a rounded, dark brown shell with a pattern of lighter brown spots or lines, giving it a mottled appearance. Its body is elongated and translucent, with visible tentacles extending from its head.
+
+2. **Color Patterns and Markings**: The shell's coloration is primarily dark brown with lighter brown spots or lines, creating a textured look. The body is a pale, translucent beige, contrasting with the darker shell.
+
+3. **Size and Proportions**: The snail appears relatively small compared to the surrounding environment, suggesting it might be a juvenile or a smaller species. The shell is proportionally large relative to the body, which is typical for many snail species.
+
+4. **Behavioral Characteristics**: The snail is shown crawling on a rough, gray concrete surface, indicating its natural behavior of moving slowly over various terrains.
+
+5. **Unique Identifying Traits**: The combination of the dark brown shell with lighter spots and the translucent body is distinctive. The setting, with potted plants and a wooden structure in the background, suggests an outdoor environment, possibly a garden or patio
+类别 Snail 文本特征维度: (512,)
+描述: ### Comprehensive Description of Snails
+
+#### Image 1: Single Snail on a Concrete Surface
+1. **Disti...
+处理类别: Sushi
+[2025-11-27 01:49:38] [显存监控] 已分配=16.91GB, 已保留=34.49GB, 空闲=30.50GB
+[2025-11-27 01:49:41] [显存监控] 已分配=16.91GB, 已保留=34.49GB, 空闲=30.50GB
+[2025-11-27 01:49:44] [显存监控] 已分配=16.91GB, 已保留=34.49GB, 空闲=30.50GB
+wiki desc: Description for Sushi category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:49:47] [显存监控] 已分配=16.95GB, 已保留=17.64GB, 空闲=30.45GB
+[2025-11-27 01:49:50] [显存监控] 已分配=16.96GB, 已保留=17.65GB, 空闲=30.45GB
+[2025-11-27 01:49:53] [显存监控] 已分配=16.96GB, 已保留=17.67GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.67GB, 剩余=30.50GB
+MLLM description: The images depict sushi, a Japanese dish consisting of small portions of vinegared rice, often accompanied by various toppings such as fish, vegetables, or other ingredients. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: Sushi is characterized by its compact, bite-sized pieces. Each piece typically consists of a base layer of vinegared rice, topped with a variety of fillings. The fillings can range from raw fish (like salmon, tuna, or eel) to cooked fish, vegetables, or even fruits.
+
+2. **Color Patterns and Markings**: The color patterns in sushi are diverse and vibrant. The rice itself has a slightly translucent appearance due to the vinegar, giving it a light brown hue. The toppings add a variety of colors, including the red of salmon, the pink of tuna, the green of avocado, and the white of cream cheese or cucumber. The nori (seaweed) wrapping around some pieces adds a dark green or brownish tint.
+
+3. **Size and Proportions**: Sushi pieces are generally small, designed to be eaten with one hand. They vary in size depending on the type of sushi, with nigiri being the smallest (a single piece of rice topped with a slice
+类别 Sushi 文本特征维度: (512,)
+描述: The images depict sushi, a Japanese dish consisting of small portions of vinegared rice, often accom...
+处理类别: Photocopier
+ 18%|█▊        | 45/257 [13:56<1:09:29, 19.67s/it] 18%|█▊        | 46/257 [14:14<1:06:48, 19.00s/it] 18%|█▊        | 47/257 [14:34<1:08:15, 19.50s/it][2025-11-27 01:49:56] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+[2025-11-27 01:49:59] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+[2025-11-27 01:50:02] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+[2025-11-27 01:50:05] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+wiki desc: Description for Photocopier category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:50:08] [显存监控] 已分配=16.93GB, 已保留=17.44GB, 空闲=30.47GB
+[2025-11-27 01:50:11] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+MLLM description: The images depict photocopiers with distinct physical features:
+
+* **Image 1:** A compact, single-function photocopier with a simple design. It has a flatbed scanner on top, a control panel on the side, and an output tray at the back. The machine is white with some gray accents.
+
+* **Image 2:** A larger multifunctional photocopier with multiple trays for paper input/output, a digital display screen, and a document feeder. It has a more complex design compared to Image 1, with a combination of white and gray colors.
+
+* **Image 3:** Another multifunctional photocopier, similar in size to Image 2, with a flatbed scanner on top, a control panel on the side, and multiple trays for paper handling. This machine also has a digital display screen and a document feeder. It is predominantly white with some gray accents.
+
+**Color patterns and markings:**
+
+* All three machines have a predominantly white color scheme with gray accents. However, the specific patterns and markings vary slightly between the models.
+
+**Size and proportions:**
+
+* The photocopiers in Images 1 and 3 appear to be smaller and more compact than the one in Image 2, which is larger and more robust.
+
+
+类别 Photocopier 文本特征维度: (512,)
+描述: The images depict photocopiers with distinct physical features:
+
+* **Image 1:** A compact, single-fu...
+处理类别: Giraffe
+[2025-11-27 01:50:14] [显存监控] 已分配=16.91GB, 已保留=17.45GB, 空闲=30.50GB
+[2025-11-27 01:50:17] [显存监控] 已分配=16.91GB, 已保留=17.45GB, 空闲=30.50GB
+[2025-11-27 01:50:20] [显存监控] 已分配=16.91GB, 已保留=17.45GB, 空闲=30.50GB
+wiki desc: Description for Giraffe category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:50:23] [显存监控] 已分配=16.93GB, 已保留=17.52GB, 空闲=30.47GB
+[2025-11-27 01:50:26] [显存监控] 已分配=16.94GB, 已保留=17.52GB, 空闲=30.46GB
+[2025-11-27 01:50:29] [显存监控] 已分配=16.94GB, 已保留=17.52GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+MLLM description: The images depict giraffes, a distinct species characterized by their long necks, elongated legs, and unique coat patterns.
+
+1. **Distinctive Physical Features**: Giraffes are known for their long necks, which allow them to reach high branches for feeding, and their long legs, enabling them to cover large distances. Their heads are relatively small compared to their body size, with a long, slender neck supporting a small head. They have a prehensile tongue, typically around 18-20 inches long, which is used for grasping leaves and twigs.
+
+2. **Color Patterns and Markings**: Giraffes display a distinctive coat pattern consisting of irregular, brown patches separated by white lines. These patches vary in shape and size across different subspecies, but the overall pattern remains consistent within each individual. The coat serves as camouflage in their natural habitat, blending into the dappled light and shadow of the savanna.
+
+3. **Size and Proportions**: Giraffes are the tallest land animals, with adult males reaching heights of up to 18 feet (5.5 meters) and females slightly shorter. The image of the giraffe in the second photo provides a sense of scale, showing its height relative to
+类别 Giraffe 文本特征维度: (512,)
+描述: The images depict giraffes, a distinct species characterized by their long necks, elongated legs, an...
+处理类别: Bulldozer
+[2025-11-27 01:50:32] [显存监控] 已分配=16.91GB, 已保留=17.54GB, 空闲=30.50GB
+[2025-11-27 01:50:35] [显存监控] 已分配=16.91GB, 已保留=17.54GB, 空闲=30.50GB
+[2025-11-27 01:50:38] [显存监控] 已分配=16.91GB, 已保留=17.54GB, 空闲=30.50GB
+wiki desc: Description for Bulldozer category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 01:50:41] [显存监控] 已分配=17.10GB, 已保留=23.62GB, 空闲=30.31GB
+[2025-11-27 01:50:44] [显存监控] 已分配=17.03GB, 已保留=23.62GB, 空闲=30.37GB
+[2025-11-27 01:50:47] [显存监控] 已分配=17.06GB, 已保留=23.62GB, 空闲=30.34GB
+[2025-11-27 01:50:50] [显存监控] 已分配=17.03GB, 已保留=23.62GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=23.62GB, 剩余=30.50GB
+MLLM description: ### Image 1: Bulldozer in a Demolition Site
+
+**Distinctive Physical Features:**  
+- The bulldozer is a large, tracked vehicle with a flat, wide blade at the front designed to push debris and materials.  
+- It has a robust, industrial design with visible mechanical components like tracks, wheels, and hydraulics.
+
+**Color Patterns and Markings:**  
+- The bulldozer appears to have a rusty brown or orange color, indicative of wear and exposure to the elements.  
+- There are no distinct markings or logos visible on the bulldozer itself, suggesting it might be a standard construction model.
+
+**Size and Proportions:**  
+- The bulldozer is significantly larger than the surrounding structures, emphasizing its heavy-duty nature.  
+- The blade is wide and low to the ground, designed for maximum pushing power.
+
+**Behavioral Characteristics:**  
+- The bulldozer is stationary in this image, likely paused during demolition work. Its position suggests it's actively engaged in clearing debris.
+
+**Unique Identifying Traits:**  
+- The presence of the blade and tracks is characteristic of a bulldozer, distinguishing it from other construction vehicles like excavators or cranes.  
+
+---
+
+### Image 2: Bulldozer in
+类别 Bulldozer 文本特征维度: (512,)
+描述: ### Image 1: Bulldozer in a Demolition Site
+
+**Distinctive Physical Features:**  
+- The bulldozer is...
+处理类别: Cd
+[2025-11-27 01:50:53] [显存监控] 已分配=16.91GB, 已保留=23.62GB, 空闲=30.50GB
+[2025-11-27 01:50:56] [显存监控] 已分配=16.91GB, 已保留=23.62GB, 空闲=30.50GB
+[2025-11-27 01:50:59] [显存监控] 已分配=16.91GB, 已保留=23.62GB, 空闲=30.50GB
+wiki desc: Description for Cd category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 01:51:02] [显存监控] 已分配=17.00GB, 已保留=19.64GB, 空闲=30.40GB
+[2025-11-27 01:51:05] [显存监控] 已分配=17.02GB, 已保留=19.64GB, 空闲=30.39GB
+[2025-11-27 01:51:08] [显存监控] 已分配=17.02GB, 已保留=19.64GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=19.64GB, 剩余=30.50GB
+ 19%|█▊        | 48/257 [14:53<1:07:10, 19.29s/it] 19%|█▉        | 49/257 [15:11<1:05:00, 18.75s/it] 19%|█▉        | 50/257 [15:28<1:03:10, 18.31s/it] 20%|█▉        | 51/257 [15:50<1:07:18, 19.60s/it]MLLM description: The images depict CDs, which are compact discs used to store digital audio or data. Here's a detailed description focusing on their distinctive features:
+
+1. **Distinctive Physical Features**:
+   - All three CDs have a circular shape with a central hole for mounting in a CD player.
+   - The surface is smooth and reflective, designed to allow light to bounce off and read the data stored on the disc.
+
+2. **Color Patterns and Markings**:
+   - The first CD has a yellow label at the top with text indicating it is a promotional copy ("Promotional Copy" and "Not For Sale"). The rest of the disc is black with yellow text listing song titles like "Rainy Day," "Ming," etc., and a logo for "Digital Audio Compact Disc."
+   - The second CD is entirely black with a silver reflective center, showing no additional text or markings.
+   - The third CD features a graphic design with two distinct sections: one with a black and white illustration of a revolver and a bottle labeled "Old Time Radio Parodies Volume Two," and another section with a red background depicting a hornet and the text "The Red Hornet." Both sections include additional text such as "Brute Ballingham Detective Mac" and "Joe Bevil
+类别 Cd 文本特征维度: (512,)
+描述: The images depict CDs, which are compact discs used to store digital audio or data. Here's a detaile...
+处理类别: Rifle
+[2025-11-27 01:51:11] [显存监控] 已分配=16.91GB, 已保留=19.64GB, 空闲=30.50GB
+[2025-11-27 01:51:14] [显存监控] 已分配=16.91GB, 已保留=19.64GB, 空闲=30.50GB
+[2025-11-27 01:51:17] [显存监控] 已分配=16.91GB, 已保留=19.64GB, 空闲=30.50GB
+wiki desc: Description for Rifle category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 01:51:20] [显存监控] 已分配=16.94GB, 已保留=17.63GB, 空闲=30.47GB
+[2025-11-27 01:51:23] [显存监控] 已分配=16.94GB, 已保留=17.64GB, 空闲=30.46GB
+[2025-11-27 01:51:26] [显存监控] 已分配=16.95GB, 已保留=17.66GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.66GB, 剩余=30.50GB
+MLLM description: The first image shows a **rifle** with a wooden stock and barrel, likely a bolt-action or pump-action type, given its design. It has a black metal receiver and trigger guard, and appears to have a scope mounted on top. The rifle is held horizontally by three individuals in a shooting range setting.
+
+The second image depicts a **rifle** with a dark wood stock and a black barrel. It has a simple design with a single trigger and a visible bolt handle at the rear of the stock. The rifle's overall length suggests it is designed for precision shooting, possibly for target practice or hunting.
+
+The third image shows a **rifle** with a sleek, modern design, featuring a black synthetic stock and barrel. It has a tactical appearance with a Picatinny rail system on the upper part of the receiver, allowing for the attachment of various accessories such as scopes, lights, or lasers. The rifle also has a folding stock, which is a common feature in military and tactical rifles for compactness when not in use.
+
+In summary:
+
+- **Distinctive Physical Features**: The first rifle has a wooden stock and a scope, while the second one has a dark wood stock and a simple design. The third rifle has a black synthetic stock, a Picatin
+类别 Rifle 文本特征维度: (512,)
+描述: The first image shows a **rifle** with a wooden stock and barrel, likely a bolt-action or pump-actio...
+处理类别: Tomato
+[2025-11-27 01:51:29] [显存监控] 已分配=16.91GB, 已保留=17.66GB, 空闲=30.50GB
+[2025-11-27 01:51:32] [显存监控] 已分配=16.91GB, 已保留=17.66GB, 空闲=30.50GB
+[2025-11-27 01:51:35] [显存监控] 已分配=16.91GB, 已保留=17.66GB, 空闲=30.50GB
+wiki desc: Description for Tomato category.
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 01:51:38] [显存监控] 已分配=16.96GB, 已保留=18.19GB, 空闲=30.44GB
+[2025-11-27 01:51:41] [显存监控] 已分配=16.96GB, 已保留=18.19GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.19GB, 剩余=30.50GB
+MLLM description: Tomatoes are round to slightly oblong fruits with a smooth, glossy surface. They come in various colors, primarily red, but can also be yellow, orange, or even purple. In the images, the tomatoes are predominantly bright red, indicating ripeness.
+
+The tomatoes in the first image are attached to a vine, suggesting they are still growing. The second image shows a single tomato resting on a flat surface, which could indicate it has been harvested. The third image displays two tomatoes on a vine, with one partially obscured by leaves, showing the natural growth environment.
+
+In terms of size and proportions, tomatoes vary widely depending on the variety. The ones shown here appear to be medium-sized, typical of cherry or plum tomatoes. Their size is consistent across all three images.
+
+There are no specific behavioral characteristics unique to tomatoes as they are plants and do not exhibit behaviors like animals do. However, their growth process involves photosynthesis and requires sunlight, water, and nutrients.
+
+Unique identifying traits include their round shape, smooth texture, and vibrant color. The presence of stems and leaves in some images further distinguishes them from other fruits or vegetables.
+[2025-11-27 01:51:44] [显存监控] 已分配=16.91GB, 已保留=18.19GB, 空闲=30.50GB
+类别 Tomato 文本特征维度: (512,)
+描述: Tomatoes are round to slightly oblong fruits with a smooth, glossy surface. They come in various col...
+处理类别: Tuning Fork
+[2025-11-27 01:51:47] [显存监控] 已分配=16.91GB, 已保留=18.19GB, 空闲=30.50GB
+[2025-11-27 01:51:50] [显存监控] 已分配=16.91GB, 已保留=18.19GB, 空闲=30.50GB
+[2025-11-27 01:51:53] [显存监控] 已分配=16.91GB, 已保留=18.19GB, 空闲=30.50GB
+wiki desc: Description for Tuning Fork category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 01:51:56] [显存监控] 已分配=17.17GB, 已保留=28.35GB, 空闲=30.23GB
+[2025-11-27 01:51:59] [显存监控] 已分配=17.05GB, 已保留=28.36GB, 空闲=30.35GB
+[2025-11-27 01:52:02] [显存监控] 已分配=17.06GB, 已保留=28.36GB, 空闲=30.34GB
+[2025-11-27 01:52:05] [显存监控] 已分配=17.07GB, 已保留=28.36GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=28.36GB, 剩余=30.50GB
+MLLM description: The images depict tuning forks, which are tools used to produce a specific pitch or tone. Here's a detailed description of their distinctive features:
+
+1. **Distinctive Physical Features**:
+   - All tuning forks have a U-shaped design with a handle at one end and a forked prong at the other.
+   - The prongs are typically metallic, reflecting light and giving them a shiny appearance.
+
+2. **Color Patterns and Markings**:
+   - The first image shows a single tuning fork in a clear, transparent material, possibly glass or plastic, with a black handle.
+   - The second image displays two tuning forks with metallic prongs, one appearing slightly larger than the other, both resting on a black fabric background.
+   - The third image presents three tuning forks with metallic prongs, two gold-colored and one silver, alongside a brown leather case. The prongs bear numerical markings indicating their pitch frequency (e.g., "440").
+
+3. **Size and Proportions**:
+   - The tuning forks vary in size, as seen in the second and third images where the prongs differ in length and width.
+   - The first image shows a single tuning fork, while the others display multiple forks, allowing comparison of size differences.
+
+4
+类别 Tuning Fork 文本特征维度: (512,)
+描述: The images depict tuning forks, which are tools used to produce a specific pitch or tone. Here's a d...
+处理类别: Roulette Wheel
+[2025-11-27 01:52:08] [显存监控] 已分配=16.91GB, 已保留=28.36GB, 空闲=30.50GB
+[2025-11-27 01:52:11] [显存监控] 已分配=16.91GB, 已保留=28.36GB, 空闲=30.50GB
+[2025-11-27 01:52:14] [显存监控] 已分配=16.91GB, 已保留=28.36GB, 空闲=30.50GB
+ 20%|██        | 52/257 [16:09<1:05:36, 19.20s/it] 21%|██        | 53/257 [16:27<1:04:13, 18.89s/it]

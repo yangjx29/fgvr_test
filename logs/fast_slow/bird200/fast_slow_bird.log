@@ -1,0 +1,249 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: bird (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/bird200/knowledge_base  # 知识库目录
+Results Out: ./results/bird_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/bird200_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/bird200/fast_slow_bird.log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: bird (bird200)
+类别数: 200
+实验目录: ./experiments/bird200
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-27 01:35:53 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/bird200_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/bird200/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/bird_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/CUB_200_2011/CUB_200_2011/',
+ 'dataset_name': 'bird',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/bird200',
+ 'expt_dir_describe': './experiments/bird200/describe',
+ 'expt_dir_gallery': './experiments/bird200/gallery',
+ 'expt_dir_grouping': './experiments/bird200/grouping',
+ 'expt_dir_guess': './experiments/bird200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/bird200/gallery/bird_image_descriptions_attn',
+ 'path_identify_answers': './experiments/bird200/identify',
+ 'path_llm_gussed_names': './experiments/bird200/guess/bird_llm_gussed_names',
+ 'path_llm_prompts': './experiments/bird200/describe/bird_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/bird200/guess/bird_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/bird200/guess/bird_llm_replies_raw',
+ 'path_references': './experiments/bird200/gallery/bird_image_references',
+ 'path_regions': './experiments/bird200/gallery/bird_image_regions',
+ 'path_vqa_answers': './experiments/bird200/describe/bird_attributes_pairs',
+ 'path_vqa_questions': './experiments/bird200/describe/bird_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "bird200",
+    "num_classes": 200,
+    "config_file": "bird200_all.yml",
+    "data_dir": "CUB_200_2011",
+    "experiment_dir": "bird200",
+    "stats_file": "bird200/knowledge_base/stats.json",
+    "special_subdir": "CUB_200_2011",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/bird200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/bird200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.12s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.27s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.36s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.39s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.12s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.21s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 01:36:00
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'special_subdir', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/bird200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/bird200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1536 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 01:36:32
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7de12852f220>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7de12852f370>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/bird200/knowledge_base
+使用数据集: bird, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 01:36:32] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/bird200/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/bird200/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/bird200/knowledge_base 加载
+图像知识库类别数: 200
+文本知识库类别数: 200
+类别描述数: 200
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7de12852f370>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7de12852f100>
+📦 数据集信息: {'full_name': 'bird200', 'num_classes': 200, 'config_file': 'bird200_all.yml', 'data_dir': 'CUB_200_2011', 'experiment_dir': 'bird200', 'stats_file': 'bird200/knowledge_base/stats.json', 'special_subdir': 'CUB_200_2011', 'experiments_root': './experiments', 'stats_file_full': './experiments/bird200/knowledge_base/stats.json', 'experiment_dir_full': './experiments/bird200'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Prioritize the highest similarity score only if it aligns with the visual evidence; otherwise, rely on detailed visual analysis. (Trigger: When the similarity scores are close and the visual evidence is ambiguous or conflicting.)
+2. Focus on specific, unique morphological features when distinguishing between closely related species. (Trigger: When dealing with closely related species that share some common traits but have distinct morphological features.)
+3. Focus on the unique combination of features such as the long, slightly curved beak and strong, dark-colored legs when identifying birds. (Trigger: This rule should be recalled whenever the bird's beak shape and leg strength are significant distinguishing factors.)
+
+经验库已从 ./experiments/bird200/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: bird200
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/bird200/images_split/images_test.json
+  类别数量: 200
+  总图像数: 2380
+  平均每类: 11.9 张
+  图像范围: 9 - 13 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 23 张图像，覆盖 23 个类别
+  平均每类: 1.0 张
+======================================================================
+test sample keys: ['162.Canada_Warbler', '178.Swainson_Warbler', '112.Great_Grey_Shrike', '032.Mangrove_Cuckoo', '091.Mockingbird']...
+[fast and slow] 测试数据集包含 23 个类别
+  0%|          | 0/23 [00:00<?, ?it/s][2025-11-27 01:36:32] Processing fast-slow:   0%|          | 0/23 [00:00<?, ?it/s][2025-11-27 01:36:32] Processing fast-slow:   0%|          | 0/23 [00:00<?, ?it/s]
+开始分类图像: ./datasets/CUB_200_2011/images/162.Canada_Warbler/Canada_Warbler_0056_162407.jpg
+执行快思考...
+图像检索失败: [Errno 2] No such file or directory: './datasets/CUB_200_2011/images/162.Canada_Warbler/Canada_Warbler_0056_162407.jpg'
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 960, in <module>
+    result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)
+  File "/home/hdl/project/fgvr_test_new/fast_slow_thinking_system.py", line 312, in classify_single_image
+    fast_result = self.fast_thinking.fast_thinking_pipeline(query_image_path, top_k)
+  File "/home/hdl/project/fgvr_test_new/fast_thinking_optimized.py", line 464, in fast_thinking_pipeline
+    text_category, text_confidence, text_results = self.image_to_text_retrieval(query_image_path, top_k)
+  File "/home/hdl/project/fgvr_test_new/fast_thinking_optimized.py", line 182, in image_to_text_retrieval
+    query_img_feat = self.kb_builder.retrieval.extract_image_feat(query_image_path)
+  File "/home/hdl/project/fgvr_test_new/retrieval/multimodal_retrieval.py", line 86, in extract_image_feat
+    image = Image.open(image_path).convert("RGB")
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/PIL/Image.py", line 3513, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: './datasets/CUB_200_2011/images/162.Canada_Warbler/Canada_Warbler_0056_162407.jpg'

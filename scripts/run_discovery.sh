@@ -395,7 +395,7 @@ LOGHEADER
 # 激活conda环境并运行
 print_info "激活虚拟环境并开始运行..."
 print_info "日志将实时写入: ${LOG_FILE}"
-print_info "可以使用 'tail -f ${LOG_FILE}' 查看实时日志"
+print_info "可以使用 'tail -f '${LOG_FILE}'' 查看实时日志"
 
 # 检查conda环境是否存在
 if [ ! -d "${CONDA_BASE}/envs/${CONDA_ENV}" ]; then
@@ -504,7 +504,7 @@ rm -f "${TEMP_HEADER}" 2>/dev/null
 print_success "任务已启动！"
 print_info "进程ID: ${PID}"
 print_info "日志文件: ${LOG_FILE}"
-print_info "查看实时日志: tail -f ${LOG_FILE}"
+print_info "查看实时日志: tail -f '${LOG_FILE}'"
 print_info "停止任务: kill ${PID}"
 
 # 等待几秒钟检查进程是否正常启动

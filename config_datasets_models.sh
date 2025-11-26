@@ -98,7 +98,6 @@ fi
 # 创建必要的目录
 echo "📁 创建必要目录..."
 mkdir -p ./models
-mkdir -p ./fgvr_awc/datasets
 
 # 创建数据集软链接
 echo "🔗 创建数据集软链接..."
