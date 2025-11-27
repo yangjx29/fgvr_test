@@ -7,6 +7,11 @@ import numpy as np  # 导入NumPy数值计算库
 import random  # 导入随机数生成模块
 from utils.fileios import mkdir_if_missing  # 导入创建目录的工具函数
 
+code_compatibility_options = 'fgvr'  # 代码兼容性选项，支持 [fgvr,finer,e_finer]
+# fgvr版本移除冗余目录describe/、guess/、grouping/的创建
+# finer，e_finer保留目录describe/、guess/、grouping/的创建
+
+
 
 def setup_config(config_file_env: str, config_file_expt: str):
     """设置配置函数：合并环境配置和实验配置"""
@@ -118,7 +123,8 @@ def setup_config(config_file_env: str, config_file_expt: str):
 
     # for Stage Discovery - 为发现阶段配置
     cfg_expt['expt_dir_describe'] = os.path.join(cfg_expt['expt_dir'], "describe")  # 设置描述阶段实验目录
-    mkdir_if_missing(cfg_expt['expt_dir_describe'])  # 创建描述阶段目录（如果不存在）
+    if code_compatibility_options in ['finer', 'e_finer']:
+        mkdir_if_missing(cfg_expt['expt_dir_describe'])  # finer/e_finer版本创建描述阶段目录
     cfg_expt['path_vqa_questions'] = os.path.join(cfg_expt['expt_dir_describe'],  # 设置VQA问题保存路径
                                                   f"{cfg_expt['dataset_name']}_vqa_questions_ours")
     cfg_expt['path_vqa_answers'] = os.path.join(cfg_expt['expt_dir_describe'],  # 设置VQA答案保存路径
@@ -130,7 +136,8 @@ def setup_config(config_file_env: str, config_file_expt: str):
 
     #for Stage Guess - 为猜测阶段配置
     cfg_expt['expt_dir_guess'] = os.path.join(cfg_expt['expt_dir'], "guess")  # 设置猜测阶段实验目录
-    mkdir_if_missing(cfg_expt['expt_dir_guess'])  # 创建猜测阶段目录（如果不存在）
+    if code_compatibility_options in ['finer', 'e_finer']:
+        mkdir_if_missing(cfg_expt['expt_dir_guess'])  # finer/e_finer版本创建猜测阶段目录
     cfg_expt['path_llm_replies_raw'] = os.path.join(cfg_expt['expt_dir_guess'],  # 设置LLM原始回复保存路径
                                                     f"{cfg_expt['dataset_name']}_llm_replies_raw")
     cfg_expt['path_llm_replies_jsoned'] = os.path.join(cfg_expt['expt_dir_guess'],  # 设置LLM JSON回复保存路径
@@ -148,7 +155,8 @@ def setup_config(config_file_env: str, config_file_expt: str):
 
     # for Stage Grouping evaluation - 为分组评估阶段配置
     cfg_expt['expt_dir_grouping'] = os.path.join(cfg_expt['expt_dir'], "grouping")  # 设置分组阶段实验目录
-    mkdir_if_missing(cfg_expt['expt_dir_grouping'])  # 创建分组阶段目录（如果不存在）
+    if code_compatibility_options in ['finer', 'e_finer']:
+        mkdir_if_missing(cfg_expt['expt_dir_grouping'])  # finer/e_finer版本创建分组阶段目录
 
     #   |- model - 模型配置
     if cfg_expt['model_size'] == 'ViT-L/14@336px' and cfg_expt['image_size'] != 336:  # 如果是ViT-L/14@336px模型但图像尺寸不是336

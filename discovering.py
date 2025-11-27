@@ -14,7 +14,6 @@ from utils.configuration import setup_config, seed_everything
 from utils.fileios import dump_json, load_json, dump_txt  
 
 from data import DATA_STATS, PROMPTERS, DATA_DISCOVERY  
-from data.prompt_identify import prompts_howto
 from data.extract_from_testsets import get_test_images_by_percentage, validate_test_set, get_dataset_key_for_test  
 from agents.vqa_bot import VQABot  
 from agents.llm_bot import LLMBot 
@@ -509,181 +508,6 @@ def how_to_distinguish(bot, prompt):
 
     return reply  
 
-def main_identify(cfg, bot, data_disco):
-    """识别图像的超类"""
-    json_super_classes = {}             # img: [attr1, attr2, ..., attrN] - 初始化超类结果字典
-
-    # print(f"现在开始遍历发现集data_disco: {data_disco}")
-    for idx, (img, label) in tqdm(enumerate(data_disco)):  # 遍历发现数据集中的图像和标签
-        # prompt_identify = "Question: What is the main object in this image (choose from: Car, Flower, or Pokemon)? Answer:"
-        
-        prompt_identify = "Question: What is the category (car, bird, flower, dog, cat, or Pokemon) of the main object in this image? Answer:" 
-
-        reply, trimmed_reply = bot.describe_attribute(img, prompt_identify) 
-        trimmed_reply = trimmed_reply.lower()  
-        json_super_classes[str(idx)] = trimmed_reply 
-
-        # DEBUG mode - 调试模式
-        if DEBUG and idx >= 2: 
-            break  
-    # print(f"main_identify 识别结果: {json_super_classes}")
-    return json_super_classes  # 返回超类识别结果
-
-
-def main_describe(cfg, bot, data_disco, prompter, cname_sheet):
-    """
-    1.调用VQA模型为每个属性生成对应的描述
-    2.生成LLMpromot描述
-    """
-    json_attrs = {}             # img: [attr1, attr2, ..., attrN] - 初始化属性结果字典
-    json_llm_prompts = {}       # img: LLM-prompt (has all attrs) - 初始化LLM提示字典
-
-    # 这里是训练集，预先定义好的
-    for idx, (img, label) in tqdm(enumerate(data_disco)): 
-        if cfg['dataset_name'] == 'pet': 
-            # first check what is the animal
-            pet_prompt = "Questions: What is the animal in this photo (dog or car)? Answer:"
-            pet_re, pet_trimmed_re = bot.describe_attribute(img, pet_prompt) 
-            pet_trimmed_re = pet_trimmed_re.lower() 
-            # print(pet_trimmed_re)
-            if 'dog' in pet_trimmed_re:
-                prompter.set_superclass('dog')
-            else:
-                prompter.set_superclass('cat')
-
-        # generate attributes and per-attribute prompts for VQA bot  获得属性列表
-        attrs = prompter.get_attributes()
-        # 生成对应属性的promot描述，让LLM进行描述
-        attr_prompts = prompter.get_attribute_prompt() 
-        if len(attrs) != len(attr_prompts):  # 检查属性列表和提示列表长度是否一致
-            raise IndexError("Attribute list should have the same length as attribute prompts")
-
-        print(f"当前idx:{idx}: label={label}")
-
-        iname = cint2cname(label, cname_sheet)
-        iname += f"_{idx}"  # 对应用多少个样本作为训练集
-        json_attrs[iname] = []  # 初始化该图像的属性列表
-
-        # describe each attrs - 描述每个属性
-        pair_attr_reply = []    # (attr1: prompt) - 初始化属性-值对列表
-        for attr, p_attr in zip(attrs, attr_prompts):  # 遍历属性和对应的prompt
-            re_attr, trimmed_re_attr = bot.describe_attribute(img, p_attr) 
-            # print(f"调用bot.describe_attribute得到的reply:{re_attr} \n tritrimmed_re_attr:{trimmed_re_attr}")
-            pair_attr_reply.append([attr, trimmed_re_attr])
-            json_attrs[iname].append(trimmed_re_attr)  # 将属性值添加到对应的类别描述中
-        
-        print(f'获得的VQA pair_attr_reply: {pair_attr_reply}\n json_attrs: {json_attrs}')
-        # generate LLM prompt - 生成LLM提示
-        llm_prompt = prompter.get_llm_prompt(pair_attr_reply)  # 根据属性-值对生成LLM提示
-        json_llm_prompts[iname] = llm_prompt 
-        print(f'json_llm_prompts: {json_llm_prompts}')
-        print(30 * '=')
-        print(iname + f" with label {label}") 
-        print(30 * '=')
-        # print()  # 打印空行
-        # print(f"llm_prompt: {llm_prompt}")  # 打印LLM提示
-        # print()  # 打印空行
-        # print('END' + 30 * '=')  # 打印结束分隔线
-        # print()  # 打印空行
-
-        # DEBUG mode - 调试模式
-        if DEBUG and idx >= 2:  # 如果开启调试模式且处理了2个以上样本
-            break  # 跳出循环
-
-    return json_attrs, json_llm_prompts  # 返回属性结果和LLM提示
-
-
-def main_guess(cfg, bot, reasoning_prompts):
-    """主要猜测函数：基于属性描述推理类别名称"""
-    prompt_list = reasoning_prompts  
-    replies_raw = {}  
-    replies_json_to_save = {}  
-
-    # LLM inferring - LLM推理
-    for i, (key, prompt) in tqdm(enumerate(prompt_list.items())):  
-        raw_reply = bot.infer(prompt, temperature=0.9)  # use a high temperature for better diversity
-        used_tokens = bot.get_used_tokens()  # 获取使用的token数量
-
-        replies_raw[key] = raw_reply  # 将原始回复存储到字典
-
-        print(30 * '=')  # 打印分隔线
-        print(f"\t\tinferring [{i}] for {key} used tokens = {used_tokens}") 
-        print(30 * '=')  
-        print("Raw----")  
-        print(raw_reply)  
-        print()  
-
-        jsoned_reply = trim_result2json(raw_reply=raw_reply) 
-
-        replies_json_to_save[key] = jsoned_reply  
-
-        print("Trimed----")  
-        print(jsoned_reply)
-        print()  # 打印空行
-        print('END' + 30 * '=')  
-        print()  
-
-        # DEBUG - 调试
-        if DEBUG and i >= 2:  # 如果开启调试模式且处理了2个以上样本
-            break 
-
-    print(30 * '=')  
-    print(f"\t\t Finish Discovering, token consumed {bot.get_used_tokens()}"  
-          f" = ${bot.get_used_tokens()*0.001*0.002}") 
-    print(30 * '=')  
-    print('END' + 30 * '=')  
-    print()  
-    return replies_raw, replies_json_to_save 
-
-
-def post_process(cfg, jsoned_replies):
-    """后处理函数：清理和整理LLM推理结果"""
-    reply_list = []  
-    num_of_failures = 0  
-    # duplicated dict - 重复字典
-    for k, v in jsoned_replies.items():  # 遍历JSON回复字典
-        print(k)  
-        print(v) 
-        print()
-        print() 
-        try:  
-            v_json = json.loads(v)  
-            reply_list.append(v_json)
-        except json.JSONDecodeError:  
-            print(f"Failed to decode JSON for key: {k}") 
-            num_of_failures += 1  
-            continue  
-
-        # v_json = json.loads(v) 
-        # reply_list.append(v_json) 
-
-    guessed_names = [] 
-    for item in reply_list: 
-        guessed_names.extend(list(item.keys()))  
-
-    guessed_names = extract_names(guessed_names, clean=False) 
-
-    if cfg['dataset_name'] in ['pet', 'dog']: 
-        clean_gussed_names = []  
-        for aitem in guessed_names:
-            clean_gussed_names.extend(aitem.split(','))  
-        clean_gussed_names = [name.strip() for name in clean_gussed_names]  
-        guessed_names = clean_gussed_names  
-
-    print(30 * '=') 
-    print(f"\t\t Finished Post-processing")  
-    print(30 * '=')  
-
-    print(f"\t\t ---> total discovered names = {len(guessed_names)}")  
-    print(guessed_names)  
-    print()  
-    print(f"\t\t ---> total discovered names = {len(guessed_names)}")  
-    print(f"\t\t ---> number of failure entries = {num_of_failures}") 
-
-    print('END' + 30 * '=')  
-    print()  
-    return guessed_names 
-
 
 def load_train_samples(cfg, kshot=None):
     """加载K-shot训练样本，返回 {category: [image_paths]}。
@@ -740,15 +564,12 @@ def build_gallery(cfg, mllm_bot, captioner, retrieval, kshot=5,region_num=3, sup
     return gallery
 
 if __name__ == "__main__":
-    """
-    CUDA_VISIBLE_DEVICES=1 python discovering.py --mode=build_gallery --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --kshot=5 --region_num=3 --superclass=dog  --gallery_out=./experiments/dog120/gallery/dog120_gallery_concat_atten.json --fusion_method=concat 2>&1 | tee ./logs/build_gallery_dog_concat_atten.log
-    """
     parser = argparse.ArgumentParser(description='Discovery', formatter_class=argparse.ArgumentDefaultsHelpFormatter) 
 
     parser.add_argument('--mode',  
                         type=str, 
-                        default='describe', 
-                        choices=['identify', 'howto', 'describe', 'guess', 'postprocess', 'build_gallery', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow'],  # 可选值列表
+                        default='build_knowledge_base', 
+                        choices=['build_gallery', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow'],  # 可选值列表
                         help='operating mode for each stage')  
     parser.add_argument('--config_file_env',  
                         type=str,  
