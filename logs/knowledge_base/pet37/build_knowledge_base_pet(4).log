@@ -1,0 +1,353 @@
+[INFO] === Build Knowledge Base 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: pet (num_classes=)  # 数据集及类别数
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/pet37/knowledge_base  # 知识库目录
+Config File: ./configs/expts/pet37_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/knowledge_base/pet37/build_knowledge_base_pet(4).log  # 日志文件路径
+Run Mode: build_knowledge_base  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: pet (pet37)
+类别数: 37
+实验目录: ./experiments/pet37
+✅ JSON文件检查通过: ./experiments/pet37/images_split
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-27 22:15:16 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/pet37_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/pet37/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/pet_37',
+ 'dataset_name': 'pet',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/pet37',
+ 'expt_dir_describe': './experiments/pet37/describe',
+ 'expt_dir_gallery': './experiments/pet37/gallery',
+ 'expt_dir_grouping': './experiments/pet37/grouping',
+ 'expt_dir_guess': './experiments/pet37/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 19,
+ 'num_classes': 37,
+ 'num_novel': 18,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn',
+ 'path_identify_answers': './experiments/pet37/identify',
+ 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names',
+ 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw',
+ 'path_references': './experiments/pet37/gallery/pet_image_references',
+ 'path_regions': './experiments/pet37/gallery/pet_image_regions',
+ 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs',
+ 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "pet37",
+    "num_classes": 37,
+    "config_file": "pet37_all.yml",
+    "data_dir": "pet_37",
+    "experiment_dir": "pet37",
+    "stats_file": "pet37/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/pet37/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/pet37"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:12,  3.18s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.12s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.79s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.47s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.79s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.01s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 22:15:27
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/pet37/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/pet37/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 230 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 22:15:29
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x77e5d9f7b220>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x77e5d9f7b070>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/pet37/knowledge_base
+使用数据集: pet, 类别数: 37
+✅ 慢思考模块初始化完成，类别映射数量: 37
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 22:15:29] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+🔄 从训练集随机抽取发现集 (模式: _4)
+✓ 加载训练数据: 35 个类别
+✓ 临时发现集已保存到: ./experiments/pet37/images_split/images_discovery_all_temp_4.json
+从JSON文件加载发现集: ./experiments/pet37/images_split/images_discovery_all_temp_4.json
+✓ 加载完成: 35 个类别，共 140 张图像
+✓ 创建JSON发现集对象: 35 个类别
+构建知识库，包含 35 个类别, dog datasets:37
+从 ./experiments/pet37/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/pet37/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/pet37/knowledge_base 加载
+图像知识库类别数: 37
+文本知识库类别数: 37
+类别描述数: 37
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+构建知识库...
+训练样本包含 35 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/35 [00:00<?, ?it/s]  3%|▎         | 1/35 [00:00<00:13,  2.52it/s] 11%|█▏        | 4/35 [00:00<00:03,  9.35it/s] 20%|██        | 7/35 [00:00<00:01, 14.09it/s] 29%|██▊       | 10/35 [00:00<00:01, 17.04it/s] 37%|███▋      | 13/35 [00:00<00:01, 19.56it/s] 46%|████▌     | 16/35 [00:01<00:00, 20.89it/s] 54%|█████▍    | 19/35 [00:01<00:00, 22.50it/s] 63%|██████▎   | 22/35 [00:01<00:00, 22.85it/s] 71%|███████▏  | 25/35 [00:01<00:00, 23.14it/s] 80%|████████  | 28/35 [00:01<00:00, 24.10it/s] 89%|████████▊ | 31/35 [00:01<00:00, 23.85it/s] 97%|█████████▋| 34/35 [00:01<00:00, 23.26it/s]100%|██████████| 35/35 [00:01<00:00, 19.54it/s]
+处理类别: Abyssinian
+类别 Abyssinian 图像特征维度: (512,)
+处理类别: Bengal
+类别 Bengal 图像特征维度: (512,)
+处理类别: Birman
+类别 Birman 图像特征维度: (512,)
+处理类别: Bombay
+类别 Bombay 图像特征维度: (512,)
+处理类别: British
+类别 British 图像特征维度: (512,)
+处理类别: Egyptian
+类别 Egyptian 图像特征维度: (512,)
+处理类别: Maine
+类别 Maine 图像特征维度: (512,)
+处理类别: Persian
+类别 Persian 图像特征维度: (512,)
+处理类别: Ragdoll
+类别 Ragdoll 图像特征维度: (512,)
+处理类别: Russian
+类别 Russian 图像特征维度: (512,)
+处理类别: Siamese
+类别 Siamese 图像特征维度: (512,)
+处理类别: Sphynx
+类别 Sphynx 图像特征维度: (512,)
+处理类别: American
+类别 American 图像特征维度: (512,)
+处理类别: Basset
+类别 Basset 图像特征维度: (512,)
+处理类别: Beagle
+类别 Beagle 图像特征维度: (512,)
+处理类别: Boxer
+类别 Boxer 图像特征维度: (512,)
+处理类别: Chihuahua
+类别 Chihuahua 图像特征维度: (512,)
+处理类别: English
+类别 English 图像特征维度: (512,)
+处理类别: German
+类别 German 图像特征维度: (512,)
+处理类别: Great
+类别 Great 图像特征维度: (512,)
+处理类别: Havanese
+类别 Havanese 图像特征维度: (512,)
+处理类别: Japanese
+类别 Japanese 图像特征维度: (512,)
+处理类别: Keeshond
+类别 Keeshond 图像特征维度: (512,)
+处理类别: Leonberger
+类别 Leonberger 图像特征维度: (512,)
+处理类别: Miniature
+类别 Miniature 图像特征维度: (512,)
+处理类别: Newfoundland
+类别 Newfoundland 图像特征维度: (512,)
+处理类别: Pomeranian
+类别 Pomeranian 图像特征维度: (512,)
+处理类别: Pug
+类别 Pug 图像特征维度: (512,)
+处理类别: Saint
+类别 Saint 图像特征维度: (512,)
+处理类别: Samoyed
+类别 Samoyed 图像特征维度: (512,)
+处理类别: Scottish
+类别 Scottish 图像特征维度: (512,)
+处理类别: Shiba
+类别 Shiba 图像特征维度: (512,)
+处理类别: Staffordshire
+类别 Staffordshire 图像特征维度: (512,)
+处理类别: Wheaten
+类别 Wheaten 图像特征维度: (512,)
+处理类别: Yorkshire
+类别 Yorkshire 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/35 [00:00<?, ?it/s]  3%|▎         | 1/35 [00:16<09:08, 16.13s/it]  6%|▌         | 2/35 [00:35<10:03, 18.29s/it]  9%|▊         | 3/35 [00:57<10:32, 19.77s/it] 11%|█▏        | 4/35 [01:17<10:20, 20.01s/it]处理类别: Abyssinian
+[2025-11-27 22:15:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:15:35] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:15:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:15:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for Abyssinian category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:15:44] [显存监控] 已分配=16.94GB, 已保留=17.61GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.62GB, 剩余=30.50GB
+MLLM description: Abyssinian cats are known for their distinctive physical features, including a slender body, long legs, and large ears. Their coat is short and silky, with a rich, warm coloration that can range from light golden to deep copper. The fur has a unique texture, with a slightly raised, "ticked" pattern that gives it a distinctive appearance. Abyssinians also have a striking facial structure, with a long, narrow head and large, expressive eyes. They are medium-sized cats, typically weighing between 8-10 pounds as adults. Abyssinians are known for their playful and energetic personalities, often described as intelligent and affectionate. One unique identifying trait is the presence of a heart-shaped tag around their neck, which is often used for identification purposes.
+[2025-11-27 22:15:47] [显存监控] 已分配=16.91GB, 已保留=17.62GB, 空闲=30.50GB
+类别 Abyssinian 文本特征维度: (512,)
+描述: Abyssinian cats are known for their distinctive physical features, including a slender body, long le...
+处理类别: Bengal
+[2025-11-27 22:15:50] [显存监控] 已分配=16.91GB, 已保留=17.62GB, 空闲=30.50GB
+[2025-11-27 22:15:53] [显存监控] 已分配=16.91GB, 已保留=17.62GB, 空闲=30.50GB
+[2025-11-27 22:15:56] [显存监控] 已分配=16.91GB, 已保留=17.62GB, 空闲=30.50GB
+wiki desc: Description for Bengal category.
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 22:15:59] [显存监控] 已分配=16.95GB, 已保留=17.87GB, 空闲=30.45GB
+[2025-11-27 22:16:02] [显存监控] 已分配=16.95GB, 已保留=17.91GB, 空闲=30.45GB
+[2025-11-27 22:16:05] [显存监控] 已分配=16.96GB, 已保留=17.91GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.91GB, 剩余=30.50GB
+MLLM description: The images depict Bengal cats, which are known for their distinctive appearance:
+
+1. **Distinctive Physical Features**: Bengal cats have a muscular build with a medium to large size. They possess a sleek, athletic body structure.
+
+2. **Color Patterns and Markings**: Bengal cats are characterized by their wild, spotted or marbled coat patterns, often resembling those of leopards or jaguars. Their fur is typically a golden or brown base color with dark rosettes, spots, or marbling. The eyes are usually green, yellow, or gold, adding to their exotic look.
+
+3. **Size and Proportions**: Bengal cats are medium-sized, with males being slightly larger than females. They have a balanced body shape, with a strong, muscular frame and a long tail.
+
+4. **Behavioral Characteristics**: Bengal cats are known for their playful and energetic nature. They are intelligent, curious, and enjoy interactive play. They can be quite vocal and may meow frequently. They also tend to be social and affectionate towards their owners.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of Bengal cats is their unique coat pattern, which sets them apart from other domestic cat breeds. Additionally, their large, expressive eyes and muscular build contribute to their
+类别 Bengal 文本特征维度: (512,)
+描述: The images depict Bengal cats, which are known for their distinctive appearance:
+
+1. **Distinctive P...
+处理类别: Birman
+[2025-11-27 22:16:08] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+[2025-11-27 22:16:11] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+[2025-11-27 22:16:14] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+[2025-11-27 22:16:17] [显存监控] 已分配=16.91GB, 已保留=17.91GB, 空闲=30.50GB
+wiki desc: Description for Birman category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:16:20] [显存监控] 已分配=16.97GB, 已保留=18.18GB, 空闲=30.44GB
+[2025-11-27 22:16:23] [显存监控] 已分配=16.96GB, 已保留=18.21GB, 空闲=30.44GB
+[2025-11-27 22:16:26] [显存监控] 已分配=16.96GB, 已保留=18.21GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.21GB, 剩余=30.50GB
+MLLM description: The Birman cat is a distinctive breed characterized by its unique physical features, color patterns, size, and behavior.
+
+1. **Distinctive Physical Features**: Birman cats have large, expressive blue eyes, which are a hallmark of the breed. Their ears are large and rounded, and their face has a gentle, almost serene expression. They also have a short, dense coat that is soft to the touch.
+
+2. **Color Patterns and Markings**: Birman cats come in a variety of colors, including seal point, chocolate point, blue point, and lilac point. The most common pattern is the seal point, where the cat's body is white with dark points on the ears, face, paws, and tail. The points are typically a darker shade than the body, creating a striking contrast. The cat in image 1 appears to be a seal point Birman, as it has a white body with dark points on its ears, face, and tail.
+
+3. **Size and Proportions**: Birman cats are medium-sized, with a sturdy yet elegant build. They have a broad head, a short muzzle, and a thick neck. Their body is well-proportioned, with a deep chest and a strong back. The cat in image 
+类别 Birman 文本特征维度: (512,)
+描述: The Birman cat is a distinctive breed characterized by its unique physical features, color patterns,...
+处理类别: Bombay
+[2025-11-27 22:16:29] [显存监控] 已分配=16.91GB, 已保留=18.21GB, 空闲=30.50GB
+[2025-11-27 22:16:32] [显存监控] 已分配=16.91GB, 已保留=18.21GB, 空闲=30.50GB
+[2025-11-27 22:16:35] [显存监控] 已分配=16.91GB, 已保留=18.21GB, 空闲=30.50GB
+[2025-11-27 22:16:38] [显存监控] 已分配=16.91GB, 已保留=18.21GB, 空闲=30.50GB
+wiki desc: Description for Bombay category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:16:41] [显存监控] 已分配=16.97GB, 已保留=18.25GB, 空闲=30.43GB
+[2025-11-27 22:16:44] [显存监控] 已分配=16.97GB, 已保留=18.28GB, 空闲=30.44GB
+[2025-11-27 22:16:47] [显存监控] 已分配=16.97GB, 已保留=18.28GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.28GB, 剩余=30.50GB
+MLLM description: The provided images depict Bombay cats, which are characterized by their sleek, short-haired coat and striking golden eyes. Here's a detailed description:
+
+1. **Distinctive Physical Features**: 
+   - **Head Shape**: Boms have a round head with large, expressive eyes that are almond-shaped and golden in color. Their ears are medium-sized and set wide apart.
+   - **Body**: They have a compact, muscular body with a short, dense coat that is smooth to the touch.
+
+2. **Color Patterns and Markings**:
+   - **Solid Color**: Boms are typically solid black or brown, without any visible markings or patterns. This uniformity is one of their defining features.
+   - **Coat Texture**: Their coat is short, smooth, and glossy, giving them a sleek appearance.
+
+3. **Size and Proportions**:
+   - **Medium-Sized Cat**: Boms are medium-sized cats, neither tiny nor large. They have a balanced build with a sturdy frame.
+   - **Proportional Body**: Their body is well-proportioned, with a strong chest and a slightly arched back.
+
+4. **Behavioral Characteristics**:
+   - While not explicitly shown in these images, Boms are known for being affectionate
+类别 Bombay 文本特征维度: (512,)
+描述: The provided images depict Bombay cats, which are characterized by their sleek, short-haired coat an...
+处理类别: British

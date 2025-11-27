@@ -1,0 +1,552 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: pet (num_classes=37)  # 数据集及类别数, test_data_suffix=1  # 测试数据样本后缀
+Test Mode: discovery_set  # 使用discovery集
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/pet37/knowledge_base  # 知识库目录
+Test Data Json: ./experiments/pet37/images_split/images_discovery_all_1.json  # 测试数据JSON文件
+Results Out: ./results/pet_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/pet37_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/pet37/fast_slow_pet(9).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: pet (pet37)
+类别数: 37
+实验目录: ./experiments/pet37
+✅ JSON文件检查通过: ./experiments/pet37/images_split
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-27 22:07:11 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/pet37_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/pet37/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/pet_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': './experiments/pet37/images_split/images_discovery_all_1.json',
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/pet_37',
+ 'dataset_name': 'pet',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/pet37',
+ 'expt_dir_describe': './experiments/pet37/describe',
+ 'expt_dir_gallery': './experiments/pet37/gallery',
+ 'expt_dir_grouping': './experiments/pet37/grouping',
+ 'expt_dir_guess': './experiments/pet37/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 19,
+ 'num_classes': 37,
+ 'num_novel': 18,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn',
+ 'path_identify_answers': './experiments/pet37/identify',
+ 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names',
+ 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw',
+ 'path_references': './experiments/pet37/gallery/pet_image_references',
+ 'path_regions': './experiments/pet37/gallery/pet_image_regions',
+ 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs',
+ 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "pet37",
+    "num_classes": 37,
+    "config_file": "pet37_all.yml",
+    "data_dir": "pet_37",
+    "experiment_dir": "pet37",
+    "stats_file": "pet37/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/pet37/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/pet37"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.23s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.49s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.00s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.76s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.35s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.61s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 22:07:20
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/pet37/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/pet37/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 230 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 22:09:14
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7e71ab7ee130>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7e71ba9c67c0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/pet37/knowledge_base
+使用数据集: pet, 类别数: 37
+✅ 慢思考模块初始化完成，类别映射数量: 37
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 22:09:14] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/pet37/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/pet37/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/pet37/knowledge_base 加载
+图像知识库类别数: 37
+文本知识库类别数: 37
+类别描述数: 37
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7e71ba9c67c0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7e71ab904c40>
+📦 数据集信息: {'full_name': 'pet37', 'num_classes': 37, 'config_file': 'pet37_all.yml', 'data_dir': 'pet_37', 'experiment_dir': 'pet37', 'stats_file': 'pet37/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/pet37/knowledge_base/stats.json', 'experiment_dir_full': './experiments/pet37'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/pet37/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_discovery (发现集)
+======================================================================
+测试数据路径: ./experiments/pet37/images_split/images_discovery_all_1.json
+说明: 使用discovery集进行评估（每类固定样本数）
+======================================================================
+检测到JSON文件，使用JSON格式加载测试数据
+从JSON文件加载测试数据: ./experiments/pet37/images_split/images_discovery_all_1.json
+✓ 从JSON文件加载 35 个类别，共 35 张图像
+test sample keys: ['Abyssinian', 'Bengal', 'Birman', 'Bombay', 'British']...
+[fast and slow] 测试数据集包含 35 个类别
+  0%|          | 0/35 [00:00<?, ?it/s][2025-11-27 22:09:14] Processing fast-slow:   0%|          | 0/35 [00:00<?, ?it/s][2025-11-27 22:09:14] Processing fast-slow:   3%|▎         | 1/35 [00:07<04:13,  7.44s/it][2025-11-27 22:09:21] Processing fast-slow:   3%|▎         | 1/35 [00:07<04:13,  7.44s/it][2025-11-27 22:09:22] Processing fast-slow:   3%|▎         | 1/35 [00:07<04:13,  7.44s/it][2025-11-27 22:09:22] Processing fast-slow:   3%|▎         | 1/35 [00:07<04:13,  7.44s/it][2025-11-27 22:09:22] Processing fast-slow:  11%|█▏        | 4/35 [00:07<00:44,  1.44s/it][2025-11-27 22:09:22] Processing fast-slow:  11%|█▏        | 4/35 [00:07<00:44,  1.44s/it][2025-11-27 22:09:22] Processing fast-slow:  11%|█▏        | 4/35 [00:07<00:44,  1.44s/it][2025-11-27 22:09:22] Processing fast-slow:  11%|█▏        | 4/35 [00:07<00:44,  1.44s/it][2025-11-27 22:09:22] Processing fast-slow:  11%|█▏        | 4/35 [00:18<00:44,  1.44s/it][2025-11-27 22:09:22] Processing fast-slow:  20%|██        | 7/35 [00:21<01:26,  3.11s/it][2025-11-27 22:09:35] Processing fast-slow:  20%|██        | 7/35 [00:21<01:26,  3.11s/it][2025-11-27 22:09:35] Processing fast-slow:  20%|██        | 7/35 [00:21<01:26,  3.11s/it][2025-11-27 22:09:35] Processing fast-slow:  20%|██        | 7/35 [00:21<01:26,  3.11s/it][2025-11-27 22:09:35] Processing fast-slow:  29%|██▊       | 10/35 [00:21<00:44,  1.78s/it][2025-11-27 22:09:35] Processing fast-slow:  29%|██▊       | 10/35 [00:21<00:44,  1.78s/it][2025-11-27 22:09:49] Processing fast-slow:  29%|██▊       | 10/35 [00:34<00:44,  1.78s/it][2025-11-27 22:09:49] Processing fast-slow:  29%|██▊       | 10/35 [00:38<00:44,  1.78s/it][2025-11-27 22:09:49] Processing fast-slow:  34%|███▍      | 12/35 [00:46<01:54,  4.97s/it][2025-11-27 22:10:01] Processing fast-slow:  34%|███▍      | 12/35 [00:46<01:54,  4.97s/it]开始分类图像: ./datasets/pet_37/images/Abyssinian_168.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/Abyssinian_168.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Abyssinian', 'Bombay', 'Siamese', 'Sphynx', 'Bengal', 'British_Shorthair', 'Russian_Blue', 'Persian', 'Ragdoll', 'Boxer', 'Egyptian_Mau', 'Maine_Coon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 22:09:17] [显存监控] 已分配=16.92GB, 已保留=17.16GB, 空闲=30.48GB
+[2025-11-27 22:09:20] [显存监控] 已分配=16.95GB, 已保留=17.39GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Abyssinian (置信度: 0.1559)
+总耗时: 7.44秒
+succ. pred cate:Abyssinian, true cate:Abyssinian, used_slow:True, confidence:0.1559
+开始分类图像: ./datasets/pet_37/images/Bengal_126.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bengal (置信度: 0.4432)
+总耗时: 0.05秒
+succ. pred cate:Bengal, true cate:Bengal, used_slow:False, confidence:0.4432
+开始分类图像: ./datasets/pet_37/images/Birman_17.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ragdoll (置信度: 0.4475)
+总耗时: 0.04秒
+succ. pred cate:Ragdoll, true cate:Birman, used_slow:False, confidence:0.4475
+开始分类图像: ./datasets/pet_37/images/Bombay_13.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bombay (置信度: 0.3958)
+总耗时: 0.03秒
+succ. pred cate:Bombay, true cate:Bombay, used_slow:False, confidence:0.3958
+开始分类图像: ./datasets/pet_37/images/British_Shorthair_209.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: British_Shorthair (置信度: 0.3343)
+总耗时: 0.04秒
+succ. pred cate:British_Shorthair, true cate:British, used_slow:False, confidence:0.3343
+开始分类图像: ./datasets/pet_37/images/Egyptian_Mau_107.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bombay (置信度: 0.3684)
+总耗时: 0.03秒
+failed. pred cate:Bombay, true cate:Egyptian, used_slow:False, confidence:0.3684
+开始分类图像: ./datasets/pet_37/images/Maine_Coon_135.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/Maine_Coon_135.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bombay', 'Maine_Coon', 'Ragdoll', 'Persian', 'Abyssinian', 'Siamese', 'Bengal', 'Boxer', 'British_Shorthair', 'Birman', 'Egyptian_Mau', 'Russian_Blue']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 22:09:24] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:09:27] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Maine_Coon' -> 'Maine Coon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 22:09:31] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:09:34] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Maine_Coon (置信度: 0.8000)
+总耗时: 13.57秒
+succ. pred cate:Maine_Coon, true cate:Maine, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/pet_37/images/Persian_104.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Persian (置信度: 0.3194)
+总耗时: 0.04秒
+succ. pred cate:Persian, true cate:Persian, used_slow:False, confidence:0.3194
+开始分类图像: ./datasets/pet_37/images/Ragdoll_142.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ragdoll (置信度: 0.4325)
+总耗时: 0.04秒
+succ. pred cate:Ragdoll, true cate:Ragdoll, used_slow:False, confidence:0.4325
+开始分类图像: ./datasets/pet_37/images/Russian_Blue_153.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Russian_Blue (置信度: 0.6056)
+总耗时: 0.04秒
+succ. pred cate:Russian_Blue, true cate:Russian, used_slow:False, confidence:0.6056
+开始分类图像: ./datasets/pet_37/images/Siamese_142.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/Siamese_142.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Ragdoll', 'Siamese', 'Persian', 'Bombay', 'Birman', 'Russian_Blue', 'British_Shorthair', 'Maine_Coon', 'Abyssinian', 'Samoyed', 'Egyptian_Mau', 'Bengal']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 22:09:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:09:41] [显存监控] 已分配=16.95GB, 已保留=17.62GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.62GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:09:44] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.46GB
+[2025-11-27 22:09:47] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+分类完成: Siamese (置信度: 0.9500)
+总耗时: 13.66秒
+succ. pred cate:Siamese, true cate:Siamese, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/pet_37/images/Sphynx_112.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/Sphynx_112.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Abyssinian', 'Russian_Blue', 'Siamese', 'Bengal', 'Bombay', 'Sphynx', 'Egyptian_Mau', 'British_Shorthair', 'Ragdoll', 'Persian', 'Maine_Coon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:09:50] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-27 22:09:53] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:09:56] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-27 22:09:59] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Sphynx (置信度: 0.9500)
+总耗时: 11.71秒
+succ. pred cate:Sphynx, true cate:Sphynx, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/pet_37/images/american_pit_bull_terrier_104.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/american_pit_bull_terrier_104.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['American_Pit_Bull_Terrier', 'Boxer', 'Staffordshire_Bull_Terrier', 'Scottish_Terrier', 'American_Bulldog', 'English_Cocker_Spaniel', 'Beagle', 'Great_Pyrenees', 'Basset_Hound', 'Shiba_Inu', 'Miniature_Pinscher', 'German_Shorthaired', 'Wheaten_Terrier', 'Havanese', 'Saint_Bernard', 'English_Setter']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:10:02] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-27 22:10:05] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+[2025-11-27 22:10:01] Processing fast-slow:  37%|███▋      | 13/35 [00:58<02:14,  6.14s/it][2025-11-27 22:10:12] Processing fast-slow:  37%|███▋      | 13/35 [00:58<02:14,  6.14s/it][2025-11-27 22:10:12] Processing fast-slow:  37%|███▋      | 13/35 [00:58<02:14,  6.14s/it][2025-11-27 22:10:13] Processing fast-slow:  37%|███▋      | 13/35 [00:58<02:14,  6.14s/it][2025-11-27 22:10:13] Processing fast-slow:  46%|████▌     | 16/35 [00:58<01:07,  3.54s/it][2025-11-27 22:10:13] Processing fast-slow:  46%|████▌     | 16/35 [00:58<01:07,  3.54s/it][2025-11-27 22:10:13] Processing fast-slow:  46%|████▌     | 16/35 [00:58<01:07,  3.54s/it][2025-11-27 22:10:13] Processing fast-slow:  46%|████▌     | 16/35 [00:58<01:07,  3.54s/it][2025-11-27 22:10:13] Processing fast-slow:  54%|█████▍    | 19/35 [00:58<00:35,  2.22s/it][2025-11-27 22:10:13] Processing fast-slow:  54%|█████▍    | 19/35 [00:58<00:35,  2.22s/it][2025-11-27 22:10:13] Processing fast-slow:  54%|█████▍    | 19/35 [00:58<00:35,  2.22s/it][2025-11-27 22:10:13] Processing fast-slow:  54%|█████▍    | 19/35 [00:58<00:35,  2.22s/it][2025-11-27 22:10:13] Processing fast-slow:  63%|██████▎   | 22/35 [00:58<00:18,  1.45s/it][2025-11-27 22:10:13] Processing fast-slow:  63%|██████▎   | 22/35 [00:58<00:18,  1.45s/it][2025-11-27 22:10:21] Processing fast-slow:  63%|██████▎   | 22/35 [01:07<00:18,  1.45s/it][2025-11-27 22:10:21] Processing fast-slow:  63%|██████▎   | 22/35 [01:07<00:18,  1.45s/it][2025-11-27 22:10:21] Processing fast-slow:  71%|███████▏  | 25/35 [01:07<00:19,  1.90s/it][2025-11-27 22:10:21] Processing fast-slow:  71%|███████▏  | 25/35 [01:07<00:19,  1.90s/it][2025-11-27 22:10:21] Processing fast-slow:  71%|███████▏  | 25/35 [01:07<00:19,  1.90s/it][2025-11-27 22:10:21] Processing fast-slow:  71%|███████▏  | 25/35 [01:07<00:19,  1.90s/it][2025-11-27 22:10:21] Processing fast-slow:  80%|████████  | 28/35 [01:07<00:09,  1.30s/it][2025-11-27 22:10:21] Processing fast-slow:  80%|████████  | 28/35 [01:07<00:09,  1.30s/it][2025-11-27 22:10:26] Processing fast-slow:  80%|████████  | 28/35 [01:11<00:09,  1.30s/it][2025-11-27 22:10:26] Processing fast-slow:  86%|████████▌ | 30/35 [01:11<00:07,  1.50s/it][2025-11-27 22:10:26] Processing fast-slow:  86%|████████▌ | 30/35 [01:11<00:07,  1.50s/it][2025-11-27 22:10:26] Processing fast-slow:  86%|████████▌ | 30/35 [01:11<00:07,  1.50s/it]快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:10:08] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+[2025-11-27 22:10:11] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: Staffordshire Bull Terrier (置信度: 0.8000)
+总耗时: 11.73秒
+failed. pred cate:Staffordshire Bull Terrier, true cate:American, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/pet_37/images/basset_hound_166.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Basset_Hound (置信度: 0.4820)
+总耗时: 0.04秒
+succ. pred cate:Basset_Hound, true cate:Basset, used_slow:False, confidence:0.4820
+开始分类图像: ./datasets/pet_37/images/beagle_187.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Beagle (置信度: 0.6216)
+总耗时: 0.03秒
+succ. pred cate:Beagle, true cate:Beagle, used_slow:False, confidence:0.6216
+开始分类图像: ./datasets/pet_37/images/boxer_137.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Boxer (置信度: 0.4087)
+总耗时: 0.04秒
+succ. pred cate:Boxer, true cate:Boxer, used_slow:False, confidence:0.4087
+开始分类图像: ./datasets/pet_37/images/chihuahua_125.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chihuahua (置信度: 0.5136)
+总耗时: 0.03秒
+succ. pred cate:Chihuahua, true cate:Chihuahua, used_slow:False, confidence:0.5136
+开始分类图像: ./datasets/pet_37/images/english_setter_165.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: English_Setter (置信度: 0.2656)
+总耗时: 0.04秒
+succ. pred cate:English_Setter, true cate:English, used_slow:False, confidence:0.2656
+开始分类图像: ./datasets/pet_37/images/german_shorthaired_158.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: German_Shorthaired (置信度: 0.3944)
+总耗时: 0.04秒
+succ. pred cate:German_Shorthaired, true cate:German, used_slow:False, confidence:0.3944
+开始分类图像: ./datasets/pet_37/images/great_pyrenees_146.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Great_Pyrenees (置信度: 0.4022)
+总耗时: 0.04秒
+succ. pred cate:Great_Pyrenees, true cate:Great, used_slow:False, confidence:0.4022
+开始分类图像: ./datasets/pet_37/images/havanese_175.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Havanese (置信度: 0.5627)
+总耗时: 0.05秒
+succ. pred cate:Havanese, true cate:Havanese, used_slow:False, confidence:0.5627
+开始分类图像: ./datasets/pet_37/images/japanese_chin_153.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Japanese_Chin (置信度: 0.2968)
+总耗时: 0.03秒
+succ. pred cate:Japanese_Chin, true cate:Japanese, used_slow:False, confidence:0.2968
+开始分类图像: ./datasets/pet_37/images/keeshond_117.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/keeshond_117.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Keeshond', 'Pomeranian', 'Samoyed', 'Great_Pyrenees', 'Scottish_Terrier', 'Maine_Coon', 'Newfoundland', 'Ragdoll', 'Persian', 'Russian_Blue', 'Wheaten_Terrier', 'Havanese', 'German_Shorthaired', 'Pug']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:10:14] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-27 22:10:17] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+[2025-11-27 22:10:20] [显存监控] 已分配=16.96GB, 已保留=17.51GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+模糊匹配类别修正: 'Keesh' -> 'Keeshond'
+分类完成: Keeshond (置信度: 0.1573)
+总耗时: 8.33秒
+succ. pred cate:Keeshond, true cate:Keeshond, used_slow:True, confidence:0.1573
+开始分类图像: ./datasets/pet_37/images/leonberger_130.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Leonberger (置信度: 0.3851)
+总耗时: 0.04秒
+succ. pred cate:Leonberger, true cate:Leonberger, used_slow:False, confidence:0.3851
+开始分类图像: ./datasets/pet_37/images/miniature_pinscher_116.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chihuahua (置信度: 0.2309)
+总耗时: 0.03秒
+failed. pred cate:Chihuahua, true cate:Miniature, used_slow:False, confidence:0.2309
+开始分类图像: ./datasets/pet_37/images/newfoundland_129.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Newfoundland (置信度: 0.3354)
+总耗时: 0.04秒
+succ. pred cate:Newfoundland, true cate:Newfoundland, used_slow:False, confidence:0.3354
+开始分类图像: ./datasets/pet_37/images/pomeranian_187.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pomeranian (置信度: 0.5764)
+总耗时: 0.03秒
+succ. pred cate:Pomeranian, true cate:Pomeranian, used_slow:False, confidence:0.5764
+开始分类图像: ./datasets/pet_37/images/pug_167.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pug (置信度: 0.5404)
+总耗时: 0.03秒
+succ. pred cate:Pug, true cate:Pug, used_slow:False, confidence:0.5404
+开始分类图像: ./datasets/pet_37/images/saint_bernard_162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/saint_bernard_162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Saint_Bernard', 'Basset_Hound', 'English_Setter', 'English_Cocker_Spaniel', 'American_Bulldog', 'Beagle', 'Boxer', 'German_Shorthaired', 'Great_Pyrenees', 'American_Pit_Bull_Terrier', 'Pug', 'Havanese']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:10:23] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Saint_Bernard' -> 'Saint Bernard'
+分类完成: Saint Bernard (置信度: 0.1308)
+总耗时: 4.25秒
+succ. pred cate:Saint Bernard, true cate:Saint, used_slow:True, confidence:0.1308
+开始分类图像: ./datasets/pet_37/images/samoyed_130.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Great_Pyrenees (置信度: 0.4170)
+总耗时: 0.03秒
+failed. pred cate:Great_Pyrenees, true cate:Samoyed, used_slow:False, confidence:0.4170
+开始分类图像: ./datasets/pet_37/images/scottish_terrier_187.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Scottish_Terrier (置信度: 0.7932)
+总耗时: 0.03秒
+succ. pred cate:Scottish_Terrier, true cate:Scottish, used_slow:False, confidence:0.7932
+开始分类图像: ./datasets/pet_37/images/shiba_inu_173.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/pet_37/images/shiba_inu_173.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Siamese', 'Chihuahua', 'Pomeranian', 'Shiba_Inu', 'American_Pit_Bull_Terrier', 'Ragdoll', 'Abyssinian', 'Boxer', 'Beagle', 'Pug', 'Havanese', 'Persian', 'Keeshond', 'Yorkshire_Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:10:26] [显存监控] 已分配=16.93GB, 已保留=17.12GB, 空闲=30.48GB
+[2025-11-27 22:10:29] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-27 22:10:32] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:10:26] Processing fast-slow:  91%|█████████▏| 32/35 [01:26<00:08,  2.95s/it][2025-11-27 22:10:40] Processing fast-slow:  91%|█████████▏| 32/35 [01:26<00:08,  2.95s/it][2025-11-27 22:10:40] Processing fast-slow:  91%|█████████▏| 32/35 [01:26<00:08,  2.95s/it][2025-11-27 22:10:40] Processing fast-slow:  91%|█████████▏| 32/35 [01:26<00:08,  2.95s/it][2025-11-27 22:10:40] Processing fast-slow: 100%|██████████| 35/35 [01:26<00:00,  1.93s/it][2025-11-27 22:10:40] Processing fast-slow: 100%|██████████| 35/35 [01:26<00:00,  2.46s/it]
+[2025-11-27 22:10:35] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-27 22:10:38] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Shiba Inu (置信度: 0.8500)
+总耗时: 14.54秒
+succ. pred cate:Shiba Inu, true cate:Shiba, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/pet_37/images/staffordshire_bull_terrier_152.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: American_Pit_Bull_Terrier (置信度: 0.2300)
+总耗时: 0.04秒
+failed. pred cate:American_Pit_Bull_Terrier, true cate:Staffordshire, used_slow:False, confidence:0.2300
+开始分类图像: ./datasets/pet_37/images/wheaten_terrier_168.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Wheaten_Terrier (置信度: 0.3513)
+总耗时: 0.04秒
+succ. pred cate:Wheaten_Terrier, true cate:Wheaten, used_slow:False, confidence:0.3513
+开始分类图像: ./datasets/pet_37/images/yorkshire_terrier_147.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Yorkshire_Terrier (置信度: 0.5635)
+总耗时: 0.04秒
+succ. pred cate:Yorkshire_Terrier, true cate:Yorkshire, used_slow:False, confidence:0.5635
+✅ 正确预测总数: 30
+  - 其中仅快思考正确: 23
+  - 其中慢思考触发且正确: 7
+❌ 错误预测总数: 5
+📊 慢思考触发数量: 8
+[fast and slow] 总体准确率: 0.8571 (30/35)
+[fast and slow] 快思考准确率: 0.8519
+[fast and slow] 慢思考触发比例: 0.2286
+[fast and slow] 慢思考准确率: 0.8750
+✓ 分类结果已保存到: ./experiments/pet37/classify/classify_result.json
+  总样本数: 35
+📁 分类结果已保存到: ./experiments/pet37/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 22:10:40 ===
+=== Total Runtime: 0小时 3分 28.97秒 ===
+
+[2025-11-27 22:10:41] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:10:44] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:10:47] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:10:50] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:10:53] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:10:56] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:10:59] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:02] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:05] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:08] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:11] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:14] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:17] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:20] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:23] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+[2025-11-27 22:11:26] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB

@@ -28,18 +28,92 @@ import hashlib
 from collections import defaultdict
 import numpy as np
 import yaml
-import subprocess
 import sys
+import subprocess
 
 import pprint
 import time
 
+# Import the extract_from_trainsets module
+from data.extract_from_trainsets import load_train_data, extract_discovery_set, save_discovery_set
+
 test_data_true_random =True # 测试集采样是否实现真随机，每次运行结果都不一样
+randomly_extract_discoverying_set=True #控制是否从训练集中随机抽取图片来创建发现集，而不是直接加载发现集
 DEBUG = False  # 设置调试模式为关闭状态
 
 # 全局数据集配置
 DATASET_CONFIG = None
 CURRENT_DATASET = None
+
+def get_or_create_discovery_set(cfg, folder_suffix=''):
+    """
+    获取或创建发现集，根据randomly_extract_discoverying_set标志决定模式
+    
+    Args:
+        cfg: 配置字典
+        folder_suffix: 后缀（如 '_1', '_2', '_random'）
+    
+    Returns:
+        DATA_DISCOVERY object
+    """
+    global randomly_extract_discoverying_set
+    dataset_name = cfg['dataset_name']
+    
+    if randomly_extract_discoverying_set:
+        # 从训练集随机抽取模式
+        print(f"🔄 从训练集随机抽取发现集 (模式: {folder_suffix})")
+        
+        # 解析folder_suffix确定抽取数量
+        if folder_suffix == '_random':
+            num_per_category = 'random'
+            output_suffix = 'random'
+        else:
+            try:
+                # 从 '_k' 格式中提取k值
+                num_per_category = int(folder_suffix[1:])  # 去掉下划线
+                output_suffix = folder_suffix[1:]  # 去掉下划线
+            except (ValueError, IndexError):
+                print(f"⚠️ 无法解析后缀 '{folder_suffix}'，使用默认值1")
+                num_per_category = 1
+                output_suffix = '1'
+        
+        # 加载训练数据
+        try:
+            train_data = load_train_data(dataset_name)
+            print(f"✓ 加载训练数据: {len(train_data)} 个类别")
+        except Exception as e:
+            print(f"❌ 加载训练数据失败: {e}")
+            print("🔄 回退到使用现有发现集")
+            randomly_extract_discoverying_set = False
+            return DATA_DISCOVERY[dataset_name](cfg, folder_suffix=folder_suffix)
+        
+        # 抽取发现集
+        try:
+            discovery_data = extract_discovery_set(train_data, num_per_category, cfg.get('seed', 42))
+            
+            # 保存发现集到临时文件
+            temp_suffix = f"_temp_{output_suffix}"
+            output_path = save_discovery_set(discovery_data, dataset_name, temp_suffix)
+            print(f"✓ 临时发现集已保存到: {output_path}")
+            
+            # 创建基于JSON的Discovery对象
+            from data.json_discovery import JSONDiscovery
+            json_discovery = JSONDiscovery(output_path, dataset_name)
+            
+            print(f"✓ 创建JSON发现集对象: {len(json_discovery.subcat_to_sample)} 个类别")
+            return json_discovery
+            
+        except Exception as e:
+            print(f"❌ 从训练集抽取发现集失败: {e}")
+            print("🔄 回退到使用现有发现集")
+            randomly_extract_discoverying_set = False
+            return DATA_DISCOVERY[dataset_name](cfg, folder_suffix=folder_suffix)
+    
+    else:
+        # 使用现有发现集模式
+        print(f"📁 使用现有发现集 (后缀: {folder_suffix})")
+        return DATA_DISCOVERY[dataset_name](cfg, folder_suffix=folder_suffix)
+
 
 def check_and_generate_json_files(dataset_name):
     """
@@ -767,7 +841,7 @@ if __name__ == "__main__":
         )
             
         # 加载训练样本
-        data_discovery = DATA_DISCOVERY[cfg['dataset_name']](cfg, folder_suffix=expt_id_suffix)
+        data_discovery = get_or_create_discovery_set(cfg, folder_suffix=expt_id_suffix)
         train_samples = defaultdict(list)
         # {"Chihuaha": "./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", "Poodle": "./datasets/dogs_120/images_discovery_all_3/001.Poodle_000000.jpg", ...}
         for name, path in data_discovery.subcat_to_sample.items():
