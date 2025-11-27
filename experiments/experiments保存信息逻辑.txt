@@ -18,26 +18,34 @@ discovery_data_true_random=True # 发现集采样是否实现真随机，每次�
 ./experiments/[dataset]/result目录结构：
 ├──discovering_extract_knowledge_base/ # 从训练集中随机抽取构建发现集 时候知识库随机抽取训练集图片构建发现集时产生的json文件保存目录
     ├──true_randomness/ # 采用真随机方式随机选取
-       └──images_discovery_all_*.json # 1-shot发现集构建知识库
+       └──images_discovery_all_*.json # k-shot发现集构建知识库,如images_discovery_all_1.json是1-shot发现集构建知识库，k可以从1到10，images_discovery_all_random.json是随机发现集(服从zipf分布)构建知识库
     └──pseudorandom/ # 采用伪随机方式随机选取
+       └──images_discovery_all_*.json # k-shot发现集构建知识库,如images_discovery_all_1.json是1-shot发现集构建知识库，k可以从1到10，images_discovery_all_random.json是随机发现集(服从zipf分布)构建知识库
 ├──discovering_extract_fast_slow/ # 测试时从发现集进行采用，且从训练集中随机抽取构建发现集 时候后续分类的保存位置
     ├──true_randomness/ # 采用真随机方式随机选取
+       └──images_discovery_all_*.json # k-shot发现集构建知识库,如images_discovery_all_1.json是1-shot发现集构建知识库，k可以从1到10，images_discovery_all_random.json是随机发现集(服从zipf分布)构建知识库
     └──pseudorandom/ # 采用伪随机方式随机选取
-└──test_extract_fast_slow/ # 测试时从测试集采样时 json文件保存目录
+       └──images_discovery_all_*.json # k-shot发现集构建知识库,如images_discovery_all_1.json是1-shot发现集构建知识库，k可以从1到10，images_discovery_all_random.json是随机发现集(服从zipf分布)构建知识库
+├──test_extract_fast_slow/ # 测试时从测试集采样时 json文件保存目录
     ├──true_randomness/ # 采用真随机方式随机选取
+       └──test_*/ # 如抽取 1% 的数据时，命名为 test_1.json，抽取 100% 时，命名为 test_100.json。
     └──pseudorandom/ # 采用伪随机方式随机选取
+       └──test_*/ # 如抽取 1% 的数据时，命名为 test_1.json，抽取 100% 时，命名为 test_100.json。
+└──classify_result/ # 分类结果保存位置
+    └──classify_result.json # 分类结果保存文件
 
 
-
+如果存在重复路径且同名的json文件，需要先删除后创建
 知识库和分类抽取逻辑：
 知识库构建与后续分类的随机抽取是独立的。
-如果采用真随机方式随机选取：
-知识库随机抽取的 JSON 文件保存在 ./experiments/[dataset]/result/discovering_extract_knowledge_base/ 目录下。
-后续分类随机抽取的 JSON 文件保存在 ./experiments/[dataset]/result/discovering_fast_slow/images_discovery_all_*.json 目录下。
-对于4-shot发现集构建知识库，用1-shot发现集测试，只需生成 images_discovery_all_1.json，其他不需要创建。
+如果采用真随机方式进行随机选取，知识库随机抽取的 JSON 文件会保存在 ./experiments/[dataset]/result/discovering_extract_knowledge_base/true_randomness/ 目录下，
+后续分类随机抽取的 JSON 文件则保存在 ./experiments/[dataset]/result/discovering_extract_fast_slow/true_randomness/images_discovery_all_*.json 目录下。
+对于 4-shot 发现集构建知识库时，如果用 1-shot 发现集进行测试，构建时候只需生成 images_discovery_all_4.json，测试时候只需生成images_discovery_all_1.json，其他的 JSON 文件无需创建。
+如果采用真随机方式进行随机选取，知识库随机抽取的 JSON 文件会保存在 ./experiments/[dataset]/result/discovering_extract_knowledge_base/pseudorandom/ 目录下，
+后续分类随机抽取的 JSON 文件则保存在 ./experiments/[dataset]/result/discovering_extract_fast_slow/pseudorandom/images_discovery_all_*.json 目录下，类似真随机方式创建json文件。
 
-后续分类过程的随机抽取保存：
-后续分类过程采用真随机测试集方式时（test_data_true_random 在 discovering.py 中设置为 True），需要保存类似 JSON 的文件：
-JSON 文件保存在 ./experiments/[dataset]/result/test_data_true_randomness/test_*.json，其中 * 代表抽取比例。例如，抽取1%时命名为 test_1.json，抽取100%时命名为 test_100.json。
-伪随机情况时（test_data_true_random 在 discovering.py 中设置为 False），也需要保存 JSON 文件：
-文件保存在 ./experiments/[dataset]/result/test_data_true_pseudorandom/test_*.json。
+在后续分类过程中，如果采用真随机方式从测试集中进行抽取（即 test_data_true_random 在 discovering.py 中设置为 True），则需要保存类似 JSON 格式的文件，
+这些文件将保存在 ./experiments/[dataset]/result/test_extract_fast_slow/true_randomness/test_*.json 目录中，其中 * 代表不同的抽取比例。
+例如，抽取 1% 的数据时，命名为 test_1.json，抽取 100% 时，命名为 test_100.json。
+如果采用伪随机方式进行测试集抽取（即 test_data_true_random 在 discovering.py 中设置为 False），
+则相应的 JSON 文件将保存在 ./experiments/[dataset]/result/test_extract_fast_slow/pseudorandom/test_*.json 目录下。

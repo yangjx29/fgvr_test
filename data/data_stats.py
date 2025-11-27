@@ -2486,3 +2486,12 @@ BIRDSNAP_STATS = {
         "Blue-headed Vireo"
     ]
 }
+
+IMAGENET_1K_STATS = {
+    "num_classes": 1000,
+    "superclass": ["object"],
+    "class_names": [
+        "tench", "goldfish", "great_white_shark", "tiger_shark", "hammerhead", 
+        "electric_ray", "stingray", "cock", "hen", "ostrich"
+    ] + [f"class_{i}" for i in range(10, 1000)]
+}

@@ -27,7 +27,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k
 
 选项:
     --gpu GPU_ID            GPU编号
@@ -228,14 +228,16 @@ case "${DATASET}" in
         DATASET_DIR="SUN397"
         ;;
     "imagenet_a")
-        DATASET_NUM="200"
+        DATASET_NAME="imagenet_a200"
         CONFIG_FILE="imagenet_a200_all.yml"
-        DATASET_DIR="ImageNet_A"
         ;;
     "imagenet_r")
-        DATASET_NUM="200"
+        DATASET_NAME="imagenet_r200"
         CONFIG_FILE="imagenet_r200_all.yml"
-        DATASET_DIR="ImageNet_R"
+        ;;
+    "imagenet_1k")
+        DATASET_NAME="imagenet_1k"
+        CONFIG_FILE="imagenet_1k_all.yml"
         ;;
     "birdsnap")
         DATASET_NUM="500"
@@ -244,7 +246,7 @@ case "${DATASET}" in
         ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, birdsnap"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap"
         exit 1
         ;;
 esac
@@ -253,7 +255,8 @@ esac
 # 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
 # deepfashion_multimodal 使用 deepfashion_multimodal23 作为实验目录名
 # sun397 使用 sun397 作为实验目录名（已包含编号）
-if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ]; then
+# imagenet_1k 使用 imagenet_1k 作为实验目录名（已包含编号）
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ] || [ "${DATASET}" = "imagenet_1k" ]; then
     EXPERIMENT_DIR="${DATASET}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"

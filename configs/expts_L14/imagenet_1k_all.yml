@@ -1,0 +1,45 @@
+# ImageNet-1K 数据集配置文件 (ViT-L/14版本)
+# 包含1000个类别的完整ImageNet数据集，使用大型ViT模型
+
+# 数据集基本信息
+dataset:
+  name: "imagenet_1k"  # 数据集名称
+  num_classes: 1000     # 类别数量
+  superclass: "object"  # 超类名称
+
+# 数据路径配置
+data:
+  data_dir: "./datasets/ImageNet_1k"
+  expt_dir: "./experiments/imagenet_1k"
+  
+# 训练配置 (针对ViT-L/14优化)
+training:
+  batch_size: 16        # 较小批次大小适应大模型
+  learning_rate: 0.0001 # 较小学习率
+  epochs: 50           # 较少训练轮数
+  optimizer: "adam"
+  warmup_epochs: 5     # 预热轮数
+  
+# 模型配置
+model:
+  name: "ViT-L/14"
+  pretrained: true
+  num_classes: 1000
+  hidden_size: 1024
+  num_heads: 16
+  num_layers: 24
+  
+# 知识库配置
+knowledge_base:
+  discovery_set: "images_discovery_all_3"
+  test_set: "images_test"
+  
+# 验证配置
+validation:
+  val_split: 0.1
+  metrics: ["accuracy", "top5_accuracy"]
+  
+# 内存优化配置
+memory:
+  gradient_checkpointing: true
+  mixed_precision: true

@@ -212,21 +212,30 @@ def extract_discovery_set(train_data: List[List], num_per_category: Union[int, s
     
     return discovery_data
 
-def ensure_output_directory(dataset_name: str, extract_type: str = 'knowledge_base') -> str:
-    """确保输出目录存在"""
+def ensure_output_directory(dataset_name: str, extract_type: str = 'knowledge_base', use_true_random: bool = True) -> str:
+    """确保输出目录存在，根据逻辑文档构建目录结构"""
     dataset_info = get_dataset_info(dataset_name)
     
+    # 根据抽取类型确定基础目录
     if extract_type == 'knowledge_base':
-        output_dir = os.path.join(dataset_info['experiment_dir_full'], 'result', 'discovering_extract_knowledge_base')
+        base_dir = os.path.join(dataset_info['experiment_dir_full'], 'result', 'discovering_extract_knowledge_base')
     elif extract_type == 'fast_slow':
-        output_dir = os.path.join(dataset_info['experiment_dir_full'], 'result', 'discovering_fast_slow')
+        base_dir = os.path.join(dataset_info['experiment_dir_full'], 'result', 'discovering_extract_fast_slow')
+    elif extract_type == 'test_extract_fast_slow':
+        base_dir = os.path.join(dataset_info['experiment_dir_full'], 'result', 'test_extract_fast_slow')
     else:
         raise ValueError(f"未知的抽取类型: {extract_type}")
+    
+    # 根据随机类型选择子目录
+    if use_true_random:
+        output_dir = os.path.join(base_dir, 'true_randomness')
+    else:
+        output_dir = os.path.join(base_dir, 'pseudorandom')
     
     os.makedirs(output_dir, exist_ok=True)
     return output_dir
 
-def save_discovery_set(discovery_data: List[List], dataset_name: str, suffix: str, extract_type: str = 'knowledge_base') -> str:
+def save_discovery_set(discovery_data: List[List], dataset_name: str, suffix: str, extract_type: str = 'knowledge_base', use_true_random: bool = True) -> str:
     """
     保存发现集到JSON文件
     
@@ -234,20 +243,34 @@ def save_discovery_set(discovery_data: List[List], dataset_name: str, suffix: st
         discovery_data: 发现集数据
         dataset_name: 数据集名称
         suffix: 文件后缀（如 '_k', '_random'）
-        extract_type: 抽取类型 ('knowledge_base' 或 'fast_slow')
+        extract_type: 抽取类型 ('knowledge_base', 'fast_slow' 或 'test_extract_fast_slow')
+        use_true_random: 是否使用真随机（影响子目录选择）
     
     Returns:
         保存的文件路径
     """
-    output_dir = ensure_output_directory(dataset_name, extract_type)
+    output_dir = ensure_output_directory(dataset_name, extract_type, use_true_random)
     
     # 生成文件名
-    if suffix.startswith('_'):
-        filename = f"images_discovery_all{suffix}.json"
+    if extract_type == 'test_extract_fast_slow':
+        # 测试集抽取使用不同的命名规则
+        if suffix.startswith('_'):
+            filename = f"test{suffix}.json"
+        else:
+            filename = f"test_{suffix}.json"
     else:
-        filename = f"images_discovery_all_{suffix}.json"
+        # 发现集抽取命名规则
+        if suffix.startswith('_'):
+            filename = f"images_discovery_all{suffix}.json"
+        else:
+            filename = f"images_discovery_all_{suffix}.json"
     
     output_path = os.path.join(output_dir, filename)
+    
+    # 如果文件已存在，先删除（根据逻辑文档要求）
+    if os.path.exists(output_path):
+        print(f"⚠️ 文件已存在，删除旧文件: {output_path}")
+        os.remove(output_path)
     
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(discovery_data, f, indent=2, ensure_ascii=False)
@@ -303,17 +326,22 @@ def extract_and_save_discovery_set(dataset_name: str, num_per_category: Union[in
         num_per_category: 每类抽取数量或'random'
         random_seed: 随机种子，None表示真随机
         output_suffix: 输出文件后缀
-        extract_type: 抽取类型 ('knowledge_base' 或 'fast_slow')
+        extract_type: 抽取类型 ('knowledge_base', 'fast_slow' 或 'test_extract_fast_slow')
     
     Returns:
         JSONDiscovery对象
     """
     print(f"🔄 开始抽取发现集: {dataset_name}, 每类{num_per_category}个样本, 类型: {extract_type}")
     
-    if random_seed is None:
+    # 判断是否为真随机
+    use_true_random = (random_seed is None)
+    
+    if use_true_random:
         print(f"🎲 真随机模式: 每次运行结果不同")
+        random_type = "true_randomness"
     else:
         print(f"🔒 固定种子模式: seed={random_seed}")
+        random_type = "pseudorandom"
     
     # 加载训练数据
     train_data = load_train_data(dataset_name)
@@ -324,8 +352,9 @@ def extract_and_save_discovery_set(dataset_name: str, num_per_category: Union[in
     print(f"✓ 抽取发现集: {len(discovery_data)} 个类别")
     
     # 保存发现集
-    output_path = save_discovery_set(discovery_data, dataset_name, output_suffix, extract_type)
+    output_path = save_discovery_set(discovery_data, dataset_name, output_suffix or str(num_per_category), extract_type, use_true_random)
     print(f"✓ 发现集已保存到: {output_path}")
+    print(f"✓ 保存位置: {random_type} 子目录")
     
     # 验证JSON文件
     if not validate_json_file(output_path):
@@ -352,8 +381,8 @@ def main():
     parser.add_argument('--output_suffix', type=str, default=None,
                         help='输出文件后缀，默认根据num_per_category生成')
     parser.add_argument('--extract_type', type=str, default='knowledge_base',
-                        choices=['knowledge_base', 'fast_slow'],
-                        help='抽取类型: knowledge_base(知识库构建) 或 fast_slow(快慢测试)')
+                        choices=['knowledge_base', 'fast_slow', 'test_extract_fast_slow'],
+                        help='抽取类型: knowledge_base(知识库构建), fast_slow(快慢测试) 或 test_extract_fast_slow(测试集抽取)')
     parser.add_argument('--validate_only', action='store_true', 
                         help='仅验证现有JSON文件')
     
@@ -361,12 +390,22 @@ def main():
     
     if args.validate_only:
         # 仅验证模式
-        output_dir = ensure_output_directory(args.dataset, args.extract_type)
+        use_true_random = (args.seed is None)
+        output_dir = ensure_output_directory(args.dataset, args.extract_type, use_true_random)
         suffix = args.output_suffix if args.output_suffix else args.num_per_category
-        if suffix.startswith('_'):
-            filename = f"images_discovery_all{suffix}.json"
+        
+        if args.extract_type == 'test_extract_fast_slow':
+            # 测试集抽取命名规则
+            if suffix.startswith('_'):
+                filename = f"test{suffix}.json"
+            else:
+                filename = f"test_{suffix}.json"
         else:
-            filename = f"images_discovery_all_{suffix}.json"
+            # 发现集抽取命名规则
+            if suffix.startswith('_'):
+                filename = f"images_discovery_all{suffix}.json"
+            else:
+                filename = f"images_discovery_all_{suffix}.json"
         
         json_path = os.path.join(output_dir, filename)
         if validate_json_file(json_path):

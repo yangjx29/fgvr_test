@@ -103,6 +103,10 @@ def modify_paths_in_json(data, dataset_name):
             # Path format: images/Class_Name/image.jpg (class names normalized with underscores)
             # Keep as is since it's already in correct format
             pass
+        elif dataset_name == 'imagenet_1k':
+            # imagenet_1k: paths are already in correct format (train/nXXXXXX/filename.jpg)
+            # No path modification needed, just add the dataset prefix
+            pass
         
         # Convert to full path relative to current working directory
         modified_path = f"./datasets/{dataset_name}/{path}"

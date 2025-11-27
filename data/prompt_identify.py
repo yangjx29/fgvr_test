@@ -1,3 +1,27 @@
+imagenet_1k_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of a [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example about what are the useful attributes for distinguishing object categories in a photo. 
+You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of a [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<object categories>
+The useful attributes for distinguishing object categories in a photo of an object:
+['shape', 'size', 'color', 'texture', 'pattern', 'parts', 'material', 'pose', 'context', 'background',
+'shading', 'edges', 'contours', 'symmetry', 'orientation', 'position', 'proportion', 'detail_level',
+'functionality', 'species_features', 'brand_features', 'age_condition', 'lighting_condition']
+===
+
+===
+<[__SUPERCLASS__] categories>
+The useful attributes for distinguishing [__SUPERCLASS__] categories in a photo of a [__SUPERCLASS__]:
+===
+"""
+
+
 bird_how_to = f"""
 Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] species in a photo of a [__SUPERCLASS__].
 
@@ -471,4 +495,5 @@ prompts_howto = {
     "imagenet_a": imagenet_a_how_to,
     "imagenet_r": imagenet_r_how_to,
     "birdsnap": birdsnap_how_to,
+    "imagenet_1k": imagenet_1k_how_to,
 }

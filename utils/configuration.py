@@ -106,6 +106,10 @@ def setup_config(config_file_env: str, config_file_expt: str):
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "ImageNet_R")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "imagenet_r200")  # 设置实验目录
         mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "imagenet_1k":  # 如果是ImageNet-1K数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "ImageNet_1k")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "imagenet_1k")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
     elif cfg_expt['dataset_name'] == "birdsnap":  # 如果是BirdSnap数据集
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "birdsnap")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "birdsnap500")  # 设置实验目录

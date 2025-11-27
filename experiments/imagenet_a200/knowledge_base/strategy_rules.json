@@ -1,0 +1,64 @@
+[
+    [
+        {
+            "rule": "Verify the presence of specific features such as a beak, tail, or distinctive markings before making a fine-grained classification decision.",
+            "failure_pattern": "The model incorrectly predicted 'bald eagle' instead of 'vulture' due to the similarity in dark coloration and overall silhouette.",
+            "applicability_signals": "This rule should be recalled when the object has a dark coloration and an overall silhouette but lacks distinct features that could help distinguish between species.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/ImageNet_A/images/n01616318/0.000431_parking meter _ billiard table_0.4461653.jpg"
+            ],
+            "labels": [
+                "vulture"
+            ],
+            "root_cause": "The model did not differentiate well between the dark plumage and robust build of a bald eagle and a vulture, leading to a misclassification.",
+            "source_reasoning": "1. The coarse category identified is \"bird\" due to the shape and posture of the object in the image.\n2. The most discriminative local parts include the dark coloration, the overall silhouette, and the lack of visible features like a beak or tail that would suggest a specific type of bird.\n3. Comparing the visual characteristics of the candidate subcategories, the dark coloration and the overall silhouette align most closely with the description of a vulture, particularly the bald eagle, given its dark plumage and robust build.\n4. Based on the match between the observed details and the subcategory descriptions, the most likely class is \"bald eagle.\"",
+            "normalized": "verify the presence of specific features such as a beak tail or distinctive markings before making a fine grained classification decision",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the highest similarity score against the most discriminative local parts before making a prediction.",
+            "failure_pattern": "The model incorrectly predicted 'mantis' instead of 'green iguana', despite the high similarity score for 'green iguana'.",
+            "applicability_signals": "Whenever the highest similarity score is close to the next highest score, especially when dealing with visually similar classes.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/ImageNet_A/images/n01677366/0.001038_spider web _ spider web_0.96226186.jpg"
+            ],
+            "labels": [
+                "green iguana"
+            ],
+            "root_cause": "The model's confidence in the 'green iguana' class was slightly lower than the 'mantis' class, leading to a misclassification.",
+            "source_reasoning": "1. **Observation**: The image shows a reptile perched on a cactus. The reptile has a robust body, a long tail, and a pattern of bony plates covering its skin, which are characteristic features of a green iguana.\n2. **Localization**: The most discriminative local parts include the bony plates on the skin, the robust body shape, and the long tail. These features align closely with the description of a green iguana.\n3. **Comparison**: The visual characteristics of the candidate subcategories include:\n   - **Mantis**: Typically has a more slender body and is not covered in bony plates.\n   - **Green Iguana**: Matches the observed features of a robust body, long tail, and bony plates.\n   - **Garter Snake**: Not applicable as it is a snake, not a reptile.\n   - **Broom**: Not applicable as it is an object, not a living organism.\n   - **Cottontail Rabbit**: Not applicable as it is a mammal, not a reptile.\n4. **Decision**: Based on the match between the observed details and the subcategory descriptions, the most likely class is \"green iguana\".",
+            "normalized": "verify the highest similarity score against the most discriminative local parts before making a prediction",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Prioritize the identification of key discriminative features over similarity scores when making fine-grained recognition decisions.",
+            "failure_pattern": "The model incorrectly identified 'newt' as the most likely class due to overlooking the robust body, broad snout, and sharp teeth, which are characteristic of an American alligator.",
+            "applicability_signals": "This rule should be recalled whenever the model faces difficulty in distinguishing between closely related classes based on visual features.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/ImageNet_A/images/n01698640/0.011741_armadillo _ armadillo_0.96005046.jpg"
+            ],
+            "labels": [
+                "American alligator"
+            ],
+            "root_cause": "The model's similarity scores were close between 'American alligator' and 'green iguana', leading to confusion in distinguishing between them based on the visual evidence provided.",
+            "source_reasoning": "1. **Observation**: The object in the image appears to be a reptile, specifically a large one given its size and the context of being held by a person. The texture of the skin and the shape of the head suggest it is not a snake but rather a crocodilian.\n   \n2. **Localization**: The most discriminative local parts include the robust, elongated body, the broad, flattened snout, and the powerful jaws with visible sharp teeth. These features are characteristic of crocodilians.\n\n3. **Comparison**: Comparing these observations with the category descriptions:\n   - **American alligator**: The robust body, broad snout, and visible sharp teeth align well with the observed features.\n   - **Garter snake**: Snakes do not have a broad snout or sharp teeth; they have a slender body.\n   - **Green iguana**: While iguanas have a broad snout, they are typically smaller and lack the robust body and sharp teeth seen here.\n   - **Chameleon**: Chameleons have a unique tongue and a different body structure, which does not match the image.\n   - **Newt**: Newts are amphibians and do not have the physical characteristics of the object in",
+            "normalized": "prioritize the identification of key discriminative features over similarity scores when making fine grained recognition decisions",
+            "failure_patterns": [],
+            "id": "R3",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
+    ]
+]

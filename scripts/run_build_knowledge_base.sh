@@ -28,7 +28,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, birdsnap
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap
                             如不指定，使用config.yaml中的配置
 
 选项:
@@ -229,6 +229,11 @@ case "${DATASET}" in
         CONFIG_FILE="imagenet_r200_all.yml"
         DATASET_DIR="ImageNet_R"
         ;;
+    "imagenet_1k")
+        DATASET_NUM="1000"
+        CONFIG_FILE="imagenet_1k_all.yml"
+        DATASET_DIR="ImageNet_1k"
+        ;;
     "birdsnap")
         DATASET_NUM="500"
         CONFIG_FILE="birdsnap500_all.yml"
@@ -236,7 +241,7 @@ case "${DATASET}" in
         ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, birdsnap"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap"
         exit 1
         ;;
 esac
@@ -245,7 +250,8 @@ esac
 # 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
 # deepfashion_multimodal 使用 deepfashion_multimodal23 作为实验目录名
 # sun397 使用 sun397 作为实验目录名（已包含编号）
-if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ]; then
+# imagenet_1k 使用 imagenet_1k 作为实验目录名（已包含编号）
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ] || [ "${DATASET}" = "imagenet_1k" ]; then
     EXPERIMENT_DIR="${DATASET}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"

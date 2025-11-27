@@ -14,7 +14,9 @@ def save_classification_result(
     dataset_name: str,
     experiment_dir: str,
     results: List[Dict],
-    metadata: Optional[Dict] = None
+    metadata: Optional[Dict] = None,
+    test_data_type: Optional[str] = None,
+    test_percentage: Optional[float] = None
 ) -> str:
     """
     保存分类结果到指定目录
@@ -30,24 +32,49 @@ def save_classification_result(
             5. slow_result: 慢思考分类结果（可选）
             6. image_path: 测试图片路径（相对路径）
         metadata: 元数据（如准确率、总样本数等）
+        test_data_type: 测试数据类型 ('discovery' 或 'test')
+        test_percentage: 测试集采样百分比（仅当test_data_type='test'时有效）
         
     Returns:
         保存的文件路径
     """
-    # 创建保存目录
-    save_dir = os.path.join(experiment_dir, 'classify')
-    os.makedirs(save_dir, exist_ok=True)
+    # 创建保存目录 - 按照逻辑文档移到result目录下
+    result_dir = os.path.join(experiment_dir, 'result', 'classify_result')
+    os.makedirs(result_dir, exist_ok=True)
     
     # 构建保存文件路径
-    save_path = os.path.join(save_dir, 'classify_result.json')
+    save_path = os.path.join(result_dir, 'classify_result.json')
     
-    # 准备保存的数据
+    # 如果文件已存在，先删除（根据逻辑文档要求）
+    if os.path.exists(save_path):
+        print(f"⚠️ 文件已存在，删除旧文件: {save_path}")
+        os.remove(save_path)
+    
+    # 准备保存的数据 - 按is_correct重新组织为树状结构
+    false_results = [r for r in results if not r.get('is_correct', False)]
+    true_results = [r for r in results if r.get('is_correct', False)]
+    
+    # 构建测试集信息
+    test_info = {}
+    if test_data_type:
+        test_info['type'] = test_data_type
+        if test_data_type == 'test' and test_percentage is not None:
+            test_info['sampling_percentage'] = test_percentage
+        elif test_data_type == 'discovery':
+            test_info['description'] = 'Discovery set with fixed samples per class'
+    
     save_data = {
         'dataset': dataset_name,
         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'total_samples': len(results),
+        'false_count': len(false_results),
+        'true_count': len(true_results),
+        'test_info': test_info,
         'metadata': metadata or {},
-        'results': results
+        'results': {
+            'false': false_results,
+            'true': true_results
+        }
     }
     
     # 保存到文件
@@ -56,6 +83,12 @@ def save_classification_result(
     
     print(f"✓ 分类结果已保存到: {save_path}")
     print(f"  总样本数: {len(results)}")
+    print(f"  错误分类: {len(false_results)} 个")
+    print(f"  正确分类: {len(true_results)} 个")
+    if test_info:
+        print(f"  测试集类型: {test_info.get('type', 'unknown')}")
+        if test_info.get('type') == 'test' and 'sampling_percentage' in test_info:
+            print(f"  采样百分比: {test_info['sampling_percentage']}%")
     
     return save_path
 

@@ -433,143 +433,13 @@ def prepare_test_samples(cfg, args):
     return dict(test_samples)
 
 
-def cint2cname(label: int, cname_sheet: list):
-    """将类别整数索引转换为类别名称"""
-    return cname_sheet[label]
-
-
-def extract_superidentify(cfg, individual_results):
-    """从个体识别结果中提取超类识别结果"""
-    words = []  # 初始化单词列表
-    for v in individual_results.values():  # 遍历所有个体识别结果
-        this_word = v.split(' ')[-1]  # 取最后一个单词作为类别标识
-        words.append(this_word.lower())  # 转换为小写并添加到列表
-    word_counts = Counter(words)  # 统计每个单词的出现次数
-    # print(f"extract_superidentify 中每个单词出现次数: {word_counts}")
-    if cfg['dataset_name'] == 'pet':  # 如果是宠物数据集
-        return [super_name for super_name, _ in word_counts.most_common(2)]  # 返回出现次数最多的2个超类
-    else:  # 其他数据集
-        return [super_name for super_name, _ in word_counts.most_common(1)]  # 返回出现次数最多的1个超类
-
-
-
-def extract_python_list(text):
-    """从文本中提取Python列表格式的内容"""
-    pattern = r"\[(.*?)\]"  # 定义匹配方括号内容的正则表达式
-    matches = re.findall(pattern, text)  # 查找所有匹配的内容
-    return matches  # 返回匹配结果列表
-
-
-def trim_result2json(raw_reply: str):
-    """
-    the raw_answer is a dirty output from LLM following our template.
-    this function helps to extract the target JSON content contained in the
-    output.
-    """
-    # 从LLM的原始输出中提取JSON格式的内容
-    if raw_reply.find("Output JSON:") >= 0:  # 如果包含"Output JSON:"标记
-        answer = raw_reply.split("Output JSON:")[1].strip()  # 提取标记后的内容
-    else:  # 否则直接使用原始内容
-        answer = raw_reply.strip()  # 去除首尾空白字符
-
-    if not answer.startswith('{'): answer = '{' + answer  # 如果开头不是{，则添加
-
-    if not answer.endswith('}'): answer = answer + '}'  # 如果结尾不是}，则添加
-
-    # json_answer = json.loads(answer)  # 注释掉的JSON解析代码
-    return answer  # 返回处理后的JSON字符串
-
-
-def clean_name(name: str):
-    """清理类别名称，统一格式"""
-    name = name.title() 
-    name = name.replace("-", " ")  
-    name = name.replace("'s", "") 
-    return name  
-
-
-def extract_names(gussed_names, clean=True):
-    """从猜测的名称列表中提取和清理名称"""
-    gussed_names = [name.strip() for name in gussed_names]
-    if clean:  # 如果需要清理
-        gussed_names = [clean_name(name) for name in gussed_names]  
-    gussed_names = list(set(gussed_names))  # 去重并转换为列表
-    return gussed_names  # 返回处理后的名称列表
-
-
-def how_to_distinguish(bot, prompt):
-    """询问LLM如何区分不同类别"""
-    reply = bot.infer(prompt, temperature=0.1) 
-    used_tokens = bot.get_used_tokens()  
-    print(f"llm used_tokens: {used_tokens},")
-    print(20*"=")  
-    print(reply)  #
-    print(20*"=") 
-
-    return reply  
-
-
-def load_train_samples(cfg, kshot=None):
-    """加载K-shot训练样本，返回 {category: [image_paths]}。
-    优先从 cfg['path_train_samples'] (JSON) 读取；否则从 cfg['train_root'] 目录扫描。
-    """
-    samples = {}
-    if 'path_train_samples' in cfg and os.path.exists(cfg['path_train_samples']):
-        try:
-            samples = load_json(cfg['path_train_samples'])
-        except Exception as e:
-            print(f"failed to load path_train_samples: {cfg['path_train_samples']}, err={e}")
-            samples = {}
-    elif 'train_root' in cfg and os.path.isdir(cfg['train_root']):
-        train_root = cfg['train_root']
-        valid_exts = {'.jpg', '.jpeg', '.png', '.bmp', '.webp'}
-        for cname in sorted(os.listdir(train_root)):
-            cdir = os.path.join(train_root, cname)
-            if not os.path.isdir(cdir):
-                continue
-            imgs = []
-            for fname in sorted(os.listdir(cdir)):
-                fpath = os.path.join(cdir, fname)
-                ext = os.path.splitext(fname)[1].lower()
-                if os.path.isfile(fpath) and ext in valid_exts:
-                    imgs.append(fpath)
-            if imgs:
-                samples[cname] = imgs
-    else:
-        raise FileNotFoundError("Neither cfg['path_train_samples'] nor cfg['train_root'] is valid.")
-
-    if kshot is not None:
-        trimmed = {}
-        for cat, paths in samples.items():
-            trimmed[cat] = paths[:kshot]
-        return trimmed
-    return samples
-
-
-def build_gallery(cfg, mllm_bot, captioner, retrieval, kshot=5,region_num=3, superclass=None, data_discovery=None):
-    """构建多模态类别模板库并保存到JSON(向量转list)。"""
-
-    # 读取训练样本
-    k = kshot if kshot is not None else int(str(cfg.get('k_shot', '3')))
-    # train_samples = load_train_samples(cfg, kshot=k)
-    train_samples = defaultdict(list)
-    for name, path in data_discovery.subcat_to_sample.items():
-        train_samples[name].append(path)
-    print(f"loaded train samples for {len(train_samples)} classes, kshot={k}")
-    print(f"train_samples: {train_samples}") 
-
-    # 构建模板库
-    gallery = retrieval.build_template_gallery(mllm_bot, train_samples, captioner, superclass, kshot, region_num)
-    
-    return gallery
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Discovery', formatter_class=argparse.ArgumentDefaultsHelpFormatter) 
 
     parser.add_argument('--mode',  
                         type=str, 
                         default='build_knowledge_base', 
-                        choices=['build_gallery', 'build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow'],  # 可选值列表
+                        choices=['build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow'],  # 可选值列表
                         help='operating mode for each stage')  
     parser.add_argument('--config_file_env',  
                         type=str,  
@@ -585,13 +455,6 @@ if __name__ == "__main__":
                         default='3',  
                         choices=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'random'], 
                         )
-    # build_gallery 相关
-    parser.add_argument('--kshot', type=int, default=None, help='shots per class when building gallery (override cfg)')
-    parser.add_argument('--region_num', type=int, default=None, help='region selelct per class when building gallery (override cfg)')
-    parser.add_argument('--superclass', type=str, default=None, help='superclass for CDV prompts (override cfg)')
-    parser.add_argument('--gallery_out', type=str, default=None, help='path to save built gallery json')
-    parser.add_argument('--fusion_method', type=str, default='concat', help='fusion method')
-    
     # 快慢思考系统相关参数
     parser.add_argument('--knowledge_base_dir', type=str, default='./knowledge_base', help='knowledge base directory')
     parser.add_argument('--query_image', type=str, default=None, help='query image path for classification')
@@ -686,7 +549,6 @@ if __name__ == "__main__":
             model_tag=cfg['model_size_mllm'],
             model_name=cfg['model_size_mllm'],
             device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
-            device_id=cfg.get('device_id', 0),
             cfg=cfg,
             dataset_info=CURRENT_DATASET
         )
@@ -1019,11 +881,18 @@ if __name__ == "__main__":
                     'slow_trigger_ratio': slow_trigger_ratio,
                     'slow_trigger_acc': slow_trigger_acc
                 }
+                
+                # 确定测试数据类型和采样信息
+                test_data_type = 'test' if args.use_test_data else 'discovery'
+                test_percentage = args.test_percentage if args.use_test_data else None
+                
                 save_path = save_classification_result(
                     dataset_name=dataset_key,
                     experiment_dir=experiment_dir,
                     results=classification_results,
-                    metadata=metadata
+                    metadata=metadata,
+                    test_data_type=test_data_type,
+                    test_percentage=test_percentage
                 )
                 print(f"📁 分类结果已保存到: {save_path}")
             else:
