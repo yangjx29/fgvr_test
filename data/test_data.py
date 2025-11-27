@@ -31,6 +31,7 @@ DATASET_TEST_PATHS = {
     'sun397': 'SUN397/images_test',
     'imagenet_a200': 'ImageNet_A/images_test',
     'imagenet_r200': 'ImageNet_R/images_test',
+    'birdsnap500': 'birdsnap/images_test',
 }
 
 

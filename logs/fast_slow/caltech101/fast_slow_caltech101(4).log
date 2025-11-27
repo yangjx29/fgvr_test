@@ -1,0 +1,2452 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+Dataset: caltech101 (num_classes=101)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/caltech101/knowledge_base  # 知识库目录
+Results Out: ./results/caltech101_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/caltech101_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/caltech101/fast_slow_caltech101(4).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: caltech101 (caltech101)
+类别数: 101
+实验目录: ./experiments/caltech101
+✅ JSON文件检查通过: ./experiments/caltech101/images_split
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-11-27 03:49:36 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/caltech101_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/caltech101/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/caltech101_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 10.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/caltech101',
+ 'dataset_name': 'caltech101',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/caltech101',
+ 'expt_dir_describe': './experiments/caltech101/describe',
+ 'expt_dir_gallery': './experiments/caltech101/gallery',
+ 'expt_dir_grouping': './experiments/caltech101/grouping',
+ 'expt_dir_guess': './experiments/caltech101/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 101,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/caltech101/gallery/caltech101_image_descriptions_attn',
+ 'path_identify_answers': './experiments/caltech101/identify',
+ 'path_llm_gussed_names': './experiments/caltech101/guess/caltech101_llm_gussed_names',
+ 'path_llm_prompts': './experiments/caltech101/describe/caltech101_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/caltech101/guess/caltech101_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/caltech101/guess/caltech101_llm_replies_raw',
+ 'path_references': './experiments/caltech101/gallery/caltech101_image_references',
+ 'path_regions': './experiments/caltech101/gallery/caltech101_image_regions',
+ 'path_vqa_answers': './experiments/caltech101/describe/caltech101_attributes_pairs',
+ 'path_vqa_questions': './experiments/caltech101/describe/caltech101_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "caltech101",
+    "num_classes": 101,
+    "config_file": "caltech101_all.yml",
+    "data_dir": "caltech101",
+    "experiment_dir": "caltech101",
+    "stats_file": "caltech101/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/caltech101/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/caltech101"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.07s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.22s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.27s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.28s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.03s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.12s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 03:49:43
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/caltech101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/caltech101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 510 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 03:49:55
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x728f9cd20a30>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x728f9cd208b0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/caltech101/knowledge_base
+使用数据集: caltech101, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 03:49:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/caltech101/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/caltech101/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/caltech101/knowledge_base 加载
+图像知识库类别数: 100
+文本知识库类别数: 100
+类别描述数: 100
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x728f9cd208b0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x728f9cd20a00>
+📦 数据集信息: {'full_name': 'caltech101', 'num_classes': 101, 'config_file': 'caltech101_all.yml', 'data_dir': 'caltech101', 'experiment_dir': 'caltech101', 'stats_file': 'caltech101/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/caltech101/knowledge_base/stats.json', 'experiment_dir_full': './experiments/caltech101'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/caltech101/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: caltech101
+数据集根目录: ./datasets
+测试百分比: 10.0%
+说明: 使用完整测试集的 10.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/caltech101/images_split/images_test.json
+  类别数量: 102
+  总图像数: 2737
+  平均每类: 26.8 张
+  图像范围: 9 - 240 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 273 张图像，覆盖 84 个类别
+  平均每类: 3.2 张
+======================================================================
+test sample keys: ['Faces', 'cougar_face', 'water_lilly', 'headphone', 'dolphin']...
+[fast and slow] 测试数据集包含 84 个类别
+  0%|          | 0/84 [00:00<?, ?it/s][2025-11-27 03:49:55] Processing fast-slow:   0%|          | 0/84 [00:00<?, ?it/s]开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0087.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0087.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Headphone', 'Dalmatian', 'Cougar Face', 'Brontosaurus', 'Flamingo Head', 'Stop Sign', 'Cougar Body', 'Platypus', 'Snoopy', 'Crocodile', 'Faces', 'Sunflower', 'Scissors', 'Anchor', 'Tick', 'Octopus', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:49:58] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:01] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: Human Face (置信度: 0.9500)
+总耗时: 8.14秒
+succ. pred cate:Human Face, true cate:Faces, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0207.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8196)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.8196
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0216.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8795)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.8795
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0413.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0413.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Yin Yang', 'Faces', 'Laptop', 'Crocodile', 'Panda', 'Wild Cat', 'Bonsai', 'Tick', 'Pigeon', 'Dolphin', 'Crayfish', 'Rhino', 'Scissors', 'Crocodile Head', 'Elephant', 'Crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:04] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-27 03:50:07] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:10] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.9500)
+总耗时: 8.68秒
+succ. pred cate:Faces, true cate:Faces, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0094.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.7148)
+总耗时: 0.03秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.7148
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0060.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.9087)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.9087
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0372.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.9007)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.9007
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0286.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.2619)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.2619
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0113.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0113.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Tick', 'Faces', 'Hedgehog', 'Panda', 'Pigeon', 'Crocodile', 'Pyramid', 'Dalmatian', 'Dolphin', 'Barrel', 'Cougar Face', 'Sunflower', 'Ant', 'Crayfish', 'Stop Sign']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:13] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-27 03:50:16] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:19] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.8500)
+总耗时: 8.84秒
+succ. pred cate:Faces, true cate:Faces, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0410.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0410.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Tick', 'Faces', 'Yin Yang', 'Laptop', 'Leopards', 'Crocodile', 'Dalmatian', 'Panda', 'Crayfish', 'Crab', 'Scissors', 'Rhino', 'Wild Cat', 'Gerenuk', 'Elephant']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:22] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:25] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-27 03:50:28] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.8500)
+总耗时: 8.54秒
+succ. pred cate:Faces, true cate:Faces, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0232.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8699)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.8699
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0024.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8852)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces, used_slow:False, confidence:0.8852
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0107.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces/image_0107.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Laptop', 'Headphone', 'Camera', 'Stapler', 'Accordion', 'Dollar Bill', 'Wrench', 'Grand Piano', 'Yin Yang', 'Dalmatian', 'Anchor', 'Stop Sign', 'Cellphone', 'Minaret', 'Ceiling Fan', 'Bass']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:31] [显存监控] 已分配=16.95GB, 已保留=17.70GB, 空闲=30.45GB
+[2025-11-27 03:49:55] Processing fast-slow:   1%|          | 1/84 [00:39<54:30, 39.40s/it][2025-11-27 03:50:35] Processing fast-slow:   1%|          | 1/84 [00:39<54:30, 39.40s/it][2025-11-27 03:50:35] Processing fast-slow:   1%|          | 1/84 [00:39<54:30, 39.40s/it][2025-11-27 03:50:35] Processing fast-slow:   1%|          | 1/84 [00:39<54:30, 39.40s/it][2025-11-27 03:50:35] Processing fast-slow:   1%|          | 1/84 [00:39<54:30, 39.40s/it][2025-11-27 03:50:35] Processing fast-slow:   6%|▌         | 5/84 [00:39<07:45,  5.90s/it][2025-11-27 03:50:35] Processing fast-slow:   6%|▌         | 5/84 [00:39<07:45,  5.90s/it][2025-11-27 03:50:42] Processing fast-slow:   6%|▌         | 5/84 [00:46<07:45,  5.90s/it][2025-11-27 03:50:42] Processing fast-slow:   6%|▌         | 5/84 [00:46<07:45,  5.90s/it][2025-11-27 03:50:42] Processing fast-slow:   6%|▌         | 5/84 [00:46<07:45,  5.90s/it][2025-11-27 03:50:42] Processing fast-slow:   6%|▌         | 5/84 [00:50<07:45,  5.90s/it][2025-11-27 03:50:42] Processing fast-slow:  11%|█         | 9/84 [00:50<05:08,  4.11s/it][2025-11-27 03:50:45] Processing fast-slow:  11%|█         | 9/84 [00:50<05:08,  4.11s/it][2025-11-27 03:50:34] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1590)
+总耗时: 5.04秒
+succ. pred cate:Faces, true cate:Faces, used_slow:True, confidence:0.1590
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cougar_face/image_0010.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cougar Body (置信度: 0.4397)
+总耗时: 0.02秒
+succ. pred cate:Cougar Body, true cate:cougar_face, used_slow:False, confidence:0.4397
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cougar_face/image_0024.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cougar Body (置信度: 0.5779)
+总耗时: 0.02秒
+succ. pred cate:Cougar Body, true cate:cougar_face, used_slow:False, confidence:0.5779
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cougar_face/image_0002.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cougar Body (置信度: 0.4455)
+总耗时: 0.01秒
+succ. pred cate:Cougar Body, true cate:cougar_face, used_slow:False, confidence:0.4455
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/water_lilly/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Water Lilly (置信度: 0.7359)
+总耗时: 0.02秒
+succ. pred cate:Water Lilly, true cate:water_lilly, used_slow:False, confidence:0.7359
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/headphone/image_0014.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Headphone (置信度: 0.8726)
+总耗时: 0.01秒
+succ. pred cate:Headphone, true cate:headphone, used_slow:False, confidence:0.8726
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dolphin/image_0041.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dolphin (置信度: 0.8215)
+总耗时: 0.02秒
+succ. pred cate:Dolphin, true cate:dolphin, used_slow:False, confidence:0.8215
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dolphin/image_0012.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dolphin (置信度: 0.7110)
+总耗时: 0.02秒
+succ. pred cate:Dolphin, true cate:dolphin, used_slow:False, confidence:0.7110
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dolphin/image_0047.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dolphin (置信度: 0.5927)
+总耗时: 0.02秒
+succ. pred cate:Dolphin, true cate:dolphin, used_slow:False, confidence:0.5927
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ant/image_0033.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ant (置信度: 0.4417)
+总耗时: 0.01秒
+succ. pred cate:Ant, true cate:ant, used_slow:False, confidence:0.4417
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ant/image_0027.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Tick (置信度: 0.2995)
+总耗时: 0.02秒
+failed. pred cate:Tick, true cate:ant, used_slow:False, confidence:0.2995
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ant/image_0010.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/ant/image_0010.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Scorpion', 'Ant', 'Dragonfly', 'Cannon', 'Crab', 'Trilobite', 'Tick', 'Crayfish', 'Lobster', 'Menorah', 'Anchor', 'Octopus', 'Mayfly', 'Stegosaurus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:50:37] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:50:40] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Ant (置信度: 0.9500)
+总耗时: 7.03秒
+succ. pred cate:Ant, true cate:ant, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/kangaroo/image_0015.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Kangaroo (置信度: 0.6774)
+总耗时: 0.02秒
+succ. pred cate:Kangaroo, true cate:kangaroo, used_slow:False, confidence:0.6774
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/kangaroo/image_0074.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Kangaroo (置信度: 0.6817)
+总耗时: 0.02秒
+succ. pred cate:Kangaroo, true cate:kangaroo, used_slow:False, confidence:0.6817
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ferry/image_0028.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ferry (置信度: 0.8326)
+总耗时: 0.02秒
+succ. pred cate:Ferry, true cate:ferry, used_slow:False, confidence:0.8326
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/helicopter/image_0080.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/helicopter/image_0080.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Anchor', 'Airplanes', 'Dragonfly', 'Cannon', 'Grand Piano', 'Gramophone', 'Euphonium', 'Scorpion', 'Electric Guitar', 'Minaret', 'Ewer', 'Buddha', 'Wrench', 'Cougar Face', 'Revolver']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:50:43] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+分类完成: Helicopter (置信度: 0.1317)
+总耗时: 3.43秒
+succ. pred cate:Helicopter, true cate:helicopter, used_slow:True, confidence:0.1317
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/helicopter/image_0053.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Helicopter (置信度: 0.7223)
+总耗时: 0.02秒
+succ. pred cate:Helicopter, true cate:helicopter, used_slow:False, confidence:0.7223
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/helicopter/image_0039.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Helicopter (置信度: 0.9020)
+总耗时: 0.02秒
+succ. pred cate:Helicopter, true cate:helicopter, used_slow:False, confidence:0.9020
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Pagoda', 'Ferry', 'Minaret', 'Anchor', 'Stop Sign', 'Grand Piano', 'Panda', 'Dalmatian', 'Bonsai', 'Car Side', 'Crocodile', 'Crocodile Head', 'Dolphin', 'Elephant']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:46] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+[2025-11-27 03:50:49] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:50:52] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-27 03:50:55] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: Minaret (置信度: 0.8500)
+总耗时: 10.14秒
+failed. pred cate:Minaret, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0007.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0007.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Soccer Ball', 'Barrel', 'Yin Yang', 'Cannon', 'Snoopy', 'Metronome', 'Stegosaurus', 'Lamp', 'Wheelchair', 'Grand Piano', 'Chair', 'Sunflower', 'Anchor', 'Car Side', 'Ceiling Fan', 'Gramophone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:50:58] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:01] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Touch Screen (置信度: 0.8500)
+总耗时: 8.40秒
+failed. pred cate:Touch Screen, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0121.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0121.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Sunflower', 'Tick', 'Trilobite', 'Water Lilly', 'Brain', 'Soccer Ball', 'Dollar Bill', 'Yin Yang', 'Crocodile', 'Octopus', 'Buddha', 'Dragonfly', 'Rooster', 'Nautilus', 'Minaret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 03:51:04] [显存监控] 已分配=16.97GB, 已保留=17.31GB, 空闲=30.43GB
+[2025-11-27 03:51:07] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1263)
+总耗时: 4.18秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1263
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0054.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0054.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Crab', 'Accordion', 'Wheelchair', 'Lobster', 'Helicopter', 'Camera', 'Grand Piano', 'Crayfish', 'Electric Guitar', 'Octopus', 'Stapler', 'Binocular', 'Wrench', 'Anchor', 'Laptop', 'Barrel', 'Trilobite', 'Ceiling Fan', 'Brain', 'Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:10] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-27 03:51:13] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+模糊匹配类别修正: 'Hoist Casing' -> 'Stop Sign'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:16] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Casting Measurement Gauge (置信度: 0.9500)
+总耗时: 9.98秒
+failed. pred cate:Casting Measurement Gauge, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0340.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0340.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Dolphin', 'Trilobite', 'Grand Piano', 'Anchor', 'Barrel', 'Platypus', 'Beaver', 'Crayfish', 'Cannon', 'Ketch', 'Minaret', 'Hawksbill', 'Dragonfly', 'Octopus', 'Pagoda', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:19] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Surfboard' -> 'Sunflower'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:22] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Kayak (置信度: 0.8000)
+总耗时: 6.97秒
+failed. pred cate:Kayak, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0425.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0425.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cannon', 'Barrel', 'Euphonium', 'Umbrella', 'Minaret', 'Binocular', 'Stop Sign', 'Lamp', 'Yin Yang', 'Camera', 'Anchor', 'Joshua Tree', 'Crocodile', 'Ceiling Fan', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:25] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-27 03:51:28] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Cannon (置信度: 0.1862)
+总耗时: 5.71秒
+failed. pred cate:Cannon, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1862
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0220.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0220.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Beaver', 'Garfield', 'Accordion', 'Euphonium', 'Bonsai', 'Pyramid', 'Cannon', 'Schooner', 'Barrel', 'Pigeon', 'Brontosaurus', 'Panda', 'Snoopy', 'Cup', 'Rooster', 'Crocodile Head', 'Cougar Face', 'Sunflower', 'Octopus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:31] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+[2025-11-27 03:51:34] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:37] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-27 03:51:40] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Beaver (置信度: 0.8500)
+总耗时: 10.97秒
+failed. pred cate:Beaver, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0399.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0399.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Headphone', 'Watch', 'Bonsai', 'Laptop', 'Ibis', 'Menorah', 'Octopus', 'Ceiling Fan', 'Elephant', 'Euphonium', 'Cellphone', 'Stapler', 'Wrench', 'Anchor', 'Metronome', 'Binocular']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:43] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+模糊匹配类别修正: '[Laptop]' -> 'Laptop'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:46] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: none of the categories listed (置信度: 0.0000)
+总耗时: 6.54秒
+failed. pred cate:none of the categories listed, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0292.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0292.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bonsai', 'Joshua Tree', 'Pigeon', 'Lobster', 'Dragonfly', 'Crab', 'Inline Skate', 'Scorpion', 'Hedgehog', 'Ibis', 'Sunflower', 'Water Lilly', 'Lotus', 'Flamingo Head', 'Yin Yang', 'Snoopy', 'Pagoda', 'Minaret', 'Cup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:49] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-27 03:51:52] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:51:55] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 03:51:58] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Hiking Boots (置信度: 0.8000)
+总耗时: 10.52秒
+succ. pred cate:Hiking Boots, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0273.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0273.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Cannon', 'Leopards', 'Crayfish', 'Ketch', 'Euphonium', 'Scorpion', 'Stegosaurus', 'Brontosaurus', 'Yin Yang', 'Joshua Tree', 'Windsor Chair', 'Trilobite', 'Minaret', 'Pagoda', 'Pyramid', 'Metronome']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (3481x2955)，缩小到 (1680x1426) 以节省显存
+推理前显存: 已分配=16.93GB, 已保留=17.22GB, 剩余=30.47GB
+[2025-11-27 03:52:01] [显存监控] 已分配=17.31GB, 已保留=38.23GB, 空闲=30.09GB
+[2025-11-27 03:52:04] [显存监控] 已分配=17.31GB, 已保留=38.23GB, 空闲=30.09GB
+[2025-11-27 03:52:07] [显存监控] 已分配=17.31GB, 已保留=38.23GB, 空闲=30.09GB
+[2025-11-27 03:52:10] [显存监控] 已分配=17.13GB, 已保留=38.24GB, 空闲=30.27GB
+推理后显存: 已分配=16.91GB, 已保留=38.24GB, 剩余=30.50GB
+模糊匹配类别修正: 'Map' -> 'Lamp'
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (3481x2955)，缩小到 (1680x1426) 以节省显存
+推理前显存: 已分配=16.93GB, 已保留=17.15GB, 剩余=30.47GB
+[2025-11-27 03:52:13] [显存监控] 已分配=17.31GB, 已保留=38.23GB, 空闲=30.09GB
+[2025-11-27 03:52:16] [显存监控] 已分配=17.31GB, 已保留=38.23GB, 空闲=30.09GB
+[2025-11-27 03:52:19] [显存监控] 已分配=16.99GB, 已保留=38.23GB, 空闲=30.41GB
+[2025-11-27 03:52:22] [显存监控] 已分配=17.12GB, 已保留=38.23GB, 空闲=30.28GB
+推理后显存: 已分配=16.91GB, 已保留=38.23GB, 剩余=30.50GB
+分类完成: Map (置信度: 0.9500)
+总耗时: 26.02秒
+failed. pred cate:Map, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0056.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0056.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Barrel', 'Inline Skate', 'Saxophone', 'Accordion', 'Dalmatian', 'Faces', 'Anchor', 'Leopards', 'Cannon', 'Octopus', 'Trilobite', 'Wrench', 'Dragonfly', 'Brain', 'Pagoda', 'Euphonium', 'Minaret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:25] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:28] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-27 03:52:31] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.8500)
+总耗时: 6.77秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0105.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0105.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Inline Skate', 'Ceiling Fan', 'Euphonium', 'Wrench', 'Saxophone', 'Umbrella', 'Lamp', 'Airplanes', 'Grand Piano', 'Anchor', 'Dragonfly', 'Binocular', 'Minaret', 'Cellphone', 'Stapler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:34] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:37] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Inline Skate (置信度: 0.8500)
+总耗时: 7.67秒
+failed. pred cate:Inline Skate, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0465.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0465.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Wild Cat', 'Cougar Body', 'Garfield', 'Faces', 'Leopards', 'Dalmatian', 'Dolphin', 'Scorpion', 'Accordion', 'Camera', 'Cougar Face', 'Kangaroo', 'Hedgehog', 'Panda', 'Llama', 'Elephant', 'Beaver']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:40] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Cats' -> 'Ant'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 03:50:45] Processing fast-slow:  12%|█▏        | 10/84 [02:51<28:43, 23.29s/it][2025-11-27 03:52:46] Processing fast-slow:  12%|█▏        | 10/84 [02:51<28:43, 23.29s/it][2025-11-27 03:52:46] Processing fast-slow:  12%|█▏        | 10/84 [02:51<28:43, 23.29s/it][2025-11-27 03:52:46] Processing fast-slow:  12%|█▏        | 10/84 [02:51<28:43, 23.29s/it]推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:43] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+[2025-11-27 03:52:46] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Domestic Cat (置信度: 0.9500)
+总耗时: 7.28秒
+failed. pred cate:Domestic Cat, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0350.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Camera (置信度: 0.4934)
+总耗时: 0.02秒
+failed. pred cate:Camera, true cate:BACKGROUND_Google, used_slow:False, confidence:0.4934
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/barrel/image_0015.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Barrel (置信度: 0.7220)
+总耗时: 0.02秒
+succ. pred cate:Barrel, true cate:barrel, used_slow:False, confidence:0.7220
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/barrel/image_0028.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Barrel (置信度: 0.6828)
+总耗时: 0.01秒
+succ. pred cate:Barrel, true cate:barrel, used_slow:False, confidence:0.6828
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/schooner/image_0003.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Schooner (置信度: 0.5739)
+总耗时: 0.01秒
+succ. pred cate:Schooner, true cate:schooner, used_slow:False, confidence:0.5739
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/schooner/image_0013.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Schooner (置信度: 0.7182)
+总耗时: 0.01秒
+succ. pred cate:Schooner, true cate:schooner, used_slow:False, confidence:0.7182
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/schooner/image_0056.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Schooner (置信度: 0.5933)
+总耗时: 0.02秒
+succ. pred cate:Schooner, true cate:schooner, used_slow:False, confidence:0.5933
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0117.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.7249)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.7249
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0762.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.7824)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.7824
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0382.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6075)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6075
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0064.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.4616)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.4616
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0520.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.5734)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.5734
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0407.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6588)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6588
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0476.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.5065)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.5065
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0283.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.7724)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.7724
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0516.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8214)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8214
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0469.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8450)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8450
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0021.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8876)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8876
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0282.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.5847)
+总耗时: 0.02秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.5847
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0033.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.4790)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.4790
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0446.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6853)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6853
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0249.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8674)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8674
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0222.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8245)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8245
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0344.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6941)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6941
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0588.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.7814)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.7814
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0179.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.5425)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.5425
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0050.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6025)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6025
+[2025-11-27 03:52:46] Processing fast-slow:  15%|█▌        | 13/84 [02:51<16:16, 13.75s/it][2025-11-27 03:52:47] Processing fast-slow:  15%|█▌        | 13/84 [02:51<16:16, 13.75s/it][2025-11-27 03:52:47] Processing fast-slow:  15%|█▌        | 13/84 [02:51<16:16, 13.75s/it][2025-11-27 03:52:47] Processing fast-slow:  18%|█▊        | 15/84 [02:51<11:22,  9.89s/it][2025-11-27 03:52:47] Processing fast-slow:  18%|█▊        | 15/84 [02:51<11:22,  9.89s/it]开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0207.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.9002)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.9002
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0497.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8156)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8156
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0084.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6631)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6631
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0591.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.7359)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.7359
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0558.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.5244)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.5244
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0740.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6722)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6722
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0321.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8910)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8910
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0183.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.6022)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.6022
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Motorbikes/image_0433.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Motorbikes (置信度: 0.8621)
+总耗时: 0.01秒
+succ. pred cate:Motorbikes, true cate:Motorbikes, used_slow:False, confidence:0.8621
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chandelier/image_0069.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chandelier (置信度: 0.7917)
+总耗时: 0.02秒
+succ. pred cate:Chandelier, true cate:chandelier, used_slow:False, confidence:0.7917
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chandelier/image_0053.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Menorah (置信度: 0.4580)
+总耗时: 0.02秒
+failed. pred cate:Menorah, true cate:chandelier, used_slow:False, confidence:0.4580
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chandelier/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chandelier (置信度: 0.2832)
+总耗时: 0.01秒
+succ. pred cate:Chandelier, true cate:chandelier, used_slow:False, confidence:0.2832
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chandelier/image_0034.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chandelier (置信度: 0.7166)
+总耗时: 0.01秒
+succ. pred cate:Chandelier, true cate:chandelier, used_slow:False, confidence:0.7166
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chandelier/image_0070.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chandelier (置信度: 0.6604)
+总耗时: 0.01秒
+succ. pred cate:Chandelier, true cate:chandelier, used_slow:False, confidence:0.6604
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/butterfly/image_0068.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Butterfly (置信度: 0.7626)
+总耗时: 0.02秒
+succ. pred cate:Butterfly, true cate:butterfly, used_slow:False, confidence:0.7626
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/butterfly/image_0006.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Butterfly (置信度: 0.6258)
+总耗时: 0.01秒
+succ. pred cate:Butterfly, true cate:butterfly, used_slow:False, confidence:0.6258
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0050.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Watch (置信度: 0.7476)
+总耗时: 0.02秒
+succ. pred cate:Watch, true cate:watch, used_slow:False, confidence:0.7476
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0235.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0235.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Watch', 'Camera', 'Cannon', 'Euphonium', 'Wrench', 'Anchor', 'Barrel', 'Nautilus', 'Menorah', 'Water Lilly', 'Trilobite', 'Binocular', 'Minaret', 'Crocodile Head', 'Crocodile']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:49] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+分类完成: Watch (置信度: 0.1609)
+总耗时: 3.91秒
+succ. pred cate:Watch, true cate:watch, used_slow:True, confidence:0.1609
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0204.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Watch (置信度: 0.7676)
+总耗时: 0.02秒
+succ. pred cate:Watch, true cate:watch, used_slow:False, confidence:0.7676
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0211.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Watch (置信度: 0.7113)
+总耗时: 0.01秒
+succ. pred cate:Watch, true cate:watch, used_slow:False, confidence:0.7113
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0103.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Watch (置信度: 0.4740)
+总耗时: 0.02秒
+succ. pred cate:Watch, true cate:watch, used_slow:False, confidence:0.4740
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0109.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0109.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Starfish', 'Watch', 'Crocodile Head', 'Nautilus', 'Crab', 'Hawksbill', 'Dolphin', 'Euphonium', 'Platypus', 'Flamingo Head', 'Anchor', 'Strawberry', 'Lamp', 'Dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:52] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:52:55] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 03:52:58] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Watch (置信度: 0.9000)
+总耗时: 8.01秒
+succ. pred cate:Watch, true cate:watch, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0013.jpg
+执行快思考...[2025-11-27 03:52:59] Processing fast-slow:  18%|█▊        | 15/84 [03:03<11:22,  9.89s/it][2025-11-27 03:52:59] Processing fast-slow:  18%|█▊        | 15/84 [03:10<11:22,  9.89s/it]
+快思考结果确定，直接返回...
+分类完成: Watch (置信度: 0.3862)
+总耗时: 0.02秒
+succ. pred cate:Watch, true cate:watch, used_slow:False, confidence:0.3862
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/watch/image_0190.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Watch (置信度: 0.7482)
+总耗时: 0.02秒
+succ. pred cate:Watch, true cate:watch, used_slow:False, confidence:0.7482
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0200.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0200.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Car Side', 'Helicopter', 'Airplanes', 'Saxophone', 'Faces', 'Camera', 'Pigeon', 'Dragonfly', 'Dolphin', 'Grand Piano', 'Ferry', 'Ketch', 'Schooner', 'Leopards', 'Crocodile', 'Minaret', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:01] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:04] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 03:53:07] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9000)
+总耗时: 8.41秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0137.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0137.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Car Side', 'Helicopter', 'Euphonium', 'Umbrella', 'Accordion', 'Rooster', 'Snoopy', 'Camera', 'Beaver', 'Ferry', 'Ketch', 'Schooner', 'Minaret', 'Cellphone', 'Motorbikes']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:10] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+模糊匹配类别修正: 'Airplane' -> 'Airplanes'
+分类完成: Airplanes (置信度: 0.1419)
+总耗时: 4.60秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1419
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0248.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Helicopter (置信度: 0.2702)
+总耗时: 0.02秒
+failed. pred cate:Helicopter, true cate:airplanes, used_slow:False, confidence:0.2702
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0634.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0634.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Euphonium', 'Airplanes', 'Accordion', 'Saxophone', 'Helicopter', 'Snoopy', 'Pigeon', 'Car Side', 'Dolphin', 'Faces', 'Ferry', 'Ketch', 'Schooner', 'Crocodile', 'Wrench', 'Minaret', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:13] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 03:53:16] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:19] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.9500)
+总耗时: 8.80秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0690.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0690.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Car Side', 'Bonsai', 'Helicopter', 'Euphonium', 'Pigeon', 'Yin Yang', 'Menorah', 'Water Lilly', 'Grand Piano', 'Ferry', 'Ketch', 'Schooner', 'Gerenuk', 'Crocodile Head', 'Minaret', 'Crocodile']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:22] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.1375)
+总耗时: 4.01秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1375
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0656.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0656.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Airplanes', 'Butterfly', 'Ferry', 'Snoopy', 'Car Side', 'Saxophone', 'Beaver', 'Euphonium', 'Electric Guitar', 'Ketch', 'Schooner', 'Crocodile Head', 'Minaret', 'Ceiling Fan', 'Dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:25] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+[2025-11-27 03:53:28] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:31] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.16秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0797.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0797.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Airplanes', 'Car Side', 'Euphonium', 'Umbrella', 'Grand Piano', 'Bonsai', 'Ibis', 'Menorah', 'Faces', 'Ferry', 'Ketch', 'Schooner', 'Gerenuk', 'Minaret', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:34] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:37] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-27 03:53:40] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.42秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0037.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Airplanes (置信度: 0.4948)
+总耗时: 0.02秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:False, confidence:0.4948
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0459.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0459.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Airplanes', 'Car Side', 'Umbrella', 'Snoopy', 'Camera', 'Saxophone', 'Yin Yang', 'Grand Piano', 'Accordion', 'Ferry', 'Minaret', 'Ketch', 'Schooner', 'Crocodile', 'Crocodile Head', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:43] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:46] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-27 03:53:49] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.22秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0597.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0597.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Car Side', 'Pigeon', 'Yin Yang', 'Helicopter', 'Snoopy', 'Bonsai', 'Euphonium', 'Laptop', 'Camera', 'Ferry', 'Ketch', 'Schooner', 'Wrench', 'Minaret', 'Crocodile']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:52] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.1099)
+总耗时: 4.46秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1099
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0482.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0482.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Airplanes', 'Saxophone', 'Car Side', 'Snoopy', 'Garfield', 'Euphonium', 'Butterfly', 'Electric Guitar', 'Pigeon', 'Ferry', 'Ketch', 'Minaret', 'Motorbikes', 'Crocodile', 'Schooner', 'Leopards']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:53:55] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-27 03:53:58] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:01] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 9.02秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0467.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0467.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Car Side', 'Helicopter', 'Airplanes', 'Snoopy', 'Camera', 'Yin Yang', 'Faces', 'Pigeon', 'Dolphin', 'Umbrella', 'Ferry', 'Ketch', 'Schooner', 'Crocodile', 'Leopards', 'Minaret', 'Gerenuk']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:04] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:07] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 03:54:10] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9000)
+总耗时: 7.67秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0589.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0589.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Euphonium', 'Airplanes', 'Helicopter', 'Pigeon', 'Car Side', 'Accordion', 'Yin Yang', 'Snoopy', 'Saxophone', 'Dolphin', 'Ferry', 'Schooner', 'Ketch', 'Wrench', 'Soccer Ball', 'Grand Piano', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:13] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:16] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-27 03:54:19] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.78秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0542.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0542.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Car Side', 'Helicopter', 'Airplanes', 'Camera', 'Umbrella', 'Snoopy', 'Bonsai', 'Pigeon', 'Saxophone', 'Euphonium', 'Ferry', 'Ketch', 'Schooner', 'Leopards', 'Crocodile', 'Minaret', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:22] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:25] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.03秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0711.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+[2025-11-27 03:52:59] Processing fast-slow:  20%|██        | 17/84 [05:10<30:01, 26.89s/it][2025-11-27 03:55:05] Processing fast-slow:  20%|██        | 17/84 [05:10<30:01, 26.89s/it]开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0711.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Umbrella', 'Helicopter', 'Car Side', 'Euphonium', 'Kangaroo', 'Faces', 'Pigeon', 'Bonsai', 'Saxophone', 'Dolphin', 'Airplanes', 'Ferry', 'Ketch', 'Cellphone', 'Minaret', 'Wrench', 'Gerenuk', 'Motorbikes', 'Leopards']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:28] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-27 03:54:31] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:34] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.88秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0115.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Airplanes (置信度: 0.4401)
+总耗时: 0.02秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:False, confidence:0.4401
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0088.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Airplanes (置信度: 0.5629)
+总耗时: 0.02秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:False, confidence:0.5629
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0306.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0306.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Car Side', 'Airplanes', 'Camera', 'Snoopy', 'Euphonium', 'Saxophone', 'Pigeon', 'Yin Yang', 'Faces', 'Ferry', 'Ketch', 'Rhino', 'Minaret', 'Schooner', 'Crocodile', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:37] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-27 03:54:40] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:43] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.08秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0087.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Airplanes (置信度: 0.5809)
+总耗时: 0.02秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:False, confidence:0.5809
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0015.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0015.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Airplanes', 'Snoopy', 'Car Side', 'Ferry', 'Dalmatian', 'Bonsai', 'Ceiling Fan', 'Wild Cat', 'Electric Guitar', 'Ketch', 'Schooner', 'Motorbikes', 'Crocodile Head', 'Crocodile']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:46] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:49] [显存监控] 已分配=16.93GB, 已保留=17.36GB, 空闲=30.47GB
+[2025-11-27 03:54:52] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.9500)
+总耗时: 8.07秒
+succ. pred cate:Airplane, true cate:airplanes, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0582.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0582.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Bonsai', 'Car Side', 'Euphonium', 'Pigeon', 'Grand Piano', 'Menorah', 'Pyramid', 'Laptop', 'Yin Yang', 'Helicopter', 'Ferry', 'Ketch', 'Schooner', 'Wrench', 'Minaret', 'Motorbikes', 'Gerenuk']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:55] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.1380)
+总耗时: 4.19秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1380
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0448.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0448.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Helicopter', 'Motorbikes', 'Wild Cat', 'Cannon', 'Car Side', 'Panda', 'Pigeon', 'Pyramid', 'Electric Guitar', 'Crocodile Head', 'Crocodile', 'Dolphin', 'Gerenuk', 'Minaret', 'Revolver', 'Rhino']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:54:58] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.1483)
+总耗时: 4.17秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1483
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0447.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Airplanes (置信度: 0.3097)
+总耗时: 0.02秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:False, confidence:0.3097
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0769.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/airplanes/image_0769.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Airplanes', 'Car Side', 'Helicopter', 'Saxophone', 'Umbrella', 'Rooster', 'Snoopy', 'Electric Guitar', 'Dolphin', 'Euphonium', 'Ferry', 'Ketch', 'Minaret', 'Schooner', 'Headphone', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:01] [显存监控] 已分配=16.93GB, 已保留=17.21GB, 空闲=30.47GB
+[2025-11-27 03:55:04] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+模糊匹配类别修正: 'Airplane' -> 'Airplanes'
+分类完成: Airplanes (置信度: 0.1174)
+总耗时: 4.07秒
+succ. pred cate:Airplanes, true cate:airplanes, used_slow:True, confidence:0.1174
+[2025-11-27 03:55:05] Processing fast-slow:  20%|██        | 17/84 [05:10<30:01, 26.89s/it][2025-11-27 03:55:05] Processing fast-slow:  23%|██▎       | 19/84 [05:10<20:40, 19.09s/it][2025-11-27 03:55:05] Processing fast-slow:  23%|██▎       | 19/84 [05:10<20:40, 19.09s/it][2025-11-27 03:55:05] Processing fast-slow:  23%|██▎       | 19/84 [05:10<20:40, 19.09s/it][2025-11-27 03:55:05] Processing fast-slow:  25%|██▌       | 21/84 [05:17<15:14, 14.52s/it][2025-11-27 03:55:12] Processing fast-slow:  25%|██▌       | 21/84 [05:17<15:14, 14.52s/it][2025-11-27 03:55:12] Processing fast-slow:  25%|██▌       | 21/84 [05:17<15:14, 14.52s/it][2025-11-27 03:55:12] Processing fast-slow:  25%|██▌       | 21/84 [05:17<15:14, 14.52s/it]开始分类图像: ./datasets/caltech101/101_ObjectCategories/saxophone/image_0013.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Saxophone (置信度: 0.3644)
+总耗时: 0.02秒
+succ. pred cate:Saxophone, true cate:saxophone, used_slow:False, confidence:0.3644
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/saxophone/image_0028.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Saxophone (置信度: 0.4152)
+总耗时: 0.02秒
+succ. pred cate:Saxophone, true cate:saxophone, used_slow:False, confidence:0.4152
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0077.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.8915)
+总耗时: 0.01秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.8915
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0073.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.8945)
+总耗时: 0.01秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.8945
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0060.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.7660)
+总耗时: 0.01秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.7660
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0016.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.6740)
+总耗时: 0.02秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.6740
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0069.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.6413)
+总耗时: 0.01秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.6413
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0036.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.7830)
+总耗时: 0.01秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.7830
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/revolver/image_0005.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Revolver (置信度: 0.8405)
+总耗时: 0.01秒
+succ. pred cate:Revolver, true cate:revolver, used_slow:False, confidence:0.8405
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/car_side/image_0115.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Car Side (置信度: 0.8221)
+总耗时: 0.01秒
+succ. pred cate:Car Side, true cate:car_side, used_slow:False, confidence:0.8221
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/car_side/image_0107.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Car Side (置信度: 0.8473)
+总耗时: 0.01秒
+succ. pred cate:Car Side, true cate:car_side, used_slow:False, confidence:0.8473
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0192.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Leopards (置信度: 0.4198)
+总耗时: 0.01秒
+succ. pred cate:Leopards, true cate:Leopards, used_slow:False, confidence:0.4198
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0069.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Leopards (置信度: 0.3115)
+总耗时: 0.01秒
+succ. pred cate:Leopards, true cate:Leopards, used_slow:False, confidence:0.3115
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0095.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Leopards (置信度: 0.3053)
+总耗时: 0.01秒
+succ. pred cate:Leopards, true cate:Leopards, used_slow:False, confidence:0.3053
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0028.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0028.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Wild Cat', 'Leopards', 'Faces', 'Cougar Body', 'Crocodile', 'Cougar Face', 'Crocodile Head', 'Hedgehog', 'Elephant', 'Dalmatian', 'Gerenuk', 'Rhino', 'Kangaroo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:07] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Wild Cat (置信度: 0.1971)
+总耗时: 3.95秒
+failed. pred cate:Wild Cat, true cate:Leopards, used_slow:True, confidence:0.1971
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0002.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0002.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Leopards', 'Wild Cat', 'Cougar Body', 'Kangaroo', 'Dalmatian', 'Faces', 'Llama', 'Gerenuk', 'Scorpion', 'Ibis', 'Rhino', 'Crocodile', 'Cougar Face', 'Crocodile Head', 'Okapi']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:10] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Leopards (置信度: 0.1722)
+总耗时: 3.00秒
+succ. pred cate:Leopards, true cate:Leopards, used_slow:True, confidence:0.1722
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Leopards/image_0043.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Leopards (置信度: 0.3211)
+总耗时: 0.02秒
+succ. pred cate:Leopards, true cate:Leopards, used_slow:False, confidence:0.3211
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/yin_yang/image_0028.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Yin Yang (置信度: 0.6258)
+总耗时: 0.02秒
+succ. pred cate:Yin Yang, true cate:yin_yang, used_slow:False, confidence:0.6258
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/yin_yang/image_0041.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Yin Yang (置信度: 0.6790)
+总耗时: 0.02秒
+succ. pred cate:Yin Yang, true cate:yin_yang, used_slow:False, confidence:0.6790
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/crab/image_0001.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Crab (置信度: 0.3883)
+总耗时: 0.02秒
+succ. pred cate:Crab, true cate:crab, used_slow:False, confidence:0.3883
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/crab/image_0058.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Crab (置信度: 0.3725)
+总耗时: 0.01秒
+succ. pred cate:Crab, true cate:crab, used_slow:False, confidence:0.3725
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ketch/image_0086.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Schooner (置信度: 0.4691)
+总耗时: 0.01秒
+succ. pred cate:Schooner, true cate:ketch, used_slow:False, confidence:0.4691
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ketch/image_0015.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ketch (置信度: 0.4179)
+总耗时: 0.01秒
+succ. pred cate:Ketch, true cate:ketch, used_slow:False, confidence:0.4179
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ketch/image_0053.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/ketch/image_0053.jpg
+[2025-11-27 03:55:12] Processing fast-slow:  29%|██▊       | 24/84 [05:26<10:06, 10.12s/it][2025-11-27 03:55:22] Processing fast-slow:  29%|██▊       | 24/84 [05:26<10:06, 10.12s/it][2025-11-27 03:55:22] Processing fast-slow:  30%|██▉       | 25/84 [05:30<08:57,  9.11s/it][2025-11-27 03:55:25] Processing fast-slow:  30%|██▉       | 25/84 [05:30<08:57,  9.11s/it][2025-11-27 03:55:25] Processing fast-slow:  31%|███       | 26/84 [05:33<07:49,  8.09s/it][2025-11-27 03:55:29] Processing fast-slow:  31%|███       | 26/84 [05:33<07:49,  8.09s/it][2025-11-27 03:55:29] Processing fast-slow:  31%|███       | 26/84 [05:33<07:49,  8.09s/it][2025-11-27 03:55:29] Processing fast-slow:  31%|███       | 26/84 [05:33<07:49,  8.09s/it][2025-11-27 03:55:29] Processing fast-slow:  35%|███▍      | 29/84 [05:33<04:11,  4.57s/it][2025-11-27 03:55:29] Processing fast-slow:  35%|███▍      | 29/84 [05:33<04:11,  4.57s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Ketch', 'Anchor', 'Ferry', 'Euphonium', 'Dolphin', 'Pyramid', 'Umbrella', 'Crab', 'Flamingo Head', 'Grand Piano', 'Hawksbill', 'Mandolin', 'Water Lilly', 'Ewer']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:13] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 03:55:16] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:19] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Ketch (置信度: 0.8500)
+总耗时: 9.26秒
+succ. pred cate:Ketch, true cate:ketch, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ketch/image_0057.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ketch (置信度: 0.4125)
+总耗时: 0.02秒
+succ. pred cate:Ketch, true cate:ketch, used_slow:False, confidence:0.4125
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/minaret/image_0017.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/minaret/image_0017.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Minaret', 'Pyramid', 'Barrel', 'Anchor', 'Cannon', 'Joshua Tree', 'Yin Yang', 'Crocodile', 'Llama', 'Bonsai', 'Pagoda', 'Sunflower', 'Octopus', 'Trilobite', 'Water Lilly', 'Flamingo Head', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:22] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-27 03:55:25] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: Minaret (置信度: 0.1526)
+总耗时: 3.63秒
+succ. pred cate:Minaret, true cate:minaret, used_slow:True, confidence:0.1526
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/minaret/image_0033.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Minaret (置信度: 0.6452)
+总耗时: 0.02秒
+succ. pred cate:Minaret, true cate:minaret, used_slow:False, confidence:0.6452
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lotus/image_0033.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Water Lilly (置信度: 0.4594)
+总耗时: 0.02秒
+failed. pred cate:Water Lilly, true cate:lotus, used_slow:False, confidence:0.4594
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lotus/image_0039.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/lotus/image_0039.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Water Lilly', 'Sunflower', 'Dragonfly', 'Cup', 'Butterfly', 'Hedgehog', 'Crab', 'Pigeon', 'Lotus', 'Stegosaurus', 'Nautilus', 'Rooster', 'Buddha', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:28] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+分类完成: Water Lilly (置信度: 0.1900)
+总耗时: 3.46秒
+failed. pred cate:Water Lilly, true cate:lotus, used_slow:True, confidence:0.1900
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lotus/image_0043.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Water Lilly (置信度: 0.6252)
+总耗时: 0.02秒
+failed. pred cate:Water Lilly, true cate:lotus, used_slow:False, confidence:0.6252
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lotus/image_0025.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Water Lilly (置信度: 0.5183)
+总耗时: 0.02秒
+failed. pred cate:Water Lilly, true cate:lotus, used_slow:False, confidence:0.5183
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/sunflower/image_0061.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Sunflower (置信度: 0.9156)
+总耗时: 0.01秒
+succ. pred cate:Sunflower, true cate:sunflower, used_slow:False, confidence:0.9156
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/sunflower/image_0071.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Sunflower (置信度: 0.7826)
+总耗时: 0.02秒
+succ. pred cate:Sunflower, true cate:sunflower, used_slow:False, confidence:0.7826
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/stop_sign/image_0010.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Stop Sign (置信度: 0.4904)
+总耗时: 0.02秒
+succ. pred cate:Stop Sign, true cate:stop_sign, used_slow:False, confidence:0.4904
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/stop_sign/image_0012.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Stop Sign (置信度: 0.9587)
+总耗时: 0.02秒
+succ. pred cate:Stop Sign, true cate:stop_sign, used_slow:False, confidence:0.9587
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/stop_sign/image_0009.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Stop Sign (置信度: 0.7273)
+总耗时: 0.02秒
+succ. pred cate:Stop Sign, true cate:stop_sign, used_slow:False, confidence:0.7273
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/bonsai/image_0079.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bonsai (置信度: 0.9261)
+总耗时: 0.02秒
+succ. pred cate:Bonsai, true cate:bonsai, used_slow:False, confidence:0.9261
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/bonsai/image_0059.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bonsai (置信度: 0.5392)
+总耗时: 0.02秒
+succ. pred cate:Bonsai, true cate:bonsai, used_slow:False, confidence:0.5392
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/bonsai/image_0032.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bonsai (置信度: 0.9824)
+总耗时: 0.02秒
+succ. pred cate:Bonsai, true cate:bonsai, used_slow:False, confidence:0.9824
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/bonsai/image_0042.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bonsai (置信度: 0.6223)
+总耗时: 0.02秒
+succ. pred cate:Bonsai, true cate:bonsai, used_slow:False, confidence:0.6223
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/bonsai/image_0021.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bonsai (置信度: 0.9637)
+总耗时: 0.02秒
+succ. pred cate:Bonsai, true cate:bonsai, used_slow:False, confidence:0.9637
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/scorpion/image_0079.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Scorpion (置信度: 0.4056)
+总耗时: 0.02秒
+succ. pred cate:Scorpion, true cate:scorpion, used_slow:False, confidence:0.4056
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/scorpion/image_0007.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Scorpion (置信度: 0.5177)
+总耗时: 0.02秒
+succ. pred cate:Scorpion, true cate:scorpion, used_slow:False, confidence:0.5177
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/scorpion/image_0078.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Crayfish (置信度: 0.2328)
+总耗时: 0.02秒
+[2025-11-27 03:55:29] Processing fast-slow:  35%|███▍      | 29/84 [05:33<04:11,  4.57s/it][2025-11-27 03:55:29] Processing fast-slow:  37%|███▋      | 31/84 [05:33<02:51,  3.24s/it][2025-11-27 03:55:29] Processing fast-slow:  37%|███▋      | 31/84 [05:33<02:51,  3.24s/it][2025-11-27 03:55:29] Processing fast-slow:  37%|███▋      | 31/84 [05:34<02:51,  3.24s/it][2025-11-27 03:55:29] Processing fast-slow:  37%|███▋      | 31/84 [05:34<02:51,  3.24s/it][2025-11-27 03:55:29] Processing fast-slow:  37%|███▋      | 31/84 [05:34<02:51,  3.24s/it][2025-11-27 03:55:29] Processing fast-slow:  42%|████▏     | 35/84 [05:34<01:27,  1.78s/it][2025-11-27 03:55:29] Processing fast-slow:  42%|████▏     | 35/84 [05:34<01:27,  1.78s/it][2025-11-27 03:55:29] Processing fast-slow:  42%|████▏     | 35/84 [05:34<01:27,  1.78s/it][2025-11-27 03:55:29] Processing fast-slow:  42%|████▏     | 35/84 [05:34<01:27,  1.78s/it][2025-11-27 03:55:29] Processing fast-slow:  42%|████▏     | 35/84 [05:50<01:27,  1.78s/it]succ. pred cate:Crayfish, true cate:scorpion, used_slow:False, confidence:0.2328
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dalmatian/image_0065.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dalmatian (置信度: 0.6849)
+总耗时: 0.02秒
+succ. pred cate:Dalmatian, true cate:dalmatian, used_slow:False, confidence:0.6849
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dalmatian/image_0028.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dalmatian (置信度: 0.8299)
+总耗时: 0.02秒
+succ. pred cate:Dalmatian, true cate:dalmatian, used_slow:False, confidence:0.8299
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dalmatian/image_0035.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dalmatian (置信度: 0.9234)
+总耗时: 0.01秒
+succ. pred cate:Dalmatian, true cate:dalmatian, used_slow:False, confidence:0.9234
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dalmatian/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dalmatian (置信度: 0.7368)
+总耗时: 0.01秒
+succ. pred cate:Dalmatian, true cate:dalmatian, used_slow:False, confidence:0.7368
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/beaver/image_0040.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Beaver (置信度: 0.4894)
+总耗时: 0.02秒
+succ. pred cate:Beaver, true cate:beaver, used_slow:False, confidence:0.4894
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/brain/image_0041.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Brain (置信度: 0.6559)
+总耗时: 0.02秒
+succ. pred cate:Brain, true cate:brain, used_slow:False, confidence:0.6559
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/brain/image_0072.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Brain (置信度: 0.7999)
+总耗时: 0.02秒
+succ. pred cate:Brain, true cate:brain, used_slow:False, confidence:0.7999
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/brain/image_0030.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Brain (置信度: 0.7905)
+总耗时: 0.02秒
+succ. pred cate:Brain, true cate:brain, used_slow:False, confidence:0.7905
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ibis/image_0064.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ibis (置信度: 0.3357)
+总耗时: 0.02秒
+succ. pred cate:Ibis, true cate:ibis, used_slow:False, confidence:0.3357
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ibis/image_0056.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ibis (置信度: 0.8484)
+总耗时: 0.02秒
+succ. pred cate:Ibis, true cate:ibis, used_slow:False, confidence:0.8484
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/umbrella/image_0027.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Umbrella (置信度: 0.3856)
+总耗时: 0.02秒
+succ. pred cate:Umbrella, true cate:umbrella, used_slow:False, confidence:0.3856
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/umbrella/image_0013.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Umbrella (置信度: 0.3487)
+总耗时: 0.02秒
+succ. pred cate:Umbrella, true cate:umbrella, used_slow:False, confidence:0.3487
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/umbrella/image_0068.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Umbrella (置信度: 0.5337)
+总耗时: 0.01秒
+succ. pred cate:Umbrella, true cate:umbrella, used_slow:False, confidence:0.5337
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/camera/image_0014.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Camera (置信度: 0.4649)
+总耗时: 0.02秒
+succ. pred cate:Camera, true cate:camera, used_slow:False, confidence:0.4649
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/camera/image_0033.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Camera (置信度: 0.5969)
+总耗时: 0.02秒
+succ. pred cate:Camera, true cate:camera, used_slow:False, confidence:0.5969
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/accordion/image_0004.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Accordion (置信度: 0.8121)
+总耗时: 0.02秒
+succ. pred cate:Accordion, true cate:accordion, used_slow:False, confidence:0.8121
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/accordion/image_0011.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Accordion (置信度: 0.6502)
+总耗时: 0.02秒
+succ. pred cate:Accordion, true cate:accordion, used_slow:False, confidence:0.6502
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/accordion/image_0001.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Accordion (置信度: 0.7495)
+总耗时: 0.02秒
+succ. pred cate:Accordion, true cate:accordion, used_slow:False, confidence:0.7495
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/accordion/image_0041.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Accordion (置信度: 0.7348)
+总耗时: 0.02秒
+succ. pred cate:Accordion, true cate:accordion, used_slow:False, confidence:0.7348
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cup/image_0008.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/cup/image_0008.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Ewer', 'Cup', 'Gramophone', 'Grand Piano', 'Euphonium', 'Bonsai', 'Accordion', 'Windsor Chair', 'Garfield', 'Water Lilly', 'Lamp', 'Chandelier', 'Chair', 'Sunflower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:31] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:34] [显存监控] 已分配=16.93GB, 已保留=17.37GB, 空闲=30.47GB
+[2025-11-27 03:55:37] [显存监控] 已分配=16.95GB, 已保留=17.37GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Cup (置信度: 0.9000)
+总耗时: 7.91秒
+succ. pred cate:Cup, true cate:cup, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cup/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ewer (置信度: 0.2315)
+总耗时: 0.02秒
+failed. pred cate:Ewer, true cate:cup, used_slow:False, confidence:0.2315
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cup/image_0045.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/cup/image_0045.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rooster', 'Pigeon', 'Flamingo Head', 'Cup', 'Ibis', 'Flamingo', 'Ewer', 'Emu', 'Garfield', 'Faces', 'Strawberry', 'Sunflower', 'Windsor Chair', 'Lamp', 'Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:40] [显存监控] 已分配=16.95GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:43] [显存监控] 已分配=16.93GB, 已保留=17.35GB, 空闲=30.47GB
+[2025-11-27 03:55:46] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+[2025-11-27 03:55:29] Processing fast-slow:  45%|████▌     | 38/84 [05:52<02:26,  3.19s/it][2025-11-27 03:55:48] Processing fast-slow:  45%|████▌     | 38/84 [05:52<02:26,  3.19s/it][2025-11-27 03:55:48] Processing fast-slow:  46%|████▋     | 39/84 [06:00<02:53,  3.85s/it][2025-11-27 03:55:56] Processing fast-slow:  46%|████▋     | 39/84 [06:00<02:53,  3.85s/it][2025-11-27 03:55:56] Processing fast-slow:  46%|████▋     | 39/84 [06:00<02:53,  3.85s/it][2025-11-27 03:55:56] Processing fast-slow:  46%|████▋     | 39/84 [06:00<02:53,  3.85s/it][2025-11-27 03:55:56] Processing fast-slow:  50%|█████     | 42/84 [06:00<01:42,  2.45s/it][2025-11-27 03:55:56] Processing fast-slow:  50%|█████     | 42/84 [06:00<01:42,  2.45s/it]推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Cup (置信度: 0.9000)
+总耗时: 10.23秒
+succ. pred cate:Cup, true cate:cup, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/binocular/image_0003.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/binocular/image_0003.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cannon', 'Binocular', 'Anchor', 'Barrel', 'Minaret', 'Euphonium', 'Metronome', 'Saxophone', 'Inline Skate', 'Revolver', 'Wrench', 'Stapler', 'Pagoda', 'Headphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:49] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:52] [显存监控] 已分配=16.93GB, 已保留=17.37GB, 空闲=30.47GB
+[2025-11-27 03:55:55] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Binocular (置信度: 0.9000)
+总耗时: 8.05秒
+succ. pred cate:Binocular, true cate:binocular, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/binocular/image_0011.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Barrel (置信度: 0.2460)
+总耗时: 0.02秒
+succ. pred cate:Barrel, true cate:binocular, used_slow:False, confidence:0.2460
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ewer/image_0037.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ewer (置信度: 0.9325)
+总耗时: 0.02秒
+succ. pred cate:Ewer, true cate:ewer, used_slow:False, confidence:0.9325
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ewer/image_0010.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ewer (置信度: 0.8981)
+总耗时: 0.02秒
+succ. pred cate:Ewer, true cate:ewer, used_slow:False, confidence:0.8981
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/electric_guitar/image_0004.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Electric Guitar (置信度: 0.7007)
+总耗时: 0.02秒
+succ. pred cate:Electric Guitar, true cate:electric_guitar, used_slow:False, confidence:0.7007
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/electric_guitar/image_0013.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Electric Guitar (置信度: 0.7680)
+总耗时: 0.02秒
+succ. pred cate:Electric Guitar, true cate:electric_guitar, used_slow:False, confidence:0.7680
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/electric_guitar/image_0060.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Electric Guitar (置信度: 0.5095)
+总耗时: 0.02秒
+succ. pred cate:Electric Guitar, true cate:electric_guitar, used_slow:False, confidence:0.5095
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/scissors/image_0001.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Scissors (置信度: 0.8302)
+总耗时: 0.02秒
+succ. pred cate:Scissors, true cate:scissors, used_slow:False, confidence:0.8302
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/scissors/image_0004.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Scissors (置信度: 0.3824)
+总耗时: 0.02秒
+succ. pred cate:Scissors, true cate:scissors, used_slow:False, confidence:0.3824
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0224.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.7886)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.7886
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0208.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8270)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.8270
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0035.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.7246)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.7246
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0197.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8615)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.8615
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0261.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.7341)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.7341
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0002.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.6567)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.6567
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0214.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.9071)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.9071
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0145.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8472)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.8472
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0292.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8332)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.8332
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0329.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0329.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Headphone', 'Menorah', 'Hedgehog', 'Ant', 'Camera', 'Platypus', 'Crocodile', 'Stop Sign', 'Saxophone', 'Dalmatian', 'Sunflower', 'Brain', 'Anchor', 'Octopus', 'Cougar Face', 'Scissors', 'Tick', 'Trilobite']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:55:58] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1241)
+总耗时: 3.36秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:True, confidence:0.1241
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0285.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0285.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Crocodile', 'Dolphin', 'Camera', 'Headphone', 'Saxophone', 'Laptop', 'Soccer Ball', 'Tick', 'Crocodile Head', 'Hedgehog', 'Cougar Face', 'Sunflower', 'Stop Sign', 'Dalmatian', 'Rooster', 'Elephant', 'Scissors', 'Llama']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:03] Processing fast-slow:  50%|█████     | 42/84 [06:07<01:42,  2.45s/it][2025-11-27 03:56:03] Processing fast-slow:  52%|█████▏    | 44/84 [06:07<01:48,  2.72s/it][2025-11-27 03:56:03] Processing fast-slow:  52%|█████▏    | 44/84 [06:07<01:48,  2.72s/it][2025-11-27 03:56:03] Processing fast-slow:  52%|█████▏    | 44/84 [06:07<01:48,  2.72s/it][2025-11-27 03:56:03] Processing fast-slow:  55%|█████▍    | 46/84 [06:16<02:01,  3.19s/it][2025-11-27 03:56:12] Processing fast-slow:  55%|█████▍    | 46/84 [06:16<02:01,  3.19s/it][2025-11-27 03:56:12] Processing fast-slow:  55%|█████▍    | 46/84 [06:16<02:01,  3.19s/it][2025-11-27 03:56:12] Processing fast-slow:  55%|█████▍    | 46/84 [06:16<02:01,  3.19s/it][2025-11-27 03:56:12] Processing fast-slow:  55%|█████▍    | 46/84 [06:16<02:01,  3.19s/it][2025-11-27 03:56:12] Processing fast-slow:  60%|█████▉    | 50/84 [06:22<01:25,  2.51s/it][2025-11-27 03:56:18] Processing fast-slow:  60%|█████▉    | 50/84 [06:22<01:25,  2.51s/it][2025-11-27 03:56:18] Processing fast-slow:  60%|█████▉    | 50/84 [06:23<01:25,  2.51s/it][2025-11-27 03:56:01] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1219)
+总耗时: 3.38秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:True, confidence:0.1219
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0222.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.8235)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.8235
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0382.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.9181)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.9181
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/Faces_easy/image_0007.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Faces (置信度: 0.7233)
+总耗时: 0.02秒
+succ. pred cate:Faces, true cate:Faces_easy, used_slow:False, confidence:0.7233
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/trilobite/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Trilobite (置信度: 0.3668)
+总耗时: 0.02秒
+succ. pred cate:Trilobite, true cate:trilobite, used_slow:False, confidence:0.3668
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/trilobite/image_0055.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Trilobite (置信度: 0.3896)
+总耗时: 0.01秒
+succ. pred cate:Trilobite, true cate:trilobite, used_slow:False, confidence:0.3896
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dollar_bill/image_0014.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dollar Bill (置信度: 0.9050)
+总耗时: 0.02秒
+succ. pred cate:Dollar Bill, true cate:dollar_bill, used_slow:False, confidence:0.9050
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dollar_bill/image_0034.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dollar Bill (置信度: 0.9434)
+总耗时: 0.02秒
+succ. pred cate:Dollar Bill, true cate:dollar_bill, used_slow:False, confidence:0.9434
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/crocodile_head/image_0014.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/crocodile_head/image_0014.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Beaver', 'Crocodile', 'Crocodile Head', 'Platypus', 'Hawksbill', 'Crab', 'Butterfly', 'Crayfish', 'Bass', 'Stegosaurus', 'Trilobite', 'Sea Horse', 'Mayfly', 'Starfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:04] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:07] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-27 03:56:10] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Crocodile (置信度: 0.9500)
+总耗时: 8.87秒
+succ. pred cate:Crocodile, true cate:crocodile_head, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/okapi/image_0031.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Okapi (置信度: 0.2543)
+总耗时: 0.02秒
+succ. pred cate:Okapi, true cate:okapi, used_slow:False, confidence:0.2543
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ceiling_fan/image_0044.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ceiling Fan (置信度: 0.8842)
+总耗时: 0.01秒
+succ. pred cate:Ceiling Fan, true cate:ceiling_fan, used_slow:False, confidence:0.8842
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/ceiling_fan/image_0026.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ceiling Fan (置信度: 0.9299)
+总耗时: 0.01秒
+succ. pred cate:Ceiling Fan, true cate:ceiling_fan, used_slow:False, confidence:0.9299
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/joshua_tree/image_0060.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Joshua Tree (置信度: 0.8143)
+总耗时: 0.02秒
+succ. pred cate:Joshua Tree, true cate:joshua_tree, used_slow:False, confidence:0.8143
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/anchor/image_0041.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/anchor/image_0041.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Anchor', 'Octopus', 'Saxophone', 'Scorpion', 'Ceiling Fan', 'Menorah', 'Scissors', 'Chandelier', 'Sea Horse', 'Lobster', 'Dragonfly', 'Ewer', 'Euphonium', 'Wrench', 'Electric Guitar', 'Mandolin', 'Nautilus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:13] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: Anchor (置信度: 0.1242)
+总耗时: 3.14秒
+succ. pred cate:Anchor, true cate:anchor, used_slow:True, confidence:0.1242
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/anchor/image_0014.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Anchor (置信度: 0.2566)
+总耗时: 0.02秒
+succ. pred cate:Anchor, true cate:anchor, used_slow:False, confidence:0.2566
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/anchor/image_0001.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Anchor (置信度: 0.2033)
+总耗时: 0.02秒
+succ. pred cate:Anchor, true cate:anchor, used_slow:False, confidence:0.2033
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/anchor/image_0009.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/anchor/image_0009.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Anchor', 'Scissors', 'Yin Yang', 'Umbrella', 'Saxophone', 'Wrench', 'Euphonium', 'Ceiling Fan', 'Stop Sign', 'Cannon', 'Octopus', 'Minaret', 'Cup', 'Nautilus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:16] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Anchor (置信度: 0.1554)
+总耗时: 3.32秒
+succ. pred cate:Anchor, true cate:anchor, used_slow:True, confidence:0.1554
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/rooster/image_0012.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Rooster (置信度: 0.8309)
+总耗时: 0.02秒
+succ. pred cate:Rooster, true cate:rooster, used_slow:False, confidence:0.8309
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/rooster/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Rooster (置信度: 0.7516)
+总耗时: 0.02秒
+succ. pred cate:Rooster, true cate:rooster, used_slow:False, confidence:0.7516
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/pizza/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pizza (置信度: 0.6594)
+总耗时: 0.02秒
+succ. pred cate:Pizza, true cate:pizza, used_slow:False, confidence:0.6594
+[2025-11-27 03:56:18] Processing fast-slow:  60%|█████▉    | 50/84 [06:23<01:25,  2.51s/it][2025-11-27 03:56:18] Processing fast-slow:  63%|██████▎   | 53/84 [06:23<00:53,  1.72s/it][2025-11-27 03:56:18] Processing fast-slow:  63%|██████▎   | 53/84 [06:23<00:53,  1.72s/it][2025-11-27 03:56:18] Processing fast-slow:  63%|██████▎   | 53/84 [06:23<00:53,  1.72s/it][2025-11-27 03:56:18] Processing fast-slow:  63%|██████▎   | 53/84 [06:23<00:53,  1.72s/it][2025-11-27 03:56:18] Processing fast-slow:  63%|██████▎   | 53/84 [06:23<00:53,  1.72s/it][2025-11-27 03:56:18] Processing fast-slow:  63%|██████▎   | 53/84 [06:23<00:53,  1.72s/it][2025-11-27 03:56:18] Processing fast-slow:  69%|██████▉   | 58/84 [06:23<00:25,  1.01it/s][2025-11-27 03:56:18] Processing fast-slow:  69%|██████▉   | 58/84 [06:23<00:25,  1.01it/s][2025-11-27 03:56:18] Processing fast-slow:  69%|██████▉   | 58/84 [06:23<00:25,  1.01it/s][2025-11-27 03:56:18] Processing fast-slow:  69%|██████▉   | 58/84 [06:23<00:25,  1.01it/s][2025-11-27 03:56:18] Processing fast-slow:  73%|███████▎  | 61/84 [06:30<00:30,  1.34s/it][2025-11-27 03:56:25] Processing fast-slow:  73%|███████▎  | 61/84 [06:30<00:30,  1.34s/it][2025-11-27 03:56:25] Processing fast-slow:  73%|███████▎  | 61/84 [06:30<00:30,  1.34s/it][2025-11-27 03:56:25] Processing fast-slow:  73%|███████▎  | 61/84 [06:30<00:30,  1.34s/it]开始分类图像: ./datasets/caltech101/101_ObjectCategories/pizza/image_0011.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pizza (置信度: 0.2096)
+总耗时: 0.02秒
+succ. pred cate:Pizza, true cate:pizza, used_slow:False, confidence:0.2096
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cellphone/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cellphone (置信度: 0.7156)
+总耗时: 0.02秒
+succ. pred cate:Cellphone, true cate:cellphone, used_slow:False, confidence:0.7156
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cellphone/image_0054.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cellphone (置信度: 0.6694)
+总耗时: 0.02秒
+succ. pred cate:Cellphone, true cate:cellphone, used_slow:False, confidence:0.6694
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/dragonfly/image_0015.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dragonfly (置信度: 0.6873)
+总耗时: 0.02秒
+succ. pred cate:Dragonfly, true cate:dragonfly, used_slow:False, confidence:0.6873
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/stegosaurus/image_0029.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Stegosaurus (置信度: 0.3451)
+总耗时: 0.02秒
+succ. pred cate:Stegosaurus, true cate:stegosaurus, used_slow:False, confidence:0.3451
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/stegosaurus/image_0042.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Stegosaurus (置信度: 0.5265)
+总耗时: 0.02秒
+succ. pred cate:Stegosaurus, true cate:stegosaurus, used_slow:False, confidence:0.5265
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/rhino/image_0023.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Rhino (置信度: 0.8570)
+总耗时: 0.02秒
+succ. pred cate:Rhino, true cate:rhino, used_slow:False, confidence:0.8570
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/windsor_chair/image_0045.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Windsor Chair (置信度: 0.9046)
+总耗时: 0.02秒
+succ. pred cate:Windsor Chair, true cate:windsor_chair, used_slow:False, confidence:0.9046
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/starfish/image_0054.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Starfish (置信度: 0.9397)
+总耗时: 0.02秒
+succ. pred cate:Starfish, true cate:starfish, used_slow:False, confidence:0.9397
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/pagoda/image_0042.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pagoda (置信度: 0.5003)
+总耗时: 0.02秒
+succ. pred cate:Pagoda, true cate:pagoda, used_slow:False, confidence:0.5003
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cougar_body/image_0016.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cougar Body (置信度: 0.4468)
+总耗时: 0.02秒
+succ. pred cate:Cougar Body, true cate:cougar_body, used_slow:False, confidence:0.4468
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cougar_body/image_0024.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cougar Body (置信度: 0.4224)
+总耗时: 0.02秒
+succ. pred cate:Cougar Body, true cate:cougar_body, used_slow:False, confidence:0.4224
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lamp/image_0055.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/lamp/image_0055.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Flamingo Head', 'Water Lilly', 'Dollar Bill', 'Dragonfly', 'Faces', 'Pigeon', 'Gramophone', 'Saxophone', 'Ibis', 'Euphonium', 'Sunflower', 'Minaret', 'Rooster', 'Pagoda', 'Accordion', 'Electric Guitar', 'Grand Piano']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:19] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 03:56:22] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Flamingo Head (置信度: 0.1197)
+总耗时: 6.75秒
+succ. pred cate:Flamingo Head, true cate:lamp, used_slow:True, confidence:0.1197
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lamp/image_0059.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Lamp (置信度: 0.5743)
+总耗时: 0.02秒
+succ. pred cate:Lamp, true cate:lamp, used_slow:False, confidence:0.5743
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lamp/image_0036.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Lamp (置信度: 0.6268)
+总耗时: 0.02秒
+succ. pred cate:Lamp, true cate:lamp, used_slow:False, confidence:0.6268
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/tick/image_0015.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Tick (置信度: 0.7047)
+总耗时: 0.02秒
+succ. pred cate:Tick, true cate:tick, used_slow:False, confidence:0.7047
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/tick/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Tick (置信度: 0.5802)
+总耗时: 0.01秒
+succ. pred cate:Tick, true cate:tick, used_slow:False, confidence:0.5802
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/tick/image_0035.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Tick (置信度: 0.5485)
+总耗时: 0.02秒
+succ. pred cate:Tick, true cate:tick, used_slow:False, confidence:0.5485
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/buddha/image_0007.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Buddha (置信度: 0.5801)
+总耗时: 0.01秒
+succ. pred cate:Buddha, true cate:buddha, used_slow:False, confidence:0.5801
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/buddha/image_0045.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Buddha (置信度: 0.5562)
+总耗时: 0.01秒
+succ. pred cate:Buddha, true cate:buddha, used_slow:False, confidence:0.5562
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/buddha/image_0063.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Buddha (置信度: 0.7672)
+总耗时: 0.02秒
+succ. pred cate:Buddha, true cate:buddha, used_slow:False, confidence:0.7672
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chair/image_0010.jpg
+执行快思考...
+[2025-11-27 03:56:25] [显存监控] 已分配=16.91GB, 已保留=17.41GB, 空闲=30.50GB
+快思考结果确定，直接返回...
+分类完成: Windsor Chair (置信度: 0.3033)
+总耗时: 0.02秒
+succ. pred cate:Windsor Chair, true cate:chair, used_slow:False, confidence:0.3033
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chair/image_0025.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Windsor Chair (置信度: 0.6259)
+总耗时: 0.02秒
+succ. pred cate:Windsor Chair, true cate:chair, used_slow:False, confidence:0.6259
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chair/image_0017.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/chair/image_0017.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chair', 'Bonsai', 'Grand Piano', 'Windsor Chair', 'Pagoda', 'Pyramid', 'Cannon', 'Menorah', 'Wheelchair', 'Hawksbill', 'Ketch', 'Joshua Tree', 'Minaret', 'Chandelier', 'Umbrella', 'Anchor', 'Binocular']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 03:56:25] Processing fast-slow:  76%|███████▌  | 64/84 [06:34<00:27,  1.37s/it][2025-11-27 03:56:29] Processing fast-slow:  76%|███████▌  | 64/84 [06:34<00:27,  1.37s/it][2025-11-27 03:56:30] Processing fast-slow:  76%|███████▌  | 64/84 [06:34<00:27,  1.37s/it][2025-11-27 03:56:30] Processing fast-slow:  76%|███████▌  | 64/84 [06:34<00:27,  1.37s/it][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  80%|███████▉  | 67/84 [06:34<00:16,  1.01it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  88%|████████▊ | 74/84 [06:34<00:05,  1.94it/s][2025-11-27 03:56:30] Processing fast-slow:  95%|█████████▌| 80/84 [06:34<00:01,  3.03it/s][2025-11-27 03:56:30] Processing fast-slow:  95%|█████████▌| 80/84 [06:34<00:01,  3.03it/s][2025-11-27 03:56:30] Processing fast-slow:  95%|█████████▌| 80/84 [06:34<00:01,  3.03it/s][2025-11-27 03:56:30] Processing fast-slow:  95%|█████████▌| 80/84 [06:34<00:01,  3.03it/s][2025-11-27 03:56:30] Processing fast-slow:  95%|█████████▌| 80/84 [06:34<00:01,  3.03it/s][2025-11-27 03:56:30] Processing fast-slow: 100%|██████████| 84/84 [06:34<00:00,  4.70s/it]
+[2025-11-27 03:56:28] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: Chair (置信度: 0.1467)
+总耗时: 4.21秒
+succ. pred cate:Chair, true cate:chair, used_slow:True, confidence:0.1467
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/chair/image_0038.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chair (置信度: 0.3948)
+总耗时: 0.02秒
+succ. pred cate:Chair, true cate:chair, used_slow:False, confidence:0.3948
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/soccer_ball/image_0013.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Soccer Ball (置信度: 0.8955)
+总耗时: 0.02秒
+succ. pred cate:Soccer Ball, true cate:soccer_ball, used_slow:False, confidence:0.8955
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/soccer_ball/image_0030.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Soccer Ball (置信度: 0.8605)
+总耗时: 0.02秒
+succ. pred cate:Soccer Ball, true cate:soccer_ball, used_slow:False, confidence:0.8605
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/flamingo/image_0024.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Flamingo Head (置信度: 0.4260)
+总耗时: 0.02秒
+succ. pred cate:Flamingo Head, true cate:flamingo, used_slow:False, confidence:0.4260
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/flamingo/image_0030.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Flamingo Head (置信度: 0.2080)
+总耗时: 0.02秒
+succ. pred cate:Flamingo Head, true cate:flamingo, used_slow:False, confidence:0.2080
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/flamingo/image_0063.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Flamingo Head (置信度: 0.2300)
+总耗时: 0.02秒
+succ. pred cate:Flamingo Head, true cate:flamingo, used_slow:False, confidence:0.2300
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/octopus/image_0033.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Octopus (置信度: 0.6125)
+总耗时: 0.01秒
+succ. pred cate:Octopus, true cate:octopus, used_slow:False, confidence:0.6125
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/octopus/image_0034.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Octopus (置信度: 0.2673)
+总耗时: 0.01秒
+succ. pred cate:Octopus, true cate:octopus, used_slow:False, confidence:0.2673
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/octopus/image_0009.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Octopus (置信度: 0.3905)
+总耗时: 0.02秒
+succ. pred cate:Octopus, true cate:octopus, used_slow:False, confidence:0.3905
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/nautilus/image_0043.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Nautilus (置信度: 0.5736)
+总耗时: 0.01秒
+succ. pred cate:Nautilus, true cate:nautilus, used_slow:False, confidence:0.5736
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/sea_horse/image_0047.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Sea Horse (置信度: 0.3796)
+总耗时: 0.01秒
+succ. pred cate:Sea Horse, true cate:sea_horse, used_slow:False, confidence:0.3796
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/laptop/image_0025.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Laptop (置信度: 0.8930)
+总耗时: 0.01秒
+succ. pred cate:Laptop, true cate:laptop, used_slow:False, confidence:0.8930
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/panda/image_0029.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Panda (置信度: 0.7980)
+总耗时: 0.02秒
+succ. pred cate:Panda, true cate:panda, used_slow:False, confidence:0.7980
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/cannon/image_0040.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cannon (置信度: 0.6960)
+总耗时: 0.02秒
+succ. pred cate:Cannon, true cate:cannon, used_slow:False, confidence:0.6960
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/garfield/image_0018.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Garfield (置信度: 0.7671)
+总耗时: 0.01秒
+succ. pred cate:Garfield, true cate:garfield, used_slow:False, confidence:0.7671
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/platypus/image_0028.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Platypus (置信度: 0.3457)
+总耗时: 0.02秒
+succ. pred cate:Platypus, true cate:platypus, used_slow:False, confidence:0.3457
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/crayfish/image_0047.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Crayfish (置信度: 0.3100)
+总耗时: 0.02秒
+succ. pred cate:Crayfish, true cate:crayfish, used_slow:False, confidence:0.3100
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/stapler/image_0019.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Stapler (置信度: 0.3210)
+总耗时: 0.01秒
+succ. pred cate:Stapler, true cate:stapler, used_slow:False, confidence:0.3210
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/emu/image_0042.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Emu (置信度: 0.4041)
+总耗时: 0.02秒
+succ. pred cate:Emu, true cate:emu, used_slow:False, confidence:0.4041
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/hawksbill/image_0093.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Hawksbill (置信度: 0.7912)
+总耗时: 0.01秒
+succ. pred cate:Hawksbill, true cate:hawksbill, used_slow:False, confidence:0.7912
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/euphonium/image_0059.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Euphonium (置信度: 0.5391)
+总耗时: 0.02秒
+succ. pred cate:Euphonium, true cate:euphonium, used_slow:False, confidence:0.5391
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/euphonium/image_0044.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Euphonium (置信度: 0.6892)
+总耗时: 0.02秒
+succ. pred cate:Euphonium, true cate:euphonium, used_slow:False, confidence:0.6892
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/grand_piano/image_0086.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Grand Piano (置信度: 0.4756)
+总耗时: 0.02秒
+succ. pred cate:Grand Piano, true cate:grand_piano, used_slow:False, confidence:0.4756
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/strawberry/image_0013.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Strawberry (置信度: 0.8391)
+总耗时: 0.01秒
+succ. pred cate:Strawberry, true cate:strawberry, used_slow:False, confidence:0.8391
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/lobster/image_0038.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Lobster (置信度: 0.3163)
+总耗时: 0.02秒
+succ. pred cate:Lobster, true cate:lobster, used_slow:False, confidence:0.3163
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/inline_skate/image_0024.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Inline Skate (置信度: 0.8712)
+总耗时: 0.01秒
+succ. pred cate:Inline Skate, true cate:inline_skate, used_slow:False, confidence:0.8712
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/menorah/image_0006.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Menorah (置信度: 0.9246)
+总耗时: 0.01秒
+succ. pred cate:Menorah, true cate:menorah, used_slow:False, confidence:0.9246
+✅ 正确预测总数: 251
+  - 其中仅快思考正确: 210
+  - 其中慢思考触发且正确: 41
+❌ 错误预测总数: 22
+📊 慢思考触发数量: 55
+[fast and slow] 总体准确率: 0.9194 (251/273)
+[fast and slow] 快思考准确率: 0.9633
+[fast and slow] 慢思考触发比例: 0.2015
+[fast and slow] 慢思考准确率: 0.7455
+✓ 分类结果已保存到: ./experiments/caltech101/classify/classify_result.json
+  总样本数: 273
+📁 分类结果已保存到: ./experiments/caltech101/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 03:56:30 ===
+=== Total Runtime: 0小时 6分 54.05秒 ===
+

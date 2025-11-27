@@ -1,0 +1,454 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: flower (num_classes=102)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/flower102/knowledge_base  # 知识库目录
+Results Out: ./results/flower_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/flower102_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/flower102/fast_slow_flower(3).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: flower (flower102)
+类别数: 102
+实验目录: ./experiments/flower102
+✅ JSON文件检查通过: ./experiments/flower102/images_split
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-27 20:25:48 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/flower102_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/flower102/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/flower_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/flowers_102',
+ 'dataset_name': 'flower',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/flower102',
+ 'expt_dir_describe': './experiments/flower102/describe',
+ 'expt_dir_gallery': './experiments/flower102/gallery',
+ 'expt_dir_grouping': './experiments/flower102/grouping',
+ 'expt_dir_guess': './experiments/flower102/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 51,
+ 'num_classes': 102,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/flower102/gallery/flower_image_descriptions_attn',
+ 'path_identify_answers': './experiments/flower102/identify',
+ 'path_llm_gussed_names': './experiments/flower102/guess/flower_llm_gussed_names',
+ 'path_llm_prompts': './experiments/flower102/describe/flower_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/flower102/guess/flower_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/flower102/guess/flower_llm_replies_raw',
+ 'path_references': './experiments/flower102/gallery/flower_image_references',
+ 'path_regions': './experiments/flower102/gallery/flower_image_regions',
+ 'path_vqa_answers': './experiments/flower102/describe/flower_attributes_pairs',
+ 'path_vqa_questions': './experiments/flower102/describe/flower_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "flower102",
+    "num_classes": 102,
+    "config_file": "flower102_all.yml",
+    "data_dir": "flowers_102",
+    "experiment_dir": "flower102",
+    "stats_file": "flower102/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/flower102/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/flower102"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:05,  1.38s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.61s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.02s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.73s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.32s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.61s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:25:57
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/flower102/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/flower102/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 709 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:26:52
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7d63b1beaeb0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7d63af73f340>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/flower102/knowledge_base
+使用数据集: flower, 类别数: 102
+✅ 慢思考模块初始化完成，类别映射数量: 102
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:26:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/flower102/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/flower102/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/flower102/knowledge_base 加载
+图像知识库类别数: 102
+文本知识库类别数: 102
+类别描述数: 102
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7d63af73f340>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7d63af73f4c0>
+📦 数据集信息: {'full_name': 'flower102', 'num_classes': 102, 'config_file': 'flower102_all.yml', 'data_dir': 'flowers_102', 'experiment_dir': 'flower102', 'stats_file': 'flower102/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/flower102/knowledge_base/stats.json', 'experiment_dir_full': './experiments/flower102'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Focus on the specific structural features of the flowers when distinguishing between closely related plant species. (Trigger: When dealing with images of plants with similar fluffy, feathery flowers but distinct structural differences.)
+2. Focus on the detailed structural features of the flower when making predictions, especially for plants with unique textures and shapes. (Trigger: This rule should be recalled whenever the image contains a plant with a distinctive, fluffy, and feathery flower head.)
+3. Focus on the unique petal and lip characteristics when identifying orchids. (Trigger: This rule should be recalled whenever the image contains an orchid and the task involves fine-grained recognition of specific orchid species.)
+
+经验库已从 ./experiments/flower102/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: flower102
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/flower102/images_split/images_test.json
+  类别数量: 102
+  总图像数: 1682
+  平均每类: 16.5 张
+  图像范围: 8 - 52 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 16 张图像，覆盖 15 个类别
+  平均每类: 1.1 张
+======================================================================
+test sample keys: ['osteospermum', 'canna lily', 'petunia', 'rose', 'bird of paradise']...
+[fast and slow] 测试数据集包含 15 个类别
+  0%|          | 0/15 [00:00<?, ?it/s][2025-11-27 20:26:52] Processing fast-slow:   0%|          | 0/15 [00:00<?, ?it/s][2025-11-27 20:26:52] Processing fast-slow:   7%|▋         | 1/15 [00:10<02:31, 10.79s/it][2025-11-27 20:27:03] Processing fast-slow:   7%|▋         | 1/15 [00:10<02:31, 10.79s/it][2025-11-27 20:27:03] Processing fast-slow:   7%|▋         | 1/15 [00:10<02:31, 10.79s/it][2025-11-27 20:27:03] Processing fast-slow:  20%|██        | 3/15 [00:34<02:16, 11.40s/it][2025-11-27 20:27:26] Processing fast-slow:  20%|██        | 3/15 [00:34<02:16, 11.40s/it][2025-11-27 20:27:26] Processing fast-slow:  27%|██▋       | 4/15 [00:41<01:49,  9.96s/it][2025-11-27 20:27:33] Processing fast-slow:  27%|██▋       | 4/15 [00:41<01:49,  9.96s/it][2025-11-27 20:27:33] Processing fast-slow:  27%|██▋       | 4/15 [00:41<01:49,  9.96s/it][2025-11-27 20:27:33] Processing fast-slow:  27%|██▋       | 4/15 [00:41<01:49,  9.96s/it][2025-11-27 20:27:33] Processing fast-slow:  47%|████▋     | 7/15 [00:55<00:55,  6.93s/it][2025-11-27 20:27:48] Processing fast-slow:  47%|████▋     | 7/15 [00:55<00:55,  6.93s/it]开始分类图像: ./datasets/flowers_102/jpg/image_05529.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_05529.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Mexican_Aster', 'Osteospermum', 'Mallow', 'Great_Masterwort', 'Passion_Flower', 'Pincushion_Flower', 'Gazania', 'Barbeton_Daisy', 'Blanket_Flower', 'Cape_Flower', 'Purple_Coneflower', 'English_Marigold', 'Black_eyed_Susan', 'Orange_Dahlia']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:55] [显存监控] 已分配=16.96GB, 已保留=17.83GB, 空闲=30.44GB
+[2025-11-27 20:26:58] [显存监控] 已分配=16.99GB, 已保留=17.83GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.83GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:01] [显存监控] 已分配=16.95GB, 已保留=17.77GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.77GB, 剩余=30.50GB
+分类完成: Osteospermum (置信度: 0.8500)
+总耗时: 10.79秒
+succ. pred cate:Osteospermum, true cate:osteospermum, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/flowers_102/jpg/image_04418.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Canna_Lily (置信度: 0.3283)
+总耗时: 0.05秒
+succ. pred cate:Canna_Lily, true cate:canna lily, used_slow:False, confidence:0.3283
+开始分类图像: ./datasets/flowers_102/jpg/image_01333.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_01333.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Geranium', 'Petunia', 'Trumpet_Creeper', 'Bougainvillea', 'Pelargonium', 'Sweet_Pea', 'Mallow', 'Mexican_Petunia', 'Canna_Lily', 'Poinsettia', 'Tree_Mallow', 'Watercress', 'Desert_Rose', 'Peruvian_Lily', 'Azalea', 'Garden_Phlox']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:27:04] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+[2025-11-27 20:27:07] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:27:10] [显存监控] 已分配=16.96GB, 已保留=18.03GB, 空闲=30.44GB
+[2025-11-27 20:27:13] [显存监控] 已分配=16.97GB, 已保留=18.03GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.03GB, 剩余=30.50GB
+分类完成: Petunia (置信度: 0.9500)
+总耗时: 11.16秒
+succ. pred cate:Petunia, true cate:petunia, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/flowers_102/jpg/image_03914.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_03914.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Mallow', 'Petunia', 'Geranium', 'Poinsettia', 'Hibiscus', 'Garden_Phlox', 'Mexican_Petunia', 'Bougainvillea', 'Tree_Mallow', 'Pelargonium', 'Desert_Rose', 'Mexican_Aster', 'Cyclamen_', 'Trumpet_Creeper', 'Watercress']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:27:16] [显存监控] 已分配=16.99GB, 已保留=18.19GB, 空闲=30.41GB
+[2025-11-27 20:27:19] [显存监控] 已分配=16.99GB, 已保留=18.19GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.19GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 20:27:22] [显存监控] 已分配=16.96GB, 已保留=17.94GB, 空闲=30.44GB
+[2025-11-27 20:27:25] [显存监控] 已分配=16.99GB, 已保留=17.94GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.94GB, 剩余=30.50GB
+分类完成: Petunia (置信度: 0.9500)
+总耗时: 12.03秒
+succ. pred cate:Petunia, true cate:petunia, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/flowers_102/jpg/image_01240.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_01240.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rose', 'Lotus', 'Mallow', 'Camellia', 'Great_Masterwort', 'Desert_Rose', 'Passion_Flower', 'Poinsettia', 'Red_Ginger', 'Siam_Tulip', 'Cyclamen_', 'Bougainvillea', 'Mexican_Aster', 'Water_Lily', 'Bishop_of_Llandaff', 'Barbeton_Daisy', 'Osteospermum']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:28] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:31] [显存监控] 已分配=16.99GB, 已保留=17.95GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.95GB, 剩余=30.50GB
+分类完成: Rose (置信度: 0.1558)
+总耗时: 7.22秒
+succ. pred cate:Rose, true cate:rose, used_slow:True, confidence:0.1558
+开始分类图像: ./datasets/flowers_102/jpg/image_03312.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bird_Of_Paradise (置信度: 0.6446)
+总耗时: 0.04秒
+succ. pred cate:Bird_Of_Paradise, true cate:bird of paradise, used_slow:False, confidence:0.6446
+开始分类图像: ./datasets/flowers_102/jpg/image_05092.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Hard_leaved_Pocket_Orchid (置信度: 0.2878)
+总耗时: 0.03秒
+succ. pred cate:Hard_leaved_Pocket_Orchid, true cate:hard-leaved pocket orchid, used_slow:False, confidence:0.2878
+开始分类图像: ./datasets/flowers_102/jpg/image_04993.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_04993.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ["Colt'S_Foot", 'English_Marigold', 'Marigold', 'Great_Masterwort', 'Wallflower', 'Carnation', 'Common_Dandelion', 'Globe_Flower', 'Primula', 'Pincushion_Flower', 'Pink_yellow_Dahlia', 'Blanket_Flower', 'Black_eyed_Susan', 'Californian_Poppy', 'Barbeton_Daisy', 'Orange_Dahlia']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:34] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:27:37] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+[2025-11-27 20:27:40] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.05GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:27:43] [显存监控] 已分配=16.96GB, 已保留=18.03GB, 空闲=30.44GB
+[2025-11-27 20:27:46] [显存监控] 已分配=16.96GB, 已保留=18.03GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+分类完成: English_Marigold (置信度: 0.9500)
+总耗时: 14.61秒
+succ. pred cate:English_Marigold, true cate:marigold, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/flowers_102/jpg/image_07922.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_07922.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:27:48] Processing fast-slow:  53%|█████▎    | 8/15 [01:09<00:59,  8.46s/it][2025-11-27 20:28:02] Processing fast-slow:  53%|█████▎    | 8/15 [01:09<00:59,  8.46s/it][2025-11-27 20:28:02] Processing fast-slow:  53%|█████▎    | 8/15 [01:09<00:59,  8.46s/it][2025-11-27 20:28:02] Processing fast-slow:  67%|██████▋   | 10/15 [01:24<00:39,  7.96s/it][2025-11-27 20:28:16] Processing fast-slow:  67%|██████▋   | 10/15 [01:24<00:39,  7.96s/it][2025-11-27 20:28:16] Processing fast-slow:  73%|███████▎  | 11/15 [01:39<00:38,  9.56s/it][2025-11-27 20:28:31] Processing fast-slow:  73%|███████▎  | 11/15 [01:39<00:38,  9.56s/it][2025-11-27 20:28:31] Processing fast-slow:  73%|███████▎  | 11/15 [01:39<00:38,  9.56s/it][2025-11-27 20:28:31] Processing fast-slow:  73%|███████▎  | 11/15 [01:39<00:38,  9.56s/it][2025-11-27 20:28:31] Processing fast-slow:  93%|█████████▎| 14/15 [01:39<00:04,  4.98s/it][2025-11-27 20:28:31] Processing fast-slow:  93%|█████████▎| 14/15 [01:39<00:04,  4.98s/it][2025-11-27 20:28:31] Processing fast-slow: 100%|██████████| 15/15 [01:46<00:00,  7.07s/it]
+快思考Top-10候选类别: ['Gazania', 'Blanket_Flower', 'Orange_Dahlia', 'Sunflower', 'Black_eyed_Susan', 'Osteospermum', 'Barbeton_Daisy', 'Fire_Lily', 'Great_Masterwort', 'Pink_yellow_Dahlia', 'English_Marigold', 'Purple_Coneflower', 'Mexican_Aster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:53] [显存监控] 已分配=17.01GB, 已保留=17.93GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=17.93GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Blanket_Flower' -> 'Blanket Flower'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:27:57] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:00] [显存监控] 已分配=16.96GB, 已保留=17.85GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.85GB, 剩余=30.50GB
+分类完成: Gazania (置信度: 0.8500)
+总耗时: 13.85秒
+failed. pred cate:Gazania, true cate:blanket flower, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/flowers_102/jpg/image_02695.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Geranium (置信度: 0.3207)
+总耗时: 0.05秒
+succ. pred cate:Geranium, true cate:geranium, used_slow:False, confidence:0.3207
+开始分类图像: ./datasets/flowers_102/jpg/image_07219.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_07219.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Great_Masterwort', 'Silverbush', 'Frangipani', 'Balloon_Flower', 'Hard_leaved_Pocket_Orchid', 'Moon_Orchid', 'Thorn_Apple', 'Mallow', 'Cape_Flower', 'Mexican_Petunia', 'Ruby_lipped_Cattleya', 'Garden_Phlox', 'Magnolia', 'Desert_Rose', 'Bougainvillea', 'Trumpet_Creeper']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:04] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:07] [显存监控] 已分配=16.99GB, 已保留=17.91GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.91GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:28:10] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:13] [显存监控] 已分配=16.96GB, 已保留=17.89GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.89GB, 剩余=30.50GB
+分类完成: Moon_Orchid (置信度: 0.8500)
+总耗时: 14.26秒
+succ. pred cate:Moon_Orchid, true cate:moon orchid, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/flowers_102/jpg/image_07032.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_07032.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bromelia', 'Lotus', 'Siam_Tulip', 'Red_Ginger', 'Passion_Flower', 'Great_Masterwort', 'Stemless_Gentian', 'Artichoke', 'Hard_leaved_Pocket_Orchid', 'Canna_Lily', 'Water_Lily', 'Cyclamen_', 'Bird_Of_Paradise', 'Bougainvillea', 'Anthurium', 'Ball_Moss']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:19] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:28:22] [显存监控] 已分配=17.01GB, 已保留=17.84GB, 空闲=30.39GB
+[2025-11-27 20:28:25] [显存监控] 已分配=16.99GB, 已保留=17.84GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.84GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Siam_Tulip' -> 'Siam Tulip'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:28] [显存监控] 已分配=16.95GB, 已保留=17.77GB, 空闲=30.45GB
+[2025-11-27 20:28:31] [显存监控] 已分配=16.96GB, 已保留=17.77GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.77GB, 剩余=30.50GB
+分类完成: Siam_Tulip (置信度: 0.8500)
+总耗时: 15.35秒
+succ. pred cate:Siam_Tulip, true cate:siam tulip, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/flowers_102/jpg/image_05068.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Orange_Dahlia (置信度: 0.3231)
+总耗时: 0.05秒
+succ. pred cate:Orange_Dahlia, true cate:orange dahlia, used_slow:False, confidence:0.3231
+开始分类图像: ./datasets/flowers_102/jpg/image_04662.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Buttercup (置信度: 0.2671)
+总耗时: 0.04秒
+succ. pred cate:Buttercup, true cate:buttercup, used_slow:False, confidence:0.2671
+开始分类图像: ./datasets/flowers_102/jpg/image_03396.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Fritillary (置信度: 0.4454)
+总耗时: 0.04秒
+succ. pred cate:Fritillary, true cate:fritillary, used_slow:False, confidence:0.4454
+开始分类图像: ./datasets/flowers_102/jpg/image_01597.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/flowers_102/jpg/image_01597.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Clematis', 'Mallow', 'Passion_Flower', 'Great_Masterwort', 'Cape_Flower', 'Pink_Primrose', 'Lotus', 'Siam_Tulip', 'Japanese_Anemone', 'Poinsettia', 'Tree_Mallow', 'Desert_Rose', 'Hippeastrum_', 'Garden_Phlox', 'Mexican_Aster', 'Osteospermum', 'Pink_yellow_Dahlia', 'Peruvian_Lily']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:28:34] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+[2025-11-27 20:28:37] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.05GB, 剩余=30.50GB
+分类完成: Clematis (置信度: 0.1531)
+总耗时: 6.50秒
+succ. pred cate:Clematis, true cate:clematis, used_slow:True, confidence:0.1531
+✅ 正确预测总数: 15
+  - 其中仅快思考正确: 7
+  - 其中慢思考触发且正确: 8
+❌ 错误预测总数: 1
+📊 慢思考触发数量: 9
+[fast and slow] 总体准确率: 0.9375 (15/16)
+[fast and slow] 快思考准确率: 1.0000
+[fast and slow] 慢思考触发比例: 0.5625
+[fast and slow] 慢思考准确率: 0.8889
+✓ 分类结果已保存到: ./experiments/flower102/classify/classify_result.json
+  总样本数: 16
+📁 分类结果已保存到: ./experiments/flower102/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 20:28:38 ===
+=== Total Runtime: 0小时 2分 50.27秒 ===
+

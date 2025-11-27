@@ -28,6 +28,8 @@ import hashlib
 from collections import defaultdict
 import numpy as np
 import yaml
+import subprocess
+import sys
 
 import pprint
 import time
@@ -38,6 +40,81 @@ DEBUG = False  # 设置调试模式为关闭状态
 # 全局数据集配置
 DATASET_CONFIG = None
 CURRENT_DATASET = None
+
+def check_and_generate_json_files(dataset_name):
+    """
+    检查实验目录下的JSON文件是否存在，如果不存在则自动运行copy_datasets_json.py生成
+    
+    Args:
+        dataset_name: 数据集名称 (dog, bird, flower, pet, car, aircraft等)
+    """
+    # 加载数据集配置
+    if DATASET_CONFIG is None:
+        load_dataset_config()
+    
+    dataset_info = DATASET_CONFIG['dataset_mapping'].get(dataset_name)
+    if not dataset_info:
+        print(f"Warning: Dataset '{dataset_name}' not found in configuration")
+        return
+    
+    experiments_root = DATASET_CONFIG.get('experiments_root', './experiments')
+    experiment_dir = dataset_info['experiment_dir']
+    json_dir = os.path.join(experiments_root, experiment_dir, 'images_split')
+    
+    # 检查关键JSON文件是否存在
+    critical_files = ['images_test.json', 'images_discovery_all_1.json']
+    missing_files = []
+    
+    for json_file in critical_files:
+        json_path = os.path.join(json_dir, json_file)
+        if not os.path.exists(json_path):
+            missing_files.append(json_file)
+    
+    if missing_files:
+        print(f"⚠️  检测到缺失的JSON文件: {', '.join(missing_files)}")
+        print(f"📁 实验目录: {json_dir}")
+        print("🔄 正在自动运行copy_datasets_json.py生成JSON文件...")
+        
+        try:
+            # 运行copy_datasets_json.py脚本
+            script_path = os.path.join(os.path.dirname(__file__), 'data', 'copy_datasets_json.py')
+            cmd = [sys.executable, script_path, '--dataset', dataset_name]
+            
+            result = subprocess.run(
+                cmd,
+                cwd=os.path.dirname(__file__),  # 在项目根目录运行
+                capture_output=True,
+                text=True,
+                timeout=300  # 5分钟超时
+            )
+            
+            if result.returncode == 0:
+                print("✅ JSON文件生成成功!")
+                # 再次检查文件是否生成
+                still_missing = []
+                for json_file in missing_files:
+                    json_path = os.path.join(json_dir, json_file)
+                    if not os.path.exists(json_path):
+                        still_missing.append(json_file)
+                
+                if still_missing:
+                    print(f"⚠️  以下文件仍未生成: {', '.join(still_missing)}")
+                else:
+                    print("✅ 所有必需的JSON文件已就绪")
+            else:
+                print(f"❌ JSON文件生成失败:")
+                print(f"错误输出: {result.stderr}")
+                print(f"标准输出: {result.stdout}")
+                
+        except subprocess.TimeoutExpired:
+            print("❌ JSON文件生成超时，请手动运行:")
+            print(f"python data/copy_datasets_json.py --dataset {dataset_name}")
+        except Exception as e:
+            print(f"❌ 运行copy_datasets_json.py时出错: {e}")
+            print("请手动运行:")
+            print(f"python data/copy_datasets_json.py --dataset {dataset_name}")
+    else:
+        print(f"✅ JSON文件检查通过: {json_dir}")
 
 def load_dataset_config():
     """加载数据集配置文件"""
@@ -644,6 +721,9 @@ if __name__ == "__main__":
     # 设置当前数据集
     dataset_name = cfg.get('dataset_name', 'dog')  # 从配置文件获取数据集名称
     set_current_dataset(dataset_name)
+    
+    # 检查并自动生成JSON文件（如果需要）
+    check_and_generate_json_files(dataset_name)
     
     # drop the seed - 设置随机种子
     seed_everything(cfg['seed']) 

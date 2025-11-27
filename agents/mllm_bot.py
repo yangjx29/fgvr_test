@@ -24,7 +24,7 @@ import torch.nn.functional as F
 from skimage.measure import block_reduce
 
 # 限制图片最大尺寸
-pre_define_max_size=1680
+pre_define_max_size=1440
 
 # 抑制transformers生成配置的警告
 warnings.filterwarnings('ignore', message='.*do_sample.*temperature.*', category=UserWarning)

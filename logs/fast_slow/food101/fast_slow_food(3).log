@@ -1,0 +1,3384 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: food (num_classes=101)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/food101/knowledge_base  # 知识库目录
+Results Out: ./results/food_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/food101_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/food101/fast_slow_food(3).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: food (food101)
+类别数: 101
+实验目录: ./experiments/food101
+✅ JSON文件检查通过: ./experiments/food101/images_split
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-27 20:31:32 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/food101_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/food101/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/food_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 96,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/food_101',
+ 'dataset_name': 'food',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/food101',
+ 'expt_dir_describe': './experiments/food101/describe',
+ 'expt_dir_gallery': './experiments/food101/gallery',
+ 'expt_dir_grouping': './experiments/food101/grouping',
+ 'expt_dir_guess': './experiments/food101/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 50,
+ 'num_classes': 101,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/food101/gallery/food_image_descriptions_attn',
+ 'path_identify_answers': './experiments/food101/identify',
+ 'path_llm_gussed_names': './experiments/food101/guess/food_llm_gussed_names',
+ 'path_llm_prompts': './experiments/food101/describe/food_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/food101/guess/food_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/food101/guess/food_llm_replies_raw',
+ 'path_references': './experiments/food101/gallery/food_image_references',
+ 'path_regions': './experiments/food101/gallery/food_image_regions',
+ 'path_vqa_answers': './experiments/food101/describe/food_attributes_pairs',
+ 'path_vqa_questions': './experiments/food101/describe/food_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "food101",
+    "num_classes": 101,
+    "config_file": "food101_all.yml",
+    "data_dir": "food_101",
+    "experiment_dir": "food101",
+    "stats_file": "food101/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/food101/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/food101"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:05,  1.27s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:08,  2.77s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.19s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.86s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.42s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.72s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:31:41
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/food101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/food101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 611 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:32:43
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x742726725880>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x742726725850>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/food101/knowledge_base
+使用数据集: food, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:32:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/food101/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/food101/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/food101/knowledge_base 加载
+图像知识库类别数: 101
+文本知识库类别数: 101
+类别描述数: 101
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x742726725850>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x742726725af0>
+📦 数据集信息: {'full_name': 'food101', 'num_classes': 101, 'config_file': 'food101_all.yml', 'data_dir': 'food_101', 'experiment_dir': 'food101', 'stats_file': 'food101/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/food101/knowledge_base/stats.json', 'experiment_dir_full': './experiments/food101'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/food101/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: food101
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/food101/images_split/images_test.json
+  类别数量: 101
+  总图像数: 30300
+  平均每类: 300.0 张
+  图像范围: 300 - 300 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 303 张图像，覆盖 97 个类别
+  平均每类: 3.1 张
+======================================================================
+test sample keys: ['hot_dog', 'seaweed_salad', 'beef_tartare', 'gyoza', 'falafel']...
+[fast and slow] 测试数据集包含 97 个类别
+  0%|          | 0/97 [00:00<?, ?it/s][2025-11-27 20:32:43] Processing fast-slow:   0%|          | 0/97 [00:00<?, ?it/s][2025-11-27 20:32:43] Processing fast-slow:   1%|          | 1/97 [00:06<09:58,  6.24s/it][2025-11-27 20:32:49] Processing fast-slow:   1%|          | 1/97 [00:06<09:58,  6.24s/it][2025-11-27 20:32:49] Processing fast-slow:   2%|▏         | 2/97 [00:06<04:10,  2.64s/it][2025-11-27 20:32:49] Processing fast-slow:   2%|▏         | 2/97 [00:06<04:10,  2.64s/it][2025-11-27 20:32:49] Processing fast-slow:   3%|▎         | 3/97 [00:12<06:48,  4.34s/it][2025-11-27 20:32:56] Processing fast-slow:   3%|▎         | 3/97 [00:12<06:48,  4.34s/it][2025-11-27 20:32:56] Processing fast-slow:   4%|▍         | 4/97 [00:30<15:05,  9.74s/it][2025-11-27 20:33:14] Processing fast-slow:   4%|▍         | 4/97 [00:30<15:05,  9.74s/it]开始分类图像: ./datasets/food_101/jpg/hot_dog/1831563.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_dog (置信度: 0.3237)
+总耗时: 0.28秒
+succ. pred cate:hot_dog, true cate:hot_dog, used_slow:False, confidence:0.3237
+开始分类图像: ./datasets/food_101/jpg/hot_dog/1424617.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_dog (置信度: 0.2932)
+总耗时: 0.04秒
+succ. pred cate:hot_dog, true cate:hot_dog, used_slow:False, confidence:0.2932
+开始分类图像: ./datasets/food_101/jpg/hot_dog/380963.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_dog (置信度: 0.2519)
+总耗时: 0.03秒
+succ. pred cate:hot_dog, true cate:hot_dog, used_slow:False, confidence:0.2519
+开始分类图像: ./datasets/food_101/jpg/hot_dog/840832.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/hot_dog/840832.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_roll_sandwich', 'hot_dog', 'pulled_pork_sandwich', 'poutine', 'takoyaki', 'hamburger', 'garlic_bread', 'beef_tartare', 'bruschetta', 'fried_calamari', 'tacos', 'crab_cakes', 'nachos', 'macaroni_and_cheese', 'beet_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:46] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:32:49] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: pulled_pork_sandwich (置信度: 0.1058)
+总耗时: 5.88秒
+failed. pred cate:pulled_pork_sandwich, true cate:hot_dog, used_slow:True, confidence:0.1058
+开始分类图像: ./datasets/food_101/jpg/seaweed_salad/1209459.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: seaweed_salad (置信度: 0.5166)
+总耗时: 0.05秒
+succ. pred cate:seaweed_salad, true cate:seaweed_salad, used_slow:False, confidence:0.5166
+开始分类图像: ./datasets/food_101/jpg/seaweed_salad/3392233.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: seaweed_salad (置信度: 0.8031)
+总耗时: 0.03秒
+succ. pred cate:seaweed_salad, true cate:seaweed_salad, used_slow:False, confidence:0.8031
+开始分类图像: ./datasets/food_101/jpg/seaweed_salad/3329215.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: seaweed_salad (置信度: 0.8097)
+总耗时: 0.04秒
+succ. pred cate:seaweed_salad, true cate:seaweed_salad, used_slow:False, confidence:0.8097
+开始分类图像: ./datasets/food_101/jpg/beef_tartare/3909208.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_tartare (置信度: 0.3782)
+总耗时: 0.09秒
+succ. pred cate:beef_tartare, true cate:beef_tartare, used_slow:False, confidence:0.3782
+开始分类图像: ./datasets/food_101/jpg/beef_tartare/1583237.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_tartare (置信度: 0.7484)
+总耗时: 0.04秒
+succ. pred cate:beef_tartare, true cate:beef_tartare, used_slow:False, confidence:0.7484
+开始分类图像: ./datasets/food_101/jpg/beef_tartare/3562074.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/beef_tartare/3562074.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['tuna_tartare', 'beef_carpaccio', 'beef_tartare', 'beet_salad', 'bruschetta', 'caprese_salad', 'crab_cakes', 'club_sandwich', 'cheese_plate', 'foie_gras', 'croque_madame', 'greek_salad', 'peking_duck']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:52] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:32:55] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: beef_tartare (置信度: 0.1245)
+总耗时: 6.20秒
+succ. pred cate:beef_tartare, true cate:beef_tartare, used_slow:True, confidence:0.1245
+开始分类图像: ./datasets/food_101/jpg/beef_tartare/548256.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_tartare (置信度: 0.3533)
+总耗时: 0.04秒
+succ. pred cate:beef_tartare, true cate:beef_tartare, used_slow:False, confidence:0.3533
+开始分类图像: ./datasets/food_101/jpg/gyoza/1404605.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/gyoza/1404605.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['takoyaki', 'bruschetta', 'beef_tartare', 'tuna_tartare', 'poutine', 'chicken_curry', 'sashimi', 'apple_pie', 'lasagna', 'sushi', 'ceviche', 'crab_cakes', 'caprese_salad', 'shrimp_and_grits', 'grilled_salmon', 'beet_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:58] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:33:01] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:33:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:08] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: sushi (置信度: 0.8500)
+总耗时: 12.78秒
+failed. pred cate:sushi, true cate:gyoza, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/gyoza/1063763.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/gyoza/1063763.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['gyoza', 'takoyaki', 'garlic_bread', 'samosa', 'french_toast', 'chicken_quesadilla', 'crab_cakes', 'pancakes', 'omelette', 'fish_and_chips', 'baklava', 'deviled_eggs', 'foie_gras', 'creme_brulee', 'gnocchi']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:11] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+[2025-11-27 20:33:14] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: gyoza (置信度: 0.1399)
+总耗时: 5.16秒
+succ. pred cate:gyoza, true cate:gyoza, used_slow:True, confidence:0.1399
+开始分类图像: ./datasets/food_101/jpg/gyoza/3902309.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: gyoza (置信度: 0.6935)
+总耗时: 0.04秒
+succ. pred cate:gyoza, true cate:gyoza, used_slow:False, confidence:0.6935
+开始分类图像: ./datasets/food_101/jpg/gyoza/3237941.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: takoyaki (置信度: 0.2939)
+总耗时: 0.04秒
+failed. pred cate:takoyaki, true cate:gyoza, used_slow:False, confidence:0.2939
+开始分类图像: ./datasets/food_101/jpg/falafel/3704806.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: breakfast_burrito (置信度: 0.2644)
+总耗时: 0.04秒
+failed. pred cate:breakfast_burrito, true cate:falafel, used_slow:False, confidence:0.2644
+开始分类图像: ./datasets/food_101/jpg/falafel/2212536.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: falafel (置信度: 0.5985)
+总耗时: 0.04秒
+succ. pred cate:falafel, true cate:falafel, used_slow:False, confidence:0.5985
+开始分类图像: ./datasets/food_101/jpg/falafel/1504180.jpg
+执行快思考...
+[2025-11-27 20:33:14] Processing fast-slow:   5%|▌         | 5/97 [00:45<17:56, 11.70s/it][2025-11-27 20:33:29] Processing fast-slow:   5%|▌         | 5/97 [00:45<17:56, 11.70s/it][2025-11-27 20:33:29] Processing fast-slow:   6%|▌         | 6/97 [01:25<32:08, 21.19s/it][2025-11-27 20:34:09] Processing fast-slow:   6%|▌         | 6/97 [01:25<32:08, 21.19s/it]快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/falafel/1504180.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['caesar_salad', 'beet_salad', 'bibimbap', 'greek_salad', 'falafel', 'pork_chop', 'poutine', 'pho', 'seaweed_salad', 'nachos', 'grilled_salmon', 'chicken_quesadilla', 'pad_thai', 'baby_back_ribs', 'steak', 'ceviche']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:17] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.45GB
+[2025-11-27 20:33:20] [显存监控] 已分配=16.96GB, 已保留=17.50GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+分类完成: caesar_salad (置信度: 0.1438)
+总耗时: 7.08秒
+succ. pred cate:caesar_salad, true cate:falafel, used_slow:True, confidence:0.1438
+开始分类图像: ./datasets/food_101/jpg/falafel/3068924.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: breakfast_burrito (置信度: 0.3237)
+总耗时: 0.05秒
+failed. pred cate:breakfast_burrito, true cate:falafel, used_slow:False, confidence:0.3237
+开始分类图像: ./datasets/food_101/jpg/falafel/1462028.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/falafel/1462028.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'falafel', 'grilled_salmon', 'bruschetta', 'chicken_quesadilla', 'tuna_tartare', 'beef_tartare', 'chicken_curry', 'fish_and_chips', 'ravioli', 'steak', 'tacos', 'fried_calamari', 'caesar_salad', 'shrimp_and_grits', 'greek_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:23] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:26] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-27 20:33:29] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: falafel (置信度: 0.8500)
+总耗时: 7.93秒
+succ. pred cate:falafel, true cate:falafel, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/falafel/1306451.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: falafel (置信度: 0.4047)
+总耗时: 0.03秒
+succ. pred cate:falafel, true cate:falafel, used_slow:False, confidence:0.4047
+开始分类图像: ./datasets/food_101/jpg/cheesecake/3812242.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/cheesecake/3812242.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['cheesecake', 'tiramisu', 'bread_pudding', 'chocolate_cake', 'baklava', 'creme_brulee', 'french_toast', 'waffles', 'cannoli', 'chocolate_mousse', 'strawberry_shortcake', 'beet_salad', 'french_onion_soup', 'tuna_tartare', 'bruschetta', 'cheese_plate', 'panna_cotta']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:32] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+[2025-11-27 20:33:35] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:38] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:33:41] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: tiramisu (置信度: 0.8500)
+总耗时: 11.83秒
+failed. pred cate:tiramisu, true cate:cheesecake, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/cheesecake/2032871.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/cheesecake/2032871.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['tiramisu', 'cheesecake', 'carrot_cake', 'panna_cotta', 'apple_pie', 'chocolate_cake', 'cheese_plate', 'red_velvet_cake', 'creme_brulee', 'foie_gras', 'cup_cakes', 'strawberry_shortcake', 'ice_cream', 'chocolate_mousse']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:44] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:33:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:52] [显存监控] 已分配=16.96GB, 已保留=17.52GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: cheesecake (置信度: 0.9500)
+总耗时: 13.35秒
+succ. pred cate:cheesecake, true cate:cheesecake, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/cheesecake/1609234.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/cheesecake/1609234.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bread_pudding', 'cheesecake', 'panna_cotta', 'tiramisu', 'apple_pie', 'strawberry_shortcake', 'creme_brulee', 'caprese_salad', 'beet_salad', 'cannoli', 'red_velvet_cake', 'cheese_plate', 'chocolate_mousse']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:33:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:59] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:04] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:34:07] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: cheesecake (置信度: 0.9500)
+总耗时: 14.39秒
+succ. pred cate:cheesecake, true cate:cheesecake, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/cheesecake/2559918.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cheesecake (置信度: 0.5952)
+总耗时: 0.04秒
+succ. pred cate:cheesecake, true cate:cheesecake, used_slow:False, confidence:0.5952
+开始分类图像: ./datasets/food_101/jpg/chocolate_mousse/1722515.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chocolate_mousse/1722515.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chocolate_mousse', 'apple_pie', 'tiramisu', 'chicken_curry', 'foie_gras', 'creme_brulee', 'beef_carpaccio', 'beet_salad', 'pancakes', 'panna_cotta', 'strawberry_shortcake', 'cheese_plate', 'carrot_cake', 'crab_cakes', 'bruschetta']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:34:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:09] Processing fast-slow:   7%|▋         | 7/97 [02:03<39:50, 26.56s/it][2025-11-27 20:34:46] Processing fast-slow:   7%|▋         | 7/97 [02:03<39:50, 26.56s/it][2025-11-27 20:34:46] Processing fast-slow:   8%|▊         | 8/97 [02:12<31:09, 21.00s/it][2025-11-27 20:34:55] Processing fast-slow:   8%|▊         | 8/97 [02:12<31:09, 21.00s/it][2025-11-27 20:34:14] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+[2025-11-27 20:34:17] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: chocolate_mousse (置信度: 0.1299)
+总耗时: 9.92秒
+succ. pred cate:chocolate_mousse, true cate:chocolate_mousse, used_slow:True, confidence:0.1299
+开始分类图像: ./datasets/food_101/jpg/chocolate_mousse/3747713.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chocolate_mousse/3747713.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['creme_brulee', 'chocolate_mousse', 'beef_tartare', 'french_onion_soup', 'tiramisu', 'bread_pudding', 'chocolate_cake', 'lobster_bisque', 'filet_mignon', 'hot_and_sour_soup', 'strawberry_shortcake', 'panna_cotta', 'bruschetta', 'carrot_cake', 'cheese_plate']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:20] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:23] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:34:26] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: chocolate_mousse (置信度: 0.8500)
+总耗时: 7.83秒
+succ. pred cate:chocolate_mousse, true cate:chocolate_mousse, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/chocolate_mousse/2866623.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chocolate_mousse/2866623.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['french_onion_soup', 'chocolate_mousse', 'tiramisu', 'apple_pie', 'bread_pudding', 'creme_brulee', 'beef_tartare', 'ice_cream', 'hot_and_sour_soup', 'foie_gras', 'panna_cotta', 'lasagna', 'strawberry_shortcake', 'clam_chowder', 'beet_salad', 'carrot_cake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:29] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+[2025-11-27 20:34:32] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: french_onion_soup (置信度: 0.1555)
+总耗时: 7.47秒
+succ. pred cate:french_onion_soup, true cate:chocolate_mousse, used_slow:True, confidence:0.1555
+开始分类图像: ./datasets/food_101/jpg/chocolate_mousse/3265477.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chocolate_mousse (置信度: 0.2509)
+总耗时: 0.05秒
+succ. pred cate:chocolate_mousse, true cate:chocolate_mousse, used_slow:False, confidence:0.2509
+开始分类图像: ./datasets/food_101/jpg/chocolate_mousse/766461.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chocolate_mousse/766461.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['tiramisu', 'apple_pie', 'chocolate_cake', 'carrot_cake', 'cheesecake', 'red_velvet_cake', 'chocolate_mousse', 'bread_pudding', 'waffles', 'baklava', 'strawberry_shortcake', 'cup_cakes', 'panna_cotta']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:35] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:34:38] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:34:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:44] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: cheesecake (置信度: 0.8500)
+总耗时: 12.35秒
+succ. pred cate:cheesecake, true cate:chocolate_mousse, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/frozen_yogurt/541162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/frozen_yogurt/541162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['frozen_yogurt', 'tiramisu', 'chocolate_mousse', 'cannoli', 'ice_cream', 'cheesecake', 'bread_pudding', 'apple_pie', 'nachos', 'churros', 'hummus', 'waffles', 'strawberry_shortcake', 'clam_chowder']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:34:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:52] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+[2025-11-27 20:34:55] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: frozen_yogurt (置信度: 0.1690)
+总耗时: 9.02秒
+succ. pred cate:frozen_yogurt, true cate:frozen_yogurt, used_slow:True, confidence:0.1690
+开始分类图像: ./datasets/food_101/jpg/frozen_yogurt/1540603.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: frozen_yogurt (置信度: 0.9233)
+总耗时: 0.05秒
+succ. pred cate:frozen_yogurt, true cate:frozen_yogurt, used_slow:False, confidence:0.9233
+开始分类图像: ./datasets/food_101/jpg/frozen_yogurt/185773.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: frozen_yogurt (置信度: 0.6551)
+总耗时: 0.03秒
+succ. pred cate:frozen_yogurt, true cate:frozen_yogurt, used_slow:False, confidence:0.6551
+开始分类图像: ./datasets/food_101/jpg/clam_chowder/3322877.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/clam_chowder/3322877.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'clam_chowder', 'french_onion_soup', 'creme_brulee', 'hot_and_sour_soup', 'miso_soup', 'hummus', 'tiramisu', 'risotto', 'bread_pudding', 'macaroni_and_cheese', 'spaghetti_carbonara', 'lasagna', 'cheesecake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:58] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:35:01] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:04] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:35:07] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: clam_chowder (置信度: 0.8500)
+总耗时: 12.96秒
+succ. pred cate:clam_chowder, true cate:clam_chowder, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/clam_chowder/655847.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_bisque (置信度: 0.2649)
+总耗时: 0.04秒
+succ. pred cate:lobster_bisque, true cate:clam_chowder, used_slow:False, confidence:0.2649
+开始分类图像: ./datasets/food_101/jpg/clam_chowder/1783836.jpg
+执行快思考...
+[2025-11-27 20:34:55] Processing fast-slow:   9%|▉         | 9/97 [02:40<34:05, 23.24s/it][2025-11-27 20:35:23] Processing fast-slow:   9%|▉         | 9/97 [02:40<34:05, 23.24s/it][2025-11-27 20:35:23] Processing fast-slow:  10%|█         | 10/97 [03:23<42:25, 29.26s/it][2025-11-27 20:36:06] Processing fast-slow:  10%|█         | 10/97 [03:23<42:25, 29.26s/it][2025-11-27 20:36:06] Processing fast-slow:  11%|█▏        | 11/97 [03:23<29:09, 20.34s/it][2025-11-27 20:36:06] Processing fast-slow:  11%|█▏        | 11/97 [03:23<29:09, 20.34s/it]快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/clam_chowder/1783836.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'french_onion_soup', 'clam_chowder', 'hot_and_sour_soup', 'creme_brulee', 'bread_pudding', 'hummus', 'miso_soup', 'risotto', 'macaroni_and_cheese', 'lasagna', 'cheese_plate', 'shrimp_and_grits']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:35:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:14] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:35:18] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:21] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: bread_pudding (置信度: 0.8500)
+总耗时: 15.12秒
+failed. pred cate:bread_pudding, true cate:clam_chowder, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/clam_chowder/3801894.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: clam_chowder (置信度: 0.5248)
+总耗时: 0.04秒
+succ. pred cate:clam_chowder, true cate:clam_chowder, used_slow:False, confidence:0.5248
+开始分类图像: ./datasets/food_101/jpg/apple_pie/3280622.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/apple_pie/3280622.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['apple_pie', 'tiramisu', 'baklava', 'bread_pudding', 'waffles', 'churros', 'cannoli', 'creme_brulee', 'beignets', 'samosa', 'strawberry_shortcake', 'panna_cotta', 'lasagna', 'carrot_cake', 'chocolate_mousse', 'french_onion_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:35:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:28] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:35:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:35] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: bread_pudding (置信度: 0.8500)
+总耗时: 14.76秒
+succ. pred cate:bread_pudding, true cate:apple_pie, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/apple_pie/1889575.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/apple_pie/1889575.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['samosa', 'baklava', 'pancakes', 'beignets', 'apple_pie', 'gyoza', 'french_toast', 'bread_pudding', 'pork_chop', 'tacos', 'hot_and_sour_soup', 'grilled_cheese_sandwich', 'pulled_pork_sandwich', 'chicken_wings', 'waffles']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:35:38] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:41] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:35:44] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'apple pie' -> 'apple_pie'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:47] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:35:50] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: apple_pie (置信度: 0.9500)
+总耗时: 13.43秒
+succ. pred cate:apple_pie, true cate:apple_pie, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/apple_pie/2861144.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/apple_pie/2861144.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garlic_bread', 'samosa', 'baklava', 'french_toast', 'foie_gras', 'grilled_cheese_sandwich', 'omelette', 'creme_brulee', 'french_onion_soup', 'lobster_bisque', 'cheesecake', 'takoyaki', 'sashimi', 'dumplings', 'deviled_eggs']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:54] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:35:57] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:36:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:05] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: baklava (置信度: 0.8500)
+总耗时: 14.51秒
+failed. pred cate:baklava, true cate:apple_pie, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/apple_pie/507349.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: apple_pie (置信度: 0.4336)
+总耗时: 0.04秒
+succ. pred cate:apple_pie, true cate:apple_pie, used_slow:False, confidence:0.4336
+开始分类图像: ./datasets/food_101/jpg/sushi/1673054.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sushi (置信度: 0.6037)
+总耗时: 0.04秒
+succ. pred cate:sushi, true cate:sushi, used_slow:False, confidence:0.6037
+开始分类图像: ./datasets/food_101/jpg/sushi/45067.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sushi (置信度: 0.5285)
+总耗时: 0.04秒
+succ. pred cate:sushi, true cate:sushi, used_slow:False, confidence:0.5285
+开始分类图像: ./datasets/food_101/jpg/sushi/1693204.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sushi (置信度: 0.4382)
+总耗时: 0.04秒
+succ. pred cate:sushi, true cate:sushi, used_slow:False, confidence:0.4382
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/2820104.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caesar_salad (置信度: 0.3116)
+总耗时: 0.04秒
+succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:False, confidence:0.3116
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/3589253.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caesar_salad (置信度: 0.4064)
+总耗时: 0.04秒
+succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:False, confidence:0.4064
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/3865100.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caesar_salad (置信度: 0.3609)
+总耗时: 0.06秒
+succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:False, confidence:0.3609
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/70706.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caesar_salad (置信度: 0.2849)
+总耗时: 0.04秒
+[2025-11-27 20:36:06] Processing fast-slow:  12%|█▏        | 12/97 [03:31<23:26, 16.55s/it][2025-11-27 20:36:14] Processing fast-slow:  12%|█▏        | 12/97 [03:31<23:26, 16.55s/it][2025-11-27 20:36:14] Processing fast-slow:  13%|█▎        | 13/97 [03:45<22:14, 15.89s/it][2025-11-27 20:36:29] Processing fast-slow:  13%|█▎        | 13/97 [03:45<22:14, 15.89s/it][2025-11-27 20:36:29] Processing fast-slow:  14%|█▍        | 14/97 [03:55<19:19, 13.98s/it][2025-11-27 20:36:38] Processing fast-slow:  14%|█▍        | 14/97 [03:55<19:19, 13.98s/it]succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:False, confidence:0.2849
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/558762.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caesar_salad (置信度: 0.2244)
+总耗时: 0.04秒
+succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:False, confidence:0.2244
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/1439476.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caesar_salad (置信度: 0.5930)
+总耗时: 0.04秒
+succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:False, confidence:0.5930
+开始分类图像: ./datasets/food_101/jpg/caesar_salad/3520407.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/caesar_salad/3520407.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['caesar_salad', 'seaweed_salad', 'miso_soup', 'pho', 'pad_thai', 'bibimbap', 'ramen', 'hot_and_sour_soup', 'french_fries', 'onion_rings', 'caprese_salad', 'sashimi', 'fried_calamari']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:36:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:12] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: caesar_salad (置信度: 0.1549)
+总耗时: 7.60秒
+succ. pred cate:caesar_salad, true cate:caesar_salad, used_slow:True, confidence:0.1549
+开始分类图像: ./datasets/food_101/jpg/hot_and_sour_soup/3556990.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/hot_and_sour_soup/3556990.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ramen', 'miso_soup', 'hot_and_sour_soup', 'pho', 'french_onion_soup', 'chicken_curry', 'poutine', 'lobster_bisque', 'dumplings', 'takoyaki', 'clam_chowder', 'bibimbap', 'fried_rice', 'pad_thai']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:36:16] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:19] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.46GB
+[2025-11-27 20:36:22] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: hot_and_sour_soup (置信度: 0.8500)
+总耗时: 8.66秒
+succ. pred cate:hot_and_sour_soup, true cate:hot_and_sour_soup, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/hot_and_sour_soup/1960553.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_and_sour_soup (置信度: 0.5203)
+总耗时: 0.05秒
+succ. pred cate:hot_and_sour_soup, true cate:hot_and_sour_soup, used_slow:False, confidence:0.5203
+开始分类图像: ./datasets/food_101/jpg/hot_and_sour_soup/2786483.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_and_sour_soup (置信度: 0.3104)
+总耗时: 0.04秒
+succ. pred cate:hot_and_sour_soup, true cate:hot_and_sour_soup, used_slow:False, confidence:0.3104
+开始分类图像: ./datasets/food_101/jpg/hot_and_sour_soup/1327716.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_and_sour_soup (置信度: 0.7009)
+总耗时: 0.04秒
+succ. pred cate:hot_and_sour_soup, true cate:hot_and_sour_soup, used_slow:False, confidence:0.7009
+开始分类图像: ./datasets/food_101/jpg/hot_and_sour_soup/128809.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_and_sour_soup (置信度: 0.4948)
+总耗时: 0.04秒
+succ. pred cate:hot_and_sour_soup, true cate:hot_and_sour_soup, used_slow:False, confidence:0.4948
+开始分类图像: ./datasets/food_101/jpg/hot_and_sour_soup/3094102.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/hot_and_sour_soup/3094102.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['hot_and_sour_soup', 'pho', 'french_onion_soup', 'miso_soup', 'ramen', 'lobster_bisque', 'pad_thai', 'chicken_quesadilla', 'chicken_curry', 'gyoza', 'clam_chowder', 'fried_rice', 'lasagna']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:25] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:36:28] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: hot_and_sour_soup (置信度: 0.1956)
+总耗时: 5.54秒
+succ. pred cate:hot_and_sour_soup, true cate:hot_and_sour_soup, used_slow:True, confidence:0.1956
+开始分类图像: ./datasets/food_101/jpg/club_sandwich/415523.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/club_sandwich/415523.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['club_sandwich', 'hamburger', 'french_fries', 'bruschetta', 'tuna_tartare', 'beef_tartare', 'grilled_cheese_sandwich', 'fish_and_chips', 'lobster_roll_sandwich', 'poutine', 'caesar_salad', 'caprese_salad', 'eggs_benedict', 'croque_madame', 'fried_calamari']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:31] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+[2025-11-27 20:36:34] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+[2025-11-27 20:36:37] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+分类完成: club_sandwich (置信度: 0.1859)
+总耗时: 9.48秒
+succ. pred cate:club_sandwich, true cate:club_sandwich, used_slow:True, confidence:0.1859
+开始分类图像: ./datasets/food_101/jpg/club_sandwich/2466501.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: club_sandwich (置信度: 0.3189)
+总耗时: 0.04秒
+succ. pred cate:club_sandwich, true cate:club_sandwich, used_slow:False, confidence:0.3189
+开始分类图像: ./datasets/food_101/jpg/club_sandwich/3323647.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: club_sandwich (置信度: 0.2369)
+总耗时: 0.04秒
+succ. pred cate:club_sandwich, true cate:club_sandwich, used_slow:False, confidence:0.2369
+开始分类图像: ./datasets/food_101/jpg/onion_rings/2959045.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: onion_rings (置信度: 0.6082)
+总耗时: 0.06秒
+succ. pred cate:onion_rings, true cate:onion_rings, used_slow:False, confidence:0.6082
+开始分类图像: ./datasets/food_101/jpg/onion_rings/1620661.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/onion_rings/1620661.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['baklava', 'takoyaki', 'onion_rings', 'gyoza', 'lasagna', 'poutine', 'beef_tartare', 'fried_calamari', 'french_onion_soup', 'fish_and_chips', 'samosa', 'ramen', 'peking_duck', 'bibimbap', 'spring_rolls', 'pho', 'pad_thai', 'dumplings']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:40] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+[2025-11-27 20:36:38] Processing fast-slow:  15%|█▌        | 15/97 [04:07<18:15, 13.36s/it][2025-11-27 20:36:50] Processing fast-slow:  15%|█▌        | 15/97 [04:07<18:15, 13.36s/it][2025-11-27 20:36:50] Processing fast-slow:  15%|█▌        | 15/97 [04:07<18:15, 13.36s/it][2025-11-27 20:36:50] Processing fast-slow:  18%|█▊        | 17/97 [04:07<09:40,  7.26s/it][2025-11-27 20:36:50] Processing fast-slow:  18%|█▊        | 17/97 [04:07<09:40,  7.26s/it][2025-11-27 20:36:50] Processing fast-slow:  19%|█▊        | 18/97 [04:16<10:07,  7.69s/it][2025-11-27 20:36:59] Processing fast-slow:  19%|█▊        | 18/97 [04:16<10:07,  7.69s/it][2025-11-27 20:36:59] Processing fast-slow:  20%|█▉        | 19/97 [04:16<07:25,  5.71s/it][2025-11-27 20:37:00] Processing fast-slow:  20%|█▉        | 19/97 [04:16<07:25,  5.71s/it]快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:36:48] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: onion_rings (置信度: 0.9500)
+总耗时: 11.76秒
+succ. pred cate:onion_rings, true cate:onion_rings, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/onion_rings/1741220.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: onion_rings (置信度: 0.3093)
+总耗时: 0.04秒
+succ. pred cate:onion_rings, true cate:onion_rings, used_slow:False, confidence:0.3093
+开始分类图像: ./datasets/food_101/jpg/onion_rings/1585332.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: onion_rings (置信度: 0.5067)
+总耗时: 0.04秒
+succ. pred cate:onion_rings, true cate:onion_rings, used_slow:False, confidence:0.5067
+开始分类图像: ./datasets/food_101/jpg/onion_rings/1298424.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: onion_rings (置信度: 0.5013)
+总耗时: 0.04秒
+succ. pred cate:onion_rings, true cate:onion_rings, used_slow:False, confidence:0.5013
+开始分类图像: ./datasets/food_101/jpg/risotto/1150297.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: risotto (置信度: 0.5032)
+总耗时: 0.04秒
+succ. pred cate:risotto, true cate:risotto, used_slow:False, confidence:0.5032
+开始分类图像: ./datasets/food_101/jpg/cannoli/2450668.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cannoli (置信度: 0.6996)
+总耗时: 0.05秒
+succ. pred cate:cannoli, true cate:cannoli, used_slow:False, confidence:0.6996
+开始分类图像: ./datasets/food_101/jpg/cannoli/1141074.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cannoli (置信度: 0.2893)
+总耗时: 0.04秒
+succ. pred cate:cannoli, true cate:cannoli, used_slow:False, confidence:0.2893
+开始分类图像: ./datasets/food_101/jpg/cannoli/1641833.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cannoli (置信度: 0.7020)
+总耗时: 0.07秒
+succ. pred cate:cannoli, true cate:cannoli, used_slow:False, confidence:0.7020
+开始分类图像: ./datasets/food_101/jpg/cannoli/1074960.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cannoli (置信度: 0.5100)
+总耗时: 0.04秒
+succ. pred cate:cannoli, true cate:cannoli, used_slow:False, confidence:0.5100
+开始分类图像: ./datasets/food_101/jpg/cannoli/1169899.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cannoli (置信度: 0.3717)
+总耗时: 0.04秒
+succ. pred cate:cannoli, true cate:cannoli, used_slow:False, confidence:0.3717
+开始分类图像: ./datasets/food_101/jpg/cannoli/3836990.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cannoli (置信度: 0.7461)
+总耗时: 0.04秒
+succ. pred cate:cannoli, true cate:cannoli, used_slow:False, confidence:0.7461
+开始分类图像: ./datasets/food_101/jpg/bibimbap/1219729.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/bibimbap/1219729.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chicken_curry', 'hot_and_sour_soup', 'pad_thai', 'fried_rice', 'takoyaki', 'french_onion_soup', 'pho', 'ramen', 'sushi', 'bibimbap', 'risotto', 'shrimp_and_grits', 'miso_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:36:52] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:36:55] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:58] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: pad_thai (置信度: 0.8500)
+总耗时: 8.77秒
+failed. pred cate:pad_thai, true cate:bibimbap, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/bibimbap/2357357.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bibimbap (置信度: 0.6330)
+总耗时: 0.04秒
+succ. pred cate:bibimbap, true cate:bibimbap, used_slow:False, confidence:0.6330
+开始分类图像: ./datasets/food_101/jpg/bibimbap/1565143.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bibimbap (置信度: 0.5978)
+总耗时: 0.04秒
+succ. pred cate:bibimbap, true cate:bibimbap, used_slow:False, confidence:0.5978
+开始分类图像: ./datasets/food_101/jpg/bibimbap/1590528.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bibimbap (置信度: 0.5829)
+总耗时: 0.04秒
+succ. pred cate:bibimbap, true cate:bibimbap, used_slow:False, confidence:0.5829
+开始分类图像: ./datasets/food_101/jpg/bibimbap/617046.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bibimbap (置信度: 0.7223)
+总耗时: 0.04秒
+succ. pred cate:bibimbap, true cate:bibimbap, used_slow:False, confidence:0.7223
+开始分类图像: ./datasets/food_101/jpg/bibimbap/3385001.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bibimbap (置信度: 0.5354)
+总耗时: 0.04秒
+succ. pred cate:bibimbap, true cate:bibimbap, used_slow:False, confidence:0.5354
+开始分类图像: ./datasets/food_101/jpg/bibimbap/1298106.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bibimbap (置信度: 0.8119)
+总耗时: 0.03秒
+succ. pred cate:bibimbap, true cate:bibimbap, used_slow:False, confidence:0.8119
+开始分类图像: ./datasets/food_101/jpg/hamburger/2975573.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hamburger (置信度: 0.5603)
+总耗时: 0.03秒
+succ. pred cate:hamburger, true cate:hamburger, used_slow:False, confidence:0.5603
+开始分类图像: ./datasets/food_101/jpg/hamburger/639957.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hamburger (置信度: 0.6220)
+总耗时: 0.05秒
+succ. pred cate:hamburger, true cate:hamburger, used_slow:False, confidence:0.6220
+开始分类图像: ./datasets/food_101/jpg/hamburger/2184165.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hamburger (置信度: 0.6378)
+总耗时: 0.03秒
+succ. pred cate:hamburger, true cate:hamburger, used_slow:False, confidence:0.6378
+开始分类图像: ./datasets/food_101/jpg/foie_gras/3029045.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/foie_gras/3029045.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'beef_tartare', 'ceviche', 'tuna_tartare', 'beet_salad', 'nachos', 'beef_carpaccio', 'hot_and_sour_soup', 'chicken_curry', 'miso_soup', 'deviled_eggs', 'bruschetta', 'caprese_salad', 'sashimi', 'cheese_plate']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:01] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+[2025-11-27 20:37:04] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+[2025-11-27 20:37:07] [显存监控] 已分配=16.99GB, 已保留=17.69GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: lobster_bisque (置信度: 0.1430)
+总耗时: 7.49秒
+failed. pred cate:lobster_bisque, true cate:foie_gras, used_slow:True, confidence:0.1430
+开始分类图像: ./datasets/food_101/jpg/foie_gras/273506.jpg
+执行快思考...
+快思考结果确定，直接返回...
+[2025-11-27 20:37:00] Processing fast-slow:  21%|██        | 20/97 [04:24<07:57,  6.20s/it][2025-11-27 20:37:07] Processing fast-slow:  21%|██        | 20/97 [04:24<07:57,  6.20s/it][2025-11-27 20:37:07] Processing fast-slow:  22%|██▏       | 21/97 [04:29<07:37,  6.01s/it][2025-11-27 20:37:13] Processing fast-slow:  22%|██▏       | 21/97 [04:29<07:37,  6.01s/it][2025-11-27 20:37:13] Processing fast-slow:  23%|██▎       | 22/97 [04:55<14:32, 11.63s/it][2025-11-27 20:37:38] Processing fast-slow:  23%|██▎       | 22/97 [04:55<14:32, 11.63s/it]分类完成: grilled_cheese_sandwich (置信度: 0.2487)
+总耗时: 0.04秒
+failed. pred cate:grilled_cheese_sandwich, true cate:foie_gras, used_slow:False, confidence:0.2487
+开始分类图像: ./datasets/food_101/jpg/eggs_benedict/1546303.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: eggs_benedict (置信度: 0.2226)
+总耗时: 0.04秒
+succ. pred cate:eggs_benedict, true cate:eggs_benedict, used_slow:False, confidence:0.2226
+开始分类图像: ./datasets/food_101/jpg/eggs_benedict/2549490.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/eggs_benedict/2549490.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['eggs_benedict', 'french_toast', 'bruschetta', 'croque_madame', 'poutine', 'omelette', 'huevos_rancheros', 'caprese_salad', 'deviled_eggs', 'garlic_bread', 'greek_salad', 'grilled_salmon', 'caesar_salad', 'crab_cakes', 'shrimp_and_grits']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:10] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: eggs_benedict (置信度: 0.1555)
+总耗时: 5.48秒
+succ. pred cate:eggs_benedict, true cate:eggs_benedict, used_slow:True, confidence:0.1555
+开始分类图像: ./datasets/food_101/jpg/spring_rolls/3521501.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/spring_rolls/3521501.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['cannoli', 'gnocchi', 'bruschetta', 'samosa', 'gyoza', 'baklava', 'spring_rolls', 'takoyaki', 'garlic_bread', 'sushi', 'crab_cakes', 'beet_salad', 'deviled_eggs', 'caprese_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:37:13] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:16] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:37:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:23] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: spring_rolls (置信度: 0.9500)
+总耗时: 12.13秒
+succ. pred cate:spring_rolls, true cate:spring_rolls, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/spring_rolls/2137706.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/spring_rolls/2137706.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['breakfast_burrito', 'samosa', 'spring_rolls', 'gyoza', 'chicken_quesadilla', 'baklava', 'nachos', 'hummus', 'dumplings', 'chicken_curry', 'tacos', 'bruschetta', 'pad_thai', 'pho']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:37:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:30] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:37:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:37] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: spring_rolls (置信度: 0.9500)
+总耗时: 13.55秒
+succ. pred cate:spring_rolls, true cate:spring_rolls, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/2714301.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/2714301.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['panna_cotta', 'apple_pie', 'caprese_salad', 'strawberry_shortcake', 'bread_pudding', 'cheesecake', 'lasagna', 'red_velvet_cake', 'beef_carpaccio', 'beet_salad', 'takoyaki', 'chocolate_mousse', 'bruschetta', 'creme_brulee']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:37:42] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:45] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: panna_cotta (置信度: 0.1333)
+总耗时: 8.87秒
+succ. pred cate:panna_cotta, true cate:panna_cotta, used_slow:True, confidence:0.1333
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/1710156.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/1710156.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['caprese_salad', 'panna_cotta', 'lobster_bisque', 'bread_pudding', 'strawberry_shortcake', 'apple_pie', 'french_toast', 'beet_salad', 'creme_brulee', 'waffles', 'bruschetta', 'cheese_plate', 'croque_madame', 'french_onion_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:37:48] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:51] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:37:59] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: panna_cotta (置信度: 0.9500)
+总耗时: 13.34秒
+succ. pred cate:panna_cotta, true cate:panna_cotta, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/3713349.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/3713349.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['panna_cotta', 'cheesecake', 'beet_salad', 'red_velvet_cake', 'caprese_salad', 'cheese_plate', 'frozen_yogurt', 'strawberry_shortcake', 'chocolate_mousse', 'bread_pudding', 'carrot_cake', 'tiramisu', 'hummus', 'foie_gras', 'deviled_eggs']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:02] [显存监控] 已分配=16.94GB, 已保留=17.23GB, 空闲=30.47GB
+[2025-11-27 20:38:05] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'panna cotta' -> 'panna_cotta'
+分类完成: panna_cotta (置信度: 0.1674)
+总耗时: 7.29秒
+succ. pred cate:panna_cotta, true cate:panna_cotta, used_slow:True, confidence:0.1674
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/1277078.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/1277078.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:37:38] Processing fast-slow:  24%|██▎       | 23/97 [06:15<38:46, 31.44s/it][2025-11-27 20:38:58] Processing fast-slow:  24%|██▎       | 23/97 [06:15<38:46, 31.44s/it][2025-11-27 20:38:58] Processing fast-slow:  24%|██▎       | 23/97 [06:15<38:46, 31.44s/it][2025-11-27 20:38:58] Processing fast-slow:  26%|██▌       | 25/97 [06:15<20:41, 17.24s/it][2025-11-27 20:38:58] Processing fast-slow:  26%|██▌       | 25/97 [06:15<20:41, 17.24s/it]快思考Top-10候选类别: ['beet_salad', 'chocolate_mousse', 'panna_cotta', 'beef_carpaccio', 'cheesecake', 'caprese_salad', 'red_velvet_cake', 'chocolate_cake', 'foie_gras', 'beef_tartare', 'strawberry_shortcake', 'cheese_plate', 'french_onion_soup', 'tuna_tartare', 'bruschetta', 'apple_pie']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:08] [显存监控] 已分配=16.97GB, 已保留=17.35GB, 空闲=30.43GB
+[2025-11-27 20:38:11] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+[2025-11-27 20:38:14] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'panna cotta' -> 'panna_cotta'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:18] [显存监控] 已分配=16.97GB, 已保留=17.32GB, 空闲=30.44GB
+[2025-11-27 20:38:21] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: panna cotta (置信度: 0.8500)
+总耗时: 14.19秒
+succ. pred cate:panna cotta, true cate:panna_cotta, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/3866959.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/3866959.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bread_pudding', 'panna_cotta', 'beet_salad', 'cheesecake', 'french_toast', 'beignets', 'creme_brulee', 'baklava', 'pancakes', 'cannoli', 'strawberry_shortcake', 'apple_pie', 'cheese_plate', 'bruschetta', 'tuna_tartare', 'french_onion_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:24] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+[2025-11-27 20:38:27] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:38:30] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'panna cotta' -> 'panna_cotta'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:33] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:38:36] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: panna_cotta (置信度: 0.8500)
+总耗时: 15.30秒
+succ. pred cate:panna_cotta, true cate:panna_cotta, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/97774.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/97774.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chocolate_mousse', 'panna_cotta', 'beet_salad', 'tiramisu', 'caprese_salad', 'cheesecake', 'beef_carpaccio', 'bread_pudding', 'chocolate_cake', 'chicken_curry', 'apple_pie', 'strawberry_shortcake', 'red_velvet_cake', 'cheese_plate', 'pancakes']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:38:39] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:42] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:45] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: panna cotta (置信度: 0.9500)
+总耗时: 10.59秒
+succ. pred cate:panna cotta, true cate:panna_cotta, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/panna_cotta/3220782.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/panna_cotta/3220782.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'tiramisu', 'clam_chowder', 'french_onion_soup', 'miso_soup', 'hot_and_sour_soup', 'hummus', 'panna_cotta', 'creme_brulee', 'chocolate_mousse', 'onion_rings', 'edamame', 'macaroni_and_cheese']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:48] [显存监控] 已分配=16.96GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-27 20:38:51] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:54] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:38:57] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: creme_brulee (置信度: 0.8000)
+总耗时: 10.39秒
+failed. pred cate:creme_brulee, true cate:panna_cotta, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/food_101/jpg/edamame/2173115.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: edamame (置信度: 0.9510)
+总耗时: 0.04秒
+succ. pred cate:edamame, true cate:edamame, used_slow:False, confidence:0.9510
+开始分类图像: ./datasets/food_101/jpg/edamame/3669870.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: edamame (置信度: 0.3814)
+总耗时: 0.04秒
+succ. pred cate:edamame, true cate:edamame, used_slow:False, confidence:0.3814
+开始分类图像: ./datasets/food_101/jpg/guacamole/3446253.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: guacamole (置信度: 0.3913)
+总耗时: 0.03秒
+succ. pred cate:guacamole, true cate:guacamole, used_slow:False, confidence:0.3913
+开始分类图像: ./datasets/food_101/jpg/guacamole/3038695.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: guacamole (置信度: 0.4887)
+总耗时: 0.04秒
+succ. pred cate:guacamole, true cate:guacamole, used_slow:False, confidence:0.4887
+开始分类图像: ./datasets/food_101/jpg/guacamole/822908.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: guacamole (置信度: 0.4977)
+总耗时: 0.03秒
+succ. pred cate:guacamole, true cate:guacamole, used_slow:False, confidence:0.4977
+开始分类图像: ./datasets/food_101/jpg/peking_duck/725170.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/peking_duck/725170.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['peking_duck', 'fish_and_chips', 'pork_chop', 'baby_back_ribs', 'grilled_salmon', 'samosa', 'chicken_wings', 'garlic_bread', 'foie_gras', 'poutine', 'french_toast', 'baklava', 'sashimi', 'deviled_eggs', 'takoyaki', 'caprese_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:39:00] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:03] [显存监控] 已分配=16.97GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+分类完成: peking_duck (置信度: 0.1302)
+总耗时: 7.01秒
+succ. pred cate:peking_duck, true cate:peking_duck, used_slow:True, confidence:0.1302
+[2025-11-27 20:38:58] Processing fast-slow:  27%|██▋       | 26/97 [06:36<21:31, 18.19s/it][2025-11-27 20:39:20] Processing fast-slow:  27%|██▋       | 26/97 [06:36<21:31, 18.19s/it][2025-11-27 20:39:20] Processing fast-slow:  28%|██▊       | 27/97 [06:55<21:30, 18.43s/it][2025-11-27 20:39:39] Processing fast-slow:  28%|██▊       | 27/97 [06:55<21:30, 18.43s/it][2025-11-27 20:39:39] Processing fast-slow:  29%|██▉       | 28/97 [07:07<19:02, 16.56s/it][2025-11-27 20:39:50] Processing fast-slow:  29%|██▉       | 28/97 [07:07<19:02, 16.56s/it]开始分类图像: ./datasets/food_101/jpg/peking_duck/2829721.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: peking_duck (置信度: 0.3561)
+总耗时: 0.04秒
+succ. pred cate:peking_duck, true cate:peking_duck, used_slow:False, confidence:0.3561
+开始分类图像: ./datasets/food_101/jpg/peking_duck/1236012.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/peking_duck/1236012.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['baby_back_ribs', 'peking_duck', 'chicken_wings', 'pork_chop', 'gyoza', 'spring_rolls', 'prime_rib', 'chicken_quesadilla', 'pizza', 'tacos', 'garlic_bread', 'samosa', 'baklava', 'takoyaki', 'dumplings', 'hot_and_sour_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:39:07] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:10] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:39:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:17] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: peking_duck (置信度: 0.8500)
+总耗时: 14.03秒
+succ. pred cate:peking_duck, true cate:peking_duck, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/peking_duck/1673483.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: peking_duck (置信度: 0.2348)
+总耗时: 0.04秒
+succ. pred cate:peking_duck, true cate:peking_duck, used_slow:False, confidence:0.2348
+开始分类图像: ./datasets/food_101/jpg/bruschetta/2192484.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/bruschetta/2192484.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'bruschetta', 'beef_tartare', 'tuna_tartare', 'takoyaki', 'garlic_bread', 'grilled_salmon', 'beef_carpaccio', 'caprese_salad', 'gnocchi', 'croque_madame', 'filet_mignon', 'beet_salad', 'lasagna']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:39:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:24] [显存监控] 已分配=16.97GB, 已保留=17.68GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:27] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: bruschetta (置信度: 0.9000)
+总耗时: 8.71秒
+succ. pred cate:bruschetta, true cate:bruschetta, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/food_101/jpg/bruschetta/2107336.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/bruschetta/2107336.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bruschetta', 'crab_cakes', 'caprese_salad', 'beet_salad', 'takoyaki', 'beef_carpaccio', 'tuna_tartare', 'beef_tartare', 'french_toast', 'garlic_bread', 'shrimp_and_grits', 'eggs_benedict', 'gnocchi']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:30] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-27 20:39:33] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: bruschetta (置信度: 0.1581)
+总耗时: 5.80秒
+succ. pred cate:bruschetta, true cate:bruschetta, used_slow:True, confidence:0.1581
+开始分类图像: ./datasets/food_101/jpg/bruschetta/2993950.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/bruschetta/2993950.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bruschetta', 'beef_tartare', 'tuna_tartare', 'beef_carpaccio', 'caprese_salad', 'takoyaki', 'garlic_bread', 'crab_cakes', 'gnocchi', 'sushi', 'beet_salad', 'tacos', 'sashimi', 'oysters', 'lasagna', 'fried_calamari']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:36] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: bruschetta (置信度: 0.1662)
+总耗时: 4.60秒
+succ. pred cate:bruschetta, true cate:bruschetta, used_slow:True, confidence:0.1662
+开始分类图像: ./datasets/food_101/jpg/bruschetta/261311.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bruschetta (置信度: 0.5343)
+总耗时: 0.03秒
+succ. pred cate:bruschetta, true cate:bruschetta, used_slow:False, confidence:0.5343
+开始分类图像: ./datasets/food_101/jpg/bread_pudding/3704457.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bread_pudding (置信度: 0.3612)
+总耗时: 0.03秒
+succ. pred cate:bread_pudding, true cate:bread_pudding, used_slow:False, confidence:0.3612
+开始分类图像: ./datasets/food_101/jpg/bread_pudding/2980795.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bread_pudding (置信度: 0.4660)
+总耗时: 0.06秒
+succ. pred cate:bread_pudding, true cate:bread_pudding, used_slow:False, confidence:0.4660
+开始分类图像: ./datasets/food_101/jpg/bread_pudding/577928.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: bread_pudding (置信度: 0.3351)
+总耗时: 0.04秒
+succ. pred cate:bread_pudding, true cate:bread_pudding, used_slow:False, confidence:0.3351
+开始分类图像: ./datasets/food_101/jpg/bread_pudding/2974912.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/bread_pudding/2974912.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['french_onion_soup', 'chocolate_mousse', 'gnocchi', 'beef_tartare', 'bread_pudding', 'creme_brulee', 'filet_mignon', 'beet_salad', 'chicken_curry', 'panna_cotta', 'tuna_tartare', 'crab_cakes', 'apple_pie', 'strawberry_shortcake', 'foie_gras']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:39:39] [显存监控] 已分配=16.91GB, 已保留=17.69GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:42] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:39:45] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:48] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: beet_salad (置信度: 0.8500)
+总耗时: 11.36秒
+succ. pred cate:beet_salad, true cate:bread_pudding, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/ravioli/3827000.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ravioli/3827000.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:39:50] Processing fast-slow:  30%|██▉       | 29/97 [08:02<31:05, 27.44s/it][2025-11-27 20:40:46] Processing fast-slow:  30%|██▉       | 29/97 [08:02<31:05, 27.44s/it]快思考Top-10候选类别: ['pancakes', 'omelette', 'breakfast_burrito', 'chicken_quesadilla', 'lasagna', 'ravioli', 'crab_cakes', 'waffles', 'french_toast', 'nachos', 'grilled_salmon', 'shrimp_and_grits', 'steak', 'tacos', 'caesar_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:39:51] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:39:54] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:39:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:01] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: ravioli (置信度: 0.8500)
+总耗时: 12.09秒
+succ. pred cate:ravioli, true cate:ravioli, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/ravioli/2316831.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ravioli/2316831.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ravioli', 'caprese_salad', 'gnocchi', 'beef_carpaccio', 'deviled_eggs', 'omelette', 'gyoza', 'escargots', 'spaghetti_carbonara', 'beef_tartare', 'takoyaki', 'tuna_tartare', 'beet_salad', 'crab_cakes', 'croque_madame', 'french_onion_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:40:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:08] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: ravioli (置信度: 0.1191)
+总耗时: 6.91秒
+succ. pred cate:ravioli, true cate:ravioli, used_slow:True, confidence:0.1191
+开始分类图像: ./datasets/food_101/jpg/ravioli/1488280.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ravioli/1488280.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'deviled_eggs', 'omelette', 'lobster_bisque', 'french_onion_soup', 'lasagna', 'cheese_plate', 'garlic_bread', 'ravioli', 'gyoza', 'grilled_salmon', 'steak', 'shrimp_and_grits', 'beet_salad', 'bruschetta', 'scallops', 'spaghetti_bolognese']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:11] [显存监控] 已分配=16.94GB, 已保留=17.31GB, 空闲=30.46GB
+[2025-11-27 20:40:14] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+[2025-11-27 20:40:17] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:20] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-27 20:40:23] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: ravioli (置信度: 0.8500)
+总耗时: 13.89秒
+succ. pred cate:ravioli, true cate:ravioli, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/ravioli/2717816.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lasagna (置信度: 0.3342)
+总耗时: 0.04秒
+failed. pred cate:lasagna, true cate:ravioli, used_slow:False, confidence:0.3342
+开始分类图像: ./datasets/food_101/jpg/ravioli/3372793.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ravioli/3372793.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ravioli', 'beef_carpaccio', 'gnocchi', 'lasagna', 'tuna_tartare', 'caprese_salad', 'omelette', 'lobster_bisque', 'guacamole', 'beef_tartare', 'spaghetti_bolognese', 'bruschetta', 'crab_cakes']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:26] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:40:29] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: ravioli (置信度: 0.1390)
+总耗时: 8.16秒
+succ. pred cate:ravioli, true cate:ravioli, used_slow:True, confidence:0.1390
+开始分类图像: ./datasets/food_101/jpg/ravioli/2345003.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ravioli/2345003.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'french_onion_soup', 'creme_brulee', 'ravioli', 'lasagna', 'hot_and_sour_soup', 'bread_pudding', 'chicken_curry', 'crab_cakes', 'gnocchi', 'tuna_tartare', 'spaghetti_bolognese', 'foie_gras', 'miso_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:40:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:36] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:40:39] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:42] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+[2025-11-27 20:40:45] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: ravioli (置信度: 0.8500)
+总耗时: 14.57秒
+succ. pred cate:ravioli, true cate:ravioli, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/fried_rice/3277448.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: fried_rice (置信度: 0.5716)
+总耗时: 0.04秒
+succ. pred cate:fried_rice, true cate:fried_rice, used_slow:False, confidence:0.5716
+开始分类图像: ./datasets/food_101/jpg/fried_rice/2407861.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/fried_rice/2407861.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chicken_curry', 'fried_rice', 'pad_thai', 'risotto', 'paella', 'poutine', 'ceviche', 'hot_and_sour_soup', 'seaweed_salad', 'miso_soup', 'crab_cakes', 'caprese_salad', 'lobster_bisque', 'pho', 'deviled_eggs']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:48] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:40:51] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:40:54] [显存监控] 已分配=16.93GB, 已保留=17.40GB, 空闲=30.48GB
+[2025-11-27 20:40:57] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: fried_rice (置信度: 0.8500)
+总耗时: 12.91秒
+[2025-11-27 20:40:46] Processing fast-slow:  31%|███       | 30/97 [08:15<26:02, 23.33s/it][2025-11-27 20:40:59] Processing fast-slow:  31%|███       | 30/97 [08:15<26:02, 23.33s/it][2025-11-27 20:40:59] Processing fast-slow:  32%|███▏      | 31/97 [08:24<20:58, 19.07s/it][2025-11-27 20:41:07] Processing fast-slow:  32%|███▏      | 31/97 [08:24<20:58, 19.07s/it][2025-11-27 20:41:07] Processing fast-slow:  33%|███▎      | 32/97 [08:32<17:18, 15.97s/it][2025-11-27 20:41:16] Processing fast-slow:  33%|███▎      | 32/97 [08:32<17:18, 15.97s/it][2025-11-27 20:41:16] Processing fast-slow:  34%|███▍      | 33/97 [08:40<14:21, 13.46s/it][2025-11-27 20:41:23] Processing fast-slow:  34%|███▍      | 33/97 [08:40<14:21, 13.46s/it][2025-11-27 20:41:23] Processing fast-slow:  35%|███▌      | 34/97 [09:01<16:34, 15.78s/it][2025-11-27 20:41:45] Processing fast-slow:  35%|███▌      | 34/97 [09:01<16:34, 15.78s/it]succ. pred cate:fried_rice, true cate:fried_rice, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/fried_rice/61049.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: fried_rice (置信度: 0.2348)
+总耗时: 0.04秒
+succ. pred cate:fried_rice, true cate:fried_rice, used_slow:False, confidence:0.2348
+开始分类图像: ./datasets/food_101/jpg/omelette/3252297.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: omelette (置信度: 0.2702)
+总耗时: 0.04秒
+succ. pred cate:omelette, true cate:omelette, used_slow:False, confidence:0.2702
+开始分类图像: ./datasets/food_101/jpg/omelette/3872956.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/omelette/3872956.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['omelette', 'french_toast', 'grilled_salmon', 'pancakes', 'chicken_curry', 'grilled_cheese_sandwich', 'eggs_benedict', 'breakfast_burrito', 'crab_cakes', 'steak', 'croque_madame', 'caesar_salad', 'beef_tartare', 'huevos_rancheros', 'lasagna', 'bruschetta', 'caprese_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:41:01] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:04] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: omelette (置信度: 0.1857)
+总耗时: 8.51秒
+succ. pred cate:omelette, true cate:omelette, used_slow:True, confidence:0.1857
+开始分类图像: ./datasets/food_101/jpg/omelette/3420311.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: omelette (置信度: 0.3949)
+总耗时: 0.05秒
+succ. pred cate:omelette, true cate:omelette, used_slow:False, confidence:0.3949
+开始分类图像: ./datasets/food_101/jpg/deviled_eggs/3023741.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: deviled_eggs (置信度: 0.8975)
+总耗时: 0.05秒
+succ. pred cate:deviled_eggs, true cate:deviled_eggs, used_slow:False, confidence:0.8975
+开始分类图像: ./datasets/food_101/jpg/deviled_eggs/3840305.jpg
+执行快思考...
+[2025-11-27 20:41:07] [显存监控] 已分配=16.91GB, 已保留=17.70GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/deviled_eggs/3840305.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garlic_bread', 'bruschetta', 'caprese_salad', 'crab_cakes', 'takoyaki', 'lobster_bisque', 'scallops', 'sushi', 'gyoza', 'cheese_plate', 'tuna_tartare', 'beet_salad', 'french_onion_soup', 'deviled_eggs', 'tacos', 'shrimp_and_grits', 'mussels']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:10] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.45GB
+[2025-11-27 20:41:13] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: garlic_bread (置信度: 0.1446)
+总耗时: 8.41秒
+failed. pred cate:garlic_bread, true cate:deviled_eggs, used_slow:True, confidence:0.1446
+开始分类图像: ./datasets/food_101/jpg/grilled_salmon/940815.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: grilled_salmon (置信度: 0.3385)
+总耗时: 0.04秒
+succ. pred cate:grilled_salmon, true cate:grilled_salmon, used_slow:False, confidence:0.3385
+开始分类图像: ./datasets/food_101/jpg/grilled_salmon/2030709.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/grilled_salmon/2030709.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['grilled_salmon', 'crab_cakes', 'tuna_tartare', 'pad_thai', 'baklava', 'sushi', 'lobster_bisque', 'chicken_curry', 'foie_gras', 'samosa', 'shrimp_and_grits', 'risotto', 'beet_salad', 'pork_chop', 'bruschetta', 'gnocchi', 'scallops']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:16] [显存监控] 已分配=16.95GB, 已保留=17.70GB, 空闲=30.45GB
+[2025-11-27 20:41:19] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+[2025-11-27 20:41:22] [显存监控] 已分配=16.99GB, 已保留=17.70GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: grilled_salmon (置信度: 0.1908)
+总耗时: 7.39秒
+succ. pred cate:grilled_salmon, true cate:grilled_salmon, used_slow:True, confidence:0.1908
+开始分类图像: ./datasets/food_101/jpg/creme_brulee/1017162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/creme_brulee/1017162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['apple_pie', 'pancakes', 'waffles', 'cheesecake', 'creme_brulee', 'bread_pudding', 'french_toast', 'panna_cotta', 'tiramisu', 'chocolate_mousse', 'strawberry_shortcake', 'red_velvet_cake', 'cheese_plate', 'steak']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:25] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-27 20:41:28] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:31] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-27 20:41:34] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: pancakes (置信度: 0.8500)
+总耗时: 11.32秒
+failed. pred cate:pancakes, true cate:creme_brulee, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/creme_brulee/2304815.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_onion_soup (置信度: 0.2261)
+总耗时: 0.04秒
+failed. pred cate:french_onion_soup, true cate:creme_brulee, used_slow:False, confidence:0.2261
+开始分类图像: ./datasets/food_101/jpg/creme_brulee/2131844.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_onion_soup (置信度: 0.3344)
+总耗时: 0.04秒
+failed. pred cate:french_onion_soup, true cate:creme_brulee, used_slow:False, confidence:0.3344
+开始分类图像: ./datasets/food_101/jpg/creme_brulee/2506003.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/creme_brulee/2506003.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['apple_pie', 'beignets', 'french_toast', 'lasagna', 'bread_pudding', 'tiramisu', 'french_onion_soup', 'chicken_curry', 'poutine', 'creme_brulee', 'strawberry_shortcake', 'takoyaki', 'cannoli', 'panna_cotta', 'chocolate_mousse', 'cheesecake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:37] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:41:41] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+[2025-11-27 20:41:44] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: apple_pie (置信度: 0.1173)
+总耗时: 9.90秒
+failed. pred cate:apple_pie, true cate:creme_brulee, used_slow:True, confidence:0.1173
+开始分类图像: ./datasets/food_101/jpg/waffles/1782242.jpg
+执行快思考...
+[2025-11-27 20:41:45] Processing fast-slow:  36%|███▌      | 35/97 [09:12<14:48, 14.33s/it][2025-11-27 20:41:56] Processing fast-slow:  36%|███▌      | 35/97 [09:12<14:48, 14.33s/it][2025-11-27 20:41:56] Processing fast-slow:  36%|███▌      | 35/97 [09:12<14:48, 14.33s/it][2025-11-27 20:41:56] Processing fast-slow:  38%|███▊      | 37/97 [09:29<11:41, 11.69s/it][2025-11-27 20:42:13] Processing fast-slow:  38%|███▊      | 37/97 [09:29<11:41, 11.69s/it]快思考结果确定，直接返回...
+分类完成: apple_pie (置信度: 0.3150)
+总耗时: 0.05秒
+succ. pred cate:apple_pie, true cate:waffles, used_slow:False, confidence:0.3150
+开始分类图像: ./datasets/food_101/jpg/waffles/1005295.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: waffles (置信度: 0.4046)
+总耗时: 0.03秒
+succ. pred cate:waffles, true cate:waffles, used_slow:False, confidence:0.4046
+开始分类图像: ./datasets/food_101/jpg/waffles/301720.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: waffles (置信度: 0.5931)
+总耗时: 0.03秒
+succ. pred cate:waffles, true cate:waffles, used_slow:False, confidence:0.5931
+开始分类图像: ./datasets/food_101/jpg/waffles/3622195.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: waffles (置信度: 0.5957)
+总耗时: 0.04秒
+succ. pred cate:waffles, true cate:waffles, used_slow:False, confidence:0.5957
+开始分类图像: ./datasets/food_101/jpg/waffles/271146.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/waffles/271146.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ice_cream', 'pancakes', 'takoyaki', 'french_toast', 'waffles', 'sushi', 'nachos', 'bruschetta', 'guacamole', 'omelette', 'red_velvet_cake', 'strawberry_shortcake', 'tiramisu', 'panna_cotta', 'miso_soup', 'apple_pie', 'chocolate_cake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:47] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:50] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-27 20:41:53] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+[2025-11-27 20:41:56] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: pancakes (置信度: 0.8500)
+总耗时: 10.75秒
+succ. pred cate:pancakes, true cate:waffles, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/cheese_plate/1801670.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cheese_plate (置信度: 0.2089)
+总耗时: 0.05秒
+succ. pred cate:cheese_plate, true cate:cheese_plate, used_slow:False, confidence:0.2089
+开始分类图像: ./datasets/food_101/jpg/cheese_plate/2834311.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cheese_plate (置信度: 0.8034)
+总耗时: 0.03秒
+succ. pred cate:cheese_plate, true cate:cheese_plate, used_slow:False, confidence:0.8034
+开始分类图像: ./datasets/food_101/jpg/ceviche/3869358.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ceviche (置信度: 0.4560)
+总耗时: 0.04秒
+succ. pred cate:ceviche, true cate:ceviche, used_slow:False, confidence:0.4560
+开始分类图像: ./datasets/food_101/jpg/ceviche/1489893.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ceviche/1489893.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ceviche', 'lobster_bisque', 'pad_thai', 'hot_and_sour_soup', 'gnocchi', 'paella', 'clam_chowder', 'pho', 'miso_soup', 'shrimp_and_grits', 'risotto', 'caprese_salad', 'mussels', 'bruschetta', 'crab_cakes']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:59] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+[2025-11-27 20:42:02] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: ceviche (置信度: 0.1918)
+总耗时: 6.55秒
+succ. pred cate:ceviche, true cate:ceviche, used_slow:True, confidence:0.1918
+开始分类图像: ./datasets/food_101/jpg/ceviche/3395830.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ceviche/3395830.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['tuna_tartare', 'caprese_salad', 'ceviche', 'guacamole', 'seaweed_salad', 'sushi', 'beef_carpaccio', 'huevos_rancheros', 'beet_salad', 'greek_salad', 'bruschetta', 'sashimi', 'tacos', 'beef_tartare']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:05] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:08] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:42:11] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: ceviche (置信度: 0.8500)
+总耗时: 10.44秒
+succ. pred cate:ceviche, true cate:ceviche, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/ceviche/1163178.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ceviche (置信度: 0.3100)
+总耗时: 0.04秒
+succ. pred cate:ceviche, true cate:ceviche, used_slow:False, confidence:0.3100
+开始分类图像: ./datasets/food_101/jpg/chicken_curry/961396.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_curry (置信度: 0.3333)
+总耗时: 0.06秒
+succ. pred cate:chicken_curry, true cate:chicken_curry, used_slow:False, confidence:0.3333
+开始分类图像: ./datasets/food_101/jpg/chicken_curry/3198121.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_curry (置信度: 0.4111)
+总耗时: 0.03秒
+succ. pred cate:chicken_curry, true cate:chicken_curry, used_slow:False, confidence:0.4111
+开始分类图像: ./datasets/food_101/jpg/chicken_curry/2947167.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chicken_curry/2947167.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chicken_curry', 'ceviche', 'fried_rice', 'pad_thai', 'paella', 'risotto', 'lobster_bisque', 'hot_and_sour_soup', 'crab_cakes', 'bibimbap', 'shrimp_and_grits', 'grilled_salmon', 'gnocchi']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:42:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:17] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:42:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:24] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: chicken_curry (置信度: 0.8500)
+总耗时: 13.20秒
+succ. pred cate:chicken_curry, true cate:chicken_curry, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/chicken_curry/220003.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_curry (置信度: 0.3909)
+总耗时: 0.03秒
+succ. pred cate:chicken_curry, true cate:chicken_curry, used_slow:False, confidence:0.3909
+开始分类图像: ./datasets/food_101/jpg/chicken_curry/158711.jpg
+执行快思考...
+[2025-11-27 20:42:13] Processing fast-slow:  39%|███▉      | 38/97 [09:42<11:54, 12.11s/it][2025-11-27 20:42:26] Processing fast-slow:  39%|███▉      | 38/97 [09:42<11:54, 12.11s/it][2025-11-27 20:42:26] Processing fast-slow:  40%|████      | 39/97 [09:43<08:41,  8.99s/it][2025-11-27 20:42:26] Processing fast-slow:  40%|████      | 39/97 [09:43<08:41,  8.99s/it][2025-11-27 20:42:26] Processing fast-slow:  40%|████      | 39/97 [09:43<08:41,  8.99s/it][2025-11-27 20:42:26] Processing fast-slow:  42%|████▏     | 41/97 [10:12<10:41, 11.45s/it][2025-11-27 20:42:56] Processing fast-slow:  42%|████▏     | 41/97 [10:12<10:41, 11.45s/it]快思考结果确定，直接返回...
+分类完成: chicken_curry (置信度: 0.8458)
+总耗时: 0.04秒
+succ. pred cate:chicken_curry, true cate:chicken_curry, used_slow:False, confidence:0.8458
+开始分类图像: ./datasets/food_101/jpg/chicken_curry/2271905.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_curry (置信度: 0.7232)
+总耗时: 0.03秒
+succ. pred cate:chicken_curry, true cate:chicken_curry, used_slow:False, confidence:0.7232
+开始分类图像: ./datasets/food_101/jpg/lobster_roll_sandwich/633942.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_roll_sandwich (置信度: 0.4386)
+总耗时: 0.04秒
+succ. pred cate:lobster_roll_sandwich, true cate:lobster_roll_sandwich, used_slow:False, confidence:0.4386
+开始分类图像: ./datasets/food_101/jpg/lobster_roll_sandwich/679022.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_roll_sandwich (置信度: 0.6652)
+总耗时: 0.03秒
+succ. pred cate:lobster_roll_sandwich, true cate:lobster_roll_sandwich, used_slow:False, confidence:0.6652
+开始分类图像: ./datasets/food_101/jpg/lobster_roll_sandwich/2644716.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_roll_sandwich (置信度: 0.5395)
+总耗时: 0.04秒
+succ. pred cate:lobster_roll_sandwich, true cate:lobster_roll_sandwich, used_slow:False, confidence:0.5395
+开始分类图像: ./datasets/food_101/jpg/lobster_roll_sandwich/600710.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_roll_sandwich (置信度: 0.5018)
+总耗时: 0.03秒
+succ. pred cate:lobster_roll_sandwich, true cate:lobster_roll_sandwich, used_slow:False, confidence:0.5018
+开始分类图像: ./datasets/food_101/jpg/nachos/210767.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: nachos (置信度: 0.4109)
+总耗时: 0.03秒
+succ. pred cate:nachos, true cate:nachos, used_slow:False, confidence:0.4109
+开始分类图像: ./datasets/food_101/jpg/hummus/2376666.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hummus (置信度: 0.7325)
+总耗时: 0.05秒
+succ. pred cate:hummus, true cate:hummus, used_slow:False, confidence:0.7325
+开始分类图像: ./datasets/food_101/jpg/hummus/2052892.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hummus (置信度: 0.3948)
+总耗时: 0.05秒
+succ. pred cate:hummus, true cate:hummus, used_slow:False, confidence:0.3948
+开始分类图像: ./datasets/food_101/jpg/hummus/1277276.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hummus (置信度: 0.4608)
+总耗时: 0.04秒
+succ. pred cate:hummus, true cate:hummus, used_slow:False, confidence:0.4608
+开始分类图像: ./datasets/food_101/jpg/hummus/3118194.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/hummus/3118194.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bruschetta', 'hummus', 'chicken_quesadilla', 'foie_gras', 'cheese_plate', 'garlic_bread', 'crab_cakes', 'lobster_bisque', 'chicken_curry', 'breakfast_burrito', 'beef_tartare', 'macaroni_and_cheese', 'mussels', 'deviled_eggs', 'risotto', 'tuna_tartare']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:42:29] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:32] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:42:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:39] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+分类完成: hummus (置信度: 0.8500)
+总耗时: 13.64秒
+succ. pred cate:hummus, true cate:hummus, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/hummus/1437134.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/hummus/1437134.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['hummus', 'bruschetta', 'tuna_tartare', 'beef_tartare', 'gnocchi', 'ceviche', 'caprese_salad', 'lobster_bisque', 'guacamole', 'nachos', 'beet_salad', 'greek_salad', 'croque_madame', 'lasagna']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:42] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:42:45] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: hummus (置信度: 0.1687)
+总耗时: 6.22秒
+succ. pred cate:hummus, true cate:hummus, used_slow:True, confidence:0.1687
+开始分类图像: ./datasets/food_101/jpg/hummus/256940.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/hummus/256940.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chicken_quesadilla', 'pizza', 'lasagna', 'french_onion_soup', 'apple_pie', 'hummus', 'breakfast_burrito', 'creme_brulee', 'bread_pudding', 'pancakes', 'macaroni_and_cheese', 'garlic_bread', 'samosa', 'clam_chowder']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:48] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-27 20:42:51] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:54] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: pizza (置信度: 0.9500)
+总耗时: 9.47秒
+failed. pred cate:pizza, true cate:hummus, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/huevos_rancheros/2175961.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/huevos_rancheros/2175961.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['huevos_rancheros', 'tacos', 'nachos', 'breakfast_burrito', 'chicken_quesadilla', 'beef_carpaccio', 'gnocchi', 'omelette', 'pancakes', 'lobster_bisque', 'shrimp_and_grits', 'lasagna', 'beet_salad', 'bruschetta', 'pork_chop']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:42:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: huevos_rancheros (置信度: 0.1421)
+总耗时: 5.15秒
+succ. pred cate:huevos_rancheros, true cate:huevos_rancheros, used_slow:True, confidence:0.1421
+开始分类图像: ./datasets/food_101/jpg/huevos_rancheros/1625300.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: huevos_rancheros (置信度: 0.3225)
+总耗时: 0.04秒
+succ. pred cate:huevos_rancheros, true cate:huevos_rancheros, used_slow:False, confidence:0.3225
+开始分类图像: ./datasets/food_101/jpg/huevos_rancheros/110935.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/huevos_rancheros/110935.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:42:56] Processing fast-slow:  43%|████▎     | 42/97 [10:24<10:38, 11.61s/it][2025-11-27 20:43:08] Processing fast-slow:  43%|████▎     | 42/97 [10:24<10:38, 11.61s/it][2025-11-27 20:43:08] Processing fast-slow:  44%|████▍     | 43/97 [10:24<07:52,  8.75s/it][2025-11-27 20:43:08] Processing fast-slow:  44%|████▍     | 43/97 [10:24<07:52,  8.75s/it][2025-11-27 20:43:08] Processing fast-slow:  45%|████▌     | 44/97 [10:43<10:05, 11.42s/it][2025-11-27 20:43:27] Processing fast-slow:  45%|████▌     | 44/97 [10:43<10:05, 11.42s/it][2025-11-27 20:43:27] Processing fast-slow:  46%|████▋     | 45/97 [10:43<07:13,  8.34s/it][2025-11-27 20:43:27] Processing fast-slow:  46%|████▋     | 45/97 [10:43<07:13,  8.34s/it][2025-11-27 20:43:27] Processing fast-slow:  47%|████▋     | 46/97 [10:44<05:07,  6.03s/it][2025-11-27 20:43:27] Processing fast-slow:  47%|████▋     | 46/97 [10:44<05:07,  6.03s/it]快思考Top-10候选类别: ['huevos_rancheros', 'takoyaki', 'nachos', 'tacos', 'breakfast_burrito', 'lasagna', 'apple_pie', 'bruschetta', 'caprese_salad', 'ravioli', 'gyoza', 'samosa', 'pancakes']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:43:01] [显存监控] 已分配=16.91GB, 已保留=17.69GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:04] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: huevos_rancheros (置信度: 0.1553)
+总耗时: 3.48秒
+succ. pred cate:huevos_rancheros, true cate:huevos_rancheros, used_slow:True, confidence:0.1553
+开始分类图像: ./datasets/food_101/jpg/huevos_rancheros/2385257.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/huevos_rancheros/2385257.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['huevos_rancheros', 'falafel', 'poutine', 'nachos', 'fried_calamari', 'beignets', 'gnocchi', 'samosa', 'ceviche', 'beef_tartare', 'eggs_benedict', 'caesar_salad', 'greek_salad', 'tacos', 'crab_cakes', 'lasagna', 'croque_madame']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:07] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: huevos_rancheros (置信度: 0.1512)
+总耗时: 3.48秒
+succ. pred cate:huevos_rancheros, true cate:huevos_rancheros, used_slow:True, confidence:0.1512
+开始分类图像: ./datasets/food_101/jpg/beef_carpaccio/1861386.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_carpaccio (置信度: 0.4314)
+总耗时: 0.08秒
+succ. pred cate:beef_carpaccio, true cate:beef_carpaccio, used_slow:False, confidence:0.4314
+开始分类图像: ./datasets/food_101/jpg/beef_carpaccio/2949410.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_carpaccio (置信度: 0.6446)
+总耗时: 0.05秒
+succ. pred cate:beef_carpaccio, true cate:beef_carpaccio, used_slow:False, confidence:0.6446
+开始分类图像: ./datasets/food_101/jpg/beef_carpaccio/2159328.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_carpaccio (置信度: 0.5873)
+总耗时: 0.05秒
+succ. pred cate:beef_carpaccio, true cate:beef_carpaccio, used_slow:False, confidence:0.5873
+开始分类图像: ./datasets/food_101/jpg/lobster_bisque/2399818.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_bisque (置信度: 0.7395)
+总耗时: 0.06秒
+succ. pred cate:lobster_bisque, true cate:lobster_bisque, used_slow:False, confidence:0.7395
+开始分类图像: ./datasets/food_101/jpg/lobster_bisque/880360.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_bisque (置信度: 0.3825)
+总耗时: 0.04秒
+succ. pred cate:lobster_bisque, true cate:lobster_bisque, used_slow:False, confidence:0.3825
+开始分类图像: ./datasets/food_101/jpg/lobster_bisque/49433.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/lobster_bisque/49433.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'hot_and_sour_soup', 'miso_soup', 'clam_chowder', 'french_onion_soup', 'seaweed_salad', 'ramen', 'pho', 'nachos', 'ice_cream', 'mussels', 'beet_salad', 'cheese_plate', 'edamame', 'panna_cotta', 'creme_brulee']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:10] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+[2025-11-27 20:43:13] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:16] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-27 20:43:19] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: lobster_bisque (置信度: 0.8500)
+总耗时: 11.89秒
+succ. pred cate:lobster_bisque, true cate:lobster_bisque, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/lobster_bisque/3566755.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_bisque (置信度: 0.5749)
+总耗时: 0.04秒
+succ. pred cate:lobster_bisque, true cate:lobster_bisque, used_slow:False, confidence:0.5749
+开始分类图像: ./datasets/food_101/jpg/lobster_bisque/3395594.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_bisque (置信度: 0.4603)
+总耗时: 0.03秒
+succ. pred cate:lobster_bisque, true cate:lobster_bisque, used_slow:False, confidence:0.4603
+开始分类图像: ./datasets/food_101/jpg/lobster_bisque/192034.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/lobster_bisque/192034.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lobster_bisque', 'tuna_tartare', 'lasagna', 'crab_cakes', 'beef_tartare', 'sushi', 'ravioli', 'gnocchi', 'caprese_salad', 'pizza', 'bruschetta', 'shrimp_and_grits', 'strawberry_shortcake', 'spaghetti_bolognese', 'foie_gras']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:22] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-27 20:43:25] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+分类完成: lobster_bisque (置信度: 0.1245)
+总耗时: 6.84秒
+succ. pred cate:lobster_bisque, true cate:lobster_bisque, used_slow:True, confidence:0.1245
+开始分类图像: ./datasets/food_101/jpg/french_onion_soup/2575313.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_onion_soup (置信度: 0.3812)
+总耗时: 0.04秒
+succ. pred cate:french_onion_soup, true cate:french_onion_soup, used_slow:False, confidence:0.3812
+开始分类图像: ./datasets/food_101/jpg/french_onion_soup/2330441.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_onion_soup (置信度: 0.2724)
+总耗时: 0.09秒
+succ. pred cate:french_onion_soup, true cate:french_onion_soup, used_slow:False, confidence:0.2724
+开始分类图像: ./datasets/food_101/jpg/chicken_wings/311554.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_wings (置信度: 0.3275)
+总耗时: 0.03秒
+succ. pred cate:chicken_wings, true cate:chicken_wings, used_slow:False, confidence:0.3275
+开始分类图像: ./datasets/food_101/jpg/chicken_wings/1923909.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_wings (置信度: 0.2470)
+总耗时: 0.04秒
+succ. pred cate:chicken_wings, true cate:chicken_wings, used_slow:False, confidence:0.2470
+开始分类图像: ./datasets/food_101/jpg/chicken_wings/1575623.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_wings (置信度: 0.4878)
+总耗时: 0.05秒
+succ. pred cate:chicken_wings, true cate:chicken_wings, used_slow:False, confidence:0.4878
+开始分类图像: ./datasets/food_101/jpg/strawberry_shortcake/1742075.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/strawberry_shortcake/1742075.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:43:27] Processing fast-slow:  48%|████▊     | 47/97 [11:05<08:36, 10.34s/it][2025-11-27 20:43:48] Processing fast-slow:  48%|████▊     | 47/97 [11:05<08:36, 10.34s/it][2025-11-27 20:43:48] Processing fast-slow:  49%|████▉     | 48/97 [11:20<09:31, 11.66s/it][2025-11-27 20:44:03] Processing fast-slow:  49%|████▉     | 48/97 [11:20<09:31, 11.66s/it][2025-11-27 20:44:03] Processing fast-slow:  51%|█████     | 49/97 [11:48<13:08, 16.43s/it][2025-11-27 20:44:31] Processing fast-slow:  51%|█████     | 49/97 [11:48<13:08, 16.43s/it]快思考Top-10候选类别: ['bread_pudding', 'apple_pie', 'strawberry_shortcake', 'french_toast', 'waffles', 'bruschetta', 'caprese_salad', 'beet_salad', 'tuna_tartare', 'beignets', 'cheesecake', 'panna_cotta', 'carrot_cake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:43:28] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:31] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:43:34] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: bread_pudding (置信度: 0.1555)
+总耗时: 8.25秒
+failed. pred cate:bread_pudding, true cate:strawberry_shortcake, used_slow:True, confidence:0.1555
+开始分类图像: ./datasets/food_101/jpg/strawberry_shortcake/827854.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/strawberry_shortcake/827854.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['strawberry_shortcake', 'bread_pudding', 'apple_pie', 'beignets', 'french_toast', 'pancakes', 'cannoli', 'waffles', 'baklava', 'crab_cakes', 'cheesecake', 'carrot_cake', 'eggs_benedict', 'panna_cotta']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:37] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-27 20:43:40] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+分类完成: strawberry_shortcake (置信度: 0.1597)
+总耗时: 6.89秒
+succ. pred cate:strawberry_shortcake, true cate:strawberry_shortcake, used_slow:True, confidence:0.1597
+开始分类图像: ./datasets/food_101/jpg/strawberry_shortcake/2451314.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/strawberry_shortcake/2451314.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['strawberry_shortcake', 'cheesecake', 'red_velvet_cake', 'bread_pudding', 'panna_cotta', 'chocolate_cake', 'carrot_cake', 'tiramisu', 'apple_pie', 'french_toast', 'chocolate_mousse', 'cannoli']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:43:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:46] [显存监控] 已分配=16.95GB, 已保留=17.70GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: strawberry_shortcake (置信度: 0.1501)
+总耗时: 5.93秒
+succ. pred cate:strawberry_shortcake, true cate:strawberry_shortcake, used_slow:True, confidence:0.1501
+开始分类图像: ./datasets/food_101/jpg/macarons/1010087.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: macarons (置信度: 0.3751)
+总耗时: 0.05秒
+succ. pred cate:macarons, true cate:macarons, used_slow:False, confidence:0.3751
+开始分类图像: ./datasets/food_101/jpg/macarons/2192489.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/macarons/2192489.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['strawberry_shortcake', 'macarons', 'dumplings', 'red_velvet_cake', 'paella', 'tuna_tartare', 'beef_tartare', 'beet_salad', 'baklava', 'samosa', 'cup_cakes', 'sashimi', 'tiramisu', 'panna_cotta', 'edamame', 'peking_duck', 'ice_cream']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:43:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:43:54] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:43:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:01] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: macarons (置信度: 0.9500)
+总耗时: 14.77秒
+succ. pred cate:macarons, true cate:macarons, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/macarons/3527808.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: macarons (置信度: 0.3948)
+总耗时: 0.04秒
+succ. pred cate:macarons, true cate:macarons, used_slow:False, confidence:0.3948
+开始分类图像: ./datasets/food_101/jpg/macarons/656747.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: macarons (置信度: 0.2057)
+总耗时: 0.04秒
+succ. pred cate:macarons, true cate:macarons, used_slow:False, confidence:0.2057
+开始分类图像: ./datasets/food_101/jpg/chocolate_cake/3543733.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chocolate_cake/3543733.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bread_pudding', 'tiramisu', 'french_toast', 'waffles', 'cannoli', 'pancakes', 'bruschetta', 'ice_cream', 'churros', 'chicken_curry', 'strawberry_shortcake', 'apple_pie', 'chocolate_cake', 'chocolate_mousse', 'panna_cotta']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:44:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:08] [显存监控] 已分配=16.97GB, 已保留=17.69GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:44:12] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:15] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: tiramisu (置信度: 0.9500)
+总耗时: 13.41秒
+failed. pred cate:tiramisu, true cate:chocolate_cake, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/chocolate_cake/260537.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/chocolate_cake/260537.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['tiramisu', 'chocolate_mousse', 'apple_pie', 'sushi', 'takoyaki', 'cheesecake', 'chocolate_cake', 'steak', 'bread_pudding', 'cannoli', 'strawberry_shortcake', 'red_velvet_cake', 'panna_cotta', 'pancakes', 'cup_cakes']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:44:19] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:22] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:44:30] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: chocolate_mousse (置信度: 0.8500)
+总耗时: 14.53秒
+succ. pred cate:chocolate_mousse, true cate:chocolate_cake, used_slow:True, confidence:0.8500
+[2025-11-27 20:44:31] Processing fast-slow:  52%|█████▏    | 50/97 [12:02<12:26, 15.89s/it][2025-11-27 20:44:46] Processing fast-slow:  52%|█████▏    | 50/97 [12:02<12:26, 15.89s/it]开始分类图像: ./datasets/food_101/jpg/ramen/3180843.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ramen (置信度: 0.6480)
+总耗时: 0.04秒
+succ. pred cate:ramen, true cate:ramen, used_slow:False, confidence:0.6480
+开始分类图像: ./datasets/food_101/jpg/ramen/1123456.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ramen (置信度: 0.3116)
+总耗时: 0.05秒
+succ. pred cate:ramen, true cate:ramen, used_slow:False, confidence:0.3116
+开始分类图像: ./datasets/food_101/jpg/ramen/104981.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ramen (置信度: 0.4583)
+总耗时: 0.04秒
+succ. pred cate:ramen, true cate:ramen, used_slow:False, confidence:0.4583
+开始分类图像: ./datasets/food_101/jpg/ramen/761346.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ramen (置信度: 0.4639)
+总耗时: 0.03秒
+succ. pred cate:ramen, true cate:ramen, used_slow:False, confidence:0.4639
+开始分类图像: ./datasets/food_101/jpg/ramen/802447.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ramen/802447.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ramen', 'hot_and_sour_soup', 'miso_soup', 'pho', 'french_onion_soup', 'gyoza', 'takoyaki', 'chicken_curry', 'lobster_bisque', 'dumplings', 'bibimbap', 'pad_thai', 'fried_rice']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:44:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:37] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+[2025-11-27 20:44:40] [显存监控] 已分配=16.97GB, 已保留=17.57GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:43] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.46GB
+[2025-11-27 20:44:46] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: ramen (置信度: 0.8500)
+总耗时: 14.44秒
+succ. pred cate:ramen, true cate:ramen, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/filet_mignon/2906269.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/filet_mignon/2906269.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['beef_tartare', 'tuna_tartare', 'beef_carpaccio', 'filet_mignon', 'foie_gras', 'beet_salad', 'steak', 'french_onion_soup', 'grilled_salmon', 'seaweed_salad', 'crab_cakes', 'bruschetta', 'peking_duck', 'scallops']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:49] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:44:52] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:44:55] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:44:58] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: beef_tartare (置信度: 0.8500)
+总耗时: 13.79秒
+failed. pred cate:beef_tartare, true cate:filet_mignon, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/filet_mignon/2363015.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/filet_mignon/2363015.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['beef_carpaccio', 'french_onion_soup', 'beef_tartare', 'garlic_bread', 'bread_pudding', 'beet_salad', 'gnocchi', 'lobster_bisque', 'caprese_salad', 'foie_gras', 'tuna_tartare', 'bruschetta', 'cheese_plate', 'filet_mignon', 'crab_cakes', 'lasagna']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:45:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:05] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'filet mignon' -> 'filet_mignon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:45:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:12] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: beef_tartare (置信度: 0.8500)
+总耗时: 13.35秒
+failed. pred cate:beef_tartare, true cate:filet_mignon, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/filet_mignon/606840.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/filet_mignon/606840.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['filet_mignon', 'steak', 'gnocchi', 'prime_rib', 'foie_gras', 'beef_tartare', 'pork_chop', 'french_onion_soup', 'poutine', 'baby_back_ribs', 'crab_cakes', 'tuna_tartare', 'shrimp_and_grits', 'beet_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:45:15] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:18] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:45:22] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:25] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: filet_mignon (置信度: 0.8500)
+总耗时: 14.74秒
+succ. pred cate:filet_mignon, true cate:filet_mignon, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/filet_mignon/314498.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/filet_mignon/314498.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['steak', 'filet_mignon', 'beef_tartare', 'tuna_tartare', 'poutine', 'crab_cakes', 'prime_rib', 'beef_carpaccio', 'gnocchi', 'bread_pudding', 'beet_salad', 'pork_chop', 'bruschetta', 'shrimp_and_grits']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:45:29] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:33] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'filet mignon' -> 'filet_mignon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:45:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:39] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+[2025-11-27 20:44:46] Processing fast-slow:  53%|█████▎    | 51/97 [13:19<26:09, 34.11s/it][2025-11-27 20:46:03] Processing fast-slow:  53%|█████▎    | 51/97 [13:19<26:09, 34.11s/it][2025-11-27 20:46:03] Processing fast-slow:  54%|█████▎    | 52/97 [13:20<17:59, 24.00s/it][2025-11-27 20:46:03] Processing fast-slow:  54%|█████▎    | 52/97 [13:20<17:59, 24.00s/it][2025-11-27 20:46:03] Processing fast-slow:  55%|█████▍    | 53/97 [13:33<15:11, 20.73s/it][2025-11-27 20:46:16] Processing fast-slow:  55%|█████▍    | 53/97 [13:33<15:11, 20.73s/it]分类完成: filet_mignon (置信度: 0.8500)
+总耗时: 13.20秒
+succ. pred cate:filet_mignon, true cate:filet_mignon, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/filet_mignon/2331339.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/filet_mignon/2331339.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['steak', 'filet_mignon', 'beef_tartare', 'prime_rib', 'garlic_bread', 'crab_cakes', 'pork_chop', 'chicken_curry', 'french_onion_soup', 'poutine', 'tuna_tartare', 'beet_salad', 'foie_gras']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:45:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:46] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+[2025-11-27 20:45:49] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: steak (置信度: 0.1443)
+总耗时: 9.49秒
+failed. pred cate:steak, true cate:filet_mignon, used_slow:True, confidence:0.1443
+开始分类图像: ./datasets/food_101/jpg/filet_mignon/1688584.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/filet_mignon/1688584.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['steak', 'filet_mignon', 'prime_rib', 'crab_cakes', 'hamburger', 'beef_tartare', 'pork_chop', 'falafel', 'french_onion_soup', 'onion_rings', 'beet_salad', 'tuna_tartare', 'croque_madame', 'eggs_benedict']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:52] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:45:55] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'filet mignon' -> 'filet_mignon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:45:58] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:46:01] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: filet_mignon (置信度: 0.8500)
+总耗时: 12.74秒
+succ. pred cate:filet_mignon, true cate:filet_mignon, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/pho/1101330.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: ramen (置信度: 0.4441)
+总耗时: 0.05秒
+failed. pred cate:ramen, true cate:pho, used_slow:False, confidence:0.4441
+开始分类图像: ./datasets/food_101/jpg/pho/2011541.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pho (置信度: 0.5621)
+总耗时: 0.04秒
+succ. pred cate:pho, true cate:pho, used_slow:False, confidence:0.5621
+开始分类图像: ./datasets/food_101/jpg/pho/3384556.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pho (置信度: 0.2549)
+总耗时: 0.05秒
+succ. pred cate:pho, true cate:pho, used_slow:False, confidence:0.2549
+开始分类图像: ./datasets/food_101/jpg/lasagna/2738958.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_onion_soup (置信度: 0.3243)
+总耗时: 0.05秒
+failed. pred cate:french_onion_soup, true cate:lasagna, used_slow:False, confidence:0.3243
+开始分类图像: ./datasets/food_101/jpg/lasagna/3162703.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lasagna (置信度: 0.4271)
+总耗时: 0.04秒
+succ. pred cate:lasagna, true cate:lasagna, used_slow:False, confidence:0.4271
+开始分类图像: ./datasets/food_101/jpg/lasagna/1309938.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/lasagna/1309938.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['beef_carpaccio', 'beef_tartare', 'huevos_rancheros', 'lasagna', 'caprese_salad', 'ravioli', 'tuna_tartare', 'gnocchi', 'omelette', 'crab_cakes', 'spaghetti_bolognese', 'eggs_benedict', 'croque_madame', 'bruschetta', 'spaghetti_carbonara']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:46:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:08] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:11] [显存监控] 已分配=16.94GB, 已保留=17.29GB, 空闲=30.46GB
+[2025-11-27 20:46:14] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: lasagna (置信度: 0.8500)
+总耗时: 12.90秒
+succ. pred cate:lasagna, true cate:lasagna, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/lasagna/207825.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pizza (置信度: 0.2381)
+总耗时: 0.03秒
+failed. pred cate:pizza, true cate:lasagna, used_slow:False, confidence:0.2381
+开始分类图像: ./datasets/food_101/jpg/gnocchi/435729.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/gnocchi/435729.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['beef_carpaccio', 'caprese_salad', 'cheese_plate', 'beef_tartare', 'seaweed_salad', 'gnocchi', 'ravioli', 'crab_cakes', 'tuna_tartare', 'nachos', 'beet_salad', 'bruschetta', 'croque_madame', 'french_onion_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:46:20] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:46:23] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:46:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:30] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: gnocchi (置信度: 0.8500)
+总耗时: 14.61秒
+succ. pred cate:gnocchi, true cate:gnocchi, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/gnocchi/3337177.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/gnocchi/3337177.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['clam_chowder', 'lobster_bisque', 'risotto', 'french_onion_soup', 'gnocchi', 'ceviche', 'ravioli', 'spaghetti_carbonara', 'crab_cakes', 'hot_and_sour_soup', 'lasagna', 'macaroni_and_cheese', 'shrimp_and_grits']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:33] [显存监控] 已分配=16.96GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-27 20:46:36] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:46:39] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+[2025-11-27 20:46:16] Processing fast-slow:  56%|█████▌    | 54/97 [14:02<16:46, 23.40s/it][2025-11-27 20:46:46] Processing fast-slow:  56%|█████▌    | 54/97 [14:02<16:46, 23.40s/it][2025-11-27 20:46:46] Processing fast-slow:  56%|█████▌    | 54/97 [14:02<16:46, 23.40s/it][2025-11-27 20:46:46] Processing fast-slow:  58%|█████▊    | 56/97 [14:15<10:38, 15.57s/it][2025-11-27 20:46:59] Processing fast-slow:  58%|█████▊    | 56/97 [14:15<10:38, 15.57s/it][2025-11-27 20:46:59] Processing fast-slow:  59%|█████▉    | 57/97 [14:40<11:55, 17.89s/it][2025-11-27 20:47:24] Processing fast-slow:  59%|█████▉    | 57/97 [14:40<11:55, 17.89s/it][2025-11-27 20:47:24] Processing fast-slow:  59%|█████▉    | 57/97 [14:40<11:55, 17.89s/it]推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:42] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:46:45] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: gnocchi (置信度: 0.8500)
+总耗时: 15.00秒
+succ. pred cate:gnocchi, true cate:gnocchi, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/gnocchi/3375005.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: gnocchi (置信度: 0.5878)
+总耗时: 0.05秒
+succ. pred cate:gnocchi, true cate:gnocchi, used_slow:False, confidence:0.5878
+开始分类图像: ./datasets/food_101/jpg/paella/3739186.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: paella (置信度: 0.3344)
+总耗时: 0.05秒
+succ. pred cate:paella, true cate:paella, used_slow:False, confidence:0.3344
+开始分类图像: ./datasets/food_101/jpg/paella/313168.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: paella (置信度: 0.2027)
+总耗时: 0.05秒
+succ. pred cate:paella, true cate:paella, used_slow:False, confidence:0.2027
+开始分类图像: ./datasets/food_101/jpg/escargots/1689494.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/escargots/1689494.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['escargots', 'mussels', 'scallops', 'edamame', 'ceviche', 'oysters', 'sushi', 'ravioli', 'crab_cakes', 'seaweed_salad', 'caprese_salad', 'bruschetta', 'deviled_eggs', 'sashimi', 'takoyaki', 'risotto', 'gnocchi']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:46:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: escargots (置信度: 0.1705)
+总耗时: 5.25秒
+succ. pred cate:escargots, true cate:escargots, used_slow:True, confidence:0.1705
+开始分类图像: ./datasets/food_101/jpg/escargots/3648640.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/escargots/3648640.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['french_onion_soup', 'garlic_bread', 'crab_cakes', 'clam_chowder', 'lobster_bisque', 'cheese_plate', 'ravioli', 'beef_tartare', 'foie_gras', 'creme_brulee', 'mussels', 'lasagna', 'bruschetta', 'oysters']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:46:52] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-27 20:46:55] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:46:58] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: french_onion_soup (置信度: 0.1732)
+总耗时: 7.43秒
+failed. pred cate:french_onion_soup, true cate:escargots, used_slow:True, confidence:0.1732
+开始分类图像: ./datasets/food_101/jpg/escargots/3406878.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: escargots (置信度: 0.4599)
+总耗时: 0.03秒
+succ. pred cate:escargots, true cate:escargots, used_slow:False, confidence:0.4599
+开始分类图像: ./datasets/food_101/jpg/fish_and_chips/3766876.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: fish_and_chips (置信度: 0.6182)
+总耗时: 0.03秒
+succ. pred cate:fish_and_chips, true cate:fish_and_chips, used_slow:False, confidence:0.6182
+开始分类图像: ./datasets/food_101/jpg/fish_and_chips/3750241.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/fish_and_chips/3750241.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['fish_and_chips', 'chicken_wings', 'beignets', 'churros', 'fried_calamari', 'onion_rings', 'french_fries', 'samosa', 'cannoli', 'chicken_curry', 'poutine', 'edamame', 'hamburger', 'baby_back_ribs']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:01] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:47:04] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: fish_and_chips (置信度: 0.1482)
+总耗时: 7.64秒
+succ. pred cate:fish_and_chips, true cate:fish_and_chips, used_slow:True, confidence:0.1482
+开始分类图像: ./datasets/food_101/jpg/fish_and_chips/3525033.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/fish_and_chips/3525033.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chicken_curry', 'crab_cakes', 'fish_and_chips', 'pork_chop', 'fried_calamari', 'grilled_salmon', 'falafel', 'huevos_rancheros', 'omelette', 'beignets', 'lasagna', 'croque_madame', 'beef_tartare', 'gnocchi', 'caprese_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:07] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:47:10] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:13] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:47:16] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: pork_chop (置信度: 0.8500)
+总耗时: 11.24秒
+succ. pred cate:pork_chop, true cate:fish_and_chips, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/fish_and_chips/954741.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/fish_and_chips/954741.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['fish_and_chips', 'grilled_salmon', 'french_fries', 'chicken_wings', 'samosa', 'chicken_quesadilla', 'beignets', 'crab_cakes', 'cannoli', 'hamburger', 'fried_calamari', 'onion_rings', 'poutine', 'caesar_salad', 'baby_back_ribs']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:19] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:47:22] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: fish_and_chips (置信度: 0.1767)
+总耗时: 6.02秒
+succ. pred cate:fish_and_chips, true cate:fish_and_chips, used_slow:True, confidence:0.1767
+开始分类图像: ./datasets/food_101/jpg/greek_salad/2917059.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: greek_salad (置信度: 0.3758)
+总耗时: 0.03秒
+succ. pred cate:greek_salad, true cate:greek_salad, used_slow:False, confidence:0.3758
+开始分类图像: ./datasets/food_101/jpg/french_fries/1700344.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_fries (置信度: 0.3211)
+总耗时: 0.05秒
+succ. pred cate:french_fries, true cate:french_fries, used_slow:False, confidence:0.3211
+[2025-11-27 20:47:24] Processing fast-slow:  61%|██████    | 59/97 [15:04<09:46, 15.43s/it][2025-11-27 20:47:47] Processing fast-slow:  61%|██████    | 59/97 [15:04<09:46, 15.43s/it][2025-11-27 20:47:47] Processing fast-slow:  62%|██████▏   | 60/97 [15:30<11:04, 17.95s/it][2025-11-27 20:48:14] Processing fast-slow:  62%|██████▏   | 60/97 [15:30<11:04, 17.95s/it][2025-11-27 20:48:14] Processing fast-slow:  62%|██████▏   | 60/97 [15:30<11:04, 17.95s/it][2025-11-27 20:48:14] Processing fast-slow:  62%|██████▏   | 60/97 [15:30<11:04, 17.95s/it]开始分类图像: ./datasets/food_101/jpg/french_fries/2406476.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: french_fries (置信度: 0.4704)
+总耗时: 0.04秒
+succ. pred cate:french_fries, true cate:french_fries, used_slow:False, confidence:0.4704
+开始分类图像: ./datasets/food_101/jpg/french_fries/43636.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/french_fries/43636.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['fish_and_chips', 'french_fries', 'hamburger', 'samosa', 'french_toast', 'churros', 'beignets', 'grilled_cheese_sandwich', 'poutine', 'waffles', 'fried_calamari', 'lasagna', 'bruschetta', 'breakfast_burrito']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:47:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:28] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:47:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:35] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: french_fries (置信度: 0.8500)
+总耗时: 12.56秒
+succ. pred cate:french_fries, true cate:french_fries, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/french_fries/1290860.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/french_fries/1290860.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['fish_and_chips', 'onion_rings', 'samosa', 'beignets', 'fried_calamari', 'french_fries', 'hamburger', 'churros', 'poutine', 'nachos', 'mussels', 'caesar_salad', 'grilled_cheese_sandwich']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:38] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:41] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-27 20:47:45] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: onion_rings (置信度: 0.8500)
+总耗时: 11.24秒
+succ. pred cate:onion_rings, true cate:french_fries, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/pizza/3663580.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pizza (置信度: 0.2147)
+总耗时: 0.06秒
+succ. pred cate:pizza, true cate:pizza, used_slow:False, confidence:0.2147
+开始分类图像: ./datasets/food_101/jpg/pizza/3514408.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pizza (置信度: 0.4356)
+总耗时: 0.03秒
+succ. pred cate:pizza, true cate:pizza, used_slow:False, confidence:0.4356
+开始分类图像: ./datasets/food_101/jpg/pizza/3441394.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pizza/3441394.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pizza', 'omelette', 'nachos', 'french_toast', 'bruschetta', 'huevos_rancheros', 'pancakes', 'paella', 'cheese_plate', 'samosa', 'eggs_benedict', 'croque_madame', 'lasagna', 'caprese_salad', 'breakfast_burrito', 'french_fries']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:47:48] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:51] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: pizza (置信度: 0.1407)
+总耗时: 5.43秒
+succ. pred cate:pizza, true cate:pizza, used_slow:True, confidence:0.1407
+开始分类图像: ./datasets/food_101/jpg/pizza/898843.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pizza/898843.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['caprese_salad', 'pizza', 'lasagna', 'bruschetta', 'omelette', 'cheese_plate', 'garlic_bread', 'beef_carpaccio', 'gnocchi', 'ravioli', 'spaghetti_bolognese', 'greek_salad', 'tacos', 'breakfast_burrito', 'chicken_quesadilla']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:47:55] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:47:58] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:48:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:05] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: pizza (置信度: 0.9500)
+总耗时: 13.66秒
+succ. pred cate:pizza, true cate:pizza, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/pizza/1774438.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pizza/1774438.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pizza', 'lasagna', 'beef_carpaccio', 'hummus', 'caprese_salad', 'gnocchi', 'spaghetti_bolognese', 'grilled_salmon', 'risotto', 'peking_duck', 'bruschetta', 'sashimi', 'beef_tartare', 'mussels', 'creme_brulee']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:48:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:12] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: pizza (置信度: 0.1540)
+总耗时: 7.30秒
+succ. pred cate:pizza, true cate:pizza, used_slow:True, confidence:0.1540
+开始分类图像: ./datasets/food_101/jpg/beet_salad/3807968.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beet_salad (置信度: 0.6543)
+总耗时: 0.05秒
+succ. pred cate:beet_salad, true cate:beet_salad, used_slow:False, confidence:0.6543
+开始分类图像: ./datasets/food_101/jpg/sashimi/519310.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sashimi (置信度: 0.2395)
+总耗时: 0.04秒
+succ. pred cate:sashimi, true cate:sashimi, used_slow:False, confidence:0.2395
+开始分类图像: ./datasets/food_101/jpg/pork_chop/3022815.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pork_chop/3022815.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chicken_curry', 'poutine', 'pork_chop', 'fish_and_chips', 'hamburger', 'crab_cakes', 'pulled_pork_sandwich', 'steak', 'tacos', 'french_toast', 'gnocchi', 'takoyaki', 'caesar_salad', 'shrimp_and_grits', 'chicken_wings', 'fried_calamari', 'peking_duck']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:48:14] Processing fast-slow:  65%|██████▍   | 63/97 [15:46<06:34, 11.61s/it][2025-11-27 20:48:29] Processing fast-slow:  65%|██████▍   | 63/97 [15:46<06:34, 11.61s/it][2025-11-27 20:48:29] Processing fast-slow:  65%|██████▍   | 63/97 [15:46<06:34, 11.61s/it][2025-11-27 20:48:29] Processing fast-slow:  67%|██████▋   | 65/97 [16:00<05:24, 10.15s/it][2025-11-27 20:48:43] Processing fast-slow:  67%|██████▋   | 65/97 [16:00<05:24, 10.15s/it][2025-11-27 20:48:43] Processing fast-slow:  68%|██████▊   | 66/97 [16:15<05:40, 10.99s/it][2025-11-27 20:48:58] Processing fast-slow:  68%|██████▊   | 66/97 [16:15<05:40, 10.99s/it][2025-11-27 20:48:58] Processing fast-slow:  68%|██████▊   | 66/97 [16:15<05:40, 10.99s/it][2025-11-27 20:48:58] Processing fast-slow:  70%|███████   | 68/97 [16:15<03:28,  7.20s/it][2025-11-27 20:48:58] Processing fast-slow:  70%|███████   | 68/97 [16:15<03:28,  7.20s/it][2025-11-27 20:48:16] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:48:19] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: chicken_curry (置信度: 0.1694)
+总耗时: 7.88秒
+failed. pred cate:chicken_curry, true cate:pork_chop, used_slow:True, confidence:0.1694
+开始分类图像: ./datasets/food_101/jpg/pork_chop/1938497.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pork_chop/1938497.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pork_chop', 'steak', 'crab_cakes', 'filet_mignon', 'grilled_salmon', 'prime_rib', 'chicken_curry', 'foie_gras', 'french_toast', 'tuna_tartare', 'beef_tartare', 'shrimp_and_grits', 'caesar_salad', 'baby_back_ribs']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:48:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:26] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:48:29] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: pork_chop (置信度: 0.1427)
+总耗时: 7.44秒
+succ. pred cate:pork_chop, true cate:pork_chop, used_slow:True, confidence:0.1427
+开始分类图像: ./datasets/food_101/jpg/oysters/885112.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: oysters (置信度: 0.3718)
+总耗时: 0.06秒
+succ. pred cate:oysters, true cate:oysters, used_slow:False, confidence:0.3718
+开始分类图像: ./datasets/food_101/jpg/crab_cakes/2229837.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/crab_cakes/2229837.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'falafel', 'fish_and_chips', 'onion_rings', 'takoyaki', 'french_fries', 'samosa', 'fried_calamari', 'garlic_bread', 'chicken_curry', 'macaroni_and_cheese', 'clam_chowder', 'churros', 'chicken_wings']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:32] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: crab_cakes (置信度: 0.1856)
+总耗时: 5.82秒
+succ. pred cate:crab_cakes, true cate:crab_cakes, used_slow:True, confidence:0.1856
+开始分类图像: ./datasets/food_101/jpg/crab_cakes/724514.jpg
+执行快思考...
+[2025-11-27 20:48:35] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/crab_cakes/724514.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'beet_salad', 'falafel', 'caesar_salad', 'beef_tartare', 'tuna_tartare', 'chicken_curry', 'bruschetta', 'beef_carpaccio', 'takoyaki', 'shrimp_and_grits', 'steak', 'grilled_salmon', 'filet_mignon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:38] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:48:41] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: crab_cakes (置信度: 0.1504)
+总耗时: 8.21秒
+succ. pred cate:crab_cakes, true cate:crab_cakes, used_slow:True, confidence:0.1504
+开始分类图像: ./datasets/food_101/jpg/tiramisu/1472032.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/tiramisu/1472032.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bread_pudding', 'french_toast', 'lasagna', 'tiramisu', 'creme_brulee', 'baklava', 'pancakes', 'apple_pie', 'beignets', 'waffles', 'strawberry_shortcake', 'cheesecake', 'bruschetta', 'carrot_cake', 'croque_madame']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:48:46] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:49] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:48:52] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:48:55] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:48:58] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: bread_pudding (置信度: 0.9500)
+总耗时: 14.64秒
+failed. pred cate:bread_pudding, true cate:tiramisu, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/prime_rib/3893049.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: prime_rib (置信度: 0.4055)
+总耗时: 0.04秒
+succ. pred cate:prime_rib, true cate:prime_rib, used_slow:False, confidence:0.4055
+开始分类图像: ./datasets/food_101/jpg/miso_soup/68382.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: lobster_bisque (置信度: 0.2976)
+总耗时: 0.05秒
+failed. pred cate:lobster_bisque, true cate:miso_soup, used_slow:False, confidence:0.2976
+开始分类图像: ./datasets/food_101/jpg/miso_soup/581842.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: hot_and_sour_soup (置信度: 0.4088)
+总耗时: 0.04秒
+succ. pred cate:hot_and_sour_soup, true cate:miso_soup, used_slow:False, confidence:0.4088
+开始分类图像: ./datasets/food_101/jpg/miso_soup/1244587.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: miso_soup (置信度: 0.2782)
+总耗时: 0.03秒
+succ. pred cate:miso_soup, true cate:miso_soup, used_slow:False, confidence:0.2782
+开始分类图像: ./datasets/food_101/jpg/macaroni_and_cheese/2102691.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/macaroni_and_cheese/2102691.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['miso_soup', 'hot_and_sour_soup', 'lobster_bisque', 'hummus', 'clam_chowder', 'french_onion_soup', 'ice_cream', 'chocolate_mousse', 'creme_brulee', 'bread_pudding', 'macaroni_and_cheese', 'cheesecake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:01] [显存监控] 已分配=16.95GB, 已保留=17.67GB, 空闲=30.45GB
+[2025-11-27 20:49:04] [显存监控] 已分配=16.95GB, 已保留=17.67GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.67GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:49:07] [显存监控] 已分配=16.91GB, 已保留=17.67GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:10] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:49:13] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: miso_soup (置信度: 0.8500)
+总耗时: 15.00秒
+failed. pred cate:miso_soup, true cate:macaroni_and_cheese, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/macaroni_and_cheese/3827123.jpg
+执行快思考...      $       %       &       '       (       )       *       +       [2025-11-27 20:48:58] Processing fast-slow:  71%|███████   | 69/97 [16:44<05:22, 11.50s/it][2025-11-27 20:49:27] Processing fast-slow:  71%|███████   | 69/97 [16:44<05:22, 11.50s/it][2025-11-27 20:49:27] Processing fast-slow:  72%|███████▏  | 70/97 [16:57<05:24, 12.02s/it][2025-11-27 20:49:41] Processing fast-slow:  72%|███████▏  | 70/97 [16:57<05:24, 12.02s/it][2025-11-27 20:49:41] Processing fast-slow:  73%|███████▎  | 71/97 [17:04<04:41, 10.83s/it][2025-11-27 20:49:48] Processing fast-slow:  73%|███████▎  | 71/97 [17:04<04:41, 10.83s/it][2025-11-27 20:49:48] Processing fast-slow:  74%|███████▍  | 72/97 [17:19<04:56, 11.86s/it][2025-11-27 20:50:03] Processing fast-slow:  74%|███████▍  | 72/97 [17:19<04:56, 11.86s/it][2025-11-27 20:50:03] Processing fast-slow:  74%|███████▍  | 72/97 [17:19<04:56, 11.86s/it]
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/macaroni_and_cheese/3827123.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['fried_calamari', 'fish_and_chips', 'french_fries', 'onion_rings', 'macaroni_and_cheese', 'chicken_curry', 'crab_cakes', 'hamburger', 'french_toast', 'creme_brulee', 'hot_dog', 'poutine', 'churros', 'nachos']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:16] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:49:19] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:49:22] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:25] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: macaroni_and_cheese (置信度: 0.9500)
+总耗时: 13.86秒
+succ. pred cate:macaroni_and_cheese, true cate:macaroni_and_cheese, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/mussels/3097237.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/mussels/3097237.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['fried_calamari', 'mussels', 'gnocchi', 'chicken_wings', 'garlic_bread', 'escargots', 'crab_cakes', 'bruschetta', 'grilled_salmon', 'cannoli', 'oysters', 'paella', 'edamame', 'beet_salad', 'shrimp_and_grits', 'caesar_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:49:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:33] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:49:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:39] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: mussels (置信度: 0.9500)
+总耗时: 13.77秒
+succ. pred cate:mussels, true cate:mussels, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/mussels/2801070.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: mussels (置信度: 0.2698)
+总耗时: 0.05秒
+succ. pred cate:mussels, true cate:mussels, used_slow:False, confidence:0.2698
+开始分类图像: ./datasets/food_101/jpg/pad_thai/1651071.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pad_thai (置信度: 0.3639)
+总耗时: 0.05秒
+succ. pred cate:pad_thai, true cate:pad_thai, used_slow:False, confidence:0.3639
+开始分类图像: ./datasets/food_101/jpg/pad_thai/3497394.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pad_thai/3497394.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pad_thai', 'fried_rice', 'baklava', 'fried_calamari', 'chicken_curry', 'seaweed_salad', 'bibimbap', 'lasagna', 'onion_rings', 'takoyaki', 'samosa', 'hot_and_sour_soup', 'pho', 'macaroni_and_cheese', 'dumplings', 'spaghetti_bolognese', 'ramen']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:49:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:47] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: pad_thai (置信度: 0.1664)
+总耗时: 7.01秒
+succ. pred cate:pad_thai, true cate:pad_thai, used_slow:True, confidence:0.1664
+开始分类图像: ./datasets/food_101/jpg/pad_thai/3827661.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pad_thai (置信度: 0.7198)
+总耗时: 0.04秒
+succ. pred cate:pad_thai, true cate:pad_thai, used_slow:False, confidence:0.7198
+开始分类图像: ./datasets/food_101/jpg/shrimp_and_grits/493949.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/shrimp_and_grits/493949.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'shrimp_and_grits', 'gnocchi', 'lobster_bisque', 'lasagna', 'ravioli', 'tuna_tartare', 'bruschetta', 'chicken_curry', 'caprese_salad', 'scallops', 'beef_tartare', 'foie_gras', 'french_onion_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:50] [显存监控] 已分配=16.95GB, 已保留=17.32GB, 空闲=30.45GB
+[2025-11-27 20:49:53] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:49:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:50:01] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: shrimp_and_grits (置信度: 0.9500)
+总耗时: 14.86秒
+succ. pred cate:shrimp_and_grits, true cate:shrimp_and_grits, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/food_101/jpg/dumplings/1322169.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: dumplings (置信度: 0.4307)
+总耗时: 0.04秒
+succ. pred cate:dumplings, true cate:dumplings, used_slow:False, confidence:0.4307
+开始分类图像: ./datasets/food_101/jpg/dumplings/1023981.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: dumplings (置信度: 0.6227)
+总耗时: 0.03秒
+succ. pred cate:dumplings, true cate:dumplings, used_slow:False, confidence:0.6227
+开始分类图像: ./datasets/food_101/jpg/baby_back_ribs/849628.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/baby_back_ribs/849628.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['steak', 'grilled_salmon', 'baby_back_ribs', 'prime_rib', 'poutine', 'hamburger', 'french_toast', 'garlic_bread', 'bruschetta', 'nachos', 'pork_chop', 'tacos', 'huevos_rancheros', 'caesar_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:50:04] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:07] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:50:10] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: steak (置信度: 0.1372)
+总耗时: 9.28秒
+failed. pred cate:steak, true cate:baby_back_ribs, used_slow:True, confidence:0.1372
+开始分类图像: ./datasets/food_101/jpg/baby_back_ribs/1558128.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/baby_back_ribs/1558128.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:50:03] Processing fast-slow:  76%|███████▋  | 74/97 [17:43<04:33, 11.90s/it][2025-11-27 20:50:27] Processing fast-slow:  76%|███████▋  | 74/97 [17:43<04:33, 11.90s/it][2025-11-27 20:50:27] Processing fast-slow:  77%|███████▋  | 75/97 [17:56<04:26, 12.12s/it][2025-11-27 20:50:40] Processing fast-slow:  77%|███████▋  | 75/97 [17:56<04:26, 12.12s/it][2025-11-27 20:50:40] Processing fast-slow:  77%|███████▋  | 75/97 [17:56<04:26, 12.12s/it][2025-11-27 20:50:40] Processing fast-slow:  79%|███████▉  | 77/97 [18:02<02:50,  8.52s/it][2025-11-27 20:50:46] Processing fast-slow:  79%|███████▉  | 77/97 [18:02<02:50,  8.52s/it][2025-11-27 20:50:46] Processing fast-slow:  80%|████████  | 78/97 [18:10<02:37,  8.29s/it][2025-11-27 20:50:53] Processing fast-slow:  80%|████████  | 78/97 [18:10<02:37,  8.29s/it][2025-11-27 20:50:53] Processing fast-slow:  81%|████████▏ | 79/97 [18:18<02:31,  8.39s/it][2025-11-27 20:51:02] Processing fast-slow:  81%|████████▏ | 79/97 [18:18<02:31,  8.39s/it]快思考Top-10候选类别: ['baby_back_ribs', 'steak', 'pork_chop', 'grilled_salmon', 'prime_rib', 'peking_duck', 'chicken_curry', 'filet_mignon', 'french_toast', 'bread_pudding', 'chicken_wings', 'fried_calamari', 'lasagna', 'fish_and_chips']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:13] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-27 20:50:16] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: baby_back_ribs (置信度: 0.1487)
+总耗时: 5.23秒
+succ. pred cate:baby_back_ribs, true cate:baby_back_ribs, used_slow:True, confidence:0.1487
+开始分类图像: ./datasets/food_101/jpg/baby_back_ribs/2264179.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/baby_back_ribs/2264179.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['beef_tartare', 'bruschetta', 'cheese_plate', 'tuna_tartare', 'garlic_bread', 'nachos', 'beef_carpaccio', 'grilled_salmon', 'seaweed_salad', 'grilled_cheese_sandwich', 'beet_salad', 'croque_madame', 'caesar_salad', 'steak', 'mussels', 'french_onion_soup', 'caprese_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:19] [显存监控] 已分配=16.92GB, 已保留=17.40GB, 空闲=30.48GB
+[2025-11-27 20:50:22] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+[2025-11-27 20:50:25] [显存监控] 已分配=16.99GB, 已保留=17.70GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: beef_tartare (置信度: 0.1270)
+总耗时: 9.27秒
+succ. pred cate:beef_tartare, true cate:baby_back_ribs, used_slow:True, confidence:0.1270
+开始分类图像: ./datasets/food_101/jpg/baby_back_ribs/3142431.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_curry (置信度: 0.4282)
+总耗时: 0.03秒
+failed. pred cate:chicken_curry, true cate:baby_back_ribs, used_slow:False, confidence:0.4282
+开始分类图像: ./datasets/food_101/jpg/poutine/155575.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/poutine/155575.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['hamburger', 'french_fries', 'breakfast_burrito', 'poutine', 'nachos', 'waffles', 'takoyaki', 'cannoli', 'fish_and_chips', 'apple_pie', 'hot_dog', 'macaroni_and_cheese', 'grilled_cheese_sandwich', 'frozen_yogurt']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:28] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-27 20:50:31] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:34] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-27 20:50:37] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: poutine (置信度: 0.8500)
+总耗时: 12.88秒
+succ. pred cate:poutine, true cate:poutine, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/beignets/2775006.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beignets (置信度: 0.6067)
+总耗时: 0.06秒
+succ. pred cate:beignets, true cate:beignets, used_slow:False, confidence:0.6067
+开始分类图像: ./datasets/food_101/jpg/cup_cakes/282791.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/cup_cakes/282791.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['carrot_cake', 'cup_cakes', 'donuts', 'chocolate_mousse', 'chocolate_cake', 'red_velvet_cake', 'cannoli', 'tiramisu', 'creme_brulee', 'bread_pudding', 'macarons', 'cheesecake', 'strawberry_shortcake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:50:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:44] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: cup_cakes (置信度: 0.1421)
+总耗时: 6.02秒
+succ. pred cate:cup_cakes, true cate:cup_cakes, used_slow:True, confidence:0.1421
+开始分类图像: ./datasets/food_101/jpg/cup_cakes/162029.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: red_velvet_cake (置信度: 0.3835)
+总耗时: 0.04秒
+succ. pred cate:red_velvet_cake, true cate:cup_cakes, used_slow:False, confidence:0.3835
+开始分类图像: ./datasets/food_101/jpg/cup_cakes/3511044.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cup_cakes (置信度: 0.2660)
+总耗时: 0.04秒
+succ. pred cate:cup_cakes, true cate:cup_cakes, used_slow:False, confidence:0.2660
+开始分类图像: ./datasets/food_101/jpg/baklava/29744.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/baklava/29744.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['baklava', 'apple_pie', 'tiramisu', 'breakfast_burrito', 'lasagna', 'waffles', 'bread_pudding', 'beignets', 'french_toast', 'grilled_salmon', 'red_velvet_cake', 'cheesecake', 'carrot_cake', 'grilled_cheese_sandwich', 'cup_cakes', 'hot_and_sour_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:50:52] [显存监控] 已分配=16.97GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+分类完成: baklava (置信度: 0.2124)
+总耗时: 7.45秒
+succ. pred cate:baklava, true cate:baklava, used_slow:True, confidence:0.2124
+开始分类图像: ./datasets/food_101/jpg/baklava/1110172.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: baklava (置信度: 0.3459)
+总耗时: 0.05秒
+succ. pred cate:baklava, true cate:baklava, used_slow:False, confidence:0.3459
+开始分类图像: ./datasets/food_101/jpg/donuts/998564.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/donuts/998564.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['churros', 'onion_rings', 'donuts', 'cannoli', 'baklava', 'french_toast', 'beignets', 'waffles', 'baby_back_ribs', 'falafel', 'samosa', 'fried_calamari', 'cheesecake', 'takoyaki', 'french_fries']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:50:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:50:59] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: churros (置信度: 0.1813)
+总耗时: 8.70秒
+succ. pred cate:churros, true cate:donuts, used_slow:True, confidence:0.1813
+开始分类图像: ./datasets/food_101/jpg/breakfast_burrito/805595.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/breakfast_burrito/805595.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:51:02] Processing fast-slow:  82%|████████▏ | 80/97 [18:25<02:14,  7.91s/it][2025-11-27 20:51:09] Processing fast-slow:  82%|████████▏ | 80/97 [18:25<02:14,  7.91s/it][2025-11-27 20:51:09] Processing fast-slow:  84%|████████▎ | 81/97 [18:41<02:41, 10.06s/it][2025-11-27 20:51:24] Processing fast-slow:  84%|████████▎ | 81/97 [18:41<02:41, 10.06s/it][2025-11-27 20:51:24] Processing fast-slow:  85%|████████▍ | 82/97 [19:09<03:43, 14.92s/it][2025-11-27 20:51:52] Processing fast-slow:  85%|████████▍ | 82/97 [19:09<03:43, 14.92s/it]快思考Top-10候选类别: ['breakfast_burrito', 'omelette', 'chicken_quesadilla', 'huevos_rancheros', 'lasagna', 'ravioli', 'fried_rice', 'pancakes', 'guacamole', 'nachos', 'samosa', 'hummus', 'baklava', 'garlic_bread', 'clam_chowder', 'macaroni_and_cheese', 'takoyaki', 'miso_soup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:51:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:06] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+分类完成: breakfast_burrito (置信度: 0.2228)
+总耗时: 6.50秒
+succ. pred cate:breakfast_burrito, true cate:breakfast_burrito, used_slow:True, confidence:0.2228
+开始分类图像: ./datasets/food_101/jpg/pancakes/2411106.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pancakes/2411106.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pancakes', 'creme_brulee', 'chicken_quesadilla', 'french_toast', 'apple_pie', 'churros', 'waffles', 'pizza', 'beignets', 'tiramisu', 'cheesecake', 'samosa', 'baklava', 'lasagna', 'garlic_bread', 'carrot_cake', 'bread_pudding']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:51:10] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:13] [显存监控] 已分配=16.96GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: pancakes (置信度: 0.1521)
+总耗时: 5.10秒
+succ. pred cate:pancakes, true cate:pancakes, used_slow:True, confidence:0.1521
+开始分类图像: ./datasets/food_101/jpg/pancakes/3561436.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pancakes/3561436.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['breakfast_burrito', 'french_toast', 'pancakes', 'beignets', 'chicken_quesadilla', 'waffles', 'churros', 'grilled_cheese_sandwich', 'creme_brulee', 'gyoza', 'croque_madame', 'eggs_benedict', 'samosa', 'spring_rolls', 'omelette', 'bruschetta']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:16] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:51:19] [显存监控] 已分配=16.97GB, 已保留=17.69GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:22] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: pancakes (置信度: 0.8500)
+总耗时: 10.79秒
+succ. pred cate:pancakes, true cate:pancakes, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/pancakes/311206.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pancakes (置信度: 0.5383)
+总耗时: 0.04秒
+succ. pred cate:pancakes, true cate:pancakes, used_slow:False, confidence:0.5383
+开始分类图像: ./datasets/food_101/jpg/pancakes/3536988.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pancakes (置信度: 0.4559)
+总耗时: 0.04秒
+succ. pred cate:pancakes, true cate:pancakes, used_slow:False, confidence:0.4559
+开始分类图像: ./datasets/food_101/jpg/scallops/3696299.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: scallops (置信度: 0.2615)
+总耗时: 0.06秒
+succ. pred cate:scallops, true cate:scallops, used_slow:False, confidence:0.2615
+开始分类图像: ./datasets/food_101/jpg/scallops/737832.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/scallops/737832.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['seaweed_salad', 'beet_salad', 'beef_carpaccio', 'crab_cakes', 'cheese_plate', 'ravioli', 'caesar_salad', 'beef_tartare', 'tuna_tartare', 'falafel', 'caprese_salad', 'bruschetta', 'scallops', 'french_onion_soup', 'mussels']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:51:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:28] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.44GB
+[2025-11-27 20:51:31] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:34] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: beef_carpaccio (置信度: 0.8000)
+总耗时: 12.22秒
+failed. pred cate:beef_carpaccio, true cate:scallops, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/food_101/jpg/scallops/3901224.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/scallops/3901224.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ceviche', 'fried_calamari', 'shrimp_and_grits', 'crab_cakes', 'scallops', 'chicken_quesadilla', 'clam_chowder', 'ravioli', 'chicken_curry', 'pork_chop', 'macaroni_and_cheese', 'gnocchi', 'lobster_bisque', 'creme_brulee', 'deviled_eggs', 'lasagna']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:37] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:51:40] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:51:43] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:51:46] [显存监控] 已分配=16.91GB, 已保留=17.70GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:49] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: scallop (置信度: 0.8500)
+总耗时: 15.36秒
+succ. pred cate:scallop, true cate:scallops, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/samosa/3266782.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: samosa (置信度: 0.2400)
+总耗时: 0.04秒
+succ. pred cate:samosa, true cate:samosa, used_slow:False, confidence:0.2400
+开始分类图像: ./datasets/food_101/jpg/samosa/452917.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: samosa (置信度: 0.2314)
+总耗时: 0.03秒
+succ. pred cate:samosa, true cate:samosa, used_slow:False, confidence:0.2314
+开始分类图像: ./datasets/food_101/jpg/samosa/1583992.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/samosa/1583992.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['samosa', 'crab_cakes', 'gyoza', 'chicken_curry', 'pad_thai', 'fried_calamari', 'takoyaki', 'falafel', 'fish_and_chips', 'chicken_wings', 'shrimp_and_grits', 'gnocchi', 'spring_rolls']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:51:52] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+[2025-11-27 20:51:52] Processing fast-slow:  86%|████████▌ | 83/97 [19:26<03:40, 15.74s/it][2025-11-27 20:52:10] Processing fast-slow:  86%|████████▌ | 83/97 [19:26<03:40, 15.74s/it][2025-11-27 20:52:10] Processing fast-slow:  87%|████████▋ | 84/97 [19:27<02:26, 11.25s/it][2025-11-27 20:52:10] Processing fast-slow:  87%|████████▋ | 84/97 [19:27<02:26, 11.25s/it][2025-11-27 20:52:10] Processing fast-slow:  87%|████████▋ | 84/97 [19:27<02:26, 11.25s/it][2025-11-27 20:52:10] Processing fast-slow:  89%|████████▊ | 86/97 [19:47<01:58, 10.77s/it][2025-11-27 20:52:30] Processing fast-slow:  89%|████████▊ | 86/97 [19:47<01:58, 10.77s/it][2025-11-27 20:52:31] Processing fast-slow:  89%|████████▊ | 86/97 [19:47<01:58, 10.77s/it]推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:51:55] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.46GB
+[2025-11-27 20:51:58] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: samosa (置信度: 0.1431)
+总耗时: 7.64秒
+succ. pred cate:samosa, true cate:samosa, used_slow:True, confidence:0.1431
+开始分类图像: ./datasets/food_101/jpg/samosa/3161608.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/samosa/3161608.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crab_cakes', 'onion_rings', 'cheese_plate', 'garlic_bread', 'samosa', 'deviled_eggs', 'nachos', 'beef_carpaccio', 'seaweed_salad', 'beef_tartare', 'bruschetta', 'spring_rolls', 'tuna_tartare', 'sashimi', 'caprese_salad', 'fried_calamari']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:52:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:06] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.46GB
+[2025-11-27 20:52:09] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: samosa (置信度: 0.8500)
+总耗时: 10.08秒
+succ. pred cate:samosa, true cate:samosa, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/samosa/2182785.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: samosa (置信度: 0.7334)
+总耗时: 0.03秒
+succ. pred cate:samosa, true cate:samosa, used_slow:False, confidence:0.7334
+开始分类图像: ./datasets/food_101/jpg/spaghetti_bolognese/3676899.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: spaghetti_bolognese (置信度: 0.2991)
+总耗时: 0.06秒
+succ. pred cate:spaghetti_bolognese, true cate:spaghetti_bolognese, used_slow:False, confidence:0.2991
+开始分类图像: ./datasets/food_101/jpg/spaghetti_bolognese/2185402.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: spaghetti_bolognese (置信度: 0.5182)
+总耗时: 0.05秒
+succ. pred cate:spaghetti_bolognese, true cate:spaghetti_bolognese, used_slow:False, confidence:0.5182
+开始分类图像: ./datasets/food_101/jpg/spaghetti_bolognese/2704097.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: spaghetti_bolognese (置信度: 0.5058)
+总耗时: 0.03秒
+succ. pred cate:spaghetti_bolognese, true cate:spaghetti_bolognese, used_slow:False, confidence:0.5058
+开始分类图像: ./datasets/food_101/jpg/chicken_quesadilla/1855472.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_quesadilla (置信度: 0.3145)
+总耗时: 0.04秒
+succ. pred cate:chicken_quesadilla, true cate:chicken_quesadilla, used_slow:False, confidence:0.3145
+开始分类图像: ./datasets/food_101/jpg/chicken_quesadilla/2902221.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chicken_quesadilla (置信度: 0.3414)
+总耗时: 0.03秒
+succ. pred cate:chicken_quesadilla, true cate:chicken_quesadilla, used_slow:False, confidence:0.3414
+开始分类图像: ./datasets/food_101/jpg/ice_cream/2172120.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ice_cream/2172120.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['frozen_yogurt', 'waffles', 'ice_cream', 'apple_pie', 'strawberry_shortcake', 'bread_pudding', 'french_toast', 'pancakes', 'tiramisu', 'cannoli', 'clam_chowder', 'french_fries', 'chocolate_mousse', 'cheesecake']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:12] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-27 20:52:15] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: frozen_yogurt (置信度: 0.1477)
+总耗时: 5.32秒
+failed. pred cate:frozen_yogurt, true cate:ice_cream, used_slow:True, confidence:0.1477
+开始分类图像: ./datasets/food_101/jpg/ice_cream/3596541.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ice_cream/3596541.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ice_cream', 'frozen_yogurt', 'chocolate_mousse', 'red_velvet_cake', 'cheesecake', 'tiramisu', 'beet_salad', 'falafel', 'steak', 'nachos', 'hummus', 'cheese_plate', 'panna_cotta', 'waffles', 'greek_salad']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:52:18] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:21] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+分类完成: ice_cream (置信度: 0.1357)
+总耗时: 7.04秒
+succ. pred cate:ice_cream, true cate:ice_cream, used_slow:True, confidence:0.1357
+开始分类图像: ./datasets/food_101/jpg/ice_cream/3576091.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/ice_cream/3576091.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['chocolate_mousse', 'ice_cream', 'red_velvet_cake', 'tiramisu', 'frozen_yogurt', 'baklava', 'cannoli', 'omelette', 'churros', 'pancakes', 'macarons', 'cheesecake', 'hummus', 'strawberry_shortcake', 'cheese_plate']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:52:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:28] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: chocolate_mousse (置信度: 0.1335)
+总耗时: 7.96秒
+succ. pred cate:chocolate_mousse, true cate:ice_cream, used_slow:True, confidence:0.1335
+开始分类图像: ./datasets/food_101/jpg/takoyaki/2201105.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: nachos (置信度: 0.3256)
+总耗时: 0.04秒
+failed. pred cate:nachos, true cate:takoyaki, used_slow:False, confidence:0.3256
+开始分类图像: ./datasets/food_101/jpg/churros/790399.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: churros (置信度: 0.5402)
+总耗时: 0.04秒
+succ. pred cate:churros, true cate:churros, used_slow:False, confidence:0.5402
+开始分类图像: ./datasets/food_101/jpg/churros/471436.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/churros/471436.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['apple_pie', 'waffles', 'churros', 'french_toast', 'pancakes', 'tiramisu', 'beignets', 'baklava', 'creme_brulee', 'chicken_curry', 'bread_pudding', 'strawberry_shortcake', 'red_velvet_cake', 'panna_cotta', 'steak', 'cannoli']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:52:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:35] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+[2025-11-27 20:52:31] Processing fast-slow:  91%|█████████ | 88/97 [19:57<01:16,  8.51s/it][2025-11-27 20:52:40] Processing fast-slow:  91%|█████████ | 88/97 [19:57<01:16,  8.51s/it][2025-11-27 20:52:40] Processing fast-slow:  92%|█████████▏| 89/97 [20:04<01:06,  8.29s/it][2025-11-27 20:52:48] Processing fast-slow:  92%|█████████▏| 89/97 [20:04<01:06,  8.29s/it][2025-11-27 20:52:48] Processing fast-slow:  93%|█████████▎| 90/97 [20:10<00:53,  7.62s/it][2025-11-27 20:52:53] Processing fast-slow:  93%|█████████▎| 90/97 [20:10<00:53,  7.62s/it][2025-11-27 20:52:53] Processing fast-slow:  94%|█████████▍| 91/97 [20:19<00:47,  8.00s/it][2025-11-27 20:53:03] Processing fast-slow:  94%|█████████▍| 91/97 [20:19<00:47,  8.00s/it][2025-11-27 20:53:03] Processing fast-slow:  95%|█████████▍| 92/97 [20:25<00:36,  7.38s/it][2025-11-27 20:53:08] Processing fast-slow:  95%|█████████▍| 92/97 [20:25<00:36,  7.38s/it][2025-11-27 20:53:08] Processing fast-slow:  95%|█████████▍| 92/97 [20:25<00:36,  7.38s/it][2025-11-27 20:53:08] Processing fast-slow:  97%|█████████▋| 94/97 [20:25<00:12,  4.24s/it][2025-11-27 20:53:08] Processing fast-slow:  97%|█████████▋| 94/97 [20:25<00:12,  4.24s/it]快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:38] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: churros (置信度: 0.8500)
+总耗时: 9.86秒
+succ. pred cate:churros, true cate:churros, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/churros/3523713.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: churros (置信度: 0.5870)
+总耗时: 0.04秒
+succ. pred cate:churros, true cate:churros, used_slow:False, confidence:0.5870
+开始分类图像: ./datasets/food_101/jpg/croque_madame/2486434.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/croque_madame/2486434.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['croque_madame', 'eggs_benedict', 'poutine', 'hamburger', 'club_sandwich', 'grilled_cheese_sandwich', 'omelette', 'french_toast', 'fish_and_chips', 'french_fries', 'huevos_rancheros', 'waffles', 'lasagna', 'breakfast_burrito', 'steak', 'fried_calamari']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:41] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:52:44] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+[2025-11-27 20:52:47] [显存监控] 已分配=16.99GB, 已保留=17.70GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: croque_madame (置信度: 0.1969)
+总耗时: 7.45秒
+succ. pred cate:croque_madame, true cate:croque_madame, used_slow:True, confidence:0.1969
+开始分类图像: ./datasets/food_101/jpg/croque_madame/2790244.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: croque_madame (置信度: 0.4200)
+总耗时: 0.05秒
+succ. pred cate:croque_madame, true cate:croque_madame, used_slow:False, confidence:0.4200
+开始分类图像: ./datasets/food_101/jpg/spaghetti_carbonara/2849408.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: spaghetti_carbonara (置信度: 0.2945)
+总耗时: 0.06秒
+succ. pred cate:spaghetti_carbonara, true cate:spaghetti_carbonara, used_slow:False, confidence:0.2945
+开始分类图像: ./datasets/food_101/jpg/spaghetti_carbonara/916248.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: spaghetti_carbonara (置信度: 0.4179)
+总耗时: 0.04秒
+succ. pred cate:spaghetti_carbonara, true cate:spaghetti_carbonara, used_slow:False, confidence:0.4179
+开始分类图像: ./datasets/food_101/jpg/spaghetti_carbonara/3180475.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/spaghetti_carbonara/3180475.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['spaghetti_carbonara', 'lasagna', 'crab_cakes', 'spaghetti_bolognese', 'pad_thai', 'ravioli', 'garlic_bread', 'bruschetta', 'french_onion_soup', 'omelette', 'risotto', 'shrimp_and_grits', 'gnocchi', 'macaroni_and_cheese', 'grilled_salmon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:50] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-27 20:52:53] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+分类完成: spaghetti_carbonara (置信度: 0.1546)
+总耗时: 5.37秒
+succ. pred cate:spaghetti_carbonara, true cate:spaghetti_carbonara, used_slow:True, confidence:0.1546
+开始分类图像: ./datasets/food_101/jpg/tacos/2165853.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/tacos/2165853.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['club_sandwich', 'tacos', 'lobster_roll_sandwich', 'hamburger', 'chicken_quesadilla', 'falafel', 'french_fries', 'bruschetta', 'beet_salad', 'crab_cakes', 'caesar_salad', 'caprese_salad', 'nachos', 'fried_calamari', 'greek_salad', 'grilled_salmon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:56] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:52:59] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+[2025-11-27 20:53:02] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+分类完成: tacos (置信度: 0.8500)
+总耗时: 9.11秒
+succ. pred cate:tacos, true cate:tacos, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/food_101/jpg/garlic_bread/706205.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/garlic_bread/706205.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garlic_bread', 'bruschetta', 'hot_dog', 'churros', 'french_toast', 'french_onion_soup', 'pancakes', 'lobster_bisque', 'grilled_cheese_sandwich', 'falafel', 'beignets', 'strawberry_shortcake', 'cheese_plate', 'takoyaki', 'cannoli', 'samosa', 'spaghetti_carbonara', 'waffles']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:53:05] [显存监控] 已分配=16.97GB, 已保留=17.57GB, 空闲=30.44GB
+[2025-11-27 20:53:08] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: garlic_bread (置信度: 0.1346)
+总耗时: 5.70秒
+succ. pred cate:garlic_bread, true cate:garlic_bread, used_slow:True, confidence:0.1346
+开始分类图像: ./datasets/food_101/jpg/tuna_tartare/466053.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: beef_tartare (置信度: 0.4265)
+总耗时: 0.05秒
+succ. pred cate:beef_tartare, true cate:tuna_tartare, used_slow:False, confidence:0.4265
+开始分类图像: ./datasets/food_101/jpg/tuna_tartare/668926.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: tuna_tartare (置信度: 0.2697)
+总耗时: 0.03秒
+succ. pred cate:tuna_tartare, true cate:tuna_tartare, used_slow:False, confidence:0.2697
+开始分类图像: ./datasets/food_101/jpg/caprese_salad/1994313.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caprese_salad (置信度: 0.4208)
+总耗时: 0.05秒
+succ. pred cate:caprese_salad, true cate:caprese_salad, used_slow:False, confidence:0.4208
+开始分类图像: ./datasets/food_101/jpg/caprese_salad/3695608.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caprese_salad (置信度: 0.5173)
+总耗时: 0.04秒
+succ. pred cate:caprese_salad, true cate:caprese_salad, used_slow:False, confidence:0.5173
+开始分类图像: ./datasets/food_101/jpg/caprese_salad/2893232.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: caprese_salad (置信度: 0.2168)
+总耗时: 0.04秒
+succ. pred cate:caprese_salad, true cate:caprese_salad, used_slow:False, confidence:0.2168
+开始分类图像: ./datasets/food_101/jpg/pulled_pork_sandwich/1623411.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/food_101/jpg/pulled_pork_sandwich/1623411.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:53:08] Processing fast-slow:  98%|█████████▊| 95/97 [20:33<00:10,  5.17s/it][2025-11-27 20:53:17] Processing fast-slow:  98%|█████████▊| 95/97 [20:33<00:10,  5.17s/it][2025-11-27 20:53:17] Processing fast-slow:  98%|█████████▊| 95/97 [20:33<00:10,  5.17s/it][2025-11-27 20:53:17] Processing fast-slow: 100%|██████████| 97/97 [20:33<00:00,  3.11s/it][2025-11-27 20:53:17] Processing fast-slow: 100%|██████████| 97/97 [20:33<00:00, 12.72s/it]
+快思考Top-10候选类别: ['chicken_quesadilla', 'club_sandwich', 'grilled_cheese_sandwich', 'hamburger', 'pulled_pork_sandwich', 'crab_cakes', 'french_toast', 'poutine', 'grilled_salmon', 'pancakes', 'breakfast_burrito', 'tacos', 'caesar_salad', 'huevos_rancheros', 'lasagna', 'fried_calamari', 'croque_madame']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:53:11] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.45GB
+[2025-11-27 20:53:14] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: chicken_quesadilla (置信度: 0.1246)
+总耗时: 8.14秒
+failed. pred cate:chicken_quesadilla, true cate:pulled_pork_sandwich, used_slow:True, confidence:0.1246
+开始分类图像: ./datasets/food_101/jpg/pulled_pork_sandwich/1762035.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pulled_pork_sandwich (置信度: 0.4371)
+总耗时: 0.04秒
+succ. pred cate:pulled_pork_sandwich, true cate:pulled_pork_sandwich, used_slow:False, confidence:0.4371
+开始分类图像: ./datasets/food_101/jpg/red_velvet_cake/151162.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chocolate_cake (置信度: 0.2083)
+总耗时: 0.05秒
+succ. pred cate:chocolate_cake, true cate:red_velvet_cake, used_slow:False, confidence:0.2083
+开始分类图像: ./datasets/food_101/jpg/red_velvet_cake/3413936.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: red_velvet_cake (置信度: 0.7674)
+总耗时: 0.04秒
+succ. pred cate:red_velvet_cake, true cate:red_velvet_cake, used_slow:False, confidence:0.7674
+开始分类图像: ./datasets/food_101/jpg/grilled_cheese_sandwich/849182.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: grilled_cheese_sandwich (置信度: 0.3458)
+总耗时: 0.04秒
+succ. pred cate:grilled_cheese_sandwich, true cate:grilled_cheese_sandwich, used_slow:False, confidence:0.3458
+✅ 正确预测总数: 265
+  - 其中仅快思考正确: 166
+  - 其中慢思考触发且正确: 99
+❌ 错误预测总数: 38
+📊 慢思考触发数量: 124
+[fast and slow] 总体准确率: 0.8746 (265/303)
+[fast and slow] 快思考准确率: 0.9274
+[fast and slow] 慢思考触发比例: 0.4092
+[fast and slow] 慢思考准确率: 0.7984
+✓ 分类结果已保存到: ./experiments/food101/classify/classify_result.json
+  总样本数: 303
+📁 分类结果已保存到: ./experiments/food101/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 20:53:17 ===
+=== Total Runtime: 0小时 21分 45.16秒 ===
+

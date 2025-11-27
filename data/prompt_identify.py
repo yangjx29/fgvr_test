@@ -436,6 +436,23 @@ The useful attributes for distinguishing [__SUPERCLASS__] [__CLASSUNIT__] in a p
 """
 
 
+birdsnap_how_to = f"""
+Your task is to tell me what are the useful attributes for distinguishing [__SUPERCLASS__] species in a photo of a [__SUPERCLASS__].
+
+Specifically, you can complete the task by following the instructions below:
+1 - I give you an example delimited by <> about what are the useful attributes for distinguishing bird species in 
+a photo of a bird. You should understand and learn this example carefully.
+2 - List the useful attributes for distinguishing [__SUPERCLASS__] species in a photo of a [__SUPERCLASS__].
+3 - Output a Python list object that contains the listed useful attributes.
+
+===
+<bird species>
+The useful attributes for distinguishing bird species in a photo of a bird:
+['size', 'shape', 'color_pattern', 'beak_type', 'wing_shape', 'tail_shape', 'habitat', 'behavior', 'plumage', 'markings', 'head_features', 'body_features', 'leg_color', 'flight_pattern', 'vocalization', 'seasonal_appearance']
+===
+"""
+
+
 prompts_howto = {
     "bird": bird_how_to,
     "car": car_how_to,
@@ -453,4 +470,5 @@ prompts_howto = {
     "sun397": sun397_how_to,
     "imagenet_a": imagenet_a_how_to,
     "imagenet_r": imagenet_r_how_to,
+    "birdsnap": birdsnap_how_to,
 }

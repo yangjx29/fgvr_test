@@ -139,28 +139,59 @@ The useful attributes for distinguishing {self.supercategory} {self.CLASSUNIT} i
 
 
 class ImageNetADiscovery:
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-        self.class_folders = os.listdir(img_root)
-        self.class_folders.sort()
+    def __init__(self, cfg, folder_suffix=''):
+        # 使用JSON文件加载数据
+        json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+        print(f"构建ImageNet-A发现集,json_path: {json_path}")
+        
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON文件不存在: {json_path}")
+        
+        # 加载JSON文件
+        import json
+        with open(json_path, 'r') as f:
+            self.data = json.load(f)
         
         self.samples = []
+        self.targets = []
         self.subcategories = []
         
-        for class_id in self.class_folders:
-            class_path = os.path.join(img_root, class_id)
-            if os.path.isdir(class_path):
-                img_files = os.listdir(class_path)
-                img_files = [f for f in img_files if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-                for img_file in img_files:
-                    img_path = os.path.join(class_path, img_file)
-                    self.samples.append(img_path)
-                    self.subcategories.append(class_id)
+        # 解析JSON数据 - 格式: [class_name, class_id, image_list]
+        for class_data in self.data:
+            class_name = class_data[0]
+            class_id = class_data[1]
+            image_list = class_data[2]
+            
+            # 为每个图片创建样本
+            for img_file in image_list:
+                # 检查img_file是否已经是完整路径
+                if img_file.startswith('./') or img_file.startswith('/') or os.path.isabs(img_file):
+                    # 已经是完整路径，直接使用
+                    img_path = img_file
+                elif img_file.startswith('datasets/'):
+                    # 是相对datasets目录的路径，直接使用
+                    img_path = f"./{img_file}"
+                else:
+                    # 是其他相对路径，需要拼接基础路径
+                    img_path = os.path.join(cfg['data_dir'], img_file)
+                self.samples.append(img_path)
+                self.subcategories.append(class_name)
+                self.targets.append(class_id)
         
+        # 创建子类别到样本的映射
         from collections import defaultdict
         self.subcat_to_sample = defaultdict(list)
         for subcat, sample in zip(self.subcategories, self.samples):
             self.subcat_to_sample[subcat].append(sample)
+    
+    def __getitem__(self, index):
+        img_path = self.samples[index]
+        subcategory = self.subcategories[index]
+        img = Image.open(img_path).convert('RGB')
+        return img, subcategory, img_path
+    
+    def __len__(self):
+        return len(self.samples)
 
 
 class ImageNetADataset(Dataset):
@@ -209,7 +240,7 @@ def build_imagenet_a_prompter(cfg: dict):
 
 
 def build_imagenet_a_discovery(cfg: dict, folder_suffix=''):
-    return ImageNetADiscovery(cfg['data_dir'], folder_suffix=folder_suffix)
+    return ImageNetADiscovery(cfg, folder_suffix=folder_suffix)
 
 
 def build_imagenet_a_test(cfg):

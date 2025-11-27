@@ -1,0 +1,966 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=3  # 使用的GPU编号
+Dataset: dog (num_classes=120)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/dog120/knowledge_base  # 知识库目录
+Results Out: ./results/dog_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/dog120_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/dog120/fast_slow_dog(8).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: dog (dog120)
+类别数: 120
+实验目录: ./experiments/dog120
+✅ JSON文件检查通过: ./experiments/dog120/images_split
+当前使用的 GPU 为：3
+
+=== Experiment Start Time: 2025-11-27 20:25:33 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/dog120_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/dog120/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/dog_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/dogs_120',
+ 'dataset_name': 'dog',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/dog120',
+ 'expt_dir_describe': './experiments/dog120/describe',
+ 'expt_dir_gallery': './experiments/dog120/gallery',
+ 'expt_dir_grouping': './experiments/dog120/grouping',
+ 'expt_dir_guess': './experiments/dog120/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 60,
+ 'num_classes': 120,
+ 'num_novel': 60,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn',
+ 'path_identify_answers': './experiments/dog120/identify',
+ 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names',
+ 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw',
+ 'path_references': './experiments/dog120/gallery/dog_image_references',
+ 'path_regions': './experiments/dog120/gallery/dog_image_regions',
+ 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs',
+ 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "dog120",
+    "num_classes": 120,
+    "config_file": "dog120_all.yml",
+    "data_dir": "dogs_120",
+    "experiment_dir": "dog120",
+    "stats_file": "dog120/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/dog120/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/dog120"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.12s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.33s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:04,  2.23s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.89s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.43s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.57s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:25:42
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/dog120/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/dog120/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 930 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:26:44
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x757674721ac0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x757674721610>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/dog120/knowledge_base
+使用数据集: dog, 类别数: 120
+✅ 慢思考模块初始化完成，类别映射数量: 120
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:26:44] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/dog120/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/dog120/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/dog120/knowledge_base 加载
+图像知识库类别数: 120
+文本知识库类别数: 120
+类别描述数: 119
+⚠️  警告: 发现 1 个类别的文本特征维度不正确:
+  - entries: (2,) (期望: (512,))
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x757674721610>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x757674721fd0>
+📦 数据集信息: {'full_name': 'dog120', 'num_classes': 120, 'config_file': 'dog120_all.yml', 'data_dir': 'dogs_120', 'experiment_dir': 'dog120', 'stats_file': 'dog120/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/dog120/knowledge_base/stats.json', 'experiment_dir_full': './experiments/dog120'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Verify the presence of a thick, double-layered coat and the overall body structure before making a final classification decision. (Trigger: This rule should be recalled when dealing with medium to large breed dogs with pointed ears and a broad muzzle.)
+2. Verify the presence and characteristics of distinctive features such as ear shape, tail position, and coat texture before making a final classification decision. (Trigger: This rule should be recalled when the primary distinguishing features of the candidate classes are not clearly visible or when the target object exhibits ambiguous traits.)
+3. Verify the tail and body structure when identifying breeds with similar coat types. (Trigger: When dealing with breeds that have similar coat types but different body structures or tail shapes.)
+
+经验库已从 ./experiments/dog120/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: dog120
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/dog120/images_split/images_test.json
+  类别数量: 120
+  总图像数: 4162
+  平均每类: 34.7 张
+  图像范围: 30 - 51 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 41 张图像，覆盖 33 个类别
+  平均每类: 1.2 张
+======================================================================
+test sample keys: ['Cardigan', 'Chihuahua', 'English_springer', 'cocker_spaniel', 'Siberian_husky']...
+[fast and slow] 测试数据集包含 33 个类别
+  0%|          | 0/33 [00:00<?, ?it/s][2025-11-27 20:26:44] Processing fast-slow:   0%|          | 0/33 [00:00<?, ?it/s][2025-11-27 20:26:44] Processing fast-slow:   3%|▎         | 1/33 [00:11<06:08, 11.52s/it][2025-11-27 20:26:56] Processing fast-slow:   3%|▎         | 1/33 [00:11<06:08, 11.52s/it][2025-11-27 20:26:56] Processing fast-slow:   6%|▌         | 2/33 [00:26<06:57, 13.48s/it][2025-11-27 20:27:11] Processing fast-slow:   6%|▌         | 2/33 [00:26<06:57, 13.48s/it][2025-11-27 20:27:11] Processing fast-slow:   9%|▉         | 3/33 [00:41<07:00, 14.01s/it][2025-11-27 20:27:25] Processing fast-slow:   9%|▉         | 3/33 [00:41<07:00, 14.01s/it][2025-11-27 20:27:25] Processing fast-slow:  12%|█▏        | 4/33 [00:52<06:13, 12.86s/it][2025-11-27 20:27:36] Processing fast-slow:  12%|█▏        | 4/33 [00:52<06:13, 12.86s/it]开始分类图像: ./datasets/dogs_120/Images/n02113186-Cardigan/n02113186_440.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02113186-Cardigan/n02113186_440.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cardigan', 'Collie', 'Appenzeller', 'Pembroke', 'Siberian Husky', 'Basenji', 'African Hunting Dog', 'Eskimo Dog', 'Kelpie', 'German Shepard']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:47] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-27 20:26:50] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:53] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Pembroke (置信度: 0.8500)
+总耗时: 11.52秒
+failed. pred cate:Pembroke, true cate:Cardigan, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/dogs_120/Images/n02085620-Chihuahua/n02085620_1816.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02085620-Chihuahua/n02085620_1816.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Miniature Pinscher', 'Toy Terrier', 'Chihuaha', 'Italian Greyhound', 'French Bulldog', 'Mexican Hairless', 'Basenji', 'Boston Bull', 'Cardigan', 'Border Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:26:59] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:02] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+模糊匹配类别修正: 'Chihuahua' -> 'Chihuaha'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:27:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:09] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Chihuahua (置信度: 0.9000)
+总耗时: 14.85秒
+succ. pred cate:Chihuahua, true cate:Chihuahua, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/dogs_120/Images/n02102040-English_springer/n02102040_682.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02102040-English_springer/n02102040_682.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['English Springer Spaniel', 'Clumber', 'Collie', 'Flat-coated Retriever', 'Cocker Spaniel', 'Curly-coater Retriever', 'Gordon Setter', 'English Setter', 'Sussex Spaniel', 'Welsh Springer Spaniel']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:17] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: English Springer Spaniel (置信度: 0.1345)
+总耗时: 7.53秒
+succ. pred cate:English Springer Spaniel, true cate:English_springer, used_slow:True, confidence:0.1345
+开始分类图像: ./datasets/dogs_120/Images/n02102040-English_springer/n02102040_5388.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02102040-English_springer/n02102040_5388.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['English Springer Spaniel', 'English Setter', 'Welsh Springer Spaniel', 'German Short-haired Pointer', 'Collie', 'Clumber', 'Brittany', 'Black-and-tan Coonhound', 'Greater Swiss Mountain Dog', 'Flat-coated Retriever']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:24] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: English Springer Spaniel (置信度: 0.1463)
+总耗时: 7.12秒
+succ. pred cate:English Springer Spaniel, true cate:English_springer, used_slow:True, confidence:0.1463
+开始分类图像: ./datasets/dogs_120/Images/n02102318-cocker_spaniel/n02102318_3696.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02102318-cocker_spaniel/n02102318_3696.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Miniature Poodle', 'Dandi Dinmont', 'Toy Poodle', 'Bedlington Terrier', 'Clumber', 'English Setter', 'Cocker Spaniel', 'Soft-coated Wheaten Terrier', 'Welsh Springer Spaniel', 'Lhasa']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:27] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-27 20:27:30] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:33] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+[2025-11-27 20:27:36] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: Cocker Spaniel (置信度: 0.9000)
+总耗时: 11.10秒
+succ. pred cate:Cocker Spaniel, true cate:cocker_spaniel, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/dogs_120/Images/n02110185-Siberian_husky/n02110185_5143.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02110185-Siberian_husky/n02110185_5143.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Siberian Husky', 'Eskimo Dog', 'Malamute', 'Norwegian Elkhound', 'Cardigan', 'Kelpie', 'Groenendael', 'Collie', 'Appenzeller', 'Keeshond']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:39] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+[2025-11-27 20:27:36] Processing fast-slow:  15%|█▌        | 5/33 [00:56<04:38,  9.96s/it][2025-11-27 20:27:41] Processing fast-slow:  15%|█▌        | 5/33 [00:56<04:38,  9.96s/it][2025-11-27 20:27:41] Processing fast-slow:  18%|█▊        | 6/33 [01:03<04:01,  8.96s/it][2025-11-27 20:27:48] Processing fast-slow:  18%|█▊        | 6/33 [01:03<04:01,  8.96s/it][2025-11-27 20:27:48] Processing fast-slow:  21%|██        | 7/33 [01:10<03:33,  8.23s/it][2025-11-27 20:27:55] Processing fast-slow:  21%|██        | 7/33 [01:10<03:33,  8.23s/it][2025-11-27 20:27:55] Processing fast-slow:  24%|██▍       | 8/33 [01:16<03:07,  7.50s/it][2025-11-27 20:28:01] Processing fast-slow:  24%|██▍       | 8/33 [01:16<03:07,  7.50s/it][2025-11-27 20:28:01] Processing fast-slow:  27%|██▋       | 9/33 [01:26<03:18,  8.27s/it][2025-11-27 20:28:11] Processing fast-slow:  27%|██▋       | 9/33 [01:26<03:18,  8.27s/it][2025-11-27 20:28:11] Processing fast-slow:  30%|███       | 10/33 [01:32<02:53,  7.53s/it][2025-11-27 20:28:17] Processing fast-slow:  30%|███       | 10/33 [01:32<02:53,  7.53s/it][2025-11-27 20:28:17] Processing fast-slow:  33%|███▎      | 11/33 [01:38<02:38,  7.20s/it][2025-11-27 20:28:23] Processing fast-slow:  33%|███▎      | 11/33 [01:38<02:38,  7.20s/it]分类完成: Siberian Husky (置信度: 0.1530)
+总耗时: 4.82秒
+succ. pred cate:Siberian Husky, true cate:Siberian_husky, used_slow:True, confidence:0.1530
+开始分类图像: ./datasets/dogs_120/Images/n02093859-Kerry_blue_terrier/n02093859_855.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02093859-Kerry_blue_terrier/n02093859_855.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Kerry Blue Terrier', 'Standard Schnauzer', 'Giant Schnauzer', 'Miniature Schnauzer', 'Bouvier des Flandres', 'Airedale', 'Scotch Terrier', 'Soft-coated Wheaten Terrier', 'Briard', 'Dandi Dinmont']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:46] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: Kerry Blue Terrier (置信度: 0.1368)
+总耗时: 7.02秒
+succ. pred cate:Kerry Blue Terrier, true cate:Kerry_blue_terrier, used_slow:True, confidence:0.1368
+开始分类图像: ./datasets/dogs_120/Images/n02094258-Norwich_terrier/n02094258_1947.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02094258-Norwich_terrier/n02094258_1947.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Border Terrier', 'Norwich Terrier', 'Norfolk Terrier', 'French Bulldog', 'Cairn', 'Pembroke', 'Australian Terrier', 'Irish Terrier', 'Miniature Schnauzer', 'Brabancon Griffon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:53] [显存监控] 已分配=16.97GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: Norwich Terrier (置信度: 0.1127)
+总耗时: 6.72秒
+succ. pred cate:Norwich Terrier, true cate:Norwich_terrier, used_slow:True, confidence:0.1127
+开始分类图像: ./datasets/dogs_120/Images/n02109961-Eskimo_dog/n02109961_2369.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02109961-Eskimo_dog/n02109961_2369.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Siberian Husky', 'Eskimo Dog', 'Malamute', 'Appenzeller', 'Collie', 'Norwegian Elkhound', 'Samoyed', 'EntleBucher', 'Japanese Spaniel', 'Cardigan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:57] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:00] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+分类完成: Siberian Husky (置信度: 0.1747)
+总耗时: 5.94秒
+failed. pred cate:Siberian Husky, true cate:Eskimo_dog, used_slow:True, confidence:0.1747
+开始分类图像: ./datasets/dogs_120/Images/n02092339-Weimaraner/n02092339_4378.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02092339-Weimaraner/n02092339_4378.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Clumber', 'Bluetick', 'Weimaraner', 'Mexican Hairless', 'Chesapeake Bay Retriever', 'Labrador Retriever', 'American Staffordshire Terrier', 'Vizsla', 'Staffordshire Bullterrier', 'German Short-haired Pointer']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:03] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+[2025-11-27 20:28:06] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:09] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+分类完成: Weimaraner (置信度: 0.9000)
+总耗时: 9.95秒
+succ. pred cate:Weimaraner, true cate:Weimaraner, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/dogs_120/Images/n02089973-English_foxhound/n02089973_4084.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02089973-English_foxhound/n02089973_4084.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['English Foxhound', 'Walker Hound', 'Beagle', 'Appenzeller', 'Basenji', 'Greater Swiss Mountain Dog', 'African Hunting Dog', 'Bluetick', 'Collie', 'EntleBucher']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:28:12] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-27 20:28:15] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: English Foxhound (置信度: 0.1384)
+总耗时: 5.88秒
+succ. pred cate:English Foxhound, true cate:English_foxhound, used_slow:True, confidence:0.1384
+开始分类图像: ./datasets/dogs_120/Images/n02115913-dhole/n02115913_3229.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02115913-dhole/n02115913_3229.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dhole', 'Dingo', 'African Hunting Dog', 'Rhodesian Ridgeback', 'Irish Terrier', 'Standard Poodle', 'Border Terrier', 'Malinois', 'Saluki', 'Vizsla']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:19] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:22] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+分类完成: Dhole (置信度: 0.1763)
+总耗时: 6.47秒
+succ. pred cate:Dhole, true cate:dhole, used_slow:True, confidence:0.1763
+开始分类图像: ./datasets/dogs_120/Images/n02110958-pug/n02110958_11958.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果确定，直接返回...
+分类完成: Pug (置信度: 0.4427)
+总耗时: 0.05秒
+succ. pred cate:Pug, true cate:pug, used_slow:False, confidence:0.4427
+[2025-11-27 20:28:23] Processing fast-slow:  33%|███▎      | 11/33 [01:38<02:38,  7.20s/it][2025-11-27 20:28:23] Processing fast-slow:  39%|███▉      | 13/33 [01:52<02:20,  7.02s/it][2025-11-27 20:28:37] Processing fast-slow:  39%|███▉      | 13/33 [01:52<02:20,  7.02s/it][2025-11-27 20:28:37] Processing fast-slow:  42%|████▏     | 14/33 [02:10<03:03,  9.64s/it][2025-11-27 20:28:54] Processing fast-slow:  42%|████▏     | 14/33 [02:10<03:03,  9.64s/it][2025-11-27 20:28:54] Processing fast-slow:  45%|████▌     | 15/33 [02:35<04:08, 13.82s/it][2025-11-27 20:29:20] Processing fast-slow:  45%|████▌     | 15/33 [02:35<04:08, 13.82s/it]开始分类图像: ./datasets/dogs_120/Images/n02110958-pug/n02110958_2410.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果确定，直接返回...
+分类完成: Pug (置信度: 0.5636)
+总耗时: 0.03秒
+succ. pred cate:Pug, true cate:pug, used_slow:False, confidence:0.5636
+开始分类图像: ./datasets/dogs_120/Images/n02091831-Saluki/n02091831_2638.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02091831-Saluki/n02091831_2638.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Borzoi', 'Saluki', 'Irish Terrier', 'Redbone', 'Walker Hound', 'Welsh Springer Spaniel', 'Irish Setter', 'Afghan Hound', 'Clumber', 'Irish Wolfhound']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:28:29] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:28:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:28:35] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Borzoi (置信度: 0.9500)
+总耗时: 13.53秒
+failed. pred cate:Borzoi, true cate:Saluki, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/dogs_120/Images/n02095889-Sealyham_terrier/n02095889_5781.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02095889-Sealyham_terrier/n02095889_5781.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Sealyham Terrier', 'Bedlington Terrier', 'West Highland White Terrier', 'Dandi Dinmont', 'Miniature Schnauzer', 'Maltese Dog', 'Standard Schnauzer', 'Old English Sheepdog', 'Lhasa', 'Miniature Poodle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:40] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:28:43] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+分类完成: Sealyham Terrier (置信度: 0.1177)
+总耗时: 7.62秒
+succ. pred cate:Sealyham Terrier, true cate:Sealyham_terrier, used_slow:True, confidence:0.1177
+开始分类图像: ./datasets/dogs_120/Images/n02095889-Sealyham_terrier/n02095889_1476.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02095889-Sealyham_terrier/n02095889_1476.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Sealyham Terrier', 'West Highland White Terrier', 'Dandi Dinmont', 'Soft-coated Wheaten Terrier', 'Clumber', 'Old English Sheepdog', 'Miniature Schnauzer', 'Maltese Dog', 'Standard Schnauzer', 'Otterhound']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:47] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:50] [显存监控] 已分配=16.97GB, 已保留=17.57GB, 空闲=30.43GB
+[2025-11-27 20:28:53] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+分类完成: Sealyham Terrier (置信度: 0.1242)
+总耗时: 9.88秒
+succ. pred cate:Sealyham Terrier, true cate:Sealyham_terrier, used_slow:True, confidence:0.1242
+开始分类图像: ./datasets/dogs_120/Images/n02089867-Walker_hound/n02089867_180.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02089867-Walker_hound/n02089867_180.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Greater Swiss Mountain Dog', 'EntleBucher', 'Cardigan', 'English Foxhound', 'Beagle', 'Walker Hound', 'Collie', 'Appenzeller', 'Basenji', 'Staffordshire Bullterrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:56] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:29:01] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:29:04] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: English Foxhound (置信度: 0.8000)
+总耗时: 11.42秒
+succ. pred cate:English Foxhound, true cate:Walker_hound, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/dogs_120/Images/n02089867-Walker_hound/n02089867_1912.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02089867-Walker_hound/n02089867_1912.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['English Foxhound', 'Walker Hound', 'Beagle', 'Appenzeller', 'Basset Hound', 'Black-and-tan Coonhound', 'German Short-haired Pointer', 'Great Dane', 'Bluetick', 'Saluki']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:29:08] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:29:11] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+[2025-11-27 20:29:14] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:29:17] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:29:20] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: English Foxhound (置信度: 0.8500)
+总耗时: 14.10秒
+succ. pred cate:English Foxhound, true cate:Walker_hound, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/dogs_120/Images/n02108089-boxer/n02108089_530.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+[2025-11-27 20:29:20] Processing fast-slow:  48%|████▊     | 16/33 [03:16<06:02, 21.33s/it][2025-11-27 20:30:01] Processing fast-slow:  48%|████▊     | 16/33 [03:16<06:02, 21.33s/it][2025-11-27 20:30:01] Processing fast-slow:  52%|█████▏    | 17/33 [03:23<04:37, 17.34s/it][2025-11-27 20:30:08] Processing fast-slow:  52%|█████▏    | 17/33 [03:23<04:37, 17.34s/it]开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02108089-boxer/n02108089_530.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['American Staffordshire Terrier', 'Staffordshire Bullterrier', 'Bull Mastiff', 'Rhodesian Ridgeback', 'Boxer', 'Appenzeller', 'Brabancon Griffon', 'Groenendael', 'Great Dane', 'Malinois']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:29:23] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+[2025-11-27 20:29:26] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:29:29] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:29:32] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Boxer (置信度: 0.9500)
+总耗时: 13.61秒
+succ. pred cate:Boxer, true cate:boxer, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/dogs_120/Images/n02108089-boxer/n02108089_8969.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02108089-boxer/n02108089_8969.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rhodesian Ridgeback', 'Staffordshire Bullterrier', 'Vizsla', 'American Staffordshire Terrier', 'Bull Mastiff', 'Boxer', 'Brabancon Griffon', 'Redbone', 'Appenzeller', 'Miniature Pinscher']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:29:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:29:39] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:29:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:29:46] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Staffordshire Bullterrier (置信度: 0.8500)
+总耗时: 14.61秒
+failed. pred cate:Staffordshire Bullterrier, true cate:boxer, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/dogs_120/Images/n02108089-boxer/n02108089_926.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02108089-boxer/n02108089_926.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Kerry Blue Terrier', 'English Setter', 'Great Dane', 'Malamute', 'Curly-coater Retriever', 'Flat-coated Retriever', 'Borzoi', 'Bedlington Terrier', 'Scotch Terrier', 'Giant Schnauzer']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:29:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:29:53] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:29:57] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:30:00] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: Boxer (置信度: 0.9500)
+总耗时: 13.10秒
+succ. pred cate:Boxer, true cate:boxer, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/dogs_120/Images/n02100236-German_short-haired_pointer/n02100236_2569.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02100236-German_short-haired_pointer/n02100236_2569.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['German Short-haired Pointer', 'Bluetick', 'Great Dane', 'Irish Wolfhound', 'Scottish Deerhound', 'Clumber', 'Kerry Blue Terrier', 'Mexican Hairless', 'Staffordshire Bullterrier', 'Standard Schnauzer']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:03] [显存监控] 已分配=16.96GB, 已保留=17.32GB, 空闲=30.44GB
+[2025-11-27 20:30:06] [显存监控] 已分配=16.97GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: German Short-haired Pointer (置信度: 0.1467)
+总耗时: 7.11秒
+succ. pred cate:German Short-haired Pointer, true cate:German_short-haired_pointer, used_slow:True, confidence:0.1467
+开始分类图像: ./datasets/dogs_120/Images/n02085782-Japanese_spaniel/n02085782_725.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02085782-Japanese_spaniel/n02085782_725.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Pekinese', 'Shih-Tzu', 'Blenheim Spaniel', 'Chow', 'Japanese Spaniel', 'Lhasa', 'Tibetan Terrier', 'Papillon', 'Dandi Dinmont', 'Pomeranian']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:30:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:14] [显存监控] 已分配=16.96GB, 已保留=17.73GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.73GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:30:18] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:21] [显存监控] 已分配=16.95GB, 已保留=17.70GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+分类完成: Japanese Spaniel (置信度: 0.9500)
+总耗时: 14.26秒
+succ. pred cate:Japanese Spaniel, true cate:Japanese_spaniel, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/dogs_120/Images/n02085782-Japanese_spaniel/n02085782_1460.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02085782-Japanese_spaniel/n02085782_1460.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Japanese Spaniel', 'Pekinese', 'Shih-Tzu', 'Blenheim Spaniel', 'Papillon', 'Chihuaha', 'Lhasa', 'English Springer Spaniel', 'Boston Bull', 'Maltese Dog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:08] Processing fast-slow:  55%|█████▍    | 18/33 [03:45<04:36, 18.42s/it][2025-11-27 20:30:29] Processing fast-slow:  55%|█████▍    | 18/33 [03:45<04:36, 18.42s/it][2025-11-27 20:30:29] Processing fast-slow:  58%|█████▊    | 19/33 [03:52<03:33, 15.25s/it][2025-11-27 20:30:37] Processing fast-slow:  58%|█████▊    | 19/33 [03:52<03:33, 15.25s/it][2025-11-27 20:30:37] Processing fast-slow:  61%|██████    | 20/33 [04:00<02:52, 13.23s/it][2025-11-27 20:30:45] Processing fast-slow:  61%|██████    | 20/33 [04:00<02:52, 13.23s/it][2025-11-27 20:30:45] Processing fast-slow:  64%|██████▎   | 21/33 [04:07<02:13, 11.15s/it][2025-11-27 20:30:51] Processing fast-slow:  64%|██████▎   | 21/33 [04:07<02:13, 11.15s/it][2025-11-27 20:30:51] Processing fast-slow:  67%|██████▋   | 22/33 [04:21<02:14, 12.23s/it][2025-11-27 20:31:06] Processing fast-slow:  67%|██████▋   | 22/33 [04:21<02:14, 12.23s/it][2025-11-27 20:31:06] Processing fast-slow:  70%|██████▉   | 23/33 [04:28<01:45, 10.51s/it][2025-11-27 20:31:13] Processing fast-slow:  70%|██████▉   | 23/33 [04:28<01:45, 10.51s/it][2025-11-27 20:31:13] Processing fast-slow:  73%|███████▎  | 24/33 [04:35<01:26,  9.59s/it][2025-11-27 20:31:20] Processing fast-slow:  73%|███████▎  | 24/33 [04:35<01:26,  9.59s/it][2025-11-27 20:30:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:30:28] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+分类完成: Japanese Spaniel (置信度: 0.1465)
+总耗时: 6.86秒
+succ. pred cate:Japanese Spaniel, true cate:Japanese_spaniel, used_slow:True, confidence:0.1465
+开始分类图像: ./datasets/dogs_120/Images/n02105855-Shetland_sheepdog/n02105855_9857.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02105855-Shetland_sheepdog/n02105855_9857.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Shetland Sheepdog', 'Pomeranian', 'Collie', 'Keeshond', 'Papillon', 'Schipperke', 'Cardigan', 'Japanese Spaniel', 'Eskimo Dog', 'Kelpie']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:30:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:35] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+分类完成: Shetland Sheepdog (置信度: 0.1350)
+总耗时: 7.48秒
+succ. pred cate:Shetland Sheepdog, true cate:Shetland_sheepdog, used_slow:True, confidence:0.1350
+开始分类图像: ./datasets/dogs_120/Images/n02115641-dingo/n02115641_6747.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02115641-dingo/n02115641_6747.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dingo', 'Dhole', 'Leonberg', 'Kelpie', 'Miniature Pinscher', 'Basenji', 'African Hunting Dog', 'Clumber', 'Rhodesian Ridgeback', 'Brabancon Griffon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:30:39] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:42] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+分类完成: Dingo (置信度: 0.1864)
+总耗时: 8.38秒
+succ. pred cate:Dingo, true cate:dingo, used_slow:True, confidence:0.1864
+开始分类图像: ./datasets/dogs_120/Images/n02099601-golden_retriever/n02099601_5.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+[2025-11-27 20:30:45] [显存监控] 已分配=16.91GB, 已保留=17.56GB, 空闲=30.50GB
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02099601-golden_retriever/n02099601_5.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Golden Retriever', 'Soft-coated Wheaten Terrier', 'Labrador Retriever', 'Cocker Spaniel', 'Great Pyrenees', 'Toy Poodle', 'Norfolk Terrier', 'Airedale', 'Lakeland Terrier', 'Irish Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:30:48] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+[2025-11-27 20:30:51] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: Golden Retriever (置信度: 0.1243)
+总耗时: 6.16秒
+succ. pred cate:Golden Retriever, true cate:golden_retriever, used_slow:True, confidence:0.1243
+开始分类图像: ./datasets/dogs_120/Images/n02093991-Irish_terrier/n02093991_3516.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02093991-Irish_terrier/n02093991_3516.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Clumber', 'Cairn', 'Irish Terrier', 'Australian Terrier', 'Border Terrier', 'Miniature Schnauzer', 'Affenpinscher', 'Norfolk Terrier', 'Shetland Sheepdog', 'Wirehaired Fox Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:30:54] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-27 20:30:57] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:31:01] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:04] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Irish Terrier (置信度: 0.8000)
+总耗时: 14.80秒
+succ. pred cate:Irish Terrier, true cate:Irish_terrier, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/dogs_120/Images/n02088466-bloodhound/n02088466_6413.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02088466-bloodhound/n02088466_6413.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bloodhound', 'Redbone', 'Black-and-tan Coonhound', 'Rhodesian Ridgeback', 'Vizsla', 'Irish Setter', 'Basset Hound', 'Walker Hound', 'English Foxhound', 'Bluetick']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:31:08] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:11] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: Bloodhound (置信度: 0.1720)
+总耗时: 6.44秒
+succ. pred cate:Bloodhound, true cate:bloodhound, used_slow:True, confidence:0.1720
+开始分类图像: ./datasets/dogs_120/Images/n02107908-Appenzeller/n02107908_4473.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02107908-Appenzeller/n02107908_4473.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['EntleBucher', 'Greater Swiss Mountain Dog', 'Bernese Mountain Dog', 'Appenzeller', 'Beagle', 'Rottweiler', 'Walker Hound', 'Bluetick', 'English Foxhound', 'Collie']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:15] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:31:18] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: EntleBucher (置信度: 0.1735)
+总耗时: 7.42秒
+succ. pred cate:EntleBucher, true cate:Appenzeller, used_slow:True, confidence:0.1735
+开始分类图像: ./datasets/dogs_120/Images/n02086240-Shih-Tzu/n02086240_4430.jpg[2025-11-27 20:31:20] Processing fast-slow:  76%|███████▌  | 25/33 [04:50<01:28, 11.09s/it][2025-11-27 20:31:35] Processing fast-slow:  76%|███████▌  | 25/33 [04:50<01:28, 11.09s/it][2025-11-27 20:31:35] Processing fast-slow:  79%|███████▉  | 26/33 [05:19<01:55, 16.53s/it][2025-11-27 20:32:04] Processing fast-slow:  79%|███████▉  | 26/33 [05:19<01:55, 16.53s/it][2025-11-27 20:32:04] Processing fast-slow:  82%|████████▏ | 27/33 [05:26<01:22, 13.74s/it][2025-11-27 20:32:11] Processing fast-slow:  82%|████████▏ | 27/33 [05:26<01:22, 13.74s/it][2025-11-27 20:32:11] Processing fast-slow:  85%|████████▍ | 28/33 [05:33<00:58, 11.63s/it][2025-11-27 20:32:18] Processing fast-slow:  85%|████████▍ | 28/33 [05:33<00:58, 11.63s/it]
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02086240-Shih-Tzu/n02086240_4430.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Clumber', 'Shih-Tzu', 'Silky Terrier', 'Yorkshire Terrier', 'Australian Terrier', 'Cairn', 'West Highland White Terrier', 'Maltese Dog', 'Pekinese', 'Lhasa']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:31:22] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:25] [显存监控] 已分配=16.97GB, 已保留=17.57GB, 空闲=30.43GB
+[2025-11-27 20:31:28] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:31] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-27 20:31:34] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Shih-Tzu (置信度: 0.8000)
+总耗时: 14.61秒
+succ. pred cate:Shih-Tzu, true cate:Shih-Tzu, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/dogs_120/Images/n02098413-Lhasa/n02098413_7916.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02098413-Lhasa/n02098413_7916.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Japanese Spaniel', 'Shih-Tzu', 'Lhasa', 'Tibetan Terrier', 'Blenheim Spaniel', 'Pekinese', 'Maltese Dog', 'Cocker Spaniel', 'Dandi Dinmont', 'English Springer Spaniel']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:37] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+[2025-11-27 20:31:40] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:31:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:47] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: Shih-Tzu (置信度: 0.9500)
+总耗时: 14.11秒
+failed. pred cate:Shih-Tzu, true cate:Lhasa, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/dogs_120/Images/n02098413-Lhasa/n02098413_16076.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02098413-Lhasa/n02098413_16076.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Shih-Tzu', 'Lhasa', 'Tibetan Terrier', 'Maltese Dog', 'Japanese Spaniel', 'Dandi Dinmont', 'Affenpinscher', 'Pekinese', 'Yorkshire Terrier', 'West Highland White Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:31:52] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:55] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+[2025-11-27 20:31:58] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:01] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+[2025-11-27 20:32:04] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Shih-Tzu (置信度: 0.8500)
+总耗时: 15.16秒
+failed. pred cate:Shih-Tzu, true cate:Lhasa, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/dogs_120/Images/n02093754-Border_terrier/n02093754_3152.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02093754-Border_terrier/n02093754_3152.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Border Terrier', 'Cairn', 'Miniature Schnauzer', 'Norfolk Terrier', 'Dandi Dinmont', 'Standard Schnauzer', 'Irish Terrier', 'Lakeland Terrier', 'Airedale', 'Affenpinscher']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:32:07] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-27 20:32:10] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+分类完成: Border Terrier (置信度: 0.1482)
+总耗时: 7.20秒
+succ. pred cate:Border Terrier, true cate:Border_terrier, used_slow:True, confidence:0.1482
+开始分类图像: ./datasets/dogs_120/Images/n02106382-Bouvier_des_Flandres/n02106382_1452.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02106382-Bouvier_des_Flandres/n02106382_1452.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Kerry Blue Terrier', 'Giant Schnauzer', 'Bouvier des Flandres', 'Scotch Terrier', 'Standard Schnauzer', 'Miniature Poodle', 'Irish Water Spaniel', 'Curly-coater Retriever', 'Airedale', 'Soft-coated Wheaten Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:13] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:16] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: Kerry Blue Terrier (置信度: 0.1563)
+总耗时: 6.72秒
+failed. pred cate:Kerry Blue Terrier, true cate:Bouvier_des_Flandres, used_slow:True, confidence:0.1563
+开始分类图像: ./datasets/dogs_120/Images/n02086646-Blenheim_spaniel/n02086646_3.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02086646-Blenheim_spaniel/n02086646_3.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Blenheim Spaniel', 'Clumber', 'Japanese Spaniel', 'Brittany', 'Welsh Springer Spaniel', 'Shih-Tzu', 'Toy Poodle', 'English Springer Spaniel', 'Miniature Poodle', 'Appenzeller']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:32:18] Processing fast-slow:  88%|████████▊ | 29/33 [05:41<00:42, 10.52s/it][2025-11-27 20:32:26] Processing fast-slow:  88%|████████▊ | 29/33 [05:41<00:42, 10.52s/it][2025-11-27 20:32:26] Processing fast-slow:  91%|█████████ | 30/33 [05:49<00:29,  9.72s/it][2025-11-27 20:32:34] Processing fast-slow:  91%|█████████ | 30/33 [05:49<00:29,  9.72s/it][2025-11-27 20:32:34] Processing fast-slow:  94%|█████████▍| 31/33 [05:56<00:17,  8.85s/it][2025-11-27 20:32:41] Processing fast-slow:  94%|█████████▍| 31/33 [05:56<00:17,  8.85s/it][2025-11-27 20:32:41] Processing fast-slow:  97%|█████████▋| 32/33 [06:03<00:08,  8.49s/it][2025-11-27 20:32:48] Processing fast-slow:  97%|█████████▋| 32/33 [06:03<00:08,  8.49s/it][2025-11-27 20:32:48] Processing fast-slow: 100%|██████████| 33/33 [06:10<00:00,  8.03s/it][2025-11-27 20:32:48] Processing fast-slow: 100%|██████████| 33/33 [06:10<00:00, 11.24s/it]
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:24] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: Blenheim Spaniel (置信度: 0.1369)
+总耗时: 7.93秒
+succ. pred cate:Blenheim Spaniel, true cate:Blenheim_spaniel, used_slow:True, confidence:0.1369
+开始分类图像: ./datasets/dogs_120/Images/n02110627-affenpinscher/n02110627_2383.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02110627-affenpinscher/n02110627_2383.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Affenpinscher', 'Shih-Tzu', 'Tibetan Terrier', 'Miniature Schnauzer', 'Pekinese', 'Yorkshire Terrier', 'Japanese Spaniel', 'Lhasa', 'Brabancon Griffon', 'Standard Schnauzer']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:28] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:31] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: Affenpinscher (置信度: 0.1453)
+总耗时: 7.84秒
+succ. pred cate:Affenpinscher, true cate:affenpinscher, used_slow:True, confidence:0.1453
+开始分类图像: ./datasets/dogs_120/Images/n02105641-Old_English_sheepdog/n02105641_5049.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02105641-Old_English_sheepdog/n02105641_5049.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Old English Sheepdog', 'Bedlington Terrier', 'Miniature Poodle', 'Tibetan Terrier', 'Dandi Dinmont', 'Lhasa', 'Soft-coated Wheaten Terrier', 'Maltese Dog', 'Komondor', 'Sealyham Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:32:39] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: Old English Sheepdog (置信度: 0.1579)
+总耗时: 6.82秒
+succ. pred cate:Old English Sheepdog, true cate:Old_English_sheepdog, used_slow:True, confidence:0.1579
+开始分类图像: ./datasets/dogs_120/Images/n02097658-silky_terrier/n02097658_6014.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02097658-silky_terrier/n02097658_6014.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Yorkshire Terrier', 'Silky Terrier', 'Briard', 'Tibetan Terrier', 'Affenpinscher', 'Australian Terrier', 'Lhasa', 'Shih-Tzu', 'Cairn', 'Otterhound']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:46] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: Yorkshire Terrier (置信度: 0.1355)
+总耗时: 7.63秒
+succ. pred cate:Yorkshire Terrier, true cate:silky_terrier, used_slow:True, confidence:0.1355
+开始分类图像: ./datasets/dogs_120/Images/n02098286-West_Highland_white_terrier/n02098286_3021.jpg
+执行快思考...
+图像检索失败: shapes (512,) and (2,) not aligned: 512 (dim 0) != 2 (dim 0)
+警告: 类别 entries 的文本特征维度不匹配: (2,) vs (512,)，跳过
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dogs_120/Images/n02098286-West_Highland_white_terrier/n02098286_3021.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['West Highland White Terrier', 'Cairn', 'Dandi Dinmont', 'Sealyham Terrier', 'Soft-coated Wheaten Terrier', 'Miniature Schnauzer', 'Lakeland Terrier', 'Wirehaired Fox Terrier', 'Shih-Tzu', 'Norfolk Terrier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:53] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+分类完成: West Highland White Terrier (置信度: 0.1325)
+总耗时: 6.97秒
+succ. pred cate:West Highland White Terrier, true cate:West_Highland_white_terrier, used_slow:True, confidence:0.1325
+✅ 正确预测总数: 34
+  - 其中仅快思考正确: 2
+  - 其中慢思考触发且正确: 32
+❌ 错误预测总数: 7
+📊 慢思考触发数量: 39
+[fast and slow] 总体准确率: 0.8293 (34/41)
+[fast and slow] 快思考准确率: 1.0000
+[fast and slow] 慢思考触发比例: 0.9512
+[fast and slow] 慢思考准确率: 0.8205
+✓ 分类结果已保存到: ./experiments/dog120/classify/classify_result.json
+  总样本数: 41
+📁 分类结果已保存到: ./experiments/dog120/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 20:32:55 ===
+=== Total Runtime: 0小时 7分 22.27秒 ===
+

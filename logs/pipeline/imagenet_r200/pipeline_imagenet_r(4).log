@@ -1,0 +1,228 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=2  # 使用的GPU编号
+Dataset: imagenet_r (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/imagenet_r200/knowledge_base  # 知识库目录
+Results Out: ./results/imagenet_r_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: imagenet_r (imagenet_r200)
+类别数: 200
+实验目录: ./experiments/imagenet_r200
+✅ JSON文件检查通过: ./experiments/imagenet_r200/images_split
+当前使用的 GPU 为：2
+
+=== Experiment Start Time: 2025-11-27 20:37:00 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/imagenet_r200_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/imagenet_r200/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/ImageNet_R',
+ 'dataset_name': 'imagenet_r',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/imagenet_r200',
+ 'expt_dir_describe': './experiments/imagenet_r200/describe',
+ 'expt_dir_gallery': './experiments/imagenet_r200/gallery',
+ 'expt_dir_grouping': './experiments/imagenet_r200/grouping',
+ 'expt_dir_guess': './experiments/imagenet_r200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/imagenet_r200/gallery/imagenet_r_image_descriptions_attn',
+ 'path_identify_answers': './experiments/imagenet_r200/identify',
+ 'path_llm_gussed_names': './experiments/imagenet_r200/guess/imagenet_r_llm_gussed_names',
+ 'path_llm_prompts': './experiments/imagenet_r200/describe/imagenet_r_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_raw',
+ 'path_references': './experiments/imagenet_r200/gallery/imagenet_r_image_references',
+ 'path_regions': './experiments/imagenet_r200/gallery/imagenet_r_image_regions',
+ 'path_vqa_answers': './experiments/imagenet_r200/describe/imagenet_r_attributes_pairs',
+ 'path_vqa_questions': './experiments/imagenet_r200/describe/imagenet_r_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "imagenet_r200",
+    "num_classes": 200,
+    "config_file": "imagenet_r200_all.yml",
+    "data_dir": "ImageNet_R",
+    "experiment_dir": "imagenet_r200",
+    "stats_file": "imagenet_r200/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/imagenet_r200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/imagenet_r200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.16s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.26s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.30s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.95s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.48s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.62s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:37:09
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:39:01
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x742386cdd0a0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x742379d3f520>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/imagenet_r200/knowledge_base
+使用数据集: imagenet_r, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:39:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 770, in <module>
+    data_discovery = DATA_DISCOVERY[cfg['dataset_name']](cfg, folder_suffix=expt_id_suffix)
+  File "/home/hdl/project/fgvr_test_new/data/imagenet_r.py", line 243, in build_imagenet_r_discovery
+    return ImageNetRDiscovery(cfg['data_dir'], folder_suffix=folder_suffix)
+  File "/home/hdl/project/fgvr_test_new/data/imagenet_r.py", line 144, in __init__
+    json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+TypeError: string indices must be integers
+[2025-11-27 20:39:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:39:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:40:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:41:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:41:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:41:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:41:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:41:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:41:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=1)

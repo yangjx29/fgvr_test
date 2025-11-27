@@ -1,0 +1,431 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
+Dataset: birdsnap (num_classes=500)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/birdsnap/knowledge_base  # 知识库目录
+Results Out: ./results/birdsnap_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: birdsnap (birdsnap500)
+类别数: 500
+实验目录: ./experiments/birdsnap500
+✅ JSON文件检查通过: ./experiments/birdsnap500/images_split
+当前使用的 GPU 为：5
+
+=== Experiment Start Time: 2025-11-27 03:22:02 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/birdsnap500_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/birdsnap/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 32,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/birdsnap',
+ 'dataset_name': 'birdsnap',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/birdsnap500',
+ 'expt_dir_describe': './experiments/birdsnap500/describe',
+ 'expt_dir_gallery': './experiments/birdsnap500/gallery',
+ 'expt_dir_grouping': './experiments/birdsnap500/grouping',
+ 'expt_dir_guess': './experiments/birdsnap500/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 250,
+ 'num_classes': 500,
+ 'num_novel': 250,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/birdsnap500/gallery/birdsnap_image_descriptions_attn',
+ 'path_identify_answers': './experiments/birdsnap500/identify',
+ 'path_llm_gussed_names': './experiments/birdsnap500/guess/birdsnap_llm_gussed_names',
+ 'path_llm_prompts': './experiments/birdsnap500/describe/birdsnap_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/birdsnap500/guess/birdsnap_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/birdsnap500/guess/birdsnap_llm_replies_raw',
+ 'path_references': './experiments/birdsnap500/gallery/birdsnap_image_references',
+ 'path_regions': './experiments/birdsnap500/gallery/birdsnap_image_regions',
+ 'path_vqa_answers': './experiments/birdsnap500/describe/birdsnap_attributes_pairs',
+ 'path_vqa_questions': './experiments/birdsnap500/describe/birdsnap_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "birdsnap500",
+    "num_classes": 500,
+    "config_file": "birdsnap500_all.yml",
+    "data_dir": "birdsnap",
+    "experiment_dir": "birdsnap500",
+    "stats_file": "birdsnap500/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/birdsnap500/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/birdsnap500"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.17s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.37s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:02,  1.43s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.48s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.18s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.27s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 03:22:09
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/birdsnap500/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/birdsnap500/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 03:23:40
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x72f702921940>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x72f702921850>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/birdsnap500/knowledge_base
+使用数据集: bird, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 03:23:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+构建发现集,json_path: ./experiments/birdsnap500/images_split/images_discovery_all_4.json
+构建知识库，包含 26 个类别, dog datasets:500
+从 ./experiments/birdsnap/knowledge_base 加载知识库...
+知识库已从 ./experiments/birdsnap/knowledge_base 加载
+图像知识库类别数: 0
+文本知识库类别数: 0
+类别描述数: 0
+知识库加载完成!
+构建知识库...
+训练样本包含 26 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/26 [00:00<?, ?it/s]  4%|▍         | 1/26 [00:08<03:24,  8.19s/it]  8%|▊         | 2/26 [00:15<03:10,  7.92s/it] 12%|█▏        | 3/26 [00:23<03:02,  7.92s/it] 15%|█▌        | 4/26 [00:29<02:31,  6.89s/it] 19%|█▉        | 5/26 [00:37<02:37,  7.49s/it] 23%|██▎       | 6/26 [00:45<02:28,  7.45s/it] 27%|██▋       | 7/26 [00:52<02:22,  7.52s/it] 31%|███       | 8/26 [00:59<02:13,  7.39s/it]处理类别: Bushtit
+提取图像特征失败 ./datasets/birdsnap/images/Bushtit/32837.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bushtit/32837.jpg'
+[2025-11-27 03:23:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bushtit/32154.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bushtit/32154.jpg'
+[2025-11-27 03:23:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bushtit/32898.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bushtit/32898.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Bushtit/32237.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bushtit/32237.jpg'
+警告: 类别 Bushtit 没有有效的图像特征
+处理类别: Mallard
+[2025-11-27 03:23:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Mallard/58155.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Mallard/58155.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Mallard/57183.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Mallard/57183.jpg'
+[2025-11-27 03:23:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Mallard/57635.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Mallard/57635.jpg'
+[2025-11-27 03:23:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Mallard/59046.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Mallard/59046.jpg'
+警告: 类别 Mallard 没有有效的图像特征
+处理类别: Gadwall
+提取图像特征失败 ./datasets/birdsnap/images/Gadwall/61459.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Gadwall/61459.jpg'
+[2025-11-27 03:23:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Gadwall/61690.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Gadwall/61690.jpg'
+[2025-11-27 03:24:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Gadwall/60728.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Gadwall/60728.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Gadwall/59958.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Gadwall/59958.jpg'
+警告: 类别 Gadwall 没有有效的图像特征
+处理类别: Redhead
+[2025-11-27 03:24:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Redhead/64314.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Redhead/64314.jpg'
+[2025-11-27 03:24:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Redhead/63816.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Redhead/63816.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Redhead/64379.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Redhead/64379.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Redhead/63868.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Redhead/63868.jpg'
+警告: 类别 Redhead 没有有效的图像特征
+处理类别: Canvasback
+[2025-11-27 03:24:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Canvasback/68820.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Canvasback/68820.jpg'
+[2025-11-27 03:24:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Canvasback/69213.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Canvasback/69213.jpg'
+[2025-11-27 03:24:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Canvasback/68629.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Canvasback/68629.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Canvasback/68404.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Canvasback/68404.jpg'
+警告: 类别 Canvasback 没有有效的图像特征
+处理类别: Bufflehead
+[2025-11-27 03:24:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bufflehead/70757.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bufflehead/70757.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Bufflehead/69581.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bufflehead/69581.jpg'
+[2025-11-27 03:24:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bufflehead/69566.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bufflehead/69566.jpg'
+[2025-11-27 03:24:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bufflehead/69772.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bufflehead/69772.jpg'
+警告: 类别 Bufflehead 没有有效的图像特征
+处理类别: Brant
+提取图像特征失败 ./datasets/birdsnap/images/Brant/95499.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Brant/95499.jpg'
+[2025-11-27 03:24:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Brant/97135.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Brant/97135.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Brant/97251.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Brant/97251.jpg'
+[2025-11-27 03:24:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Brant/96511.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Brant/96511.jpg'
+警告: 类别 Brant 没有有效的图像特征
+处理类别: Anhinga
+[2025-11-27 03:24:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Anhinga/115127.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Anhinga/115127.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Anhinga/114177.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Anhinga/114177.jpg'
+[2025-11-27 03:24:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Anhinga/114408.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Anhinga/114408.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Anhinga/113184.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Anhinga/113184.jpg'
+警告: 类别 Anhinga 没有有效的图像特征
+处理类别: Limpkin
+[2025-11-27 03:24:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Limpkin/116480.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Limpkin/116480.jpg'
+[2025-11-27 03:24:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Limpkin/116137.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Limpkin/116137.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Limpkin/116752.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Limpkin/116752.jpg'
+[2025-11-27 03:24:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+ 35%|███▍      | 9/26 [01:06<02:02,  7.20s/it] 38%|███▊      | 10/26 [01:13<01:54,  7.14s/it] 42%|████▏     | 11/26 [01:21<01:49,  7.33s/it] 46%|████▌     | 12/26 [01:26<01:34,  6.77s/it] 50%|█████     | 13/26 [01:34<01:33,  7.17s/it] 54%|█████▍    | 14/26 [01:42<01:26,  7.24s/it] 58%|█████▊    | 15/26 [01:49<01:20,  7.31s/it] 62%|██████▏   | 16/26 [01:56<01:11,  7.18s/it] 65%|██████▌   | 17/26 [02:01<00:59,  6.60s/it]提取图像特征失败 ./datasets/birdsnap/images/Limpkin/116017.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Limpkin/116017.jpg'
+警告: 类别 Limpkin 没有有效的图像特征
+处理类别: Pyrrhuloxia
+提取图像特征失败 ./datasets/birdsnap/images/Pyrrhuloxia/148926.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Pyrrhuloxia/148926.jpg'
+[2025-11-27 03:24:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Pyrrhuloxia/148945.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Pyrrhuloxia/148945.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Pyrrhuloxia/148896.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Pyrrhuloxia/148896.jpg'
+[2025-11-27 03:24:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Pyrrhuloxia/148876.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Pyrrhuloxia/148876.jpg'
+警告: 类别 Pyrrhuloxia 没有有效的图像特征
+处理类别: Dickcissel
+[2025-11-27 03:24:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Dickcissel/158931.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dickcissel/158931.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Dickcissel/158949.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dickcissel/158949.jpg'
+[2025-11-27 03:24:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Dickcissel/158731.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dickcissel/158731.jpg'
+[2025-11-27 03:25:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Dickcissel/158887.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dickcissel/158887.jpg'
+警告: 类别 Dickcissel 没有有效的图像特征
+处理类别: Killdeer
+提取图像特征失败 ./datasets/birdsnap/images/Killdeer/561306.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Killdeer/561306.jpg'
+[2025-11-27 03:25:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Killdeer/560759.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Killdeer/560759.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Killdeer/561803.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Killdeer/561803.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Killdeer/561253.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Killdeer/561253.jpg'
+警告: 类别 Killdeer 没有有效的图像特征
+处理类别: Merlin
+[2025-11-27 03:25:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Merlin/231106.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Merlin/231106.jpg'
+[2025-11-27 03:25:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Merlin/230235.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Merlin/230235.jpg'
+[2025-11-27 03:25:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Merlin/230019.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Merlin/230019.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Merlin/231097.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Merlin/231097.jpg'
+警告: 类别 Merlin 没有有效的图像特征
+处理类别: Bobolink
+[2025-11-27 03:25:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bobolink/268724.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bobolink/268724.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Bobolink/268942.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bobolink/268942.jpg'
+[2025-11-27 03:25:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bobolink/268779.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bobolink/268779.jpg'
+[2025-11-27 03:25:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Bobolink/269350.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bobolink/269350.jpg'
+警告: 类别 Bobolink 没有有效的图像特征
+处理类别: Osprey
+提取图像特征失败 ./datasets/birdsnap/images/Osprey/334657.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Osprey/334657.jpg'
+[2025-11-27 03:25:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Osprey/336236.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Osprey/336236.jpg'
+[2025-11-27 03:25:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Osprey/334648.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Osprey/334648.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Osprey/334762.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Osprey/334762.jpg'
+警告: 类别 Osprey 没有有效的图像特征
+处理类别: Ovenbird
+[2025-11-27 03:25:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Ovenbird/350167.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Ovenbird/350167.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Ovenbird/350058.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Ovenbird/350058.jpg'
+[2025-11-27 03:25:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Ovenbird/350256.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Ovenbird/350256.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Ovenbird/350193.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Ovenbird/350193.jpg'
+警告: 类别 Ovenbird 没有有效的图像特征
+处理类别: Phainopepla
+[2025-11-27 03:25:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Phainopepla/413751.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Phainopepla/413751.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Phainopepla/413522.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Phainopepla/413522.jpg'
+[2025-11-27 03:25:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Phainopepla/413848.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Phainopepla/413848.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Phainopepla/413909.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Phainopepla/413909.jpg'
+警告: 类别 Phainopepla 没有有效的图像特征
+处理类别: Sora
+[2025-11-27 03:25:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Sora/417769.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sora/417769.jpg'
+[2025-11-27 03:25:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Sora/417768.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sora/417768.jpg'
+ 69%|██████▉   | 18/26 [02:10<00:58,  7.28s/it] 73%|███████▎  | 19/26 [02:19<00:53,  7.61s/it] 77%|███████▋  | 20/26 [02:25<00:43,  7.32s/it] 81%|████████  | 21/26 [02:32<00:35,  7.16s/it] 85%|████████▍ | 22/26 [02:39<00:28,  7.15s/it] 88%|████████▊ | 23/26 [02:48<00:22,  7.65s/it] 92%|█████████▏| 24/26 [02:54<00:14,  7.17s/it] 96%|█████████▌| 25/26 [03:03<00:07,  7.68s/it]100%|██████████| 26/26 [03:10<00:00,  7.41s/it]100%|██████████| 26/26 [03:10<00:00,  7.32s/it]
+提取图像特征失败 ./datasets/birdsnap/images/Sora/417236.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sora/417236.jpg'
+[2025-11-27 03:25:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Sora/417493.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sora/417493.jpg'
+警告: 类别 Sora 没有有效的图像特征
+处理类别: Verdin
+[2025-11-27 03:25:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Verdin/427507.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Verdin/427507.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Verdin/427227.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Verdin/427227.jpg'
+[2025-11-27 03:25:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Verdin/427178.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Verdin/427178.jpg'
+[2025-11-27 03:25:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Verdin/427198.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Verdin/427198.jpg'
+警告: 类别 Verdin 没有有效的图像特征
+处理类别: Surfbird
+提取图像特征失败 ./datasets/birdsnap/images/Surfbird/431779.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Surfbird/431779.jpg'
+[2025-11-27 03:26:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Surfbird/431576.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Surfbird/431576.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Surfbird/431562.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Surfbird/431562.jpg'
+[2025-11-27 03:26:04] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Surfbird/431900.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Surfbird/431900.jpg'
+警告: 类别 Surfbird 没有有效的图像特征
+处理类别: Sanderling
+[2025-11-27 03:26:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Sanderling/437105.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sanderling/437105.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Sanderling/435518.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sanderling/435518.jpg'
+[2025-11-27 03:26:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Sanderling/435935.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sanderling/435935.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Sanderling/435732.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Sanderling/435732.jpg'
+警告: 类别 Sanderling 没有有效的图像特征
+处理类别: Dunlin
+[2025-11-27 03:26:13] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Dunlin/438395.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dunlin/438395.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Dunlin/439544.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dunlin/439544.jpg'
+[2025-11-27 03:26:16] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Dunlin/438411.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dunlin/438411.jpg'
+[2025-11-27 03:26:19] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Dunlin/438861.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Dunlin/438861.jpg'
+警告: 类别 Dunlin 没有有效的图像特征
+处理类别: Whimbrel
+提取图像特征失败 ./datasets/birdsnap/images/Whimbrel/456248.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Whimbrel/456248.jpg'
+[2025-11-27 03:26:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Whimbrel/457491.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Whimbrel/457491.jpg'
+[2025-11-27 03:26:25] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Whimbrel/457021.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Whimbrel/457021.jpg'
+[2025-11-27 03:26:28] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Whimbrel/456963.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Whimbrel/456963.jpg'
+警告: 类别 Whimbrel 没有有效的图像特征
+处理类别: Willet
+提取图像特征失败 ./datasets/birdsnap/images/Willet/463221.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Willet/463221.jpg'
+[2025-11-27 03:26:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Willet/463090.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Willet/463090.jpg'
+[2025-11-27 03:26:34] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Willet/463255.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Willet/463255.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Willet/463005.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Willet/463005.jpg'
+警告: 类别 Willet 没有有效的图像特征
+处理类别: Wrentit
+提取图像特征失败 ./datasets/birdsnap/images/Wrentit/496262.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Wrentit/496262.jpg'
+[2025-11-27 03:26:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Wrentit/496366.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Wrentit/496366.jpg'
+[2025-11-27 03:26:40] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Wrentit/496326.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Wrentit/496326.jpg'
+[2025-11-27 03:26:43] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Wrentit/496308.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Wrentit/496308.jpg'
+警告: 类别 Wrentit 没有有效的图像特征
+处理类别: Veery
+提取图像特征失败 ./datasets/birdsnap/images/Veery/521467.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Veery/521467.jpg'
+[2025-11-27 03:26:46] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Veery/521518.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Veery/521518.jpg'
+提取图像特征失败 ./datasets/birdsnap/images/Veery/521540.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Veery/521540.jpg'
+[2025-11-27 03:26:49] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+提取图像特征失败 ./datasets/birdsnap/images/Veery/521421.jpg: [Errno 2] No such file or directory: './datasets/birdsnap/images/Veery/521421.jpg'
+警告: 类别 Veery 没有有效的图像特征
+构建文本知识库...
+  0%|          | 0/26 [00:00<?, ?it/s]  0%|          | 0/26 [00:12<?, ?it/s]
+处理类别: Bushtit
+[2025-11-27 03:26:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 03:26:55] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 03:26:58] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for Bushtit category.
+[2025-11-27 03:27:01] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 780, in <module>
+    image_kb, text_kb = system.build_knowledge_base(
+  File "/home/hdl/project/fgvr_test_new/fast_slow_thinking_system.py", line 185, in build_knowledge_base
+    image_kb, text_kb = self.kb_builder.build_knowledge_base(
+  File "/home/hdl/project/fgvr_test_new/knowledge_base_builder.py", line 346, in build_knowledge_base
+    text_kb = self.build_text_knowledge_base(mllm_bot, train_samples)
+  File "/home/hdl/project/fgvr_test_new/knowledge_base_builder.py", line 311, in build_text_knowledge_base
+    description = self.generate_category_description(mllm_bot, category, image_paths)
+  File "/home/hdl/project/fgvr_test_new/knowledge_base_builder.py", line 211, in generate_category_description
+    images = [Image.open(img_path).convert("RGB") for img_path in sample_images[:3]]  # 最多使用3张图像
+  File "/home/hdl/project/fgvr_test_new/knowledge_base_builder.py", line 211, in <listcomp>
+    images = [Image.open(img_path).convert("RGB") for img_path in sample_images[:3]]  # 最多使用3张图像
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/PIL/Image.py", line 3513, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: './datasets/birdsnap/images/Bushtit/32837.jpg'
+[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=1)

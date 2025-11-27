@@ -47,6 +47,10 @@ def modify_paths_in_json(data, dataset_name):
             # caltech101: images/ -> 101_ObjectCategories/
             if path.startswith('images/'):
                 path = path.replace('images/', '101_ObjectCategories/')
+        elif dataset_name == 'caltech256':
+            # caltech256: images/ -> 256_ObjectCategories/
+            if path.startswith('images/'):
+                path = path.replace('images/', '256_ObjectCategories/')
         elif dataset_name == 'flowers_102':
             # flowers_102: images/category/image.jpg -> jpg/image.jpg
             if path.startswith('images/'):
@@ -89,6 +93,16 @@ def modify_paths_in_json(data, dataset_name):
                             if f"-{category}" in dir_name:
                                 path = f"Images/{dir_name}/{filename}"
                                 break
+        elif dataset_name == 'SUN397':
+            # SUN397: images/ -> images/ (no change needed, already correct)
+            # Path format: images/a/abbey/sun_xxx.jpg
+            # Keep as is since it's already in correct format
+            pass
+        elif dataset_name == 'birdsnap':
+            # birdsnap: images/ -> images/ (no change needed, already correct)
+            # Path format: images/Class_Name/image.jpg (class names normalized with underscores)
+            # Keep as is since it's already in correct format
+            pass
         
         # Convert to full path relative to current working directory
         modified_path = f"./datasets/{dataset_name}/{path}"
@@ -244,15 +258,15 @@ def get_datasets_from_config(config_file, specific_dataset=None):
             
             # Handle special subdirectory for CUB_200_2011
             if 'special_subdir' in dataset_config:
-                source_dir = f'/home/hdl/project/fgvr_test_new/datasets/{data_dir}/{dataset_config["special_subdir"]}/images_split'
+                source_dir = f'./datasets/{data_dir}/{dataset_config["special_subdir"]}/images_split'
             else:
-                source_dir = f'/home/hdl/project/fgvr_test_new/datasets/{data_dir}/images_split'
+                source_dir = f'./datasets/{data_dir}/images_split'
             
             datasets.append({
                 'key': dataset_key,
                 'name': data_dir,
                 'source_dir': source_dir,
-                'target_dir': f'/home/hdl/project/fgvr_test_new/{experiments_root}/{dataset_config["experiment_dir"]}/images_split'
+                'target_dir': f'./{experiments_root}/{dataset_config["experiment_dir"]}/images_split'
             })
         else:
             print(f"Warning: Dataset '{dataset_key}' not found in configuration")
@@ -266,7 +280,7 @@ def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Copy JSON files for datasets')
     parser.add_argument('--dataset', type=str, help='Specific dataset to process (e.g., pet, car, aircraft)')
-    parser.add_argument('--config', type=str, default='/home/hdl/project/fgvr_test_new/configs/datasets_list.yml',
+    parser.add_argument('--config', type=str, default='./configs/datasets_list.yml',
                        help='Path to configuration file')
     args = parser.parse_args()
     

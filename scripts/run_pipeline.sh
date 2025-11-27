@@ -28,7 +28,7 @@ FGVR Pipeline 脚本 - 完整流程（知识库构建 + 快慢思考评估）
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, birdsnap
 
 选项:
     --gpu GPU_ID            GPU编号
@@ -164,13 +164,14 @@ case "${DATASET}" in
     "sun397") DATASET_NUM="397"; CONFIG_FILE_DS="sun397_all.yml"; DATASET_DIR="SUN397" ;;
     "imagenet_a") DATASET_NUM="200"; CONFIG_FILE_DS="imagenet_a200_all.yml"; DATASET_DIR="ImageNet_A" ;;
     "imagenet_r") DATASET_NUM="200"; CONFIG_FILE_DS="imagenet_r200_all.yml"; DATASET_DIR="ImageNet_R" ;;
-    *) echo "[ERROR] 不支持的数据集 '${DATASET}'. 支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r"; exit 1 ;;
+    "birdsnap") DATASET_NUM="500"; CONFIG_FILE_DS="birdsnap500_all.yml"; DATASET_DIR="birdsnap" ;;
+    *) echo "[ERROR] 不支持的数据集 '${DATASET}'. 支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, birdsnap"; exit 1 ;;
 esac
 
 # 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
 # deepfashion_multimodal 使用 deepfashion_multimodal23 作为实验目录名
 # sun397 使用 sun397 作为实验目录名（已包含编号）
-if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ]; then
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ]; then
     EXPERIMENT_DIR="${DATASET}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"

@@ -1,0 +1,243 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=9  # 使用的GPU编号
+Dataset: caltech256 (num_classes=256)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/caltech256/knowledge_base  # 知识库目录
+Results Out: ./results/caltech256_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/caltech256_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/caltech256/fast_slow_caltech256(1).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: caltech256 (caltech256)
+类别数: 257
+实验目录: ./experiments/caltech256
+✅ JSON文件检查通过: ./experiments/caltech256/images_split
+当前使用的 GPU 为：9
+
+=== Experiment Start Time: 2025-11-27 03:49:48 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/caltech256_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/caltech256/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/caltech256_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 10.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 96,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/caltech256',
+ 'dataset_name': 'caltech256',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/caltech256',
+ 'expt_dir_describe': './experiments/caltech256/describe',
+ 'expt_dir_gallery': './experiments/caltech256/gallery',
+ 'expt_dir_grouping': './experiments/caltech256/grouping',
+ 'expt_dir_guess': './experiments/caltech256/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 128,
+ 'num_classes': 257,
+ 'num_novel': 129,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/caltech256/gallery/caltech256_image_descriptions_attn',
+ 'path_identify_answers': './experiments/caltech256/identify',
+ 'path_llm_gussed_names': './experiments/caltech256/guess/caltech256_llm_gussed_names',
+ 'path_llm_prompts': './experiments/caltech256/describe/caltech256_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/caltech256/guess/caltech256_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/caltech256/guess/caltech256_llm_replies_raw',
+ 'path_references': './experiments/caltech256/gallery/caltech256_image_references',
+ 'path_regions': './experiments/caltech256/gallery/caltech256_image_regions',
+ 'path_vqa_answers': './experiments/caltech256/describe/caltech256_attributes_pairs',
+ 'path_vqa_questions': './experiments/caltech256/describe/caltech256_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "caltech256",
+    "num_classes": 257,
+    "config_file": "caltech256_all.yml",
+    "data_dir": "caltech256",
+    "experiment_dir": "caltech256",
+    "stats_file": "caltech256/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/caltech256/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/caltech256"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1680 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.13s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.25s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.27s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.27s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.02s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.12s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 03:49:55
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/caltech256/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/caltech256/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1406 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 03:50:27
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x730673b36cd0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x730673b36880>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/caltech256/knowledge_base
+使用数据集: caltech256, 类别数: 257
+✅ 慢思考模块初始化完成，类别映射数量: 257
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 03:50:27] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/caltech256/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/caltech256/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/caltech256/knowledge_base 加载
+图像知识库类别数: 257
+文本知识库类别数: 257
+类别描述数: 257
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x730673b36880>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x730673b36fd0>
+📦 数据集信息: {'full_name': 'caltech256', 'num_classes': 257, 'config_file': 'caltech256_all.yml', 'data_dir': 'caltech256', 'experiment_dir': 'caltech256', 'stats_file': 'caltech256/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/caltech256/knowledge_base/stats.json', 'experiment_dir_full': './experiments/caltech256'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/caltech256/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: caltech256
+数据集根目录: ./datasets
+测试百分比: 10.0%
+说明: 使用完整测试集的 10.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/caltech256/images_split/images_test.json
+  类别数量: 257
+  总图像数: 9076
+  平均每类: 35.3 张
+  图像范围: 24 - 248 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 907 张图像，覆盖 242 个类别
+  平均每类: 3.7 张
+======================================================================
+test sample keys: ['179.scorpion-101', '156.paper-shredder', '209.sword', '219.theodolite', '251.airplanes-101']...
+[fast and slow] 测试数据集包含 242 个类别
+  0%|          | 0/242 [00:00<?, ?it/s][2025-11-27 03:50:27] Processing fast-slow:   0%|          | 0/242 [00:00<?, ?it/s][2025-11-27 03:50:27] Processing fast-slow:   0%|          | 0/242 [00:00<?, ?it/s]
+开始分类图像: ./datasets/caltech256/images/179.scorpion-101/179_0080.jpg
+执行快思考...
+图像检索失败: [Errno 2] No such file or directory: './datasets/caltech256/images/179.scorpion-101/179_0080.jpg'
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 1040, in <module>
+    result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)
+  File "/home/hdl/project/fgvr_test_new/fast_slow_thinking_system.py", line 312, in classify_single_image
+    fast_result = self.fast_thinking.fast_thinking_pipeline(query_image_path, top_k)
+  File "/home/hdl/project/fgvr_test_new/fast_thinking_optimized.py", line 464, in fast_thinking_pipeline
+    text_category, text_confidence, text_results = self.image_to_text_retrieval(query_image_path, top_k)
+  File "/home/hdl/project/fgvr_test_new/fast_thinking_optimized.py", line 182, in image_to_text_retrieval
+    query_img_feat = self.kb_builder.retrieval.extract_image_feat(query_image_path)
+  File "/home/hdl/project/fgvr_test_new/retrieval/multimodal_retrieval.py", line 86, in extract_image_feat
+    image = Image.open(image_path).convert("RGB")
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/PIL/Image.py", line 3513, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: './datasets/caltech256/images/179.scorpion-101/179_0080.jpg'

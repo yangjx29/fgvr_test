@@ -1,0 +1,433 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=1  # 使用的GPU编号
+Dataset: dtd (num_classes=47)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/dtd47/knowledge_base  # 知识库目录
+Results Out: ./results/dtd_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/dtd47_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/dtd47/fast_slow_dtd(2).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: dtd (dtd47)
+类别数: 47
+实验目录: ./experiments/dtd47
+✅ JSON文件检查通过: ./experiments/dtd47/images_split
+当前使用的 GPU 为：1
+
+=== Experiment Start Time: 2025-11-27 20:40:21 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/dtd47_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/dtd47/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/dtd_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/dtd',
+ 'dataset_name': 'dtd',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/dtd47',
+ 'expt_dir_describe': './experiments/dtd47/describe',
+ 'expt_dir_gallery': './experiments/dtd47/gallery',
+ 'expt_dir_grouping': './experiments/dtd47/grouping',
+ 'expt_dir_guess': './experiments/dtd47/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 24,
+ 'num_classes': 47,
+ 'num_novel': 23,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/dtd47/gallery/dtd_image_descriptions_attn',
+ 'path_identify_answers': './experiments/dtd47/identify',
+ 'path_llm_gussed_names': './experiments/dtd47/guess/dtd_llm_gussed_names',
+ 'path_llm_prompts': './experiments/dtd47/describe/dtd_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/dtd47/guess/dtd_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/dtd47/guess/dtd_llm_replies_raw',
+ 'path_references': './experiments/dtd47/gallery/dtd_image_references',
+ 'path_regions': './experiments/dtd47/gallery/dtd_image_regions',
+ 'path_vqa_answers': './experiments/dtd47/describe/dtd_attributes_pairs',
+ 'path_vqa_questions': './experiments/dtd47/describe/dtd_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "dtd47",
+    "num_classes": 47,
+    "config_file": "dtd47_all.yml",
+    "data_dir": "dtd",
+    "experiment_dir": "dtd47",
+    "stats_file": "dtd47/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/dtd47/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/dtd47"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.23s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:08,  2.88s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.20s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:01,  1.89s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.44s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.74s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:40:31
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/dtd47/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/dtd47/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 318 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:41:37
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x75b6b29903d0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x75b6b29903a0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/dtd47/knowledge_base
+使用数据集: dtd, 类别数: 47
+✅ 慢思考模块初始化完成，类别映射数量: 47
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:41:37] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/dtd47/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/dtd47/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/dtd47/knowledge_base 加载
+图像知识库类别数: 47
+文本知识库类别数: 47
+类别描述数: 47
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x75b6b29903a0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x75b6b2990520>
+📦 数据集信息: {'full_name': 'dtd47', 'num_classes': 47, 'config_file': 'dtd47_all.yml', 'data_dir': 'dtd', 'experiment_dir': 'dtd47', 'stats_file': 'dtd47/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/dtd47/knowledge_base/stats.json', 'experiment_dir_full': './experiments/dtd47'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/dtd47/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: dtd47
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/dtd47/images_split/images_test.json
+  类别数量: 47
+  总图像数: 1692
+  平均每类: 36.0 张
+  图像范围: 36 - 36 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 16 张图像，覆盖 14 个类别
+  平均每类: 1.1 张
+======================================================================
+test sample keys: ['perforated', 'striped', 'chequered', 'blotchy', 'crystalline']...
+[fast and slow] 测试数据集包含 14 个类别
+  0%|          | 0/14 [00:00<?, ?it/s][2025-11-27 20:41:37] Processing fast-slow:   0%|          | 0/14 [00:00<?, ?it/s][2025-11-27 20:41:37] Processing fast-slow:   7%|▋         | 1/14 [00:05<01:15,  5.77s/it][2025-11-27 20:41:43] Processing fast-slow:   7%|▋         | 1/14 [00:05<01:15,  5.77s/it][2025-11-27 20:41:43] Processing fast-slow:   7%|▋         | 1/14 [00:05<01:15,  5.77s/it][2025-11-27 20:41:43] Processing fast-slow:   7%|▋         | 1/14 [00:05<01:15,  5.77s/it][2025-11-27 20:41:43] Processing fast-slow:  29%|██▊       | 4/14 [00:19<00:48,  4.86s/it][2025-11-27 20:41:57] Processing fast-slow:  29%|██▊       | 4/14 [00:19<00:48,  4.86s/it][2025-11-27 20:41:57] Processing fast-slow:  36%|███▌      | 5/14 [00:30<00:58,  6.45s/it][2025-11-27 20:42:08] Processing fast-slow:  36%|███▌      | 5/14 [00:30<00:58,  6.45s/it][2025-11-27 20:42:08] Processing fast-slow:  36%|███▌      | 5/14 [00:30<00:58,  6.45s/it][2025-11-27 20:42:08] Processing fast-slow:  50%|█████     | 7/14 [00:34<00:31,  4.48s/it][2025-11-27 20:42:12] Processing fast-slow:  50%|█████     | 7/14 [00:34<00:31,  4.48s/it][2025-11-27 20:42:12] Processing fast-slow:  50%|█████     | 7/14 [00:34<00:31,  4.48s/it][2025-11-27 20:42:12] Processing fast-slow:  64%|██████▍   | 9/14 [00:41<00:20,  4.06s/it][2025-11-27 20:42:18] Processing fast-slow:  64%|██████▍   | 9/14 [00:41<00:20,  4.06s/it][2025-11-27 20:42:19] Processing fast-slow:  64%|██████▍   | 9/14 [00:41<00:20,  4.06s/it]开始分类图像: ./datasets/dtd/images/perforated/perforated_0053.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/perforated/perforated_0053.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['perforated', 'honeycombed', 'polka-dotted', 'woven', 'scaly', 'marbled', 'dotted', 'braided', 'sprinkled', 'porous', 'grid', 'meshed', 'swirly', 'flecked']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:40] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+分类完成: perforated (置信度: 0.1599)
+总耗时: 5.77秒
+succ. pred cate:perforated, true cate:perforated, used_slow:True, confidence:0.1599
+开始分类图像: ./datasets/dtd/images/striped/striped_0081.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: striped (置信度: 0.3404)
+总耗时: 0.05秒
+succ. pred cate:striped, true cate:striped, used_slow:False, confidence:0.3404
+开始分类图像: ./datasets/dtd/images/chequered/chequered_0207.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: chequered (置信度: 0.4681)
+总耗时: 0.04秒
+succ. pred cate:chequered, true cate:chequered, used_slow:False, confidence:0.4681
+开始分类图像: ./datasets/dtd/images/blotchy/blotchy_0009.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/blotchy/blotchy_0009.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['woven', 'flecked', 'lined', 'pleated', 'sprinkled', 'matted', 'wrinkled', 'gauzy', 'blotchy', 'banded', 'grid', 'perforated', 'polka-dotted', 'swirly', 'zigzagged', 'chequered']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:41:43] [显存监控] 已分配=16.91GB, 已保留=17.44GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:46] [显存监控] 已分配=16.96GB, 已保留=17.83GB, 空闲=30.44GB
+[2025-11-27 20:41:49] [显存监控] 已分配=16.96GB, 已保留=17.83GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.83GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:41:52] [显存监控] 已分配=16.95GB, 已保留=17.80GB, 空闲=30.45GB
+[2025-11-27 20:41:55] [显存监控] 已分配=16.96GB, 已保留=17.80GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.80GB, 剩余=30.50GB
+分类完成: flecked (置信度: 0.8000)
+总耗时: 13.86秒
+failed. pred cate:flecked, true cate:blotchy, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/dtd/images/crystalline/crystalline_0135.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/crystalline/crystalline_0135.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['perforated', 'cracked', 'sprinkled', 'polka-dotted', 'crystalline', 'fibrous', 'porous', 'meshed', 'potholed', 'flecked', 'studded', 'lacelike', 'chequered', 'marbled', 'paisley', 'woven']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:42:00] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:42:03] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:42:06] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: crystalline (置信度: 0.8500)
+总耗时: 10.55秒
+succ. pred cate:crystalline, true cate:crystalline, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/dtd/images/gauzy/gauzy_0169.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pleated (置信度: 0.4403)
+总耗时: 0.04秒
+failed. pred cate:pleated, true cate:gauzy, used_slow:False, confidence:0.4403
+开始分类图像: ./datasets/dtd/images/freckled/freckled_0160.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/freckled/freckled_0160.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['freckled', 'flecked', 'porous', 'blotchy', 'polka-dotted', 'cracked', 'perforated', 'zigzagged', 'waffled', 'matted', 'scaly', 'fibrous', 'knitted', 'meshed', 'stained', 'marbled']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:09] [显存监控] 已分配=16.96GB, 已保留=17.84GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.84GB, 剩余=30.50GB
+分类完成: freckled (置信度: 0.1724)
+总耗时: 3.93秒
+succ. pred cate:freckled, true cate:freckled, used_slow:True, confidence:0.1724
+开始分类图像: ./datasets/dtd/images/freckled/freckled_0101.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: freckled (置信度: 0.8527)
+总耗时: 0.04秒
+succ. pred cate:freckled, true cate:freckled, used_slow:False, confidence:0.8527
+开始分类图像: ./datasets/dtd/images/smeared/smeared_0112.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sprinkled (置信度: 0.2481)
+总耗时: 0.03秒
+succ. pred cate:sprinkled, true cate:smeared, used_slow:False, confidence:0.2481
+开始分类图像: ./datasets/dtd/images/honeycombed/honeycombed_0135.jpg
+执行快思考...
+[2025-11-27 20:42:12] [显存监控] 已分配=16.91GB, 已保留=17.84GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/honeycombed/honeycombed_0135.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['honeycombed', 'meshed', 'perforated', 'grid', 'chequered', 'dotted', 'flecked', 'fibrous', 'cracked', 'zigzagged', 'polka-dotted', 'woven', 'swirly', 'scaly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:15] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+[2025-11-27 20:42:18] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: honeycombed (置信度: 0.1608)
+总耗时: 6.71秒
+succ. pred cate:honeycombed, true cate:honeycombed, used_slow:True, confidence:0.1608
+开始分类图像: ./datasets/dtd/images/honeycombed/honeycombed_0098.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: perforated (置信度: 0.2138)
+总耗时: 0.04秒
+succ. pred cate:perforated, true cate:honeycombed, used_slow:False, confidence:0.2138
+开始分类图像: ./datasets/dtd/images/cobwebbed/cobwebbed_0051.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: cobwebbed (置信度: 0.7569)
+总耗时: 0.04秒
+succ. pred cate:cobwebbed, true cate:cobwebbed, used_slow:False, confidence:0.7569
+开始分类图像: ./datasets/dtd/images/wrinkled/wrinkled_0039.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/wrinkled/wrinkled_0039.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['wrinkled', 'flecked', 'bumpy', 'porous', 'woven', 'cracked', 'fibrous', 'blotchy', 'grid', 'sprinkled', 'marbled', 'zigzagged', 'perforated']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:42:19] Processing fast-slow:  79%|███████▊  | 11/14 [00:55<00:15,  5.13s/it][2025-11-27 20:42:33] Processing fast-slow:  79%|███████▊  | 11/14 [00:55<00:15,  5.13s/it][2025-11-27 20:42:33] Processing fast-slow:  79%|███████▊  | 11/14 [00:55<00:15,  5.13s/it][2025-11-27 20:42:33] Processing fast-slow:  93%|█████████▎| 13/14 [01:03<00:04,  4.76s/it][2025-11-27 20:42:41] Processing fast-slow:  93%|█████████▎| 13/14 [01:03<00:04,  4.76s/it][2025-11-27 20:42:41] Processing fast-slow: 100%|██████████| 14/14 [01:03<00:00,  4.52s/it]
+[2025-11-27 20:42:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:42:24] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-27 20:42:27] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:30] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: wrinkled (置信度: 0.8000)
+总耗时: 14.11秒
+succ. pred cate:wrinkled, true cate:wrinkled, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/dtd/images/fibrous/fibrous_0131.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: woven (置信度: 0.3238)
+总耗时: 0.03秒
+failed. pred cate:woven, true cate:fibrous, used_slow:False, confidence:0.3238
+开始分类图像: ./datasets/dtd/images/bumpy/bumpy_0024.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/dtd/images/bumpy/bumpy_0024.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['swirly', 'spiralled', 'dotted', 'porous', 'polka-dotted', 'knitted', 'matted', 'bumpy', 'zigzagged', 'flecked', 'bubbly', 'frilly', 'fibrous', 'crystalline', 'striped', 'braided', 'cobwebbed', 'scaly', 'veined']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:33] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:42:36] [显存监控] 已分配=16.93GB, 已保留=17.28GB, 空闲=30.47GB
+[2025-11-27 20:42:39] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: porous (置信度: 0.8000)
+总耗时: 8.05秒
+failed. pred cate:porous, true cate:bumpy, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/dtd/images/woven/woven_0015.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: braided (置信度: 0.2046)
+总耗时: 0.04秒
+failed. pred cate:braided, true cate:woven, used_slow:False, confidence:0.2046
+✅ 正确预测总数: 11
+  - 其中仅快思考正确: 6
+  - 其中慢思考触发且正确: 5
+❌ 错误预测总数: 5
+📊 慢思考触发数量: 7
+[fast and slow] 总体准确率: 0.6875 (11/16)
+[fast and slow] 快思考准确率: 0.6667
+[fast and slow] 慢思考触发比例: 0.4375
+[fast and slow] 慢思考准确率: 0.7143
+✓ 分类结果已保存到: ./experiments/dtd47/classify/classify_result.json
+  总样本数: 16
+📁 分类结果已保存到: ./experiments/dtd47/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 20:42:41 ===
+=== Total Runtime: 0小时 2分 19.70秒 ===
+
+eholdera       p;�ҷu  p;�ҷu  holder|><|placeholder|><|placeholder|><[2025-11-27 20:42:42] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:42:45] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:42:48] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:42:51] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:42:54] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:42:57] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:00] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:03] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:06] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:09] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:12] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:15] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:18] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:21] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:24] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:27] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:30] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:33] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:36] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:39] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:42] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-27 20:43:45] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB

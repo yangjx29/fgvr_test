@@ -1,0 +1,548 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=6  # 使用的GPU编号
+Dataset: bird (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/bird200/knowledge_base  # 知识库目录
+Results Out: ./results/bird_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/bird200_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/bird200/fast_slow_bird(2).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: bird (bird200)
+类别数: 200
+实验目录: ./experiments/bird200
+✅ JSON文件检查通过: ./experiments/bird200/images_split
+当前使用的 GPU 为：6
+
+=== Experiment Start Time: 2025-11-27 20:25:07 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/bird200_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/bird200/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/bird_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/CUB_200_2011/CUB_200_2011/',
+ 'dataset_name': 'bird',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/bird200',
+ 'expt_dir_describe': './experiments/bird200/describe',
+ 'expt_dir_gallery': './experiments/bird200/gallery',
+ 'expt_dir_grouping': './experiments/bird200/grouping',
+ 'expt_dir_guess': './experiments/bird200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/bird200/gallery/bird_image_descriptions_attn',
+ 'path_identify_answers': './experiments/bird200/identify',
+ 'path_llm_gussed_names': './experiments/bird200/guess/bird_llm_gussed_names',
+ 'path_llm_prompts': './experiments/bird200/describe/bird_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/bird200/guess/bird_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/bird200/guess/bird_llm_replies_raw',
+ 'path_references': './experiments/bird200/gallery/bird_image_references',
+ 'path_regions': './experiments/bird200/gallery/bird_image_regions',
+ 'path_vqa_answers': './experiments/bird200/describe/bird_attributes_pairs',
+ 'path_vqa_questions': './experiments/bird200/describe/bird_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "bird200",
+    "num_classes": 200,
+    "config_file": "bird200_all.yml",
+    "data_dir": "CUB_200_2011",
+    "experiment_dir": "bird200",
+    "stats_file": "bird200/knowledge_base/stats.json",
+    "special_subdir": "CUB_200_2011",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/bird200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/bird200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.08s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.27s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.32s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:02,  2.42s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.76s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.71s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:25:19
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'special_subdir', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/bird200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/bird200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1536 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:26:14
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7a68788032e0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7a6878803370>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/bird200/knowledge_base
+使用数据集: bird, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:26:14] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/bird200/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/bird200/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/bird200/knowledge_base 加载
+图像知识库类别数: 200
+文本知识库类别数: 200
+类别描述数: 200
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7a6878803370>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7a686996b220>
+📦 数据集信息: {'full_name': 'bird200', 'num_classes': 200, 'config_file': 'bird200_all.yml', 'data_dir': 'CUB_200_2011', 'experiment_dir': 'bird200', 'stats_file': 'bird200/knowledge_base/stats.json', 'special_subdir': 'CUB_200_2011', 'experiments_root': './experiments', 'stats_file_full': './experiments/bird200/knowledge_base/stats.json', 'experiment_dir_full': './experiments/bird200'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Prioritize the highest similarity score only if it aligns with the visual evidence; otherwise, rely on detailed visual analysis. (Trigger: When the similarity scores are close and the visual evidence is ambiguous or conflicting.)
+2. Focus on specific, unique morphological features when distinguishing between closely related species. (Trigger: When dealing with closely related species that share some common traits but have distinct morphological features.)
+3. Focus on the unique combination of features such as the long, slightly curved beak and strong, dark-colored legs when identifying birds. (Trigger: This rule should be recalled whenever the bird's beak shape and leg strength are significant distinguishing factors.)
+
+经验库已从 ./experiments/bird200/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: bird200
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/bird200/images_split/images_test.json
+  类别数量: 200
+  总图像数: 2380
+  平均每类: 11.9 张
+  图像范围: 9 - 13 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 23 张图像，覆盖 22 个类别
+  平均每类: 1.0 张
+======================================================================
+test sample keys: ['057.Rose_breasted_Grosbeak', '138.Tree_Swallow', '086.Pacific_Loon', '028.Brown_Creeper', '146.Forsters_Tern']...
+[fast and slow] 测试数据集包含 22 个类别
+  0%|          | 0/22 [00:00<?, ?it/s][2025-11-27 20:26:15] Processing fast-slow:   0%|          | 0/22 [00:00<?, ?it/s][2025-11-27 20:26:15] Processing fast-slow:   5%|▍         | 1/22 [00:06<02:17,  6.56s/it][2025-11-27 20:26:21] Processing fast-slow:   5%|▍         | 1/22 [00:06<02:17,  6.56s/it][2025-11-27 20:26:21] Processing fast-slow:   5%|▍         | 1/22 [00:06<02:17,  6.56s/it][2025-11-27 20:26:21] Processing fast-slow:   5%|▍         | 1/22 [00:06<02:17,  6.56s/it][2025-11-27 20:26:21] Processing fast-slow:  18%|█▊        | 4/22 [00:14<00:59,  3.28s/it][2025-11-27 20:26:29] Processing fast-slow:  18%|█▊        | 4/22 [00:14<00:59,  3.28s/it][2025-11-27 20:26:29] Processing fast-slow:  23%|██▎       | 5/22 [00:19<01:06,  3.93s/it][2025-11-27 20:26:34] Processing fast-slow:  23%|██▎       | 5/22 [00:19<01:06,  3.93s/it][2025-11-27 20:26:34] Processing fast-slow:  27%|██▋       | 6/22 [00:27<01:19,  4.97s/it][2025-11-27 20:26:42] Processing fast-slow:  27%|██▋       | 6/22 [00:27<01:19,  4.97s/it][2025-11-27 20:26:42] Processing fast-slow:  32%|███▏      | 7/22 [00:36<01:31,  6.08s/it][2025-11-27 20:26:51] Processing fast-slow:  32%|███▏      | 7/22 [00:36<01:31,  6.08s/it][2025-11-27 20:26:51] Processing fast-slow:  32%|███▏      | 7/22 [00:36<01:31,  6.08s/it]开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0026_39191.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0026_39191.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rose_breasted_Grosbeak', 'Red_winged_Blackbird', 'American_Three_toed_Woodpecker', 'Bobolink', 'Yellow_breasted_Chat', 'Chuck_will_Widow', 'Red_headed_Woodpecker', 'Scott_Oriole', 'European_Goldfinch', 'Red_cockaded_Woodpecker', 'American_Redstart', 'Black_throated_Blue_Warbler', 'Downy_Woodpecker', 'Hooded_Warbler', 'Eastern_Towhee', 'Bay_breasted_Warbler', 'Pileated_Woodpecker', 'American_Goldfinch']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:17] [显存监控] 已分配=16.96GB, 已保留=17.62GB, 空闲=30.44GB
+[2025-11-27 20:26:20] [显存监控] 已分配=16.99GB, 已保留=17.62GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.62GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Rose_breasted_Grosbeak' -> 'Rose-breasted Grosbeak'
+分类完成: Rose-breasted Grosbeak (置信度: 0.1593)
+总耗时: 6.56秒
+succ. pred cate:Rose-breasted Grosbeak, true cate:057.Rose_breasted_Grosbeak, used_slow:True, confidence:0.1593
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/138.Tree_Swallow/Tree_Swallow_0040_135172.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bank_Swallow (置信度: 0.2025)
+总耗时: 0.04秒
+succ. pred cate:Bank_Swallow, true cate:138.Tree_Swallow, used_slow:False, confidence:0.2025
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/086.Pacific_Loon/Pacific_Loon_0017_75835.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pacific_Loon (置信度: 0.3671)
+总耗时: 0.04秒
+succ. pred cate:Pacific_Loon, true cate:086.Pacific_Loon, used_slow:False, confidence:0.3671
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/028.Brown_Creeper/Brown_Creeper_0004_24851.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/028.Brown_Creeper/Brown_Creeper_0004_24851.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Brown_Creeper', 'American_Three_toed_Woodpecker', 'Chuck_will_Widow', 'Black_and_white_Warbler', 'Red_cockaded_Woodpecker', 'Northern_Flicker', 'Downy_Woodpecker', 'White_breasted_Nuthatch', 'Worm_eating_Warbler', 'Magnolia_Warbler', 'Brewer_Sparrow', 'Pileated_Woodpecker', 'Nighthawk', 'Bay_breasted_Warbler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:23] [显存监控] 已分配=16.96GB, 已保留=17.63GB, 空闲=30.44GB
+[2025-11-27 20:26:26] [显存监控] 已分配=16.99GB, 已保留=17.63GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.63GB, 剩余=30.50GB
+模糊匹配类别修正: 'Brown Cree' -> 'Brown Creeper'
+分类完成: Brown Creeper (置信度: 0.1510)
+总耗时: 7.46秒
+succ. pred cate:Brown Creeper, true cate:028.Brown_Creeper, used_slow:True, confidence:0.1510
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/146.Forsters_Tern/Forsters_Tern_0027_151456.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/146.Forsters_Tern/Forsters_Tern_0027_151456.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Forsters_Tern', 'Least_Tern', 'Elegant_Tern', 'Common_Tern', 'Artic_Tern', 'Caspian_Tern', 'Black_Tern', 'Long_tailed_Jaeger', 'Western_Gull', 'Chuck_will_Widow', 'Ivory_Gull', 'Heermann_Gull', 'Herring_Gull', 'California_Gull']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:29] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-27 20:26:32] [显存监控] 已分配=16.97GB, 已保留=17.57GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Least_Tern' -> 'Least Tern'
+分类完成: Least Tern (置信度: 0.1397)
+总耗时: 5.61秒
+succ. pred cate:Least Tern, true cate:146.Forsters_Tern, used_slow:True, confidence:0.1397
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/020.Yellow_breasted_Chat/Yellow_Breasted_Chat_0101_21677.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/020.Yellow_breasted_Chat/Yellow_Breasted_Chat_0101_21677.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Yellow_breasted_Chat', 'Hooded_Oriole', 'Canada_Warbler', 'Scott_Oriole', 'Western_Meadowlark', 'Yellow_bellied_Flycatcher', 'Magnolia_Warbler', 'Blue_winged_Warbler', 'Common_Yellowthroat', 'Worm_eating_Warbler', 'Hooded_Warbler', 'Kentucky_Warbler', 'Wilson_Warbler', 'Baltimore_Oriole', 'American_Goldfinch', 'Nashville_Warbler', 'Pine_Warbler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:26:37] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:40] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Yellow_breasted_Chat' -> 'Yellow-breasted Chat'
+分类完成: Yellow-breasted Chat (置信度: 0.1400)
+总耗时: 7.57秒
+succ. pred cate:Yellow-breasted Chat, true cate:020.Yellow_breasted_Chat, used_slow:True, confidence:0.1400
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/077.Tropical_Kingbird/Tropical_Kingbird_0027_69735.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/077.Tropical_Kingbird/Tropical_Kingbird_0027_69735.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Mourning_Warbler', 'Kentucky_Warbler', 'Canada_Warbler', 'Yellow_breasted_Chat', 'Golden_winged_Warbler', 'Common_Yellowthroat', 'Yellow_bellied_Flycatcher', 'Magnolia_Warbler', 'Blue_winged_Warbler', 'Nashville_Warbler', 'Yellow_Warbler', 'White_eyed_Vireo', 'Pine_Warbler', 'Yellow_throated_Vireo', 'Mangrove_Cuckoo', 'Spotted_Catbird']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:26:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:47] [显存监控] 已分配=16.96GB, 已保留=17.61GB, 空闲=30.44GB
+[2025-11-27 20:26:50] [显存监控] 已分配=16.99GB, 已保留=17.61GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Kentucky_Warbler' -> 'Kentucky Warbler'
+分类完成: Kentucky Warbler (置信度: 0.1083)
+总耗时: 8.81秒
+failed. pred cate:Kentucky Warbler, true cate:077.Tropical_Kingbird, used_slow:True, confidence:0.1083
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/169.Magnolia_Warbler/Magnolia_Warbler_0097_165455.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Magnolia_Warbler (置信度: 0.3098)
+总耗时: 0.04秒
+succ. pred cate:Magnolia_Warbler, true cate:169.Magnolia_Warbler, used_slow:False, confidence:0.3098
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/150.Sage_Thrasher/Sage_Thrasher_0081_155724.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+[2025-11-27 20:26:51] Processing fast-slow:  41%|████      | 9/22 [00:48<01:20,  6.21s/it][2025-11-27 20:27:04] Processing fast-slow:  41%|████      | 9/22 [00:48<01:20,  6.21s/it][2025-11-27 20:27:04] Processing fast-slow:  45%|████▌     | 10/22 [00:56<01:17,  6.50s/it][2025-11-27 20:27:11] Processing fast-slow:  45%|████▌     | 10/22 [00:56<01:17,  6.50s/it][2025-11-27 20:27:11] Processing fast-slow:  45%|████▌     | 10/22 [00:56<01:17,  6.50s/it][2025-11-27 20:27:11] Processing fast-slow:  55%|█████▍    | 12/22 [01:06<00:58,  5.84s/it][2025-11-27 20:27:21] Processing fast-slow:  55%|█████▍    | 12/22 [01:06<00:58,  5.84s/it][2025-11-27 20:27:21] Processing fast-slow:  59%|█████▉    | 13/22 [01:24<01:18,  8.78s/it][2025-11-27 20:27:39] Processing fast-slow:  59%|█████▉    | 13/22 [01:24<01:18,  8.78s/it]开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/150.Sage_Thrasher/Sage_Thrasher_0081_155724.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Northern_Waterthrush', 'Sage_Thrasher', 'Chuck_will_Widow', 'American_Pipit', 'Le_Conte_Sparrow', 'Rusty_Blackbird', 'Henslow_Sparrow', 'Shiny_Cowbird', 'Nelson_Sharp_tailed_Sparrow', 'Magnolia_Warbler', 'Brewer_Sparrow', 'Rock_Wren', 'Fox_Sparrow', 'Vesper_Sparrow', 'Palm_Warbler', 'Louisiana_Waterthrush', 'Least_Flycatcher', 'Savannah_Sparrow']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:53] [显存监控] 已分配=16.97GB, 已保留=17.60GB, 空闲=30.43GB
+[2025-11-27 20:26:56] [显存监控] 已分配=16.99GB, 已保留=17.60GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Sage_Thrasher' -> 'Sage Thrasher'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:26:59] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-27 20:27:02] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: Sage_Thrasher (置信度: 0.8000)
+总耗时: 12.69秒
+succ. pred cate:Sage_Thrasher, true cate:150.Sage_Thrasher, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/113.Baird_Sparrow/Baird_Sparrow_0004_794568.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/113.Baird_Sparrow/Baird_Sparrow_0004_794568.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Le_Conte_Sparrow', 'Henslow_Sparrow', 'Grasshopper_Sparrow', 'Savannah_Sparrow', 'Vesper_Sparrow', 'Baird_Sparrow', 'Bobolink', 'Chuck_will_Widow', 'Nelson_Sharp_tailed_Sparrow', 'Ovenbird', 'Song_Sparrow', 'Lincoln_Sparrow', 'Sage_Thrasher', 'Seaside_Sparrow']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:09] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Le Conte Sparrow' -> 'Le-Conte Sparrow'
+分类完成: Le-Conte Sparrow (置信度: 0.1345)
+总耗时: 7.39秒
+succ. pred cate:Le-Conte Sparrow, true cate:113.Baird_Sparrow, used_slow:True, confidence:0.1345
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/149.Brown_Thrasher/Brown_Thrasher_0042_155213.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Brown_Thrasher (置信度: 0.4865)
+总耗时: 0.04秒
+succ. pred cate:Brown_Thrasher, true cate:149.Brown_Thrasher, used_slow:False, confidence:0.4865
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/127.Savannah_Sparrow/Savannah_Sparrow_0136_119581.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/127.Savannah_Sparrow/Savannah_Sparrow_0136_119581.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Le_Conte_Sparrow', 'Northern_Waterthrush', 'American_Pipit', 'Henslow_Sparrow', 'Chuck_will_Widow', 'Magnolia_Warbler', 'Savannah_Sparrow', 'Black_and_white_Warbler', 'Louisiana_Waterthrush', 'Nelson_Sharp_tailed_Sparrow', 'Sage_Thrasher', 'Song_Sparrow', 'Brewer_Sparrow', 'Least_Flycatcher', 'Vesper_Sparrow', 'Palm_Warbler', 'Grasshopper_Sparrow']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:17] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+[2025-11-27 20:27:20] [显存监控] 已分配=17.01GB, 已保留=17.56GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+模糊匹配类别修正: 'Le Conte' -> 'Le-Conte Sparrow'
+分类完成: Le-Conte Sparrow (置信度: 0.1235)
+总耗时: 9.74秒
+succ. pred cate:Le-Conte Sparrow, true cate:127.Savannah_Sparrow, used_slow:True, confidence:0.1235
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/055.Evening_Grosbeak/Evening_Grosbeak_0132_38025.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/055.Evening_Grosbeak/Evening_Grosbeak_0132_38025.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Evening_Grosbeak', 'Yellow_breasted_Chat', 'Hooded_Oriole', 'American_Goldfinch', 'Scott_Oriole', 'Magnolia_Warbler', 'Hooded_Warbler', 'Common_Yellowthroat', 'Canada_Warbler', 'Orchard_Oriole', 'Wilson_Warbler', 'Pine_Warbler', 'Kentucky_Warbler', 'American_Redstart', 'Yellow_Warbler', 'Baltimore_Oriole']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:23] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.44GB
+[2025-11-27 20:27:26] [显存监控] 已分配=16.99GB, 已保留=17.61GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Evening_Grosbeak' -> 'Evening Grosbeak'
+分类完成: Evening Grosbeak (置信度: 0.1319)
+总耗时: 5.99秒
+succ. pred cate:Evening Grosbeak, true cate:055.Evening_Grosbeak, used_slow:True, confidence:0.1319
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/055.Evening_Grosbeak/Evening_Grosbeak_0107_37933.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/055.Evening_Grosbeak/Evening_Grosbeak_0107_37933.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Hooded_Oriole', 'Yellow_breasted_Chat', 'Scott_Oriole', 'Evening_Grosbeak', 'Yellow_bellied_Flycatcher', 'Orchard_Oriole', 'Magnolia_Warbler', 'American_Goldfinch', 'Common_Yellowthroat', 'Yellow_throated_Vireo', 'Mourning_Warbler', 'Kentucky_Warbler', 'Wilson_Warbler', 'Great_Crested_Flycatcher', 'American_Redstart']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:29] [显存监控] 已分配=16.96GB, 已保留=17.64GB, 空闲=30.44GB
+[2025-11-27 20:27:32] [显存监控] 已分配=16.96GB, 已保留=17.64GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.65GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:35] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:27:38] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: Evening Grosbeak (置信度: 0.8500)
+总耗时: 12.80秒
+succ. pred cate:Evening Grosbeak, true cate:055.Evening_Grosbeak, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/154.Red_eyed_Vireo/Red_Eyed_Vireo_0036_156727.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/154.Red_eyed_Vireo/Red_Eyed_Vireo_0036_156727.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:27:39] Processing fast-slow:  64%|██████▎   | 14/22 [01:30<01:03,  7.93s/it][2025-11-27 20:27:45] Processing fast-slow:  64%|██████▎   | 14/22 [01:30<01:03,  7.93s/it][2025-11-27 20:27:45] Processing fast-slow:  68%|██████▊   | 15/22 [01:35<00:50,  7.28s/it][2025-11-27 20:27:50] Processing fast-slow:  68%|██████▊   | 15/22 [01:35<00:50,  7.28s/it][2025-11-27 20:27:50] Processing fast-slow:  73%|███████▎  | 16/22 [01:40<00:39,  6.64s/it][2025-11-27 20:27:55] Processing fast-slow:  73%|███████▎  | 16/22 [01:40<00:39,  6.64s/it][2025-11-27 20:27:55] Processing fast-slow:  77%|███████▋  | 17/22 [01:47<00:33,  6.71s/it][2025-11-27 20:28:02] Processing fast-slow:  77%|███████▋  | 17/22 [01:47<00:33,  6.71s/it][2025-11-27 20:28:02] Processing fast-slow:  77%|███████▋  | 17/22 [01:47<00:33,  6.71s/it][2025-11-27 20:28:02] Processing fast-slow:  77%|███████▋  | 17/22 [01:47<00:33,  6.71s/it][2025-11-27 20:28:02] Processing fast-slow:  91%|█████████ | 20/22 [01:55<00:09,  4.57s/it][2025-11-27 20:28:10] Processing fast-slow:  91%|█████████ | 20/22 [01:55<00:09,  4.57s/it][2025-11-27 20:28:10] Processing fast-slow:  95%|█████████▌| 21/22 [02:01<00:04,  4.81s/it][2025-11-27 20:28:16] Processing fast-slow:  95%|█████████▌| 21/22 [02:01<00:04,  4.81s/it]快思考Top-10候选类别: ['Red_eyed_Vireo', 'Warbling_Vireo', 'White_eyed_Vireo', 'Swainson_Warbler', 'Acadian_Flycatcher', 'Yellow_bellied_Flycatcher', 'Olive_sided_Flycatcher', 'Least_Flycatcher', 'Philadelphia_Vireo', 'Great_Crested_Flycatcher', 'Gray_Kingbird', 'Black_billed_Cuckoo', 'Palm_Warbler', 'Golden_winged_Warbler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:41] [显存监控] 已分配=16.96GB, 已保留=17.61GB, 空闲=30.44GB
+[2025-11-27 20:27:44] [显存监控] 已分配=16.99GB, 已保留=17.61GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+分类完成: Red-eyed Vireo (置信度: 0.1111)
+总耗时: 5.31秒
+succ. pred cate:Red-eyed Vireo, true cate:154.Red_eyed_Vireo, used_slow:True, confidence:0.1111
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/044.Frigatebird/Frigatebird_0074_43035.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/044.Frigatebird/Frigatebird_0074_43035.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Frigatebird', 'Pomarine_Jaeger', 'Laysan_Albatross', 'Sooty_Albatross', 'Western_Gull', 'Artic_Tern', 'Slaty_backed_Gull', 'Pacific_Loon', 'Long_tailed_Jaeger', 'Heermann_Gull', 'Caspian_Tern', 'Black_Tern', 'Common_Tern', 'Northern_Fulmar', 'Elegant_Tern']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:47] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+分类完成: Frigatebird (置信度: 0.1282)
+总耗时: 5.43秒
+succ. pred cate:Frigatebird, true cate:044.Frigatebird, used_slow:True, confidence:0.1282
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/159.Black_and_white_Warbler/Black_And_White_Warbler_0070_160354.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/159.Black_and_white_Warbler/Black_And_White_Warbler_0070_160354.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Black_and_white_Warbler', 'Magnolia_Warbler', 'Chuck_will_Widow', 'Chestnut_sided_Warbler', 'Northern_Waterthrush', 'Blue_headed_Vireo', 'Worm_eating_Warbler', 'Ovenbird', 'Black_capped_Vireo', 'Myrtle_Warbler', 'Downy_Woodpecker', 'Brown_Creeper', 'Bay_breasted_Warbler', 'Kentucky_Warbler', 'Black_throated_Blue_Warbler', 'White_breasted_Nuthatch', 'American_Three_toed_Woodpecker']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:50] [显存监控] 已分配=16.91GB, 已保留=17.58GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:27:53] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Black_and_white_Warbler' -> 'Black-and-white Warbler'
+分类完成: Black-and-white Warbler (置信度: 0.1577)
+总耗时: 4.92秒
+succ. pred cate:Black-and-white Warbler, true cate:159.Black_and_white_Warbler, used_slow:True, confidence:0.1577
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/048.European_Goldfinch/European_Goldfinch_0030_33357.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/048.European_Goldfinch/European_Goldfinch_0030_33357.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['European_Goldfinch', 'Evening_Grosbeak', 'American_Goldfinch', 'Yellow_breasted_Chat', 'Horned_Lark', 'Gray_crowned_Rosy_Finch', 'Chuck_will_Widow', 'Green_tailed_Towhee', 'Tree_Sparrow', 'Nelson_Sharp_tailed_Sparrow', 'Harris_Sparrow', 'White_crowned_Sparrow', 'Cliff_Swallow', 'American_Pipit', 'Myrtle_Warbler', 'Cedar_Waxwing', 'House_Sparrow']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:27:57] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:00] [显存监控] 已分配=16.97GB, 已保留=17.59GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'European_Goldfinch' -> 'European Goldfinch'
+分类完成: European Goldfinch (置信度: 0.1619)
+总耗时: 6.89秒
+succ. pred cate:European Goldfinch, true cate:048.European_Goldfinch, used_slow:True, confidence:0.1619
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/083.White_breasted_Kingfisher/White_Breasted_Kingfisher_0063_73365.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: White_breasted_Kingfisher (置信度: 0.2072)
+总耗时: 0.03秒
+succ. pred cate:White_breasted_Kingfisher, true cate:083.White_breasted_Kingfisher, used_slow:False, confidence:0.2072
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/081.Pied_Kingfisher/Pied_Kingfisher_0046_72156.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pied_Kingfisher (置信度: 0.3121)
+总耗时: 0.03秒
+succ. pred cate:Pied_Kingfisher, true cate:081.Pied_Kingfisher, used_slow:False, confidence:0.3121
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/168.Kentucky_Warbler/Kentucky_Warbler_0044_165436.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/168.Kentucky_Warbler/Kentucky_Warbler_0044_165436.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Common_Yellowthroat', 'Canada_Warbler', 'Magnolia_Warbler', 'Yellow_breasted_Chat', 'Yellow_bellied_Flycatcher', 'Yellow_Warbler', 'Kentucky_Warbler', 'Hooded_Warbler', 'Blue_winged_Warbler', 'Tennessee_Warbler', 'Wilson_Warbler', 'Mourning_Warbler', 'Pine_Warbler', 'Nashville_Warbler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:04] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:07] [显存监控] 已分配=16.97GB, 已保留=17.59GB, 空闲=30.43GB
+[2025-11-27 20:28:10] [显存监控] 已分配=16.99GB, 已保留=17.60GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+分类完成: Common Yellowthroat (置信度: 0.1286)
+总耗时: 8.29秒
+failed. pred cate:Common Yellowthroat, true cate:168.Kentucky_Warbler, used_slow:True, confidence:0.1286
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/157.Yellow_throated_Vireo/Yellow_Throated_Vireo_0040_159624.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/157.Yellow_throated_Vireo/Yellow_Throated_Vireo_0040_159624.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Magnolia_Warbler', 'American_Goldfinch', 'Canada_Warbler', 'Kentucky_Warbler', 'Yellow_breasted_Chat', 'Yellow_bellied_Flycatcher', 'Yellow_throated_Vireo', 'Blue_winged_Warbler', 'Common_Yellowthroat', 'Tennessee_Warbler', 'Wilson_Warbler', 'Yellow_Warbler', 'Hooded_Warbler', 'Nashville_Warbler', 'Pine_Warbler', 'Mourning_Warbler', 'White_eyed_Vireo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:13] [显存监控] 已分配=16.96GB, 已保留=17.66GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.66GB, 剩余=30.50GB
+分类完成: Yellow Warbler (置信度: 0.0070)
+总耗时: 5.70秒
+succ. pred cate:Yellow Warbler, true cate:157.Yellow_throated_Vireo, used_slow:True, confidence:0.0070
+[2025-11-27 20:28:16] Processing fast-slow: 100%|██████████| 22/22 [02:09<00:00,  5.52s/it][2025-11-27 20:28:16] Processing fast-slow: 100%|██████████| 22/22 [02:09<00:00,  5.88s/it]
+开始分类图像: ./datasets/CUB_200_2011/CUB_200_2011/images/045.Northern_Fulmar/Northern_Fulmar_0070_43916.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/CUB_200_2011/CUB_200_2011/images/045.Northern_Fulmar/Northern_Fulmar_0070_43916.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Western_Gull', 'Sooty_Albatross', 'Slaty_backed_Gull', 'Northern_Fulmar', 'Herring_Gull', 'Ivory_Gull', 'California_Gull', 'Heermann_Gull', 'Glaucous_winged_Gull', 'Ring_billed_Gull', 'Rhinoceros_Auklet', 'Laysan_Albatross', 'Horned_Grebe', 'Pacific_Loon', 'Western_Grebe']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:28:16] [显存监控] 已分配=16.91GB, 已保留=17.66GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:28:19] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.45GB
+[2025-11-27 20:28:22] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Northern_Fulmar' -> 'Northern Fulmar'
+分类完成: Northern Fulmar (置信度: 0.1071)
+总耗时: 7.94秒
+succ. pred cate:Northern Fulmar, true cate:045.Northern_Fulmar, used_slow:True, confidence:0.1071
+✅ 正确预测总数: 21
+  - 其中仅快思考正确: 6
+  - 其中慢思考触发且正确: 15
+❌ 错误预测总数: 2
+📊 慢思考触发数量: 17
+[fast and slow] 总体准确率: 0.9130 (21/23)
+[fast and slow] 快思考准确率: 1.0000
+[fast and slow] 慢思考触发比例: 0.7391
+[fast and slow] 慢思考准确率: 0.8824
+✓ 分类结果已保存到: ./experiments/bird200/classify/classify_result.json
+  总样本数: 23
+📁 分类结果已保存到: ./experiments/bird200/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 20:28:24 ===
+=== Total Runtime: 0小时 3分 17.34秒 ===
+
+[2025-11-27 20:28:25] [显存监控] 已分配=16.91GB, 已保留=17.60GB, 空闲=30.50GB

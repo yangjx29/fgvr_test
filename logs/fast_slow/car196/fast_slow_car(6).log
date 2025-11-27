@@ -1,0 +1,1194 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=6  # 使用的GPU编号
+Dataset: car (num_classes=196)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 1.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/car196/knowledge_base  # 知识库目录
+Results Out: ./results/car_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/car196_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/car196/fast_slow_car(6).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: car (car196)
+类别数: 196
+实验目录: ./experiments/car196
+✅ JSON文件检查通过: ./experiments/car196/images_split
+当前使用的 GPU 为：6
+
+=== Experiment Start Time: 2025-11-27 20:30:48 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/car196_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/car196/knowledge_base',
+ 'kshot': None,
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results/car_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 1.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/car_196',
+ 'dataset_name': 'car',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/car196',
+ 'expt_dir_describe': './experiments/car196/describe',
+ 'expt_dir_gallery': './experiments/car196/gallery',
+ 'expt_dir_grouping': './experiments/car196/grouping',
+ 'expt_dir_guess': './experiments/car196/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 98,
+ 'num_classes': 196,
+ 'num_novel': 98,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/car196/gallery/car_image_descriptions_attn',
+ 'path_identify_answers': './experiments/car196/identify',
+ 'path_llm_gussed_names': './experiments/car196/guess/car_llm_gussed_names',
+ 'path_llm_prompts': './experiments/car196/describe/car_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/car196/guess/car_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/car196/guess/car_llm_replies_raw',
+ 'path_references': './experiments/car196/gallery/car_image_references',
+ 'path_regions': './experiments/car196/gallery/car_image_regions',
+ 'path_vqa_answers': './experiments/car196/describe/car_attributes_pairs',
+ 'path_vqa_questions': './experiments/car196/describe/car_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "car196",
+    "num_classes": 196,
+    "config_file": "car196_all.yml",
+    "data_dir": "car_196",
+    "experiment_dir": "car196",
+    "stats_file": "car196/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/car196/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/car196"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.23s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.35s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.35s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  2.00s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.50s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.66s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 20:30:57
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/car196/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/car196/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1475 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 20:31:52
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7087a5db7460>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7087a5d256d0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/car196/knowledge_base
+使用数据集: car, 类别数: 196
+✅ 慢思考模块初始化完成，类别映射数量: 196
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 20:31:52] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/car196/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/car196/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/car196/knowledge_base 加载
+图像知识库类别数: 196
+文本知识库类别数: 196
+类别描述数: 196
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7087a5d256d0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7087a5d25a90>
+📦 数据集信息: {'full_name': 'car196', 'num_classes': 196, 'config_file': 'car196_all.yml', 'data_dir': 'car_196', 'experiment_dir': 'car196', 'stats_file': 'car196/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/car196/knowledge_base/stats.json', 'experiment_dir_full': './experiments/car196'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+
+Policy Memory (learned strategy rules):
+1. Verify the vehicle's body type and context before making a final classification decision. (Trigger: This rule should be recalled when analyzing images of vehicles in a showroom setting or when the body type is ambiguous based on initial visual cues.)
+2. Verify the entire vehicle's design, including the body shape, door configuration, and overall proportions before making a final classification decision. (Trigger: This rule should be recalled when analyzing images of trucks where the grille and headlights are not immediately recognizable or when the vehicle's proportions and body style are ambiguous.)
+3. Focus on specific design features such as the grille and headlights when identifying car models. (Trigger: This rule should be recalled whenever the task involves identifying car models based on visual inspection.)
+
+经验库已从 ./experiments/car196/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: car196
+数据集根目录: ./datasets
+测试百分比: 1.0%
+说明: 使用完整测试集的 1.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/car196/images_split/images_test.json
+  类别数量: 196
+  总图像数: 8041
+  平均每类: 41.0 张
+  图像范围: 24 - 68 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 80 张图像，覆盖 65 个类别
+  平均每类: 1.2 张
+======================================================================
+test sample keys: ['Hyundai Elantra Sedan 2007', 'Mercedes-Benz SL-Class Coupe 2009', 'Audi A5 Coupe 2012', 'Ferrari FF Coupe 2012', 'FIAT 500 Convertible 2012']...
+[fast and slow] 测试数据集包含 65 个类别
+  0%|          | 0/65 [00:00<?, ?it/s][2025-11-27 20:31:52] Processing fast-slow:   0%|          | 0/65 [00:00<?, ?it/s][2025-11-27 20:31:52] Processing fast-slow:   2%|▏         | 1/65 [00:12<13:16, 12.45s/it][2025-11-27 20:32:05] Processing fast-slow:   2%|▏         | 1/65 [00:12<13:16, 12.45s/it][2025-11-27 20:32:05] Processing fast-slow:   3%|▎         | 2/65 [00:40<22:36, 21.53s/it][2025-11-27 20:32:33] Processing fast-slow:   3%|▎         | 2/65 [00:40<22:36, 21.53s/it][2025-11-27 20:32:33] Processing fast-slow:   3%|▎         | 2/65 [00:40<22:36, 21.53s/it][2025-11-27 20:32:33] Processing fast-slow:   6%|▌         | 4/65 [00:40<08:11,  8.06s/it][2025-11-27 20:32:33] Processing fast-slow:   6%|▌         | 4/65 [00:40<08:11,  8.06s/it][2025-11-27 20:32:33] Processing fast-slow:   6%|▌         | 4/65 [00:50<08:11,  8.06s/it]开始分类图像: ./datasets/car_196/cars_test/00363.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/00363.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Sonic_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Hyundai_Tucson_SUV_2012', 'Chevrolet_Impala_Sedan_2007', 'Nissan_NV_Passenger_Van_2012', 'Suzuki_Kizashi_Sedan_2012', 'Honda_Odyssey_Minivan_2007', 'Honda_Odyssey_Minivan_2012', 'Hyundai_Accent_Sedan_2012', 'Acura_RL_Sedan_2012', 'Chevrolet_Malibu_Sedan_2007', 'Ford_Focus_Sedan_2007', 'Chrysler_Town_and_Country_Minivan_2012', 'Hyundai_Veracruz_SUV_2012', 'Chrysler_PT_Cruiser_Convertible_2008', 'Hyundai_Elantra_Sedan_2007', 'Dodge_Caliber_Wagon_2012', 'Dodge_Durango_SUV_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:31:55] [显存监控] 已分配=16.99GB, 已保留=17.66GB, 空闲=30.41GB
+[2025-11-27 20:31:58] [显存监控] 已分配=16.99GB, 已保留=17.66GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.66GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Hyundai_Elantra_Sedan_2007' -> 'Hyundai Elantra Sedan 2007'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:01] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-27 20:32:04] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+分类完成: Hyundai_Escopt_Sedan_2012 (置信度: 0.8500)
+总耗时: 12.45秒
+succ. pred cate:Hyundai_Escopt_Sedan_2012, true cate:Hyundai Elantra Sedan 2007, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/03257.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Mercedes-Benz_SL-Class_Coupe_2009 (置信度: 0.2161)
+总耗时: 0.05秒
+succ. pred cate:Mercedes-Benz_SL-Class_Coupe_2009, true cate:Mercedes-Benz SL-Class Coupe 2009, used_slow:False, confidence:0.2161
+开始分类图像: ./datasets/car_196/cars_test/02615.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/02615.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Porsche_Panamera_Sedan_2012', 'Fisker_Karma_Sedan_2012', 'Ferrari_FF_Coupe_2012', 'Mercedes-Benz_SL-Class_Coupe_2009', 'BMW_M6_Convertible_2010', 'Aston_Martin_Virage_Coupe_2012', 'Jaguar_XK_XKR_2012', 'Aston_Martin_Virage_Convertible_2012', 'Chrysler_Crossfire_Convertible_2008', 'Chevrolet_Impala_Sedan_2007', 'Bentley_Continental_Flying_Spur_Sedan_2007', 'Bentley_Continental_GT_Coupe_2007', 'Audi_TT_Hatchback_2011', 'Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007', 'Maybach_Landaulet_Convertible_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:32:07] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+[2025-11-27 20:32:10] [显存监控] 已分配=16.99GB, 已保留=18.06GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.06GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Mercedes-Benz_SL-Class_Coupe_2009' -> 'Mercedes-Benz SL-Class Coupe 2009'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:32:13] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:32:16] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+[2025-11-27 20:32:19] [显存监控] 已分配=16.99GB, 已保留=18.05GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.05GB, 剩余=30.50GB
+分类完成: Mercedes-Benz SL-Class Coupe 2009 (置信度: 0.8500)
+总耗时: 14.79秒
+succ. pred cate:Mercedes-Benz SL-Class Coupe 2009, true cate:Mercedes-Benz SL-Class Coupe 2009, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/06462.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/06462.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['BMW_M6_Convertible_2010', 'Dodge_Charger_SRT-8_2009', 'Bugatti_Veyron_16.4_Convertible_2009', 'BMW_M3_Coupe_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Aston_Martin_Virage_Coupe_2012', 'Ferrari_FF_Coupe_2012', 'Porsche_Panamera_Sedan_2012', 'Aston_Martin_Virage_Convertible_2012', 'McLaren_MP4-12C_Coupe_2012', 'Lamborghini_Reventon_Coupe_2008', 'Spyker_C8_Coupe_2009', 'Mercedes-Benz_SL-Class_Coupe_2009', 'Acura_Integra_Type_R_2001', 'Ferrari_458_Italia_Coupe_2012', 'Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007', 'Chevrolet_Cobalt_SS_2010']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:22] [显存监控] 已分配=16.99GB, 已保留=17.75GB, 空闲=30.41GB
+[2025-11-27 20:32:25] [显存监控] 已分配=16.99GB, 已保留=17.75GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.75GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Mercedes-Benz_SL-Class_Coupe_2009' -> 'Mercedes-Benz SL-Class Coupe 2009'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:32:28] [显存监控] 已分配=16.95GB, 已保留=17.71GB, 空闲=30.45GB
+[2025-11-27 20:32:31] [显存监控] 已分配=16.96GB, 已保留=17.71GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.71GB, 剩余=30.50GB
+分类完成: Mercedes-Benz SLR McLaren (置信度: 0.8500)
+总耗时: 13.04秒
+succ. pred cate:Mercedes-Benz SLR McLaren, true cate:Mercedes-Benz SL-Class Coupe 2009, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/05836.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Audi_S4_Sedan_2007 (置信度: 0.2215)
+总耗时: 0.05秒
+succ. pred cate:Audi_S4_Sedan_2007, true cate:Audi A5 Coupe 2012, used_slow:False, confidence:0.2215
+开始分类图像: ./datasets/car_196/cars_test/06891.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ferrari_FF_Coupe_2012 (置信度: 0.8884)
+总耗时: 0.06秒
+succ. pred cate:Ferrari_FF_Coupe_2012, true cate:Ferrari FF Coupe 2012, used_slow:False, confidence:0.8884
+开始分类图像: ./datasets/car_196/cars_test/05837.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05837.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Volkswagen_Beetle_Hatchback_2012', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Nissan_Juke_Hatchback_2012', 'Buick_Enclave_SUV_2012', 'FIAT_500_Abarth_2012', 'FIAT_500_Convertible_2012', 'Scion_xD_Hatchback_2012', 'Fisker_Karma_Sedan_2012', 'Jeep_Compass_SUV_2012', 'MINI_Cooper_Roadster_Convertible_2012', 'Acura_TSX_Sedan_2012', 'GMC_Acadia_SUV_2012', 'Suzuki_Aerio_Sedan_2007', 'BMW_1_Series_Convertible_2012', 'Volvo_C30_Hatchback_2012', 'BMW_X5_SUV_2007', 'BMW_M5_Sedan_2010', 'Cadillac_SRX_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:32:39] [显存监控] 已分配=16.99GB, 已保留=17.62GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.62GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'FIAT_500_Convertible_2012' -> 'FIAT 500 Convertible 2012'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:32:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:32:33] Processing fast-slow:   8%|▊         | 5/65 [00:56<10:26, 10.44s/it][2025-11-27 20:32:48] Processing fast-slow:   8%|▊         | 5/65 [00:56<10:26, 10.44s/it][2025-11-27 20:32:48] Processing fast-slow:   9%|▉         | 6/65 [01:24<15:47, 16.05s/it][2025-11-27 20:33:17] Processing fast-slow:   9%|▉         | 6/65 [01:24<15:47, 16.05s/it][2025-11-27 20:33:17] Processing fast-slow:  11%|█         | 7/65 [01:40<15:17, 15.82s/it][2025-11-27 20:33:32] Processing fast-slow:  11%|█         | 7/65 [01:40<15:17, 15.82s/it][2025-11-27 20:32:46] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: FIAT_500_Convertible_2012 (置信度: 0.9500)
+总耗时: 15.74秒
+succ. pred cate:FIAT_500_Convertible_2012, true cate:FIAT 500 Convertible 2012, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/car_196/cars_test/04333.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/04333.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Mercedes-Benz_E-Class_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Acura_RL_Sedan_2012', 'Chevrolet_Sonic_Sedan_2012', 'Mercedes-Benz_SL-Class_Coupe_2009', 'Chevrolet_Cobalt_SS_2010', 'Ford_Edge_SUV_2012', 'Hyundai_Tucson_SUV_2012', 'Chevrolet_Impala_Sedan_2007', 'Tesla_Model_S_Sedan_2012', 'Maybach_Landaulet_Convertible_2012', 'Suzuki_Aerio_Sedan_2007', 'Geo_Metro_Convertible_1993', 'Acura_TSX_Sedan_2012', 'Lincoln_Town_Car_Sedan_2011', 'BMW_1_Series_Convertible_2012', 'Ford_Freestar_Minivan_2007', 'smart_fortwo_Convertible_2012', 'Nissan_240SX_Coupe_1998', 'Daewoo_Nubira_Wagon_2002']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:32:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:32:53] [显存监控] 已分配=16.99GB, 已保留=17.58GB, 空闲=30.41GB
+[2025-11-27 20:32:56] [显存监控] 已分配=16.99GB, 已保留=17.58GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Mercedes-Benz_E-Class_Sedan_2012' -> 'Mercedes-Benz E-Class Sedan 2012'
+分类完成: Mercedes-Benz E-Class Sedan 2012 (置信度: 0.1075)
+总耗时: 8.56秒
+failed. pred cate:Mercedes-Benz E-Class Sedan 2012, true cate:Maybach Landaulet Convertible 2012, used_slow:True, confidence:0.1075
+开始分类图像: ./datasets/car_196/cars_test/04263.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/04263.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Maybach_Landaulet_Convertible_2012', 'Lincoln_Town_Car_Sedan_2011', 'Bentley_Continental_Flying_Spur_Sedan_2007', 'Mercedes-Benz_E-Class_Sedan_2012', 'Rolls-Royce_Phantom_Sedan_2012', 'Mercedes-Benz_SL-Class_Coupe_2009', 'Bentley_Mulsanne_Sedan_2011', 'Audi_S4_Sedan_2007', 'Bentley_Continental_GT_Coupe_2007', 'Audi_S4_Sedan_2012', 'Rolls-Royce_Ghost_Sedan_2012', 'Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012', 'Bentley_Continental_GT_Coupe_2012', 'Mercedes-Benz_S-Class_Sedan_2012', 'BMW_6_Series_Convertible_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:32:59] [显存监控] 已分配=16.99GB, 已保留=18.43GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.43GB, 剩余=30.50GB
+分类完成: Maybach Landaulet Convertible 2012 (置信度: 0.1348)
+总耗时: 5.10秒
+succ. pred cate:Maybach Landaulet Convertible 2012, true cate:Maybach Landaulet Convertible 2012, used_slow:True, confidence:0.1348
+开始分类图像: ./datasets/car_196/cars_test/05163.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05163.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Mercedes-Benz_E-Class_Sedan_2012', 'Maybach_Landaulet_Convertible_2012', 'Audi_S4_Sedan_2007', 'Mercedes-Benz_SL-Class_Coupe_2009', 'Lincoln_Town_Car_Sedan_2011', 'Audi_S4_Sedan_2012', 'Volvo_XC90_SUV_2007', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Bentley_Continental_GT_Coupe_2007', 'BMW_Z4_Convertible_2012', 'Acura_RL_Sedan_2012', 'Audi_S5_Coupe_2012', 'Mercedes-Benz_300-Class_Convertible_1993', 'BMW_ActiveHybrid_5_Sedan_2012', 'Audi_RS_4_Convertible_2008', 'Suzuki_Aerio_Sedan_2007', 'BMW_M5_Sedan_2010']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:33:02] [显存监控] 已分配=16.92GB, 已保留=17.14GB, 空闲=30.48GB
+[2025-11-27 20:33:05] [显存监控] 已分配=16.97GB, 已保留=17.62GB, 空闲=30.43GB
+[2025-11-27 20:33:08] [显存监控] 已分配=16.99GB, 已保留=17.62GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.62GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:33:12] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:33:15] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: Maybach Landaulet Convertible 2012 (置信度: 0.9500)
+总耗时: 15.11秒
+succ. pred cate:Maybach Landaulet Convertible 2012, true cate:Maybach Landaulet Convertible 2012, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/car_196/cars_test/07676.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07676.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rolls-Royce_Phantom_Sedan_2012', 'Rolls-Royce_Ghost_Sedan_2012', 'Lincoln_Town_Car_Sedan_2011', 'Volvo_XC90_SUV_2007', 'Suzuki_Kizashi_Sedan_2012', 'Bentley_Mulsanne_Sedan_2011', 'Dodge_Magnum_Wagon_2008', 'Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012', 'Chevrolet_Impala_Sedan_2007', 'Audi_S4_Sedan_2007', 'Maybach_Landaulet_Convertible_2012', 'Chrysler_300_SRT-8_2010', 'Bentley_Arnage_Sedan_2009', 'Bentley_Continental_Flying_Spur_Sedan_2007', 'Bentley_Continental_GT_Coupe_2012', 'Bentley_Continental_GT_Coupe_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:33:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:33:23] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: Rolls-Royce Phantom Sedan 2012 (置信度: 0.1428)
+总耗时: 8.38秒
+succ. pred cate:Rolls-Royce Phantom Sedan 2012, true cate:Rolls-Royce Phantom Sedan 2012, used_slow:True, confidence:0.1428
+开始分类图像: ./datasets/car_196/cars_test/04218.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/04218.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rolls-Royce_Phantom_Sedan_2012', 'Rolls-Royce_Ghost_Sedan_2012', 'Lincoln_Town_Car_Sedan_2011', 'Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012', 'Bentley_Mulsanne_Sedan_2011', 'Bentley_Arnage_Sedan_2009', 'Bentley_Continental_Flying_Spur_Sedan_2007', 'Volvo_XC90_SUV_2007', 'Suzuki_Kizashi_Sedan_2012', 'Bentley_Continental_GT_Coupe_2007', 'Chrysler_300_SRT-8_2010', 'Maybach_Landaulet_Convertible_2012', 'Bentley_Continental_GT_Coupe_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:33:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:30] [显存监控] 已分配=16.99GB, 已保留=17.84GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.84GB, 剩余=30.50GB
+分类完成: Rolls-Royce Phantom Sedan 2012 (置信度: 0.1593)
+总耗时: 6.91秒
+succ. pred cate:Rolls-Royce Phantom Sedan 2012, true cate:Rolls-Royce Phantom Sedan 2012, used_slow:True, confidence:0.1593
+开始分类图像: ./datasets/car_196/cars_test/03013.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/03013.jpg
+[2025-11-27 20:33:32] Processing fast-slow:  12%|█▏        | 8/65 [01:48<12:53, 13.58s/it][2025-11-27 20:33:41] Processing fast-slow:  12%|█▏        | 8/65 [01:48<12:53, 13.58s/it][2025-11-27 20:33:41] Processing fast-slow:  14%|█▍        | 9/65 [01:48<08:54,  9.54s/it][2025-11-27 20:33:41] Processing fast-slow:  14%|█▍        | 9/65 [01:48<08:54,  9.54s/it][2025-11-27 20:33:41] Processing fast-slow:  15%|█▌        | 10/65 [01:49<06:17,  6.86s/it][2025-11-27 20:33:42] Processing fast-slow:  15%|█▌        | 10/65 [01:49<06:17,  6.86s/it][2025-11-27 20:33:42] Processing fast-slow:  15%|█▌        | 10/65 [01:49<06:17,  6.86s/it][2025-11-27 20:33:42] Processing fast-slow:  15%|█▌        | 10/65 [01:49<06:17,  6.86s/it][2025-11-27 20:33:42] Processing fast-slow:  20%|██        | 13/65 [01:54<03:27,  4.00s/it][2025-11-27 20:33:47] Processing fast-slow:  20%|██        | 13/65 [01:54<03:27,  4.00s/it][2025-11-27 20:33:47] Processing fast-slow:  20%|██        | 13/65 [01:54<03:27,  4.00s/it][2025-11-27 20:33:47] Processing fast-slow:  23%|██▎       | 15/65 [01:55<02:11,  2.64s/it][2025-11-27 20:33:47] Processing fast-slow:  23%|██▎       | 15/65 [01:55<02:11,  2.64s/it][2025-11-27 20:33:47] Processing fast-slow:  25%|██▍       | 16/65 [02:09<04:07,  5.05s/it][2025-11-27 20:34:02] Processing fast-slow:  25%|██▍       | 16/65 [02:09<04:07,  5.05s/it][2025-11-27 20:34:02] Processing fast-slow:  25%|██▍       | 16/65 [02:09<04:07,  5.05s/it][2025-11-27 20:34:02] Processing fast-slow:  28%|██▊       | 18/65 [02:09<02:32,  3.24s/it][2025-11-27 20:34:02] Processing fast-slow:  28%|██▊       | 18/65 [02:09<02:32,  3.24s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Hyundai_Veracruz_SUV_2012', 'Hyundai_Santa_Fe_SUV_2012', 'Mazda_Tribute_SUV_2011', 'Jeep_Compass_SUV_2012', 'Ford_Edge_SUV_2012', 'Hyundai_Tucson_SUV_2012', 'Nissan_Juke_Hatchback_2012', 'Scion_xD_Hatchback_2012', 'Buick_Rainier_SUV_2007', 'Buick_Enclave_SUV_2012', 'Chevrolet_Traverse_SUV_2012', 'Dodge_Caliber_Wagon_2012', 'Ford_Focus_Sedan_2007', 'Chevrolet_Malibu_Sedan_2007', 'Dodge_Caliber_Wagon_2007', 'Dodge_Journey_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:33:34] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:33:37] [显存监控] 已分配=17.02GB, 已保留=19.48GB, 空闲=30.38GB
+[2025-11-27 20:33:40] [显存监控] 已分配=17.03GB, 已保留=19.48GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Hyundai_Veracruz_SUV_2012' -> 'Hyundai Veracruz SUV 2012'
+分类完成: Hyundai Veracruz SUV 2012 (置信度: 0.1222)
+总耗时: 8.42秒
+succ. pred cate:Hyundai Veracruz SUV 2012, true cate:Hyundai Veracruz SUV 2012, used_slow:True, confidence:0.1222
+开始分类图像: ./datasets/car_196/cars_test/05819.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chevrolet_Sonic_Sedan_2012 (置信度: 0.5302)
+总耗时: 0.21秒
+succ. pred cate:Chevrolet_Sonic_Sedan_2012, true cate:Chevrolet Sonic Sedan 2012, used_slow:False, confidence:0.5302
+开始分类图像: ./datasets/car_196/cars_test/07327.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Jeep_Wrangler_SUV_2012 (置信度: 0.3878)
+总耗时: 0.65秒
+succ. pred cate:Jeep_Wrangler_SUV_2012, true cate:Jeep Wrangler SUV 2012, used_slow:False, confidence:0.3878
+开始分类图像: ./datasets/car_196/cars_test/07160.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Fisker_Karma_Sedan_2012 (置信度: 0.6462)
+总耗时: 0.04秒
+succ. pred cate:Fisker_Karma_Sedan_2012, true cate:Fisker Karma Sedan 2012, used_slow:False, confidence:0.6462
+开始分类图像: ./datasets/car_196/cars_test/04103.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ferrari_FF_Coupe_2012 (置信度: 0.2259)
+总耗时: 0.05秒
+succ. pred cate:Ferrari_FF_Coupe_2012, true cate:Ferrari California Convertible 2012, used_slow:False, confidence:0.2259
+开始分类图像: ./datasets/car_196/cars_test/04240.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/04240.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Hyundai_Sonata_Sedan_2012', 'Hyundai_Sonata_Hybrid_Sedan_2012', 'Acura_RL_Sedan_2012', 'Hyundai_Azera_Sedan_2012', 'Hyundai_Genesis_Sedan_2012', 'Hyundai_Elantra_Sedan_2007', 'Honda_Accord_Coupe_2012', 'Hyundai_Tucson_SUV_2012', 'Acura_ZDX_Hatchback_2012', 'Suzuki_Kizashi_Sedan_2012', 'Buick_Verano_Sedan_2012', 'Mercedes-Benz_E-Class_Sedan_2012', 'Infiniti_G_Coupe_IPL_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:43] [显存监控] 已分配=16.96GB, 已保留=17.64GB, 空闲=30.44GB
+[2025-11-27 20:33:46] [显存监控] 已分配=16.99GB, 已保留=17.64GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.64GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Hyundai_Sonata_Sedan_2012' -> 'Hyundai Sonata Sedan 2012'
+分类完成: Hyundai Sonata Sedan 2012 (置信度: 0.1484)
+总耗时: 5.27秒
+succ. pred cate:Hyundai Sonata Sedan 2012, true cate:Hyundai Sonata Sedan 2012, used_slow:True, confidence:0.1484
+开始分类图像: ./datasets/car_196/cars_test/06060.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chevrolet_Cobalt_SS_2010 (置信度: 0.2432)
+总耗时: 0.04秒
+succ. pred cate:Chevrolet_Cobalt_SS_2010, true cate:Chevrolet Cobalt SS 2010, used_slow:False, confidence:0.2432
+开始分类图像: ./datasets/car_196/cars_test/00555.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chevrolet_Tahoe_Hybrid_SUV_2012 (置信度: 0.2682)
+总耗时: 0.15秒
+succ. pred cate:Chevrolet_Tahoe_Hybrid_SUV_2012, true cate:Chevrolet TrailBlazer SS 2009, used_slow:False, confidence:0.2682
+开始分类图像: ./datasets/car_196/cars_test/02010.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/02010.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Express_Van_2007', 'Dodge_Sprinter_Cargo_Van_2009', 'Chevrolet_Express_Cargo_Van_2007', 'Nissan_NV_Passenger_Van_2012', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Ram_C_V_Cargo_Van_Minivan_2012', 'GMC_Savana_Van_2012', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Ford_E-Series_Wagon_Van_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:33:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:52] [显存监控] 已分配=17.01GB, 已保留=17.78GB, 空闲=30.39GB
+[2025-11-27 20:33:55] [显存监控] 已分配=16.99GB, 已保留=17.78GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.78GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Dodge_Sprinter_Cargo_Van_2009' -> 'Dodge Sprinter Cargo Van 2009'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:33:58] [显存监控] 已分配=16.96GB, 已保留=17.78GB, 空闲=30.44GB
+[2025-11-27 20:34:01] [显存监控] 已分配=16.96GB, 已保留=17.78GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.78GB, 剩余=30.50GB
+分类完成: Dodge_Sprinter_Cargo_Van_2009 (置信度: 0.8500)
+总耗时: 14.70秒
+succ. pred cate:Dodge_Sprinter_Cargo_Van_2009, true cate:Ram C/V Cargo Van Minivan 2012, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/06115.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Acura_RL_Sedan_2012 (置信度: 0.2345)
+总耗时: 0.09秒
+succ. pred cate:Acura_RL_Sedan_2012, true cate:Hyundai Azera Sedan 2012, used_slow:False, confidence:0.2345
+开始分类图像: ./datasets/car_196/cars_test/01050.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Lamborghini_Aventador_Coupe_2012 (置信度: 0.2243)
+总耗时: 0.05秒
+succ. pred cate:Lamborghini_Aventador_Coupe_2012, true cate:Lamborghini Aventador Coupe 2012, used_slow:False, confidence:0.2243
+开始分类图像: ./datasets/car_196/cars_test/07591.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07591.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Silverado_1500_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'Chevrolet_Avalanche_Crew_Cab_2012', 'GMC_Canyon_Extended_Cab_2012', 'Ford_F-150_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Classic_Extended_Cab_2007', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Dodge_Ram_Pickup_3500_Quad_Cab_2009', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010', 'Dodge_Dakota_Club_Cab_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:04] [显存监控] 已分配=16.96GB, 已保留=17.65GB, 空闲=30.44GB
+[2025-11-27 20:34:07] [显存监控] 已分配=16.99GB, 已保留=17.65GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.65GB, 剩余=30.50GB
+[2025-11-27 20:34:02] Processing fast-slow:  29%|██▉       | 19/65 [02:25<04:22,  5.70s/it][2025-11-27 20:34:17] Processing fast-slow:  29%|██▉       | 19/65 [02:25<04:22,  5.70s/it][2025-11-27 20:34:17] Processing fast-slow:  31%|███       | 20/65 [02:46<06:53,  9.19s/it][2025-11-27 20:34:38] Processing fast-slow:  31%|███       | 20/65 [02:46<06:53,  9.19s/it][2025-11-27 20:34:38] Processing fast-slow:  31%|███       | 20/65 [02:46<06:53,  9.19s/it][2025-11-27 20:34:38] Processing fast-slow:  34%|███▍      | 22/65 [02:46<04:01,  5.61s/it][2025-11-27 20:34:39] Processing fast-slow:  34%|███▍      | 22/65 [02:46<04:01,  5.61s/it]精确标准化匹配类别修正: 'Chevrolet_Silverado_1500_Extended_Cab_2012' -> 'Chevrolet Silverado 1500 Extended Cab 2012'
+分类完成: Chevrolet Silverado 1500 Extended Cab 2012 (置信度: 0.1480)
+总耗时: 6.73秒
+succ. pred cate:Chevrolet Silverado 1500 Extended Cab 2012, true cate:Chevrolet Silverado 1500 Hybrid Crew Cab 2012, used_slow:True, confidence:0.1480
+开始分类图像: ./datasets/car_196/cars_test/06552.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chevrolet_Silverado_1500_Extended_Cab_2012 (置信度: 0.2083)
+总耗时: 0.05秒
+succ. pred cate:Chevrolet_Silverado_1500_Extended_Cab_2012, true cate:Chevrolet Silverado 1500 Hybrid Crew Cab 2012, used_slow:False, confidence:0.2083
+开始分类图像: ./datasets/car_196/cars_test/05222.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05222.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Silverado_1500_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Chevrolet_Avalanche_Crew_Cab_2012', 'Dodge_Dakota_Club_Cab_2007', 'Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Chevrolet_Silverado_1500_Classic_Extended_Cab_2007', 'Ford_F-150_Regular_Cab_2012', 'Dodge_Dakota_Crew_Cab_2010', 'GMC_Canyon_Extended_Cab_2012', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010', 'Dodge_Ram_Pickup_3500_Quad_Cab_2009', 'Ford_F-450_Super_Duty_Crew_Cab_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:34:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:14] [显存监控] 已分配=16.99GB, 已保留=17.66GB, 空闲=30.41GB
+[2025-11-27 20:34:17] [显存监控] 已分配=16.99GB, 已保留=17.66GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.66GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Chevrolet_Silverado_1500_Extended_Cab_2012' -> 'Chevrolet Silverado 1500 Extended Cab 2012'
+分类完成: Chevrolet Silverado 1500 Extended Cab 2012 (置信度: 0.1395)
+总耗时: 8.42秒
+succ. pred cate:Chevrolet Silverado 1500 Extended Cab 2012, true cate:Chevrolet Silverado 1500 Hybrid Crew Cab 2012, used_slow:True, confidence:0.1395
+开始分类图像: ./datasets/car_196/cars_test/05977.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05977.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dodge_Caliber_Wagon_2007', 'Dodge_Caliber_Wagon_2012', 'GMC_Acadia_SUV_2012', 'Jeep_Patriot_SUV_2012', 'Dodge_Magnum_Wagon_2008', 'Volvo_XC90_SUV_2007', 'Jeep_Compass_SUV_2012', 'Buick_Enclave_SUV_2012', 'Ford_Edge_SUV_2012', 'Chevrolet_Cobalt_SS_2010', 'Chrysler_Aspen_SUV_2009', 'Buick_Rainier_SUV_2007', 'Chevrolet_Malibu_Sedan_2007', 'GMC_Yukon_Hybrid_SUV_2012', 'GMC_Terrain_SUV_2012', 'Mazda_Tribute_SUV_2011']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:34:20] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-27 20:34:23] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Dodge_Caliber_Wagon_2007' -> 'Dodge Caliber Wagon 2007'
+分类完成: Dodge Caliber Wagon 2007 (置信度: 0.1490)
+总耗时: 7.27秒
+succ. pred cate:Dodge Caliber Wagon 2007, true cate:Dodge Caliber Wagon 2012, used_slow:True, confidence:0.1490
+开始分类图像: ./datasets/car_196/cars_test/05831.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05831.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Tahoe_Hybrid_SUV_2012', 'Volvo_XC90_SUV_2007', 'Jeep_Patriot_SUV_2012', 'Buick_Enclave_SUV_2012', 'Dodge_Caliber_Wagon_2007', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Traverse_SUV_2012', 'Dodge_Caliber_Wagon_2012', 'Nissan_NV_Passenger_Van_2012', 'Jeep_Liberty_SUV_2012', 'Cadillac_SRX_SUV_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'GMC_Acadia_SUV_2012', 'Buick_Regal_GS_2012', 'Isuzu_Ascender_SUV_2008', 'Buick_Verano_Sedan_2012', 'Honda_Odyssey_Minivan_2012', 'GMC_Yukon_Hybrid_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:34:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:29] [显存监控] 已分配=16.99GB, 已保留=17.68GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Dodge_Caliber_Wagon_2012' -> 'Dodge Caliber Wagon 2012'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:34:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-27 20:34:37] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Dodge Caliber Wagon 2007 (置信度: 0.8500)
+总耗时: 13.77秒
+succ. pred cate:Dodge Caliber Wagon 2007, true cate:Dodge Caliber Wagon 2012, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/04946.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Mercedes-Benz_E-Class_Sedan_2012 (置信度: 0.4499)
+总耗时: 0.04秒
+succ. pred cate:Mercedes-Benz_E-Class_Sedan_2012, true cate:Mercedes-Benz C-Class Sedan 2012, used_slow:False, confidence:0.4499
+开始分类图像: ./datasets/car_196/cars_test/06292.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Acura_RL_Sedan_2012 (置信度: 0.2009)
+总耗时: 0.04秒
+succ. pred cate:Acura_RL_Sedan_2012, true cate:Mercedes-Benz C-Class Sedan 2012, used_slow:False, confidence:0.2009
+开始分类图像: ./datasets/car_196/cars_test/00250.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Audi_100_Wagon_1994 (置信度: 0.2418)
+总耗时: 0.07秒
+succ. pred cate:Audi_100_Wagon_1994, true cate:Volkswagen Golf Hatchback 1991, used_slow:False, confidence:0.2418
+开始分类图像: ./datasets/car_196/cars_test/03120.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Volkswagen_Golf_Hatchback_1991 (置信度: 0.5620)
+总耗时: 0.04秒
+succ. pred cate:Volkswagen_Golf_Hatchback_1991, true cate:Volkswagen Golf Hatchback 1991, used_slow:False, confidence:0.5620
+开始分类图像: ./datasets/car_196/cars_test/00793.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Acura_ZDX_Hatchback_2012 (置信度: 0.2549)
+总耗时: 0.03秒
+succ. pred cate:Acura_ZDX_Hatchback_2012, true cate:Acura TL Sedan 2012, used_slow:False, confidence:0.2549
+开始分类图像: ./datasets/car_196/cars_test/06468.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Acura_TL_Sedan_2012 (置信度: 0.2016)
+总耗时: 0.04秒
+succ. pred cate:Acura_TL_Sedan_2012, true cate:Acura TL Sedan 2012, used_slow:False, confidence:0.2016
+开始分类图像: ./datasets/car_196/cars_test/01734.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/01734.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:34:39] Processing fast-slow:  35%|███▌      | 23/65 [02:54<04:17,  6.14s/it][2025-11-27 20:34:47] Processing fast-slow:  35%|███▌      | 23/65 [02:54<04:17,  6.14s/it][2025-11-27 20:34:47] Processing fast-slow:  37%|███▋      | 24/65 [03:13<06:19,  9.25s/it][2025-11-27 20:35:06] Processing fast-slow:  37%|███▋      | 24/65 [03:13<06:19,  9.25s/it][2025-11-27 20:35:06] Processing fast-slow:  38%|███▊      | 25/65 [03:19<05:32,  8.31s/it][2025-11-27 20:35:11] Processing fast-slow:  38%|███▊      | 25/65 [03:19<05:32,  8.31s/it][2025-11-27 20:35:11] Processing fast-slow:  40%|████      | 26/65 [03:23<04:45,  7.32s/it][2025-11-27 20:35:16] Processing fast-slow:  40%|████      | 26/65 [03:23<04:45,  7.32s/it][2025-11-27 20:35:16] Processing fast-slow:  42%|████▏     | 27/65 [03:38<05:56,  9.39s/it][2025-11-27 20:35:31] Processing fast-slow:  42%|████▏     | 27/65 [03:38<05:56,  9.39s/it]快思考Top-10候选类别: ['Acura_ZDX_Hatchback_2012', 'Acura_RL_Sedan_2012', 'Acura_TL_Sedan_2012', 'Acura_TL_Type-S_2008', 'Chevrolet_Cobalt_SS_2010', 'Honda_Odyssey_Minivan_2007', 'Suzuki_Kizashi_Sedan_2012', 'Eagle_Talon_Hatchback_1998', 'Chevrolet_Impala_Sedan_2007', 'Mitsubishi_Lancer_Sedan_2012', 'Acura_TSX_Sedan_2012', 'Suzuki_Aerio_Sedan_2007', 'Suzuki_SX4_Sedan_2012', 'Honda_Accord_Sedan_2012', 'Buick_Verano_Sedan_2012', 'Ford_Freestar_Minivan_2007', 'Toyota_Corolla_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:34:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:34:44] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+分类完成: Acura RL Sedan 2012 (置信度: 0.1497)
+总耗时: 7.95秒
+succ. pred cate:Acura RL Sedan 2012, true cate:Acura TL Sedan 2012, used_slow:True, confidence:0.1497
+开始分类图像: ./datasets/car_196/cars_test/05318.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05318.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Impala_Sedan_2007', 'Acura_RL_Sedan_2012', 'Audi_S4_Sedan_2007', 'Lincoln_Town_Car_Sedan_2011', 'Bentley_Continental_Flying_Spur_Sedan_2007', 'Dodge_Magnum_Wagon_2008', 'Chevrolet_Malibu_Sedan_2007', 'Audi_S4_Sedan_2012', 'Suzuki_Kizashi_Sedan_2012', 'Chrysler_Crossfire_Convertible_2008', 'Bentley_Continental_GT_Coupe_2007', 'Buick_Regal_GS_2012', 'Cadillac_SRX_SUV_2012', 'Audi_S5_Coupe_2012', 'Chrysler_300_SRT-8_2010', 'Mercedes-Benz_SL-Class_Coupe_2009', 'Buick_Verano_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2048x1280)，缩小到 (1440x900) 以节省显存
+[2025-11-27 20:34:49] [显存监控] 已分配=16.92GB, 已保留=17.12GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 20:34:52] [显存监控] 已分配=17.05GB, 已保留=23.28GB, 空闲=30.35GB
+[2025-11-27 20:34:55] [显存监控] 已分配=17.09GB, 已保留=23.28GB, 空闲=30.31GB
+推理后显存: 已分配=16.91GB, 已保留=23.28GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Chrysler_300_SRT-8_2010' -> 'Chrysler 300 SRT-8 2010'
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (2048x1280)，缩小到 (1440x900) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 20:34:58] [显存监控] 已分配=17.09GB, 已保留=23.27GB, 空闲=30.31GB
+[2025-11-27 20:35:01] [显存监控] 已分配=17.05GB, 已保留=23.27GB, 空闲=30.35GB
+[2025-11-27 20:35:04] [显存监控] 已分配=17.04GB, 已保留=23.27GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=23.27GB, 剩余=30.50GB
+分类完成: Chrysler 300C SRT8 (置信度: 0.9500)
+总耗时: 19.16秒
+succ. pred cate:Chrysler 300C SRT8, true cate:Chrysler 300 SRT-8 2010, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/car_196/cars_test/03028.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/03028.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Traverse_SUV_2012', 'Buick_Enclave_SUV_2012', 'Ford_Edge_SUV_2012', 'Chevrolet_Cobalt_SS_2010', 'Chevrolet_Sonic_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Chevrolet_TrailBlazer_SS_2009', 'Hyundai_Tucson_SUV_2012', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Acura_ZDX_Hatchback_2012', 'Dodge_Durango_SUV_2012', 'Hyundai_Veracruz_SUV_2012', 'Dodge_Caliber_Wagon_2012', 'Dodge_Caliber_Wagon_2007', 'Ford_Focus_Sedan_2007', 'Chevrolet_Malibu_Sedan_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:07] [显存监控] 已分配=16.99GB, 已保留=17.85GB, 空闲=30.41GB
+[2025-11-27 20:35:10] [显存监控] 已分配=16.99GB, 已保留=17.86GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.86GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Chevrolet_Traverse_SUV_2012' -> 'Chevrolet Traverse SUV 2012'
+分类完成: Chevrolet Traverse SUV 2012 (置信度: 0.1387)
+总耗时: 5.54秒
+succ. pred cate:Chevrolet Traverse SUV 2012, true cate:Chevrolet Traverse SUV 2012, used_slow:True, confidence:0.1387
+开始分类图像: ./datasets/car_196/cars_test/06365.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/06365.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Honda_Odyssey_Minivan_2007', 'Mitsubishi_Lancer_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Acura_RL_Sedan_2012', 'Nissan_NV_Passenger_Van_2012', 'Honda_Odyssey_Minivan_2012', 'Hyundai_Tucson_SUV_2012', 'Buick_Enclave_SUV_2012', 'Toyota_Corolla_Sedan_2012', 'Mercedes-Benz_E-Class_Sedan_2012', 'Daewoo_Nubira_Wagon_2002', 'Hyundai_Elantra_Sedan_2007', 'Honda_Accord_Sedan_2012', 'Suzuki_Aerio_Sedan_2007', 'Ford_Freestar_Minivan_2007', 'Ram_C_V_Cargo_Van_Minivan_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'BMW_X5_SUV_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:13] [显存监控] 已分配=16.99GB, 已保留=17.69GB, 空闲=30.41GB
+[2025-11-27 20:35:16] [显存监控] 已分配=16.99GB, 已保留=17.69GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Honda_Odyssey_Minivan_2012' -> 'Honda Odyssey Minivan 2012'
+分类完成: Honda Odyssey Minivan 2012 (置信度: 0.0929)
+总耗时: 4.61秒
+succ. pred cate:Honda Odyssey Minivan 2012, true cate:Honda Odyssey Minivan 2007, used_slow:True, confidence:0.0929
+开始分类图像: ./datasets/car_196/cars_test/06622.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/06622.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Eagle_Talon_Hatchback_1998', 'Acura_Integra_Type_R_2001', 'Nissan_240SX_Coupe_1998', 'Plymouth_Neon_Coupe_1999', 'Chevrolet_Monte_Carlo_Coupe_2007', 'Chevrolet_Camaro_Convertible_2012', 'Ford_Mustang_Convertible_2007', 'Mitsubishi_Lancer_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Ford_GT_Coupe_2006', 'Geo_Metro_Convertible_1993', 'Audi_V8_Sedan_1994', 'Dodge_Charger_SRT-8_2009', 'Chevrolet_Corvette_Convertible_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:19] [显存监控] 已分配=16.96GB, 已保留=17.71GB, 空闲=30.44GB
+[2025-11-27 20:35:22] [显存监控] 已分配=17.00GB, 已保留=17.71GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=17.71GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:35:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:35:28] [显存监控] 已分配=16.95GB, 已保留=17.60GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+分类完成: Nissan 240SX Coupe 1998 (置信度: 0.9000)
+总耗时: 14.83秒
+succ. pred cate:Nissan 240SX Coupe 1998, true cate:Nissan 240SX Coupe 1998, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/car_196/cars_test/06575.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/06575.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-27 20:35:31] Processing fast-slow:  43%|████▎     | 28/65 [03:52<06:30, 10.57s/it][2025-11-27 20:35:44] Processing fast-slow:  43%|████▎     | 28/65 [03:52<06:30, 10.57s/it][2025-11-27 20:35:44] Processing fast-slow:  45%|████▍     | 29/65 [04:00<05:55,  9.89s/it][2025-11-27 20:35:52] Processing fast-slow:  45%|████▍     | 29/65 [04:00<05:55,  9.89s/it][2025-11-27 20:35:52] Processing fast-slow:  46%|████▌     | 30/65 [04:06<05:10,  8.86s/it][2025-11-27 20:35:59] Processing fast-slow:  46%|████▌     | 30/65 [04:06<05:10,  8.86s/it][2025-11-27 20:35:59] Processing fast-slow:  48%|████▊     | 31/65 [04:21<06:01, 10.64s/it][2025-11-27 20:36:14] Processing fast-slow:  48%|████▊     | 31/65 [04:21<06:01, 10.64s/it][2025-11-27 20:36:14] Processing fast-slow:  49%|████▉     | 32/65 [04:30<05:38, 10.27s/it][2025-11-27 20:36:23] Processing fast-slow:  49%|████▉     | 32/65 [04:30<05:38, 10.27s/it][2025-11-27 20:36:23] Processing fast-slow:  49%|████▉     | 32/65 [04:30<05:38, 10.27s/it]快思考Top-10候选类别: ['Audi_S4_Sedan_2012', 'Audi_S4_Sedan_2007', 'BMW_3_Series_Sedan_2012', 'BMW_M6_Convertible_2010', 'Mercedes-Benz_E-Class_Sedan_2012', 'BMW_1_Series_Coupe_2012', 'BMW_M3_Coupe_2012', 'BMW_3_Series_Wagon_2012', 'Mitsubishi_Lancer_Sedan_2012', 'BMW_6_Series_Convertible_2007', 'BMW_1_Series_Convertible_2012', 'BMW_M5_Sedan_2010', 'Audi_S5_Coupe_2012', 'Audi_S5_Convertible_2012', 'BMW_X6_SUV_2012', 'Audi_RS_4_Convertible_2008']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:35:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:35:35] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:35:40] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:35:43] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: BMW_1_Series_Coupe_2012 (置信度: 0.9000)
+总耗时: 13.55秒
+succ. pred cate:BMW_1_Series_Coupe_2012, true cate:BMW 1 Series Coupe 2012, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/car_196/cars_test/07531.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07531.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Tahoe_Hybrid_SUV_2012', 'Ford_Ranger_SuperCab_2011', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Land_Rover_Range_Rover_SUV_2012', 'Ford_Expedition_EL_SUV_2009', 'Ford_F-150_Regular_Cab_2012', 'Dodge_Dakota_Crew_Cab_2010', 'GMC_Canyon_Extended_Cab_2012', 'GMC_Yukon_Hybrid_SUV_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Land_Rover_LR2_SUV_2012', 'Toyota_4Runner_SUV_2012', 'Cadillac_SRX_SUV_2012', 'Isuzu_Ascender_SUV_2008', 'Toyota_Sequoia_SUV_2012', 'Infiniti_QX56_SUV_2011', 'Jeep_Patriot_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:35:47] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:35:50] [显存监控] 已分配=17.01GB, 已保留=18.26GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=18.26GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Land_Rover_Range_Rover_SUV_2012' -> 'Land Rover Range Rover SUV 2012'
+分类完成: Land Rover Range Rover SUV 2012 (置信度: 0.1026)
+总耗时: 8.20秒
+succ. pred cate:Land Rover Range Rover SUV 2012, true cate:Land Rover Range Rover SUV 2012, used_slow:True, confidence:0.1026
+开始分类图像: ./datasets/car_196/cars_test/07819.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07819.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Ford_Edge_SUV_2012', 'Buick_Enclave_SUV_2012', 'Jeep_Compass_SUV_2012', 'Cadillac_SRX_SUV_2012', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Volvo_XC90_SUV_2007', 'Acura_ZDX_Hatchback_2012', 'Hyundai_Tucson_SUV_2012', 'Chevrolet_Traverse_SUV_2012', 'Nissan_NV_Passenger_Van_2012', 'GMC_Acadia_SUV_2012', 'GMC_Terrain_SUV_2012', 'Acura_TSX_Sedan_2012', 'Dodge_Caliber_Wagon_2012', 'Isuzu_Ascender_SUV_2008', 'Jeep_Grand_Cherokee_SUV_2012', 'Chevrolet_Avalanche_Crew_Cab_2012', 'Honda_Odyssey_Minivan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:35:54] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 20:35:57] [显存监控] 已分配=16.97GB, 已保留=17.56GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Cadillac_SRX_SUV_2012' -> 'Cadillac SRX SUV 2012'
+分类完成: Cadillac SRX SUV 2012 (置信度: 0.1002)
+总耗时: 6.37秒
+succ. pred cate:Cadillac SRX SUV 2012, true cate:Cadillac SRX SUV 2012, used_slow:True, confidence:0.1002
+开始分类图像: ./datasets/car_196/cars_test/03734.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/03734.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Impala_Sedan_2007', 'Eagle_Talon_Hatchback_1998', 'Dodge_Caravan_Minivan_1997', 'Acura_RL_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Mercedes-Benz_E-Class_Sedan_2012', 'Audi_S4_Sedan_2007', 'Buick_Enclave_SUV_2012', 'Audi_S4_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Audi_100_Wagon_1994', 'Ford_Freestar_Minivan_2007', 'Acura_TSX_Sedan_2012', 'Nissan_240SX_Coupe_1998', 'Audi_V8_Sedan_1994', 'Lincoln_Town_Car_Sedan_2011', 'Buick_Rainier_SUV_2007', 'Chevrolet_Malibu_Sedan_2007', 'Daewoo_Nubira_Wagon_2002', 'Geo_Metro_Convertible_1993']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:36:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:36:05] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+[2025-11-27 20:36:08] [显存监控] 已分配=16.99GB, 已保留=17.56GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:36:11] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-27 20:36:14] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Audi_S4_Sedan_2007 (置信度: 0.8500)
+总耗时: 14.92秒
+succ. pred cate:Audi_S4_Sedan_2007, true cate:Audi 100 Wagon 1994, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/04532.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/04532.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Sonic_Sedan_2012', 'Toyota_Corolla_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Scion_xD_Hatchback_2012', 'Acura_RL_Sedan_2012', 'Jeep_Compass_SUV_2012', 'Chevrolet_Malibu_Sedan_2007', 'Chevrolet_Impala_Sedan_2007', 'Cadillac_SRX_SUV_2012', 'Buick_Verano_Sedan_2012', 'Infiniti_G_Coupe_IPL_2012', 'Honda_Odyssey_Minivan_2012', 'Hyundai_Azera_Sedan_2012', 'Suzuki_Aerio_Sedan_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 20:36:17] [显存监控] 已分配=17.00GB, 已保留=19.01GB, 空闲=30.40GB
+[2025-11-27 20:36:20] [显存监控] 已分配=17.02GB, 已保留=19.01GB, 空闲=30.38GB
+[2025-11-27 20:36:23] [显存监控] 已分配=17.02GB, 已保留=19.01GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.01GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Toyota_Corolla_Sedan_2012' -> 'Toyota Corolla Sedan 2012'
+分类完成: Toyota Corolla Sedan 2012 (置信度: 0.1105)
+总耗时: 9.38秒
+succ. pred cate:Toyota Corolla Sedan 2012, true cate:Toyota Corolla Sedan 2012, used_slow:True, confidence:0.1105
+开始分类图像: ./datasets/car_196/cars_test/01010.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Audi_S4_Sedan_2012 (置信度: 0.3398)
+总耗时: 0.04秒
+succ. pred cate:Audi_S4_Sedan_2012, true cate:Audi S6 Sedan 2011, used_slow:False, confidence:0.3398
+开始分类图像: ./datasets/car_196/cars_test/07936.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+[2025-11-27 20:36:23] Processing fast-slow:  52%|█████▏    | 34/65 [04:38<03:45,  7.26s/it][2025-11-27 20:36:31] Processing fast-slow:  52%|█████▏    | 34/65 [04:38<03:45,  7.26s/it][2025-11-27 20:36:31] Processing fast-slow:  52%|█████▏    | 34/65 [04:38<03:45,  7.26s/it][2025-11-27 20:36:31] Processing fast-slow:  55%|█████▌    | 36/65 [04:38<02:08,  4.42s/it][2025-11-27 20:36:31] Processing fast-slow:  55%|█████▌    | 36/65 [04:38<02:08,  4.42s/it][2025-11-27 20:36:31] Processing fast-slow:  55%|█████▌    | 36/65 [04:38<02:08,  4.42s/it][2025-11-27 20:36:31] Processing fast-slow:  58%|█████▊    | 38/65 [04:38<01:16,  2.84s/it][2025-11-27 20:36:31] Processing fast-slow:  58%|█████▊    | 38/65 [04:38<01:16,  2.84s/it][2025-11-27 20:36:31] Processing fast-slow:  60%|██████    | 39/65 [04:52<02:13,  5.15s/it][2025-11-27 20:36:45] Processing fast-slow:  60%|██████    | 39/65 [04:52<02:13,  5.15s/it][2025-11-27 20:36:45] Processing fast-slow:  62%|██████▏   | 40/65 [04:53<01:43,  4.15s/it][2025-11-27 20:36:46] Processing fast-slow:  62%|██████▏   | 40/65 [04:53<01:43,  4.15s/it][2025-11-27 20:36:46] Processing fast-slow:  63%|██████▎   | 41/65 [04:53<01:15,  3.16s/it][2025-11-27 20:36:46] Processing fast-slow:  63%|██████▎   | 41/65 [04:53<01:15,  3.16s/it][2025-11-27 20:36:46] Processing fast-slow:  65%|██████▍   | 42/65 [04:58<01:26,  3.75s/it][2025-11-27 20:36:51] Processing fast-slow:  65%|██████▍   | 42/65 [04:58<01:26,  3.75s/it]开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07936.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cadillac_CTS-V_Sedan_2012', 'Suzuki_Kizashi_Sedan_2012', 'Cadillac_SRX_SUV_2012', 'Acura_RL_Sedan_2012', 'Mercedes-Benz_S-Class_Sedan_2012', 'Hyundai_Azera_Sedan_2012', 'Hyundai_Genesis_Sedan_2012', 'Chrysler_300_SRT-8_2010', 'Acura_TL_Sedan_2012', 'Lincoln_Town_Car_Sedan_2011', 'Buick_Regal_GS_2012', 'Buick_Verano_Sedan_2012', 'Mercedes-Benz_E-Class_Sedan_2012', 'Audi_S4_Sedan_2012', 'Audi_S5_Coupe_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 20:36:26] [显存监控] 已分配=17.02GB, 已保留=19.02GB, 空闲=30.38GB
+[2025-11-27 20:36:29] [显存监控] 已分配=17.02GB, 已保留=19.02GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.02GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Mercedes-Benz_E-Class_Sedan_2012' -> 'Mercedes-Benz E-Class Sedan 2012'
+分类完成: Mercedes-Benz E-Class Sedan 2012 (置信度: 0.0064)
+总耗时: 7.36秒
+succ. pred cate:Mercedes-Benz E-Class Sedan 2012, true cate:Mercedes-Benz E-Class Sedan 2012, used_slow:True, confidence:0.0064
+开始分类图像: ./datasets/car_196/cars_test/00889.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: MINI_Cooper_Roadster_Convertible_2012 (置信度: 0.2431)
+总耗时: 0.09秒
+succ. pred cate:MINI_Cooper_Roadster_Convertible_2012, true cate:MINI Cooper Roadster Convertible 2012, used_slow:False, confidence:0.2431
+开始分类图像: ./datasets/car_196/cars_test/01254.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Infiniti_QX56_SUV_2011 (置信度: 0.2070)
+总耗时: 0.04秒
+succ. pred cate:Infiniti_QX56_SUV_2011, true cate:Infiniti QX56 SUV 2011, used_slow:False, confidence:0.2070
+开始分类图像: ./datasets/car_196/cars_test/07701.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Toyota_4Runner_SUV_2012 (置信度: 0.4538)
+总耗时: 0.04秒
+succ. pred cate:Toyota_4Runner_SUV_2012, true cate:Toyota 4Runner SUV 2012, used_slow:False, confidence:0.4538
+开始分类图像: ./datasets/car_196/cars_test/06745.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Toyota_Sequoia_SUV_2012 (置信度: 0.2189)
+总耗时: 0.03秒
+succ. pred cate:Toyota_Sequoia_SUV_2012, true cate:Toyota 4Runner SUV 2012, used_slow:False, confidence:0.2189
+开始分类图像: ./datasets/car_196/cars_test/03844.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chevrolet_Silverado_1500_Extended_Cab_2012 (置信度: 0.2686)
+总耗时: 0.04秒
+succ. pred cate:Chevrolet_Silverado_1500_Extended_Cab_2012, true cate:Chevrolet Silverado 1500 Extended Cab 2012, used_slow:False, confidence:0.2686
+开始分类图像: ./datasets/car_196/cars_test/03212.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/03212.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Audi_S4_Sedan_2007', 'Audi_S4_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Volkswagen_Beetle_Hatchback_2012', 'BMW_M6_Convertible_2010', 'Volvo_XC90_SUV_2007', 'Audi_TT_Hatchback_2011', 'Suzuki_Kizashi_Sedan_2012', 'Audi_RS_4_Convertible_2008', 'Porsche_Panamera_Sedan_2012', 'BMW_M5_Sedan_2010', 'Audi_S5_Coupe_2012', 'Audi_TT_RS_Coupe_2012', 'Volvo_C30_Hatchback_2012', 'BMW_M3_Coupe_2012', 'BMW_X5_SUV_2007', 'BMW_1_Series_Convertible_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:32] [显存监控] 已分配=16.99GB, 已保留=17.96GB, 空闲=30.41GB
+[2025-11-27 20:36:35] [显存监控] 已分配=16.99GB, 已保留=17.96GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.96GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Audi_S4_Sedan_2012' -> 'Audi S4 Sedan 2012'
+分类完成: Audi S4 Sedan 2012 (置信度: 0.1367)
+总耗时: 6.06秒
+succ. pred cate:Audi S4 Sedan 2012, true cate:Acura TL Type-S 2008, used_slow:True, confidence:0.1367
+开始分类图像: ./datasets/car_196/cars_test/03556.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/03556.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_RL_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Acura_TL_Sedan_2012', 'Acura_TL_Type-S_2008', 'Chevrolet_Cobalt_SS_2010', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Sonic_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Scion_xD_Hatchback_2012', 'Mitsubishi_Lancer_Sedan_2012', 'BMW_M5_Sedan_2010', 'Infiniti_G_Coupe_IPL_2012', 'Buick_Regal_GS_2012', 'Buick_Verano_Sedan_2012', 'Acura_TSX_Sedan_2012', 'Honda_Accord_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:36:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:36:41] [显存监控] 已分配=16.99GB, 已保留=17.72GB, 空闲=30.41GB
+[2025-11-27 20:36:44] [显存监控] 已分配=16.99GB, 已保留=17.72GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.72GB, 剩余=30.50GB
+分类完成: Acura TL Type-S 2008 (置信度: 0.0952)
+总耗时: 8.03秒
+succ. pred cate:Acura TL Type-S 2008, true cate:Acura TL Type-S 2008, used_slow:True, confidence:0.0952
+开始分类图像: ./datasets/car_196/cars_test/05436.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Nissan_Juke_Hatchback_2012 (置信度: 0.5257)
+总耗时: 0.25秒
+succ. pred cate:Nissan_Juke_Hatchback_2012, true cate:Nissan Juke Hatchback 2012, used_slow:False, confidence:0.5257
+开始分类图像: ./datasets/car_196/cars_test/05116.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Nissan_Juke_Hatchback_2012 (置信度: 0.2674)
+总耗时: 0.51秒
+succ. pred cate:Nissan_Juke_Hatchback_2012, true cate:Nissan Juke Hatchback 2012, used_slow:False, confidence:0.2674
+开始分类图像: ./datasets/car_196/cars_test/00156.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Plymouth_Neon_Coupe_1999 (置信度: 0.2535)
+总耗时: 0.11秒
+succ. pred cate:Plymouth_Neon_Coupe_1999, true cate:Plymouth Neon Coupe 1999, used_slow:False, confidence:0.2535
+开始分类图像: ./datasets/car_196/cars_test/06260.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/06260.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Silverado_1500_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Ford_F-150_Regular_Cab_2012', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Dodge_Dakota_Club_Cab_2007', 'Ford_Ranger_SuperCab_2011', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010', 'Chevrolet_Avalanche_Crew_Cab_2012', 'Ford_F-150_Regular_Cab_2007', 'Dodge_Dakota_Crew_Cab_2010', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012', 'GMC_Canyon_Extended_Cab_2012', 'Dodge_Ram_Pickup_3500_Quad_Cab_2009']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:36:47] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-27 20:36:50] [显存监控] 已分配=16.99GB, 已保留=17.58GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Chevrolet_Silverado_1500_Extended_Cab_2012' -> 'Chevrolet Silverado 1500 Extended Cab 2012'
+分类完成: Chevrolet Silverado 1500 Extended Cab 2012 (置信度: 0.1359)
+总耗时: 5.41秒
+succ. pred cate:Chevrolet Silverado 1500 Extended Cab 2012, true cate:Chevrolet Silverado 2500HD Regular Cab 2012, used_slow:True, confidence:0.1359
+开始分类图像: ./datasets/car_196/cars_test/07658.jpg
+[2025-11-27 20:36:51] Processing fast-slow:  66%|██████▌   | 43/65 [05:11<02:14,  6.10s/it][2025-11-27 20:37:04] Processing fast-slow:  66%|██████▌   | 43/65 [05:11<02:14,  6.10s/it][2025-11-27 20:37:04] Processing fast-slow:  66%|██████▌   | 43/65 [05:11<02:14,  6.10s/it][2025-11-27 20:37:04] Processing fast-slow:  69%|██████▉   | 45/65 [05:19<01:43,  5.16s/it][2025-11-27 20:37:11] Processing fast-slow:  69%|██████▉   | 45/65 [05:19<01:43,  5.16s/it][2025-11-27 20:37:11] Processing fast-slow:  71%|███████   | 46/65 [05:26<01:47,  5.67s/it][2025-11-27 20:37:19] Processing fast-slow:  71%|███████   | 46/65 [05:26<01:47,  5.67s/it][2025-11-27 20:37:19] Processing fast-slow:  72%|███████▏  | 47/65 [05:39<02:13,  7.43s/it][2025-11-27 20:37:31] Processing fast-slow:  72%|███████▏  | 47/65 [05:39<02:13,  7.43s/it]执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07658.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Volvo_XC90_SUV_2007', 'Buick_Enclave_SUV_2012', 'Buick_Rainier_SUV_2007', 'Jeep_Compass_SUV_2012', 'BMW_X5_SUV_2007', 'Jeep_Patriot_SUV_2012', 'Nissan_NV_Passenger_Van_2012', 'Dodge_Caravan_Minivan_1997', 'Jeep_Liberty_SUV_2012', 'Infiniti_QX56_SUV_2011', 'Isuzu_Ascender_SUV_2008', 'Land_Rover_LR2_SUV_2012', 'Mazda_Tribute_SUV_2011', 'Ford_Freestar_Minivan_2007', 'Chrysler_Town_and_Country_Minivan_2012', 'Dodge_Caliber_Wagon_2012', 'Jeep_Grand_Cherokee_SUV_2012', 'GMC_Acadia_SUV_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:36:53] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.44GB
+[2025-11-27 20:36:56] [显存监控] 已分配=16.99GB, 已保留=17.60GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Buick_Rainier_SUV_2007' -> 'Buick Rainier SUV 2007'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:36:59] [显存监控] 已分配=17.10GB, 已保留=17.39GB, 空闲=30.30GB
+[2025-11-27 20:37:02] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Buick_Enclave_SUV_2012 (置信度: 0.8500)
+总耗时: 12.46秒
+succ. pred cate:Buick_Enclave_SUV_2012, true cate:Buick Rainier SUV 2007, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/car_196/cars_test/06040.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: McLaren_MP4-12C_Coupe_2012 (置信度: 0.2062)
+总耗时: 0.06秒
+succ. pred cate:McLaren_MP4-12C_Coupe_2012, true cate:Lamborghini Gallardo LP 570-4 Superleggera 2012, used_slow:False, confidence:0.2062
+开始分类图像: ./datasets/car_196/cars_test/05348.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/05348.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Hyundai_Tucson_SUV_2012', 'Hyundai_Elantra_Sedan_2007', 'Scion_xD_Hatchback_2012', 'Chevrolet_Cobalt_SS_2010', 'Acura_ZDX_Hatchback_2012', 'Chevrolet_Sonic_Sedan_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Acura_RL_Sedan_2012', 'Suzuki_Kizashi_Sedan_2012', 'Chevrolet_Impala_Sedan_2007', 'Suzuki_Aerio_Sedan_2007', 'Suzuki_SX4_Sedan_2012', 'Hyundai_Sonata_Hybrid_Sedan_2012', 'Acura_TSX_Sedan_2012', 'GMC_Acadia_SUV_2012', 'Buick_Verano_Sedan_2012', 'Honda_Accord_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:37:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:09] [显存监控] 已分配=16.99GB, 已保留=17.87GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.87GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Hyundai_Elantra_Sedan_2007' -> 'Hyundai Elantra Sedan 2007'
+分类完成: Hyundai Elantra Sedan 2007 (置信度: 0.1058)
+总耗时: 7.83秒
+succ. pred cate:Hyundai Elantra Sedan 2007, true cate:Hyundai Elantra Touring Hatchback 2012, used_slow:True, confidence:0.1058
+开始分类图像: ./datasets/car_196/cars_test/03454.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/03454.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Silverado_1500_Regular_Cab_2012', 'Dodge_Dakota_Club_Cab_2007', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Ford_F-150_Regular_Cab_2012', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010', 'Dodge_Ram_Pickup_3500_Quad_Cab_2009', 'Ford_F-150_Regular_Cab_2007', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'Dodge_Dakota_Crew_Cab_2010', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012', 'GMC_Canyon_Extended_Cab_2012', 'Ford_Ranger_SuperCab_2011']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:37:13] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:37:16] [显存监控] 已分配=16.99GB, 已保留=17.85GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.85GB, 剩余=30.50GB
+分类完成: Dodge Ram Pickup 3500 Crew Cab 2010 (置信度: 0.1044)
+总耗时: 7.30秒
+succ. pred cate:Dodge Ram Pickup 3500 Crew Cab 2010, true cate:Dodge Ram Pickup 3500 Quad Cab 2009, used_slow:True, confidence:0.1044
+开始分类图像: ./datasets/car_196/cars_test/02808.jpg
+执行快思考...
+[2025-11-27 20:37:19] [显存监控] 已分配=16.91GB, 已保留=17.85GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/02808.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Mercedes-Benz_SL-Class_Coupe_2009', 'BMW_M6_Convertible_2010', 'BMW_6_Series_Convertible_2007', 'Aston_Martin_Virage_Convertible_2012', 'BMW_Z4_Convertible_2012', 'Chevrolet_Corvette_Convertible_2012', 'Porsche_Panamera_Sedan_2012', 'Aston_Martin_Virage_Coupe_2012', 'Fisker_Karma_Sedan_2012', 'Spyker_C8_Convertible_2009', 'BMW_1_Series_Convertible_2012', 'Aston_Martin_V8_Vantage_Convertible_2012', 'Audi_RS_4_Convertible_2008', 'Audi_S5_Convertible_2012', 'BMW_M3_Coupe_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:37:22] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+[2025-11-27 20:37:25] [显存监控] 已分配=16.99GB, 已保留=17.58GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'BMW_Z4_Convertible_2012' -> 'BMW Z4 Convertible 2012'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:37:28] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-27 20:37:31] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: BMW_Z4_Convertible_2012 (置信度: 0.9500)
+总耗时: 12.64秒
+succ. pred cate:BMW_Z4_Convertible_2012, true cate:BMW Z4 Convertible 2012, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/car_196/cars_test/00047.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/00047.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Chevrolet_Silverado_1500_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Dodge_Dakota_Club_Cab_2007', 'Chevrolet_Silverado_2500HD_Regular_Cab_2012', 'Chevrolet_Silverado_1500_Classic_Extended_Cab_2007', 'Dodge_Dakota_Crew_Cab_2010', 'Dodge_Ram_Pickup_3500_Quad_Cab_2009', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010', 'Chevrolet_Avalanche_Crew_Cab_2012', 'Ford_F-150_Regular_Cab_2007', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'GMC_Canyon_Extended_Cab_2012', 'Chevrolet_Silverado_1500_Hybrid_Crew_Cab_2012', 'Ford_Ranger_SuperCab_2011']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:37:34] [显存监控] 已分配=17.01GB, 已保留=19.48GB, 空闲=30.39GB
+[2025-11-27 20:37:37] [显存监控] 已分配=17.02GB, 已保留=19.49GB, 空闲=30.38GB
+[2025-11-27 20:37:40] [显存监控] 已分配=17.02GB, 已保留=19.49GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.49GB, 剩余=30.50GB
+[2025-11-27 20:37:31] Processing fast-slow:  74%|███████▍  | 48/65 [05:48<02:13,  7.86s/it][2025-11-27 20:37:40] Processing fast-slow:  74%|███████▍  | 48/65 [05:48<02:13,  7.86s/it][2025-11-27 20:37:40] Processing fast-slow:  75%|███████▌  | 49/65 [05:54<02:00,  7.51s/it][2025-11-27 20:37:47] Processing fast-slow:  75%|███████▌  | 49/65 [05:54<02:00,  7.51s/it][2025-11-27 20:37:47] Processing fast-slow:  77%|███████▋  | 50/65 [06:04<02:03,  8.24s/it][2025-11-27 20:37:57] Processing fast-slow:  77%|███████▋  | 50/65 [06:04<02:03,  8.24s/it][2025-11-27 20:37:57] Processing fast-slow:  78%|███████▊  | 51/65 [06:09<01:41,  7.24s/it][2025-11-27 20:38:02] Processing fast-slow:  78%|███████▊  | 51/65 [06:09<01:41,  7.24s/it][2025-11-27 20:38:02] Processing fast-slow:  80%|████████  | 52/65 [06:23<01:59,  9.21s/it][2025-11-27 20:38:16] Processing fast-slow:  80%|████████  | 52/65 [06:23<01:59,  9.21s/it]精确标准化匹配类别修正: 'Chevrolet_Silverado_2500HD_Regular_Cab_2012' -> 'Chevrolet Silverado 2500HD Regular Cab 2012'
+分类完成: Chevrolet Silverado 2500HD Regular Cab 2012 (置信度: 0.1054)
+总耗时: 9.05秒
+succ. pred cate:Chevrolet Silverado 2500HD Regular Cab 2012, true cate:Chevrolet Silverado 1500 Regular Cab 2012, used_slow:True, confidence:0.1054
+开始分类图像: ./datasets/car_196/cars_test/07781.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07781.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Aston_Martin_Virage_Convertible_2012', 'Aston_Martin_Virage_Coupe_2012', 'Fisker_Karma_Sedan_2012', 'Chevrolet_Corvette_Convertible_2012', 'Spyker_C8_Convertible_2009', 'Ferrari_FF_Coupe_2012', 'Bugatti_Veyron_16.4_Convertible_2009', 'Tesla_Model_S_Sedan_2012', 'McLaren_MP4-12C_Coupe_2012', 'Spyker_C8_Coupe_2009', 'Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007', 'Aston_Martin_V8_Vantage_Convertible_2012', 'Ferrari_California_Convertible_2012', 'Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012', 'Aston_Martin_V8_Vantage_Coupe_2012', 'Ferrari_458_Italia_Coupe_2012', 'BMW_6_Series_Convertible_2007', 'Chevrolet_Corvette_ZR1_2012', 'Ferrari_458_Italia_Convertible_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:37:43] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+[2025-11-27 20:37:46] [显存监控] 已分配=16.99GB, 已保留=17.59GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Aston_Martin_V8_Vantage_Convertible_2012' -> 'Aston Martin V8 Vantage Convertible 2012'
+分类完成: Aston Martin V8 Vantage Convertible 2012 (置信度: 0.0073)
+总耗时: 6.56秒
+succ. pred cate:Aston Martin V8 Vantage Convertible 2012, true cate:Aston Martin V8 Vantage Convertible 2012, used_slow:True, confidence:0.0073
+开始分类图像: ./datasets/car_196/cars_test/04379.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/04379.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_RL_Sedan_2012', 'Honda_Accord_Sedan_2012', 'Honda_Accord_Coupe_2012', 'Chevrolet_Impala_Sedan_2007', 'Suzuki_Kizashi_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Mitsubishi_Lancer_Sedan_2012', 'Hyundai_Azera_Sedan_2012', 'Chevrolet_Sonic_Sedan_2012', 'Honda_Odyssey_Minivan_2012', 'Buick_Verano_Sedan_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'Hyundai_Genesis_Sedan_2012', 'Buick_Regal_GS_2012', 'Hyundai_Sonata_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (1500x938)，缩小到 (1440x900) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 20:37:49] [显存监控] 已分配=17.09GB, 已保留=23.27GB, 空闲=30.31GB
+[2025-11-27 20:37:52] [显存监控] 已分配=17.08GB, 已保留=23.28GB, 空闲=30.32GB
+[2025-11-27 20:37:55] [显存监控] 已分配=17.06GB, 已保留=23.28GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=23.28GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Honda_Accord_Sedan_2012' -> 'Honda Accord Sedan 2012'
+分类完成: Honda Accord Sedan 2012 (置信度: 0.1140)
+总耗时: 10.09秒
+succ. pred cate:Honda Accord Sedan 2012, true cate:Honda Accord Sedan 2012, used_slow:True, confidence:0.1140
+开始分类图像: ./datasets/car_196/cars_test/07445.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/07445.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cadillac_CTS-V_Sedan_2012', 'Bugatti_Veyron_16.4_Convertible_2009', 'Suzuki_Kizashi_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Chevrolet_Cobalt_SS_2010', 'Fisker_Karma_Sedan_2012', 'Ford_GT_Coupe_2006', 'Chevrolet_Corvette_Convertible_2012', 'Dodge_Magnum_Wagon_2008', 'Cadillac_SRX_SUV_2012', 'Lamborghini_Reventon_Coupe_2008', 'Lamborghini_Aventador_Coupe_2012', 'Bugatti_Veyron_16.4_Coupe_2009', 'Rolls-Royce_Ghost_Sedan_2012', 'Bentley_Continental_GT_Coupe_2012', 'Rolls-Royce_Phantom_Drophead_Coupe_Convertible_2012', 'Maybach_Landaulet_Convertible_2012', 'Chrysler_300_SRT-8_2010', 'Bentley_Continental_Flying_Spur_Sedan_2007']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:37:58] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.44GB
+[2025-11-27 20:38:01] [显存监控] 已分配=16.99GB, 已保留=17.59GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Cadillac_CTS-V_Sedan_2012' -> 'Cadillac CTS-V Sedan 2012'
+分类完成: Cadillac CTS-V Sedan 2012 (置信度: 0.1808)
+总耗时: 4.77秒
+succ. pred cate:Cadillac CTS-V Sedan 2012, true cate:Cadillac CTS-V Sedan 2012, used_slow:True, confidence:0.1808
+开始分类图像: ./datasets/car_196/cars_test/02388.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/02388.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Suzuki_Kizashi_Sedan_2012', 'Chrysler_Town_and_Country_Minivan_2012', 'Chevrolet_Impala_Sedan_2007', 'Acura_RL_Sedan_2012', 'Chevrolet_Tahoe_Hybrid_SUV_2012', 'Buick_Enclave_SUV_2012', 'Nissan_NV_Passenger_Van_2012', 'Lincoln_Town_Car_Sedan_2011', 'Ford_Edge_SUV_2012', 'Chrysler_300_SRT-8_2010', 'Chrysler_PT_Cruiser_Convertible_2008', 'Hyundai_Genesis_Sedan_2012', 'GMC_Terrain_SUV_2012', 'Cadillac_Escalade_EXT_Crew_Cab_2007', 'Chrysler_Sebring_Convertible_2010', 'Cadillac_CTS-V_Sedan_2012', 'Cadillac_SRX_SUV_2012', 'Buick_Verano_Sedan_2012', 'Mercedes-Benz_S-Class_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:38:04] [显存监控] 已分配=16.96GB, 已保留=17.62GB, 空闲=30.44GB
+[2025-11-27 20:38:07] [显存监控] 已分配=16.99GB, 已保留=17.65GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.65GB, 剩余=30.50GB
+模糊匹配类别修正: 'Chrysler Town & Country Minivan 2012' -> 'Chrysler Town and Country Minivan 2012'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-27 20:38:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:38:14] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: Chrysler Town and Country Minivan 2012 (置信度: 0.9500)
+总耗时: 14.02秒
+succ. pred cate:Chrysler Town and Country Minivan 2012, true cate:Chrysler Town and Country Minivan 2012, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/car_196/cars_test/02202.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/02202.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Ferrari_458_Italia_Coupe_2012', 'Ferrari_458_Italia_Convertible_2012', 'Ferrari_FF_Coupe_2012', 'McLaren_MP4-12C_Coupe_2012', 'Lamborghini_Gallardo_LP_570-4_Superleggera_2012', 'Lamborghini_Reventon_Coupe_2008', 'Ferrari_California_Convertible_2012', 'Lamborghini_Diablo_Coupe_2001', 'Lamborghini_Aventador_Coupe_2012', 'Aston_Martin_Virage_Convertible_2012', 'Chevrolet_Corvette_Ron_Fellows_Edition_Z06_2007', 'Spyker_C8_Coupe_2009', 'Ford_GT_Coupe_2006']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:38:18] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-27 20:38:16] Processing fast-slow:  82%|████████▏ | 53/65 [06:31<01:46,  8.91s/it][2025-11-27 20:38:24] Processing fast-slow:  82%|████████▏ | 53/65 [06:31<01:46,  8.91s/it][2025-11-27 20:38:24] Processing fast-slow:  83%|████████▎ | 54/65 [06:32<01:09,  6.31s/it][2025-11-27 20:38:24] Processing fast-slow:  83%|████████▎ | 54/65 [06:32<01:09,  6.31s/it][2025-11-27 20:38:24] Processing fast-slow:  83%|████████▎ | 54/65 [06:32<01:09,  6.31s/it][2025-11-27 20:38:24] Processing fast-slow:  86%|████████▌ | 56/65 [06:32<00:31,  3.45s/it][2025-11-27 20:38:24] Processing fast-slow:  86%|████████▌ | 56/65 [06:32<00:31,  3.45s/it][2025-11-27 20:38:24] Processing fast-slow:  86%|████████▌ | 56/65 [06:32<00:31,  3.45s/it][2025-11-27 20:38:24] Processing fast-slow:  89%|████████▉ | 58/65 [06:40<00:25,  3.67s/it][2025-11-27 20:38:32] Processing fast-slow:  89%|████████▉ | 58/65 [06:40<00:25,  3.67s/it][2025-11-27 20:38:32] Processing fast-slow:  89%|████████▉ | 58/65 [06:40<00:25,  3.67s/it][2025-11-27 20:38:32] Processing fast-slow:  89%|████████▉ | 58/65 [06:40<00:25,  3.67s/it][2025-11-27 20:38:32] Processing fast-slow:  94%|█████████▍| 61/65 [06:45<00:11,  2.81s/it][2025-11-27 20:38:38] Processing fast-slow:  94%|█████████▍| 61/65 [06:45<00:11,  2.81s/it][2025-11-27 20:38:38] Processing fast-slow:  94%|█████████▍| 61/65 [06:45<00:11,  2.81s/it][2025-11-27 20:38:38] Processing fast-slow:  97%|█████████▋| 63/65 [06:45<00:03,  1.98s/it][2025-11-27 20:38:38] Processing fast-slow:  97%|█████████▋| 63/65 [06:45<00:03,  1.98s/it][2025-11-27 20:38:38] Processing fast-slow:  97%|█████████▋| 63/65 [06:45<00:03,  1.98s/it][2025-11-27 20:38:38] Processing fast-slow: 100%|██████████| 65/65 [06:54<00:00,  2.67s/it][2025-11-27 20:38:38] Processing fast-slow: 100%|██████████| 65/65 [06:54<00:00,  6.37s/it]
+[2025-11-27 20:38:21] [显存监控] 已分配=16.96GB, 已保留=17.60GB, 空闲=30.44GB
+[2025-11-27 20:38:24] [显存监控] 已分配=16.99GB, 已保留=17.60GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Ferrari_458_Italia_Coupe_2012' -> 'Ferrari 458 Italia Coupe 2012'
+分类完成: Ferrari 458 Italia Coupe 2012 (置信度: 0.1405)
+总耗时: 8.18秒
+succ. pred cate:Ferrari 458 Italia Coupe 2012, true cate:Ferrari 458 Italia Coupe 2012, used_slow:True, confidence:0.1405
+开始分类图像: ./datasets/car_196/cars_test/04668.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dodge_Challenger_SRT8_2011 (置信度: 0.2098)
+总耗时: 0.13秒
+succ. pred cate:Dodge_Challenger_SRT8_2011, true cate:Dodge Challenger SRT8 2011, used_slow:False, confidence:0.2098
+开始分类图像: ./datasets/car_196/cars_test/05753.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Bugatti_Veyron_16.4_Convertible_2009 (置信度: 0.3729)
+总耗时: 0.08秒
+succ. pred cate:Bugatti_Veyron_16.4_Convertible_2009, true cate:Bugatti Veyron 16.4 Convertible 2009, used_slow:False, confidence:0.3729
+开始分类图像: ./datasets/car_196/cars_test/00611.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Jeep_Patriot_SUV_2012 (置信度: 0.5300)
+总耗时: 0.05秒
+succ. pred cate:Jeep_Patriot_SUV_2012, true cate:Jeep Patriot SUV 2012, used_slow:False, confidence:0.5300
+开始分类图像: ./datasets/car_196/cars_test/02967.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dodge_Caravan_Minivan_1997 (置信度: 0.2309)
+总耗时: 0.04秒
+succ. pred cate:Dodge_Caravan_Minivan_1997, true cate:Dodge Caravan Minivan 1997, used_slow:False, confidence:0.2309
+开始分类图像: ./datasets/car_196/cars_test/01084.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/01084.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Ford_F-150_Regular_Cab_2012', 'Ford_F-150_Regular_Cab_2007', 'Chevrolet_Silverado_1500_Regular_Cab_2012', 'Nissan_NV_Passenger_Van_2012', 'Ford_Ranger_SuperCab_2011', 'Chevrolet_Silverado_1500_Extended_Cab_2012', 'Chevrolet_Express_Cargo_Van_2007', 'Dodge_Dakota_Club_Cab_2007', 'Ford_F-450_Super_Duty_Crew_Cab_2012', 'Chevrolet_Express_Van_2007', 'Dodge_Ram_Pickup_3500_Crew_Cab_2010', 'GMC_Canyon_Extended_Cab_2012', 'GMC_Savana_Van_2012', 'Ford_E-Series_Wagon_Van_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:38:27] [显存监控] 已分配=16.99GB, 已保留=18.43GB, 空闲=30.41GB
+[2025-11-27 20:38:30] [显存监控] 已分配=16.99GB, 已保留=18.43GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.43GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Ford_F-150_Regular_Cab_2007' -> 'Ford F-150 Regular Cab 2007'
+分类完成: Ford F-150 Regular Cab 2007 (置信度: 0.1097)
+总耗时: 7.97秒
+succ. pred cate:Ford F-150 Regular Cab 2007, true cate:Ford F-150 Regular Cab 2007, used_slow:True, confidence:0.1097
+开始分类图像: ./datasets/car_196/cars_test/00247.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Suzuki_Kizashi_Sedan_2012 (置信度: 0.3852)
+总耗时: 0.04秒
+succ. pred cate:Suzuki_Kizashi_Sedan_2012, true cate:Suzuki Kizashi Sedan 2012, used_slow:False, confidence:0.3852
+开始分类图像: ./datasets/car_196/cars_test/04455.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Chevrolet_Impala_Sedan_2007 (置信度: 0.2713)
+总耗时: 0.04秒
+succ. pred cate:Chevrolet_Impala_Sedan_2007, true cate:Chevrolet Impala Sedan 2007, used_slow:False, confidence:0.2713
+开始分类图像: ./datasets/car_196/cars_test/01731.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/01731.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Acura_RL_Sedan_2012', 'Acura_ZDX_Hatchback_2012', 'Suzuki_Kizashi_Sedan_2012', 'Nissan_Juke_Hatchback_2012', 'Acura_TL_Sedan_2012', 'Chevrolet_Cobalt_SS_2010', 'Scion_xD_Hatchback_2012', 'Nissan_NV_Passenger_Van_2012', 'Fisker_Karma_Sedan_2012', 'Acura_TL_Type-S_2008', 'Toyota_Corolla_Sedan_2012', 'Acura_TSX_Sedan_2012', 'Honda_Accord_Sedan_2012', 'Buick_Regal_GS_2012', 'Suzuki_SX4_Sedan_2012', 'Chevrolet_Malibu_Sedan_2007', 'Cadillac_CTS-V_Sedan_2012', 'BMW_M5_Sedan_2010', 'Hyundai_Genesis_Sedan_2012']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 20:38:33] [显存监控] 已分配=16.99GB, 已保留=17.67GB, 空闲=30.41GB
+[2025-11-27 20:38:36] [显存监控] 已分配=16.99GB, 已保留=17.67GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=17.67GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'Acura_RL_Sedan_2012' -> 'Acura RL Sedan 2012'
+分类完成: Acura RL Sedan 2012 (置信度: 0.1628)
+总耗时: 5.31秒
+succ. pred cate:Acura RL Sedan 2012, true cate:Acura ZDX Hatchback 2012, used_slow:True, confidence:0.1628
+开始分类图像: ./datasets/car_196/cars_test/02032.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: McLaren_MP4-12C_Coupe_2012 (置信度: 0.8470)
+总耗时: 0.09秒
+succ. pred cate:McLaren_MP4-12C_Coupe_2012, true cate:McLaren MP4-12C Coupe 2012, used_slow:False, confidence:0.8470
+开始分类图像: ./datasets/car_196/cars_test/03684.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Audi_S4_Sedan_2012 (置信度: 0.2782)
+总耗时: 0.05秒
+succ. pred cate:Audi_S4_Sedan_2012, true cate:Audi S5 Coupe 2012, used_slow:False, confidence:0.2782
+开始分类图像: ./datasets/car_196/cars_test/04182.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Dodge_Journey_SUV_2012 (置信度: 0.3072)
+总耗时: 0.04秒
+succ. pred cate:Dodge_Journey_SUV_2012, true cate:Dodge Journey SUV 2012, used_slow:False, confidence:0.3072
+开始分类图像: ./datasets/car_196/cars_test/01795.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/car_196/cars_test/01795.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['BMW_M6_Convertible_2010', 'BMW_6_Series_Convertible_2007', 'BMW_1_Series_Convertible_2012', 'BMW_3_Series_Sedan_2012', 'BMW_Z4_Convertible_2012', 'BMW_1_Series_Coupe_2012', 'BMW_M3_Coupe_2012', 'BMW_ActiveHybrid_5_Sedan_2012', 'BMW_X3_SUV_2012', 'BMW_3_Series_Wagon_2012', 'BMW_M5_Sedan_2010', 'Chevrolet_Camaro_Convertible_2012', 'Acura_RL_Sedan_2012', 'BMW_X6_SUV_2012', 'Audi_RS_4_Convertible_2008']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-27 20:38:39] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 20:38:42] [显存监控] 已分配=17.04GB, 已保留=19.50GB, 空闲=30.37GB
+[2025-11-27 20:38:45] [显存监控] 已分配=17.03GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+精确标准化匹配类别修正: 'BMW_1_Series_Convertible_2012' -> 'BMW 1 Series Convertible 2012'
+分类完成: BMW 1 Series Convertible 2012 (置信度: 0.1247)
+总耗时: 8.52秒
+succ. pred cate:BMW 1 Series Convertible 2012, true cate:BMW 1 Series Convertible 2012, used_slow:True, confidence:0.1247
+✅ 正确预测总数: 79
+  - 其中仅快思考正确: 37
+  - 其中慢思考触发且正确: 42
+❌ 错误预测总数: 1
+📊 慢思考触发数量: 43
+[fast and slow] 总体准确率: 0.9875 (79/80)
+[fast and slow] 快思考准确率: 1.0000
+[fast and slow] 慢思考触发比例: 0.5375
+[fast and slow] 慢思考准确率: 0.9767
+✓ 分类结果已保存到: ./experiments/car196/classify/classify_result.json
+  总样本数: 80
+📁 分类结果已保存到: ./experiments/car196/classify/classify_result.json
+
+=== Experiment End Time: 2025-11-27 20:38:46 ===
+=== Total Runtime: 0小时 7分 58.90秒 ===
+

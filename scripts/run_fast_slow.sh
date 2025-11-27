@@ -237,9 +237,14 @@ case "${DATASET}" in
         CONFIG_FILE="imagenet_r200_all.yml"
         DATASET_DIR="ImageNet_R"
         ;;
+    "birdsnap")
+        DATASET_NUM="500"
+        CONFIG_FILE="birdsnap500_all.yml"
+        DATASET_DIR="birdsnap"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, birdsnap"
         exit 1
         ;;
 esac
@@ -248,7 +253,7 @@ esac
 # 对于 caltech101 和 caltech256，DATASET 已经包含编号，不需要再加 DATASET_NUM
 # deepfashion_multimodal 使用 deepfashion_multimodal23 作为实验目录名
 # sun397 使用 sun397 作为实验目录名（已包含编号）
-if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ]; then
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ]; then
     EXPERIMENT_DIR="${DATASET}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"
