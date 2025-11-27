@@ -15,7 +15,7 @@ from utils.fileios import dump_json, load_json, dump_txt
 
 from data import DATA_STATS, PROMPTERS, DATA_DISCOVERY  
 from data.prompt_identify import prompts_howto
-from data.test_data import get_test_images_by_percentage, validate_test_set, get_dataset_key_for_test  
+from data.extract_from_testsets import get_test_images_by_percentage, validate_test_set, get_dataset_key_for_test  
 from agents.vqa_bot import VQABot  
 from agents.llm_bot import LLMBot 
 from agents.mllm_bot import MLLMBot
@@ -39,19 +39,21 @@ from data.extract_from_trainsets import load_train_data, extract_discovery_set, 
 
 test_data_true_random =True # 测试集采样是否实现真随机，每次运行结果都不一样
 randomly_extract_discoverying_set=True #控制是否从训练集中随机抽取图片来创建发现集，而不是直接加载发现集
+discovery_data_true_random=True #发现集采样是否实现真随机，每次运行结果都不一样
 DEBUG = False  # 设置调试模式为关闭状态
 
 # 全局数据集配置
 DATASET_CONFIG = None
 CURRENT_DATASET = None
 
-def get_or_create_discovery_set(cfg, folder_suffix=''):
+def get_or_create_discovery_set(cfg, folder_suffix='', args=None):
     """
     获取或创建发现集，根据randomly_extract_discoverying_set标志决定模式
     
     Args:
         cfg: 配置字典
         folder_suffix: 后缀（如 '_1', '_2', '_random'）
+        args: 命令行参数对象
     
     Returns:
         DATA_DISCOVERY object
@@ -77,28 +79,20 @@ def get_or_create_discovery_set(cfg, folder_suffix=''):
                 num_per_category = 1
                 output_suffix = '1'
         
-        # 加载训练数据
+        # 调用data目录下的抽取函数
         try:
-            train_data = load_train_data(dataset_name)
-            print(f"✓ 加载训练数据: {len(train_data)} 个类别")
-        except Exception as e:
-            print(f"❌ 加载训练数据失败: {e}")
-            print("🔄 回退到使用现有发现集")
-            randomly_extract_discoverying_set = False
-            return DATA_DISCOVERY[dataset_name](cfg, folder_suffix=folder_suffix)
-        
-        # 抽取发现集
-        try:
-            discovery_data = extract_discovery_set(train_data, num_per_category, cfg.get('seed', 42))
+            from data.extract_from_trainsets import extract_and_save_discovery_set
             
-            # 保存发现集到临时文件
-            temp_suffix = f"_temp_{output_suffix}"
-            output_path = save_discovery_set(discovery_data, dataset_name, temp_suffix)
-            print(f"✓ 临时发现集已保存到: {output_path}")
+            # 根据当前模式确定抽取类型
+            extract_type = 'knowledge_base' if (args and args.mode == 'build_knowledge_base') else 'fast_slow'
             
-            # 创建基于JSON的Discovery对象
-            from data.json_discovery import JSONDiscovery
-            json_discovery = JSONDiscovery(output_path, dataset_name)
+            json_discovery = extract_and_save_discovery_set(
+                dataset_name, 
+                num_per_category, 
+                cfg.get('seed', None if discovery_data_true_random else 42),
+                output_suffix,
+                extract_type
+            )
             
             print(f"✓ 创建JSON发现集对象: {len(json_discovery.subcat_to_sample)} 个类别")
             return json_discovery
@@ -378,7 +372,6 @@ def prepare_test_samples(cfg, args):
             # 使用原有目录采样方式
             sampled_images = get_test_images_by_percentage(
                 dataset_key, 
-                data_root, 
                 args.test_percentage,
                 seed=cfg.get('seed', 42),
                 use_true_random=test_data_true_random
@@ -841,7 +834,7 @@ if __name__ == "__main__":
         )
             
         # 加载训练样本
-        data_discovery = get_or_create_discovery_set(cfg, folder_suffix=expt_id_suffix)
+        data_discovery = get_or_create_discovery_set(cfg, folder_suffix=expt_id_suffix, args=args)
         train_samples = defaultdict(list)
         # {"Chihuaha": "./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", "Poodle": "./datasets/dogs_120/images_discovery_all_3/001.Poodle_000000.jpg", ...}
         for name, path in data_discovery.subcat_to_sample.items():

@@ -1,0 +1,520 @@
+[INFO] === Build Knowledge Base 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=6  # 使用的GPU编号
+Dataset: dog (num_classes=)  # 数据集及类别数
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/dog120/knowledge_base  # 知识库目录
+Config File: ./configs/expts/dog120_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/knowledge_base/dog120/build_knowledge_base_dog(1).log  # 日志文件路径
+Run Mode: build_knowledge_base  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: dog (dog120)
+类别数: 120
+实验目录: ./experiments/dog120
+✅ JSON文件检查通过: ./experiments/dog120/images_split
+当前使用的 GPU 为：6
+
+=== Experiment Start Time: 2025-11-27 22:41:13 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/dog120_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/dog120/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/dogs_120',
+ 'dataset_name': 'dog',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/dog120',
+ 'expt_dir_describe': './experiments/dog120/describe',
+ 'expt_dir_gallery': './experiments/dog120/gallery',
+ 'expt_dir_grouping': './experiments/dog120/grouping',
+ 'expt_dir_guess': './experiments/dog120/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 60,
+ 'num_classes': 120,
+ 'num_novel': 60,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn',
+ 'path_identify_answers': './experiments/dog120/identify',
+ 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names',
+ 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw',
+ 'path_references': './experiments/dog120/gallery/dog_image_references',
+ 'path_regions': './experiments/dog120/gallery/dog_image_regions',
+ 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs',
+ 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "dog120",
+    "num_classes": 120,
+    "config_file": "dog120_all.yml",
+    "data_dir": "dogs_120",
+    "experiment_dir": "dog120",
+    "stats_file": "dog120/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/dog120/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/dog120"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.24s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.35s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.40s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.99s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.49s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.66s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 22:41:22
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/dog120/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/dog120/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 930 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 22:41:48
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x757a8ec3cb50>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x757a89e4bfa0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/dog120/knowledge_base
+使用数据集: dog, 类别数: 120
+✅ 慢思考模块初始化完成，类别映射数量: 120
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 22:41:48] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+🔄 从训练集随机抽取发现集 (模式: _4)
+🔄 开始抽取发现集: dog, 每类4个样本
+🔒 固定种子模式: seed=1
+✓ 加载训练数据: 120 个类别
+✓ 抽取发现集: 120 个类别
+✓ 发现集已保存到: ./experiments/dog120/result/discovering_extract/images_discovery_all_4.json
+✓ JSON文件验证通过: 120 个类别
+从JSON文件加载发现集: ./experiments/dog120/result/discovering_extract/images_discovery_all_4.json
+✓ 加载完成: 120 个类别，共 480 张图像
+✓ 发现集统计: 120 个类别，共 480 张图像
+✓ 创建JSON发现集对象: 120 个类别
+构建知识库，包含 120 个类别, dog datasets:120
+从 ./experiments/dog120/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/dog120/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/dog120/knowledge_base 加载
+图像知识库类别数: 120
+文本知识库类别数: 120
+类别描述数: 119
+⚠️  警告: 发现 1 个类别的文本特征维度不正确:
+  - entries: (2,) (期望: (512,))
+知识库加载完成!
+构建知识库...
+训练样本包含 120 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/120 [00:00<?, ?it/s]  1%|          | 1/120 [00:00<00:33,  3.52it/s]  3%|▎         | 4/120 [00:00<00:09, 12.20it/s]  7%|▋         | 8/120 [00:00<00:05, 19.09it/s]  9%|▉         | 11/120 [00:00<00:04, 21.96it/s] 12%|█▏        | 14/120 [00:00<00:04, 24.05it/s] 14%|█▍        | 17/120 [00:00<00:04, 25.64it/s] 17%|█▋        | 20/120 [00:00<00:03, 26.44it/s] 19%|█▉        | 23/120 [00:01<00:03, 26.46it/s] 22%|██▏       | 26/120 [00:01<00:03, 26.56it/s] 24%|██▍       | 29/120 [00:01<00:03, 27.42it/s] 27%|██▋       | 32/120 [00:01<00:03, 27.27it/s] 29%|██▉       | 35/120 [00:01<00:03, 27.90it/s] 32%|███▏      | 38/120 [00:01<00:02, 28.34it/s] 34%|███▍      | 41/120 [00:01<00:02, 28.62it/s] 37%|███▋      | 44/120 [00:01<00:02, 28.44it/s] 39%|███▉      | 47/120 [00:01<00:02, 28.80it/s] 42%|████▏     | 50/120 [00:01<00:02, 29.13it/s] 44%|████▍     | 53/120 [00:02<00:02, 28.63it/s] 47%|████▋     | 56/120 [00:02<00:02, 28.62it/s] 49%|████▉     | 59/120 [00:02<00:02, 28.50it/s] 52%|█████▎    | 63/120 [00:02<00:02, 28.39it/s] 55%|█████▌    | 66/120 [00:02<00:01, 28.37it/s] 57%|█████▊    | 69/120 [00:02<00:01, 26.04it/s] 60%|██████    | 72/120 [00:02<00:01, 27.05it/s] 62%|██████▎   | 75/120 [00:02<00:01, 27.52it/s] 65%|██████▌   | 78/120 [00:03<00:01, 26.32it/s] 68%|██████▊   | 81/120 [00:03<00:01, 26.84it/s] 70%|███████   | 84/120 [00:03<00:01, 27.25it/s] 72%|███████▎  | 87/120 [00:03<00:01, 27.89it/s] 75%|███████▌  | 90/120 [00:03<00:01, 28.35it/s] 78%|███████▊  | 93/120 [00:03<00:00, 27.24it/s] 80%|████████  | 96/120 [00:03<00:00, 27.66it/s] 82%|████████▎ | 99/120 [00:03<00:00, 27.93it/s] 85%|████████▌ | 102/120 [00:03<00:00, 27.50it/s] 88%|████████▊ | 105/120 [00:03<00:00, 27.78it/s]处理类别: Afghan_hound
+类别 Afghan_hound 图像特征维度: (512,)
+处理类别: African_hunting_dog
+类别 African_hunting_dog 图像特征维度: (512,)
+处理类别: Airedale
+类别 Airedale 图像特征维度: (512,)
+处理类别: American_Staffordshire_terrier
+类别 American_Staffordshire_terrier 图像特征维度: (512,)
+处理类别: Appenzeller
+类别 Appenzeller 图像特征维度: (512,)
+处理类别: Australian_terrier
+类别 Australian_terrier 图像特征维度: (512,)
+处理类别: Bedlington_terrier
+类别 Bedlington_terrier 图像特征维度: (512,)
+处理类别: Bernese_mountain_dog
+类别 Bernese_mountain_dog 图像特征维度: (512,)
+处理类别: Blenheim_spaniel
+类别 Blenheim_spaniel 图像特征维度: (512,)
+处理类别: Border_collie
+类别 Border_collie 图像特征维度: (512,)
+处理类别: Border_terrier
+类别 Border_terrier 图像特征维度: (512,)
+处理类别: Boston_bull
+类别 Boston_bull 图像特征维度: (512,)
+处理类别: Bouvier_des_Flandres
+类别 Bouvier_des_Flandres 图像特征维度: (512,)
+处理类别: Brabancon_griffon
+类别 Brabancon_griffon 图像特征维度: (512,)
+处理类别: Brittany_spaniel
+类别 Brittany_spaniel 图像特征维度: (512,)
+处理类别: Cardigan
+类别 Cardigan 图像特征维度: (512,)
+处理类别: Chesapeake_Bay_retriever
+类别 Chesapeake_Bay_retriever 图像特征维度: (512,)
+处理类别: Chihuahua
+类别 Chihuahua 图像特征维度: (512,)
+处理类别: Dandie_Dinmont
+类别 Dandie_Dinmont 图像特征维度: (512,)
+处理类别: Doberman
+类别 Doberman 图像特征维度: (512,)
+处理类别: English_foxhound
+类别 English_foxhound 图像特征维度: (512,)
+处理类别: English_setter
+类别 English_setter 图像特征维度: (512,)
+处理类别: English_springer
+类别 English_springer 图像特征维度: (512,)
+处理类别: EntleBucher
+类别 EntleBucher 图像特征维度: (512,)
+处理类别: Eskimo_dog
+类别 Eskimo_dog 图像特征维度: (512,)
+处理类别: French_bulldog
+类别 French_bulldog 图像特征维度: (512,)
+处理类别: German_shepherd
+类别 German_shepherd 图像特征维度: (512,)
+处理类别: German_short-haired_pointer
+类别 German_short-haired_pointer 图像特征维度: (512,)
+处理类别: Gordon_setter
+类别 Gordon_setter 图像特征维度: (512,)
+处理类别: Great_Dane
+类别 Great_Dane 图像特征维度: (512,)
+处理类别: Great_Pyrenees
+类别 Great_Pyrenees 图像特征维度: (512,)
+处理类别: Greater_Swiss_Mountain_dog
+类别 Greater_Swiss_Mountain_dog 图像特征维度: (512,)
+处理类别: Ibizan_hound
+类别 Ibizan_hound 图像特征维度: (512,)
+处理类别: Irish_setter
+类别 Irish_setter 图像特征维度: (512,)
+处理类别: Irish_terrier
+类别 Irish_terrier 图像特征维度: (512,)
+处理类别: Irish_water_spaniel
+类别 Irish_water_spaniel 图像特征维度: (512,)
+处理类别: Irish_wolfhound
+类别 Irish_wolfhound 图像特征维度: (512,)
+处理类别: Italian_greyhound
+类别 Italian_greyhound 图像特征维度: (512,)
+处理类别: Japanese_spaniel
+类别 Japanese_spaniel 图像特征维度: (512,)
+处理类别: Kerry_blue_terrier
+类别 Kerry_blue_terrier 图像特征维度: (512,)
+处理类别: Labrador_retriever
+类别 Labrador_retriever 图像特征维度: (512,)
+处理类别: Lakeland_terrier
+类别 Lakeland_terrier 图像特征维度: (512,)
+处理类别: Leonberg
+类别 Leonberg 图像特征维度: (512,)
+处理类别: Lhasa
+类别 Lhasa 图像特征维度: (512,)
+处理类别: Maltese_dog
+类别 Maltese_dog 图像特征维度: (512,)
+处理类别: Mexican_hairless
+类别 Mexican_hairless 图像特征维度: (512,)
+处理类别: Newfoundland
+类别 Newfoundland 图像特征维度: (512,)
+处理类别: Norfolk_terrier
+类别 Norfolk_terrier 图像特征维度: (512,)
+处理类别: Norwegian_elkhound
+类别 Norwegian_elkhound 图像特征维度: (512,)
+处理类别: Norwich_terrier
+类别 Norwich_terrier 图像特征维度: (512,)
+处理类别: Old_English_sheepdog
+类别 Old_English_sheepdog 图像特征维度: (512,)
+处理类别: Pekinese
+类别 Pekinese 图像特征维度: (512,)
+处理类别: Pembroke
+类别 Pembroke 图像特征维度: (512,)
+处理类别: Pomeranian
+类别 Pomeranian 图像特征维度: (512,)
+处理类别: Rhodesian_ridgeback
+类别 Rhodesian_ridgeback 图像特征维度: (512,)
+处理类别: Rottweiler
+类别 Rottweiler 图像特征维度: (512,)
+处理类别: Saint_Bernard
+类别 Saint_Bernard 图像特征维度: (512,)
+处理类别: Saluki
+类别 Saluki 图像特征维度: (512,)
+处理类别: Samoyed
+类别 Samoyed 图像特征维度: (512,)
+处理类别: Scotch_terrier
+类别 Scotch_terrier 图像特征维度: (512,)
+处理类别: Scottish_deerhound
+类别 Scottish_deerhound 图像特征维度: (512,)
+处理类别: Sealyham_terrier
+类别 Sealyham_terrier 图像特征维度: (512,)
+处理类别: Shetland_sheepdog
+类别 Shetland_sheepdog 图像特征维度: (512,)
+处理类别: Shih-Tzu
+类别 Shih-Tzu 图像特征维度: (512,)
+处理类别: Siberian_husky
+类别 Siberian_husky 图像特征维度: (512,)
+处理类别: Staffordshire_bullterrier
+类别 Staffordshire_bullterrier 图像特征维度: (512,)
+处理类别: Sussex_spaniel
+类别 Sussex_spaniel 图像特征维度: (512,)
+处理类别: Tibetan_mastiff
+类别 Tibetan_mastiff 图像特征维度: (512,)
+处理类别: Tibetan_terrier
+类别 Tibetan_terrier 图像特征维度: (512,)
+处理类别: Walker_hound
+类别 Walker_hound 图像特征维度: (512,)
+处理类别: Weimaraner
+类别 Weimaraner 图像特征维度: (512,)
+处理类别: Welsh_springer_spaniel
+类别 Welsh_springer_spaniel 图像特征维度: (512,)
+处理类别: West_Highland_white_terrier
+[2025-11-27 22:41:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 West_Highland_white_terrier 图像特征维度: (512,)
+处理类别: Yorkshire_terrier
+类别 Yorkshire_terrier 图像特征维度: (512,)
+处理类别: affenpinscher
+类别 affenpinscher 图像特征维度: (512,)
+处理类别: basenji
+类别 basenji 图像特征维度: (512,)
+处理类别: basset
+类别 basset 图像特征维度: (512,)
+处理类别: beagle
+类别 beagle 图像特征维度: (512,)
+处理类别: black-and-tan_coonhound
+类别 black-and-tan_coonhound 图像特征维度: (512,)
+处理类别: bloodhound
+类别 bloodhound 图像特征维度: (512,)
+处理类别: bluetick
+类别 bluetick 图像特征维度: (512,)
+处理类别: borzoi
+类别 borzoi 图像特征维度: (512,)
+处理类别: boxer
+类别 boxer 图像特征维度: (512,)
+处理类别: briard
+类别 briard 图像特征维度: (512,)
+处理类别: bull_mastiff
+类别 bull_mastiff 图像特征维度: (512,)
+处理类别: cairn
+类别 cairn 图像特征维度: (512,)
+处理类别: chow
+类别 chow 图像特征维度: (512,)
+处理类别: clumber
+类别 clumber 图像特征维度: (512,)
+处理类别: cocker_spaniel
+类别 cocker_spaniel 图像特征维度: (512,)
+处理类别: collie
+类别 collie 图像特征维度: (512,)
+处理类别: curly-coated_retriever
+类别 curly-coated_retriever 图像特征维度: (512,)
+处理类别: dhole
+类别 dhole 图像特征维度: (512,)
+处理类别: dingo
+类别 dingo 图像特征维度: (512,)
+处理类别: flat-coated_retriever
+类别 flat-coated_retriever 图像特征维度: (512,)
+处理类别: giant_schnauzer
+类别 giant_schnauzer 图像特征维度: (512,)
+处理类别: golden_retriever
+类别 golden_retriever 图像特征维度: (512,)
+处理类别: groenendael
+类别 groenendael 图像特征维度: (512,)
+处理类别: keeshond
+类别 keeshond 图像特征维度: (512,)
+处理类别: kelpie
+类别 kelpie 图像特征维度: (512,)
+处理类别: komondor
+类别 komondor 图像特征维度: (512,)
+处理类别: kuvasz
+类别 kuvasz 图像特征维度: (512,)
+处理类别: malamute
+类别 malamute 图像特征维度: (512,)
+处理类别: malinois
+类别 malinois 图像特征维度: (512,)
+处理类别: miniature_pinscher
+类别 miniature_pinscher 图像特征维度: (512,)
+处理类别: miniature_poodle
+类别 miniature_poodle 图像特征维度: (512,)
+处理类别: miniature_schnauzer
+ 90%|█████████ | 108/120 [00:04<00:00, 28.19it/s] 92%|█████████▎| 111/120 [00:04<00:00, 28.31it/s] 95%|█████████▌| 114/120 [00:04<00:00, 28.31it/s] 98%|█████████▊| 118/120 [00:04<00:00, 28.85it/s]100%|██████████| 120/120 [00:04<00:00, 26.62it/s]
+类别 miniature_schnauzer 图像特征维度: (512,)
+处理类别: otterhound
+类别 otterhound 图像特征维度: (512,)
+处理类别: papillon
+类别 papillon 图像特征维度: (512,)
+处理类别: pug
+类别 pug 图像特征维度: (512,)
+处理类别: redbone
+类别 redbone 图像特征维度: (512,)
+处理类别: schipperke
+类别 schipperke 图像特征维度: (512,)
+处理类别: silky_terrier
+类别 silky_terrier 图像特征维度: (512,)
+处理类别: soft-coated_wheaten_terrier
+类别 soft-coated_wheaten_terrier 图像特征维度: (512,)
+处理类别: standard_poodle
+类别 standard_poodle 图像特征维度: (512,)
+处理类别: standard_schnauzer
+类别 standard_schnauzer 图像特征维度: (512,)
+处理类别: toy_poodle
+类别 toy_poodle 图像特征维度: (512,)
+处理类别: toy_terrier
+类别 toy_terrier 图像特征维度: (512,)
+处理类别: vizsla
+类别 vizsla 图像特征维度: (512,)
+处理类别: whippet
+类别 whippet 图像特征维度: (512,)
+处理类别: wire-haired_fox_terrier
+类别 wire-haired_fox_terrier 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/120 [00:00<?, ?it/s]  1%|          | 1/120 [00:18<36:49, 18.56s/it]  2%|▏         | 2/120 [00:37<37:00, 18.82s/it]  2%|▎         | 3/120 [00:58<38:44, 19.86s/it]处理类别: Afghan_hound
+[2025-11-27 22:41:54] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:41:57] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:42:00] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for Afghan_hound category.
+[2025-11-27 22:42:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 22:42:06] [显存监控] 已分配=16.96GB, 已保留=18.39GB, 空闲=30.44GB
+[2025-11-27 22:42:09] [显存监控] 已分配=16.97GB, 已保留=18.39GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.39GB, 剩余=30.50GB
+MLLM description: The Afghan Hound is a distinctive breed characterized by its long, silky coat, elegant build, and unique facial features.
+
+1. **Distinctive Physical Features**: Afghan Hounds have a slender, athletic body with a deep chest and a long, narrow head. Their ears are large, triangular, and hang down close to the face, giving them an expressive look. Their eyes are almond-shaped and dark in color, often with a gentle, intelligent expression.
+
+2. **Color Patterns and Markings**: Afghan Hounds come in a variety of colors, including black, fawn, brindle, and white. The most common pattern is a solid color, but they can also have markings such as a white blaze or socks on their legs. The coat is long and flowing, especially around the neck, chest, and tail, which gives the breed a regal appearance.
+
+3. **Size and Proportions**: Afghan Hounds are medium-sized dogs, typically standing between 20-26 inches at the shoulder and weighing between 40-70 pounds. They have a balanced body structure, with a long, lean body and a deep chest. Their legs are long and slender, contributing to their graceful gait.
+
+4. **Behavioral Characteristics**: Afghan H
+类别 Afghan_hound 文本特征维度: (512,)
+描述: The Afghan Hound is a distinctive breed characterized by its long, silky coat, elegant build, and un...
+处理类别: African_hunting_dog
+[2025-11-27 22:42:12] [显存监控] 已分配=16.91GB, 已保留=18.39GB, 空闲=30.50GB
+[2025-11-27 22:42:15] [显存监控] 已分配=16.91GB, 已保留=18.39GB, 空闲=30.50GB
+[2025-11-27 22:42:18] [显存监控] 已分配=16.91GB, 已保留=18.39GB, 空闲=30.50GB
+[2025-11-27 22:42:21] [显存监控] 已分配=16.91GB, 已保留=18.39GB, 空闲=30.50GB
+wiki desc: Description for African_hunting_dog category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:42:24] [显存监控] 已分配=16.96GB, 已保留=17.81GB, 空闲=30.45GB
+[2025-11-27 22:42:27] [显存监控] 已分配=16.95GB, 已保留=17.83GB, 空闲=30.45GB
+[2025-11-27 22:42:30] [显存监控] 已分配=16.96GB, 已保留=17.83GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.83GB, 剩余=30.50GB
+MLLM description: The African hunting dog, also known as the African wild dog or painted wolf (Lycaon pictus), is a distinct species with several unique characteristics:
+
+1. **Distinctive Physical Features**: African hunting dogs have a slender build with long legs and a short tail. Their ears are large and pointed, which helps them detect sounds in their environment.
+
+2. **Color Patterns and Markings**: They exhibit a distinctive coat pattern with a mix of black, brown, and white patches. These markings can vary between individuals and are often used to identify different members within a pack.
+
+3. **Size and Proportions**: African hunting dogs are medium-sized, typically weighing around 20-30 kg (44-66 lbs) and measuring about 70-80 cm (28-31 inches) at the shoulder. They have a lean body structure, which is well-suited for running and chasing prey.
+
+4. **Behavioral Characteristics**: African hunting dogs are highly social animals that live in packs of up to 20 individuals. They are known for their cooperative hunting strategies, where they work together to chase down large prey like antelope and warthogs. They are also known for their vocalizations, including barking, howling
+类别 African_hunting_dog 文本特征维度: (512,)
+描述: The African hunting dog, also known as the African wild dog or painted wolf (Lycaon pictus), is a di...
+处理类别: Airedale
+[2025-11-27 22:42:33] [显存监控] 已分配=16.91GB, 已保留=17.83GB, 空闲=30.50GB
+[2025-11-27 22:42:36] [显存监控] 已分配=16.91GB, 已保留=17.83GB, 空闲=30.50GB
+[2025-11-27 22:42:39] [显存监控] 已分配=16.91GB, 已保留=17.83GB, 空闲=30.50GB
+wiki desc: Description for Airedale category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:42:42] [显存监控] 已分配=16.95GB, 已保留=18.26GB, 空闲=30.45GB
+[2025-11-27 22:42:45] [显存监控] 已分配=16.96GB, 已保留=18.30GB, 空闲=30.44GB
+[2025-11-27 22:42:48] [显存监控] 已分配=16.96GB, 已保留=18.30GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.31GB, 剩余=30.50GB
+MLLM description: The Airedale Terrier is a medium to large-sized dog with a distinctive appearance. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The Airedale Terrier has a sturdy build with a muscular body and a long, narrow head. Its ears are medium-sized, hanging down close to the cheeks, and its tail is docked short.
+
+2. **Color Patterns and Markings**: The Airedale Terrier typically has a black and tan coat, with the tan coloration covering most of the body and the black marking the face, chest, and legs. The coat is dense, wiry, and water-resistant, giving it a rugged appearance.
+
+3. **Size and Proportions**: The Airedale Terrier is a medium to large-sized dog, standing around 20-24 inches tall at the shoulder and weighing between 60-80 pounds. They have a balanced body structure with a strong, well-muscled frame.
+
+4. **Behavioral Characteristics**: Airedales are known for their intelligence, loyalty, and high energy levels. They are often described as friendly, playful, and energetic dogs. They are also highly trainable and make excellent companions.
+
+5. **Unique Identifying
+[2025-11-27 22:42:51] [显存监控] 已分配=16.91GB, 已保留=18.31GB, 空闲=30.50GB
+类别 Airedale 文本特征维度: (512,)
+描述: The Airedale Terrier is a medium to large-sized dog with a distinctive appearance. Here's a breakdow...
+处理类别: American_Staffordshire_terrier
+[2025-11-27 22:42:54] [显存监控] 已分配=16.91GB, 已保留=18.31GB, 空闲=30.50GB
+[2025-11-27 22:42:57] [显存监控] 已分配=16.91GB, 已保留=18.31GB, 空闲=30.50GB
+[2025-11-27 22:43:00] [显存监控] 已分配=16.91GB, 已保留=18.31GB, 空闲=30.50GB
+wiki desc: Description for American_Staffordshire_terrier category.
+[2025-11-27 22:43:04] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:43:07] [显存监控] 已分配=16.96GB, 已保留=18.33GB, 空闲=30.44GB
+[2025-11-27 22:43:10] [显存监控] 已分配=16.97GB, 已保留=18.33GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.34GB, 剩余=30.50GB
+  3%|▎         | 4/120 [01:19<39:06, 20.23s/it]  4%|▍         | 5/120 [01:36<36:15, 18.91s/it]Terminated

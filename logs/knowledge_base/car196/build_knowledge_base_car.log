@@ -1,0 +1,1206 @@
+[INFO] === Build Knowledge Base 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=0  # 使用的GPU编号
+Dataset: car (num_classes=)  # 数据集及类别数
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/car196/knowledge_base  # 知识库目录
+Config File: ./configs/expts/car196_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/knowledge_base/car196/build_knowledge_base_car.log  # 日志文件路径
+Run Mode: build_knowledge_base  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: car (car196)
+类别数: 196
+实验目录: ./experiments/car196
+✅ JSON文件检查通过: ./experiments/car196/images_split
+当前使用的 GPU 为：0
+
+=== Experiment Start Time: 2025-11-27 22:23:59 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/car196_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/car196/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/car_196',
+ 'dataset_name': 'car',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/car196',
+ 'expt_dir_describe': './experiments/car196/describe',
+ 'expt_dir_gallery': './experiments/car196/gallery',
+ 'expt_dir_grouping': './experiments/car196/grouping',
+ 'expt_dir_guess': './experiments/car196/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 98,
+ 'num_classes': 196,
+ 'num_novel': 98,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/car196/gallery/car_image_descriptions_attn',
+ 'path_identify_answers': './experiments/car196/identify',
+ 'path_llm_gussed_names': './experiments/car196/guess/car_llm_gussed_names',
+ 'path_llm_prompts': './experiments/car196/describe/car_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/car196/guess/car_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/car196/guess/car_llm_replies_raw',
+ 'path_references': './experiments/car196/gallery/car_image_references',
+ 'path_regions': './experiments/car196/gallery/car_image_regions',
+ 'path_vqa_answers': './experiments/car196/describe/car_attributes_pairs',
+ 'path_vqa_questions': './experiments/car196/describe/car_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "car196",
+    "num_classes": 196,
+    "config_file": "car196_all.yml",
+    "data_dir": "car_196",
+    "experiment_dir": "car196",
+    "stats_file": "car196/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/car196/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/car196"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.12s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.30s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:05,  2.72s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.21s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.61s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.79s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 22:24:08
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/car196/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/car196/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 1475 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 22:26:00
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7bde76b467c0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7bde76b46220>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/car196/knowledge_base
+使用数据集: car, 类别数: 196
+✅ 慢思考模块初始化完成，类别映射数量: 196
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 22:26:00] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+🔄 从训练集随机抽取发现集 (模式: _4)
+✓ 加载训练数据: 196 个类别
+✓ 临时发现集已保存到: ./experiments/car196/images_split/images_discovery_all_temp_4.json
+从JSON文件加载发现集: ./experiments/car196/images_split/images_discovery_all_temp_4.json
+✓ 加载完成: 196 个类别，共 784 张图像
+✓ 创建JSON发现集对象: 196 个类别
+构建知识库，包含 196 个类别, dog datasets:196
+从 ./experiments/car196/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/car196/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/car196/knowledge_base 加载
+图像知识库类别数: 196
+文本知识库类别数: 196
+类别描述数: 196
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+构建知识库...
+训练样本包含 196 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/196 [00:00<?, ?it/s]  1%|          | 1/196 [00:00<01:30,  2.14it/s]  1%|          | 2/196 [00:00<00:50,  3.84it/s]  2%|▏         | 3/196 [00:00<00:44,  4.30it/s]  2%|▏         | 4/196 [00:00<00:36,  5.32it/s]  3%|▎         | 6/196 [00:01<00:32,  5.81it/s]  4%|▎         | 7/196 [00:01<00:29,  6.36it/s]  4%|▍         | 8/196 [00:01<00:28,  6.65it/s]  5%|▍         | 9/196 [00:01<00:28,  6.47it/s]  5%|▌         | 10/196 [00:02<00:44,  4.16it/s]  6%|▌         | 11/196 [00:02<00:42,  4.31it/s]  6%|▌         | 12/196 [00:02<00:43,  4.18it/s]  7%|▋         | 13/196 [00:02<00:46,  3.97it/s]  7%|▋         | 14/196 [00:02<00:39,  4.63it/s]  8%|▊         | 15/196 [00:03<00:33,  5.47it/s]  9%|▊         | 17/196 [00:03<00:27,  6.42it/s]  9%|▉         | 18/196 [00:03<00:27,  6.38it/s] 10%|█         | 20/196 [00:03<00:22,  7.97it/s] 11%|█         | 21/196 [00:03<00:21,  8.09it/s] 11%|█         | 22/196 [00:03<00:24,  7.24it/s] 12%|█▏        | 23/196 [00:04<00:29,  5.88it/s] 12%|█▏        | 24/196 [00:04<00:29,  5.90it/s] 13%|█▎        | 25/196 [00:04<00:27,  6.25it/s] 13%|█▎        | 26/196 [00:04<00:25,  6.57it/s] 14%|█▍        | 27/196 [00:04<00:25,  6.66it/s] 14%|█▍        | 28/196 [00:04<00:25,  6.59it/s] 15%|█▍        | 29/196 [00:05<00:41,  4.03it/s] 15%|█▌        | 30/196 [00:05<00:38,  4.28it/s] 16%|█▌        | 31/196 [00:05<00:32,  5.10it/s] 16%|█▋        | 32/196 [00:05<00:28,  5.83it/s] 17%|█▋        | 33/196 [00:06<00:28,  5.68it/s] 17%|█▋        | 34/196 [00:06<00:27,  5.86it/s] 18%|█▊        | 35/196 [00:06<00:24,  6.52it/s] 18%|█▊        | 36/196 [00:06<00:22,  7.12it/s] 19%|█▉        | 37/196 [00:06<00:20,  7.73it/s] 19%|█▉        | 38/196 [00:07<00:45,  3.47it/s] 20%|█▉        | 39/196 [00:07<00:37,  4.15it/s] 20%|██        | 40/196 [00:07<00:37,  4.20it/s] 21%|██        | 41/196 [00:07<00:33,  4.59it/s] 21%|██▏       | 42/196 [00:07<00:29,  5.14it/s] 22%|██▏       | 43/196 [00:08<00:30,  5.04it/s] 23%|██▎       | 45/196 [00:08<00:22,  6.59it/s] 23%|██▎       | 46/196 [00:08<00:25,  5.90it/s] 24%|██▍       | 47/196 [00:08<00:27,  5.51it/s] 24%|██▍       | 48/196 [00:08<00:24,  6.11it/s] 25%|██▌       | 49/196 [00:08<00:21,  6.71it/s] 26%|██▌       | 50/196 [00:09<00:20,  7.20it/s] 27%|██▋       | 52/196 [00:09<00:19,  7.38it/s] 28%|██▊       | 54/196 [00:09<00:17,  8.20it/s] 28%|██▊       | 55/196 [00:09<00:18,  7.48it/s] 29%|██▊       | 56/196 [00:09<00:17,  7.93it/s] 29%|██▉       | 57/196 [00:10<00:21,  6.47it/s] 30%|██▉       | 58/196 [00:10<00:25,  5.44it/s] 30%|███       | 59/196 [00:10<00:22,  6.16it/s] 31%|███       | 61/196 [00:10<00:17,  7.66it/s] 32%|███▏      | 63/196 [00:10<00:17,  7.75it/s] 33%|███▎      | 64/196 [00:10<00:18,  7.19it/s] 34%|███▎      | 66/196 [00:11<00:16,  8.05it/s] 34%|███▍      | 67/196 [00:11<00:16,  7.94it/s] 35%|███▍      | 68/196 [00:11<00:18,  6.87it/s] 35%|███▌      | 69/196 [00:11<00:20,  6.22it/s] 36%|███▌      | 70/196 [00:11<00:21,  5.77it/s] 36%|███▌      | 71/196 [00:12<00:19,  6.48it/s] 37%|███▋      | 72/196 [00:12<00:19,  6.27it/s] 37%|███▋      | 73/196 [00:12<00:22,  5.52it/s] 38%|███▊      | 74/196 [00:12<00:19,  6.33it/s] 38%|███▊      | 75/196 [00:12<00:17,  6.74it/s]处理类别: AM General Hummer SUV 2000
+类别 AM General Hummer SUV 2000 图像特征维度: (512,)
+处理类别: Acura RL Sedan 2012
+类别 Acura RL Sedan 2012 图像特征维度: (512,)
+处理类别: Acura TL Sedan 2012
+类别 Acura TL Sedan 2012 图像特征维度: (512,)
+处理类别: Acura TL Type-S 2008
+类别 Acura TL Type-S 2008 图像特征维度: (512,)
+处理类别: Acura TSX Sedan 2012
+类别 Acura TSX Sedan 2012 图像特征维度: (512,)
+处理类别: Acura Integra Type R 2001
+类别 Acura Integra Type R 2001 图像特征维度: (512,)
+处理类别: Acura ZDX Hatchback 2012
+类别 Acura ZDX Hatchback 2012 图像特征维度: (512,)
+处理类别: Aston Martin V8 Vantage Convertible 2012
+类别 Aston Martin V8 Vantage Convertible 2012 图像特征维度: (512,)
+处理类别: Aston Martin V8 Vantage Coupe 2012
+类别 Aston Martin V8 Vantage Coupe 2012 图像特征维度: (512,)
+处理类别: Aston Martin Virage Convertible 2012
+类别 Aston Martin Virage Convertible 2012 图像特征维度: (512,)
+处理类别: Aston Martin Virage Coupe 2012
+[2025-11-27 22:26:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Aston Martin Virage Coupe 2012 图像特征维度: (512,)
+处理类别: Audi RS 4 Convertible 2008
+类别 Audi RS 4 Convertible 2008 图像特征维度: (512,)
+处理类别: Audi A5 Coupe 2012
+类别 Audi A5 Coupe 2012 图像特征维度: (512,)
+处理类别: Audi TTS Coupe 2012
+类别 Audi TTS Coupe 2012 图像特征维度: (512,)
+处理类别: Audi R8 Coupe 2012
+类别 Audi R8 Coupe 2012 图像特征维度: (512,)
+处理类别: Audi V8 Sedan 1994
+类别 Audi V8 Sedan 1994 图像特征维度: (512,)
+处理类别: Audi 100 Sedan 1994
+类别 Audi 100 Sedan 1994 图像特征维度: (512,)
+处理类别: Audi 100 Wagon 1994
+类别 Audi 100 Wagon 1994 图像特征维度: (512,)
+处理类别: Audi TT Hatchback 2011
+类别 Audi TT Hatchback 2011 图像特征维度: (512,)
+处理类别: Audi S6 Sedan 2011
+类别 Audi S6 Sedan 2011 图像特征维度: (512,)
+处理类别: Audi S5 Convertible 2012
+类别 Audi S5 Convertible 2012 图像特征维度: (512,)
+处理类别: Audi S5 Coupe 2012
+类别 Audi S5 Coupe 2012 图像特征维度: (512,)
+处理类别: Audi S4 Sedan 2012
+类别 Audi S4 Sedan 2012 图像特征维度: (512,)
+处理类别: Audi S4 Sedan 2007
+类别 Audi S4 Sedan 2007 图像特征维度: (512,)
+处理类别: Audi TT RS Coupe 2012
+类别 Audi TT RS Coupe 2012 图像特征维度: (512,)
+处理类别: BMW ActiveHybrid 5 Sedan 2012
+类别 BMW ActiveHybrid 5 Sedan 2012 图像特征维度: (512,)
+处理类别: BMW 1 Series Convertible 2012
+类别 BMW 1 Series Convertible 2012 图像特征维度: (512,)
+处理类别: BMW 1 Series Coupe 2012
+类别 BMW 1 Series Coupe 2012 图像特征维度: (512,)
+处理类别: BMW 3 Series Sedan 2012
+[2025-11-27 22:26:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 BMW 3 Series Sedan 2012 图像特征维度: (512,)
+处理类别: BMW 3 Series Wagon 2012
+类别 BMW 3 Series Wagon 2012 图像特征维度: (512,)
+处理类别: BMW 6 Series Convertible 2007
+类别 BMW 6 Series Convertible 2007 图像特征维度: (512,)
+处理类别: BMW X5 SUV 2007
+类别 BMW X5 SUV 2007 图像特征维度: (512,)
+处理类别: BMW X6 SUV 2012
+类别 BMW X6 SUV 2012 图像特征维度: (512,)
+处理类别: BMW M3 Coupe 2012
+类别 BMW M3 Coupe 2012 图像特征维度: (512,)
+处理类别: BMW M5 Sedan 2010
+类别 BMW M5 Sedan 2010 图像特征维度: (512,)
+处理类别: BMW M6 Convertible 2010
+类别 BMW M6 Convertible 2010 图像特征维度: (512,)
+处理类别: BMW X3 SUV 2012
+类别 BMW X3 SUV 2012 图像特征维度: (512,)
+处理类别: BMW Z4 Convertible 2012
+类别 BMW Z4 Convertible 2012 图像特征维度: (512,)
+处理类别: Bentley Continental Supersports Conv. Convertible 2012
+类别 Bentley Continental Supersports Conv. Convertible 2012 图像特征维度: (512,)
+处理类别: Bentley Arnage Sedan 2009
+类别 Bentley Arnage Sedan 2009 图像特征维度: (512,)
+处理类别: Bentley Mulsanne Sedan 2011
+类别 Bentley Mulsanne Sedan 2011 图像特征维度: (512,)
+处理类别: Bentley Continental GT Coupe 2012
+类别 Bentley Continental GT Coupe 2012 图像特征维度: (512,)
+处理类别: Bentley Continental GT Coupe 2007
+类别 Bentley Continental GT Coupe 2007 图像特征维度: (512,)
+处理类别: Bentley Continental Flying Spur Sedan 2007
+类别 Bentley Continental Flying Spur Sedan 2007 图像特征维度: (512,)
+处理类别: Bugatti Veyron 16.4 Convertible 2009
+[2025-11-27 22:26:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Bugatti Veyron 16.4 Convertible 2009 图像特征维度: (512,)
+处理类别: Bugatti Veyron 16.4 Coupe 2009
+类别 Bugatti Veyron 16.4 Coupe 2009 图像特征维度: (512,)
+处理类别: Buick Regal GS 2012
+类别 Buick Regal GS 2012 图像特征维度: (512,)
+处理类别: Buick Rainier SUV 2007
+类别 Buick Rainier SUV 2007 图像特征维度: (512,)
+处理类别: Buick Verano Sedan 2012
+类别 Buick Verano Sedan 2012 图像特征维度: (512,)
+处理类别: Buick Enclave SUV 2012
+类别 Buick Enclave SUV 2012 图像特征维度: (512,)
+处理类别: Cadillac CTS-V Sedan 2012
+类别 Cadillac CTS-V Sedan 2012 图像特征维度: (512,)
+处理类别: Cadillac SRX SUV 2012
+类别 Cadillac SRX SUV 2012 图像特征维度: (512,)
+处理类别: Cadillac Escalade EXT Crew Cab 2007
+类别 Cadillac Escalade EXT Crew Cab 2007 图像特征维度: (512,)
+处理类别: Chevrolet Silverado 1500 Hybrid Crew Cab 2012
+类别 Chevrolet Silverado 1500 Hybrid Crew Cab 2012 图像特征维度: (512,)
+处理类别: Chevrolet Corvette Convertible 2012
+类别 Chevrolet Corvette Convertible 2012 图像特征维度: (512,)
+处理类别: Chevrolet Corvette ZR1 2012
+类别 Chevrolet Corvette ZR1 2012 图像特征维度: (512,)
+处理类别: Chevrolet Corvette Ron Fellows Edition Z06 2007
+类别 Chevrolet Corvette Ron Fellows Edition Z06 2007 图像特征维度: (512,)
+处理类别: Chevrolet Traverse SUV 2012
+类别 Chevrolet Traverse SUV 2012 图像特征维度: (512,)
+处理类别: Chevrolet Camaro Convertible 2012
+类别 Chevrolet Camaro Convertible 2012 图像特征维度: (512,)
+处理类别: Chevrolet HHR SS 2010
+类别 Chevrolet HHR SS 2010 图像特征维度: (512,)
+处理类别: Chevrolet Impala Sedan 2007
+类别 Chevrolet Impala Sedan 2007 图像特征维度: (512,)
+处理类别: Chevrolet Tahoe Hybrid SUV 2012
+类别 Chevrolet Tahoe Hybrid SUV 2012 图像特征维度: (512,)
+处理类别: Chevrolet Sonic Sedan 2012
+类别 Chevrolet Sonic Sedan 2012 图像特征维度: (512,)
+处理类别: Chevrolet Express Cargo Van 2007
+类别 Chevrolet Express Cargo Van 2007 图像特征维度: (512,)
+处理类别: Chevrolet Avalanche Crew Cab 2012
+类别 Chevrolet Avalanche Crew Cab 2012 图像特征维度: (512,)
+处理类别: Chevrolet Cobalt SS 2010
+类别 Chevrolet Cobalt SS 2010 图像特征维度: (512,)
+处理类别: Chevrolet Malibu Hybrid Sedan 2010
+[2025-11-27 22:26:12] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Chevrolet Malibu Hybrid Sedan 2010 图像特征维度: (512,)
+处理类别: Chevrolet TrailBlazer SS 2009
+类别 Chevrolet TrailBlazer SS 2009 图像特征维度: (512,)
+处理类别: Chevrolet Silverado 2500HD Regular Cab 2012
+类别 Chevrolet Silverado 2500HD Regular Cab 2012 图像特征维度: (512,)
+处理类别: Chevrolet Silverado 1500 Classic Extended Cab 2007
+类别 Chevrolet Silverado 1500 Classic Extended Cab 2007 图像特征维度: (512,)
+处理类别: Chevrolet Express Van 2007
+类别 Chevrolet Express Van 2007 图像特征维度: (512,)
+处理类别: Chevrolet Monte Carlo Coupe 2007
+类别 Chevrolet Monte Carlo Coupe 2007 图像特征维度: (512,)
+处理类别: Chevrolet Malibu Sedan 2007
+类别 Chevrolet Malibu Sedan 2007 图像特征维度: (512,)
+处理类别: Chevrolet Silverado 1500 Extended Cab 2012
+类别 Chevrolet Silverado 1500 Extended Cab 2012 图像特征维度: (512,)
+处理类别: Chevrolet Silverado 1500 Regular Cab 2012
+类别 Chevrolet Silverado 1500 Regular Cab 2012 图像特征维度: (512,)
+ 39%|███▉      | 76/196 [00:12<00:17,  6.83it/s] 39%|███▉      | 77/196 [00:12<00:16,  7.35it/s] 40%|███▉      | 78/196 [00:13<00:15,  7.44it/s] 40%|████      | 79/196 [00:13<00:14,  8.04it/s] 41%|████      | 80/196 [00:13<00:15,  7.29it/s] 41%|████▏     | 81/196 [00:13<00:16,  6.83it/s] 42%|████▏     | 83/196 [00:13<00:13,  8.11it/s] 43%|████▎     | 84/196 [00:13<00:14,  7.77it/s] 44%|████▍     | 86/196 [00:14<00:12,  8.72it/s] 44%|████▍     | 87/196 [00:14<00:18,  5.90it/s] 45%|████▍     | 88/196 [00:14<00:19,  5.68it/s] 45%|████▌     | 89/196 [00:14<00:19,  5.39it/s] 46%|████▌     | 90/196 [00:14<00:19,  5.50it/s] 46%|████▋     | 91/196 [00:15<00:19,  5.43it/s] 47%|████▋     | 93/196 [00:15<00:17,  5.78it/s] 48%|████▊     | 94/196 [00:15<00:16,  6.04it/s] 48%|████▊     | 95/196 [00:15<00:16,  6.00it/s] 49%|████▉     | 96/196 [00:15<00:15,  6.36it/s] 49%|████▉     | 97/196 [00:16<00:14,  6.63it/s] 50%|█████     | 98/196 [00:16<00:15,  6.47it/s] 51%|█████     | 99/196 [00:16<00:18,  5.33it/s] 51%|█████     | 100/196 [00:16<00:15,  6.00it/s] 52%|█████▏    | 101/196 [00:16<00:15,  6.13it/s] 52%|█████▏    | 102/196 [00:16<00:15,  6.00it/s] 53%|█████▎    | 103/196 [00:17<00:16,  5.56it/s] 53%|█████▎    | 104/196 [00:17<00:16,  5.64it/s] 54%|█████▎    | 105/196 [00:17<00:15,  5.89it/s] 54%|█████▍    | 106/196 [00:17<00:13,  6.54it/s] 55%|█████▍    | 107/196 [00:17<00:13,  6.51it/s] 56%|█████▌    | 109/196 [00:17<00:10,  8.19it/s] 57%|█████▋    | 111/196 [00:18<00:08,  9.69it/s] 57%|█████▋    | 112/196 [00:18<00:10,  8.21it/s] 58%|█████▊    | 113/196 [00:18<00:11,  7.37it/s] 58%|█████▊    | 114/196 [00:18<00:10,  7.51it/s] 59%|█████▊    | 115/196 [00:18<00:11,  7.16it/s] 59%|█████▉    | 116/196 [00:18<00:10,  7.36it/s] 60%|█████▉    | 117/196 [00:18<00:09,  7.92it/s] 61%|██████    | 119/196 [00:19<00:08,  9.12it/s] 61%|██████    | 120/196 [00:19<00:09,  8.36it/s] 62%|██████▏   | 121/196 [00:19<00:10,  7.42it/s] 63%|██████▎   | 123/196 [00:19<00:09,  7.99it/s] 63%|██████▎   | 124/196 [00:19<00:08,  8.21it/s] 64%|██████▍   | 126/196 [00:19<00:07,  8.77it/s] 65%|██████▍   | 127/196 [00:20<00:07,  8.91it/s] 65%|██████▌   | 128/196 [00:20<00:08,  8.47it/s] 66%|██████▌   | 129/196 [00:20<00:08,  8.04it/s] 66%|██████▋   | 130/196 [00:20<00:09,  6.68it/s] 67%|██████▋   | 131/196 [00:20<00:10,  6.06it/s] 67%|██████▋   | 132/196 [00:20<00:09,  6.57it/s] 68%|██████▊   | 133/196 [00:21<00:09,  6.57it/s] 68%|██████▊   | 134/196 [00:21<00:08,  7.15it/s] 69%|██████▉   | 136/196 [00:21<00:07,  8.21it/s] 70%|██████▉   | 137/196 [00:21<00:07,  8.20it/s] 70%|███████   | 138/196 [00:21<00:07,  7.95it/s] 71%|███████   | 139/196 [00:21<00:08,  7.11it/s] 71%|███████▏  | 140/196 [00:21<00:08,  6.84it/s] 72%|███████▏  | 141/196 [00:22<00:09,  6.06it/s] 72%|███████▏  | 142/196 [00:22<00:08,  6.65it/s] 73%|███████▎  | 144/196 [00:22<00:07,  7.41it/s] 74%|███████▍  | 145/196 [00:22<00:07,  6.60it/s] 74%|███████▍  | 146/196 [00:22<00:06,  7.17it/s] 75%|███████▌  | 147/196 [00:22<00:06,  7.69it/s] 76%|███████▌  | 149/196 [00:23<00:05,  7.99it/s] 77%|███████▋  | 150/196 [00:23<00:05,  8.15it/s]处理类别: Chrysler Aspen SUV 2009
+类别 Chrysler Aspen SUV 2009 图像特征维度: (512,)
+处理类别: Chrysler Sebring Convertible 2010
+类别 Chrysler Sebring Convertible 2010 图像特征维度: (512,)
+处理类别: Chrysler Town and Country Minivan 2012
+类别 Chrysler Town and Country Minivan 2012 图像特征维度: (512,)
+处理类别: Chrysler 300 SRT-8 2010
+类别 Chrysler 300 SRT-8 2010 图像特征维度: (512,)
+处理类别: Chrysler Crossfire Convertible 2008
+类别 Chrysler Crossfire Convertible 2008 图像特征维度: (512,)
+处理类别: Chrysler PT Cruiser Convertible 2008
+类别 Chrysler PT Cruiser Convertible 2008 图像特征维度: (512,)
+处理类别: Daewoo Nubira Wagon 2002
+类别 Daewoo Nubira Wagon 2002 图像特征维度: (512,)
+处理类别: Dodge Caliber Wagon 2012
+类别 Dodge Caliber Wagon 2012 图像特征维度: (512,)
+处理类别: Dodge Caliber Wagon 2007
+类别 Dodge Caliber Wagon 2007 图像特征维度: (512,)
+处理类别: Dodge Caravan Minivan 1997
+类别 Dodge Caravan Minivan 1997 图像特征维度: (512,)
+处理类别: Dodge Ram Pickup 3500 Crew Cab 2010
+类别 Dodge Ram Pickup 3500 Crew Cab 2010 图像特征维度: (512,)
+处理类别: Dodge Ram Pickup 3500 Quad Cab 2009
+[2025-11-27 22:26:15] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Dodge Ram Pickup 3500 Quad Cab 2009 图像特征维度: (512,)
+处理类别: Dodge Sprinter Cargo Van 2009
+类别 Dodge Sprinter Cargo Van 2009 图像特征维度: (512,)
+处理类别: Dodge Journey SUV 2012
+类别 Dodge Journey SUV 2012 图像特征维度: (512,)
+处理类别: Dodge Dakota Crew Cab 2010
+类别 Dodge Dakota Crew Cab 2010 图像特征维度: (512,)
+处理类别: Dodge Dakota Club Cab 2007
+类别 Dodge Dakota Club Cab 2007 图像特征维度: (512,)
+处理类别: Dodge Magnum Wagon 2008
+类别 Dodge Magnum Wagon 2008 图像特征维度: (512,)
+处理类别: Dodge Challenger SRT8 2011
+类别 Dodge Challenger SRT8 2011 图像特征维度: (512,)
+处理类别: Dodge Durango SUV 2012
+类别 Dodge Durango SUV 2012 图像特征维度: (512,)
+处理类别: Dodge Durango SUV 2007
+类别 Dodge Durango SUV 2007 图像特征维度: (512,)
+处理类别: Dodge Charger Sedan 2012
+类别 Dodge Charger Sedan 2012 图像特征维度: (512,)
+处理类别: Dodge Charger SRT-8 2009
+类别 Dodge Charger SRT-8 2009 图像特征维度: (512,)
+处理类别: Eagle Talon Hatchback 1998
+类别 Eagle Talon Hatchback 1998 图像特征维度: (512,)
+处理类别: FIAT 500 Abarth 2012
+类别 FIAT 500 Abarth 2012 图像特征维度: (512,)
+处理类别: FIAT 500 Convertible 2012
+类别 FIAT 500 Convertible 2012 图像特征维度: (512,)
+处理类别: Ferrari FF Coupe 2012
+类别 Ferrari FF Coupe 2012 图像特征维度: (512,)
+处理类别: Ferrari California Convertible 2012
+类别 Ferrari California Convertible 2012 图像特征维度: (512,)
+处理类别: Ferrari 458 Italia Convertible 2012
+类别 Ferrari 458 Italia Convertible 2012 图像特征维度: (512,)
+处理类别: Ferrari 458 Italia Coupe 2012
+[2025-11-27 22:26:18] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Ferrari 458 Italia Coupe 2012 图像特征维度: (512,)
+处理类别: Fisker Karma Sedan 2012
+类别 Fisker Karma Sedan 2012 图像特征维度: (512,)
+处理类别: Ford F-450 Super Duty Crew Cab 2012
+类别 Ford F-450 Super Duty Crew Cab 2012 图像特征维度: (512,)
+处理类别: Ford Mustang Convertible 2007
+类别 Ford Mustang Convertible 2007 图像特征维度: (512,)
+处理类别: Ford Freestar Minivan 2007
+类别 Ford Freestar Minivan 2007 图像特征维度: (512,)
+处理类别: Ford Expedition EL SUV 2009
+类别 Ford Expedition EL SUV 2009 图像特征维度: (512,)
+处理类别: Ford Edge SUV 2012
+类别 Ford Edge SUV 2012 图像特征维度: (512,)
+处理类别: Ford Ranger SuperCab 2011
+类别 Ford Ranger SuperCab 2011 图像特征维度: (512,)
+处理类别: Ford GT Coupe 2006
+类别 Ford GT Coupe 2006 图像特征维度: (512,)
+处理类别: Ford F-150 Regular Cab 2012
+类别 Ford F-150 Regular Cab 2012 图像特征维度: (512,)
+处理类别: Ford F-150 Regular Cab 2007
+类别 Ford F-150 Regular Cab 2007 图像特征维度: (512,)
+处理类别: Ford Focus Sedan 2007
+类别 Ford Focus Sedan 2007 图像特征维度: (512,)
+处理类别: Ford E-Series Wagon Van 2012
+类别 Ford E-Series Wagon Van 2012 图像特征维度: (512,)
+处理类别: Ford Fiesta Sedan 2012
+类别 Ford Fiesta Sedan 2012 图像特征维度: (512,)
+处理类别: GMC Terrain SUV 2012
+类别 GMC Terrain SUV 2012 图像特征维度: (512,)
+处理类别: GMC Savana Van 2012
+类别 GMC Savana Van 2012 图像特征维度: (512,)
+处理类别: GMC Yukon Hybrid SUV 2012
+类别 GMC Yukon Hybrid SUV 2012 图像特征维度: (512,)
+处理类别: GMC Acadia SUV 2012
+类别 GMC Acadia SUV 2012 图像特征维度: (512,)
+处理类别: GMC Canyon Extended Cab 2012
+类别 GMC Canyon Extended Cab 2012 图像特征维度: (512,)
+处理类别: Geo Metro Convertible 1993
+类别 Geo Metro Convertible 1993 图像特征维度: (512,)
+处理类别: HUMMER H3T Crew Cab 2010
+类别 HUMMER H3T Crew Cab 2010 图像特征维度: (512,)
+处理类别: HUMMER H2 SUT Crew Cab 2009
+类别 HUMMER H2 SUT Crew Cab 2009 图像特征维度: (512,)
+处理类别: Honda Odyssey Minivan 2012
+类别 Honda Odyssey Minivan 2012 图像特征维度: (512,)
+处理类别: Honda Odyssey Minivan 2007
+类别 Honda Odyssey Minivan 2007 图像特征维度: (512,)
+处理类别: Honda Accord Coupe 2012
+类别 Honda Accord Coupe 2012 图像特征维度: (512,)
+处理类别: Honda Accord Sedan 2012
+[2025-11-27 22:26:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Honda Accord Sedan 2012 图像特征维度: (512,)
+处理类别: Hyundai Veloster Hatchback 2012
+类别 Hyundai Veloster Hatchback 2012 图像特征维度: (512,)
+处理类别: Hyundai Santa Fe SUV 2012
+类别 Hyundai Santa Fe SUV 2012 图像特征维度: (512,)
+处理类别: Hyundai Tucson SUV 2012
+类别 Hyundai Tucson SUV 2012 图像特征维度: (512,)
+处理类别: Hyundai Veracruz SUV 2012
+类别 Hyundai Veracruz SUV 2012 图像特征维度: (512,)
+处理类别: Hyundai Sonata Hybrid Sedan 2012
+类别 Hyundai Sonata Hybrid Sedan 2012 图像特征维度: (512,)
+处理类别: Hyundai Elantra Sedan 2007
+类别 Hyundai Elantra Sedan 2007 图像特征维度: (512,)
+处理类别: Hyundai Accent Sedan 2012
+类别 Hyundai Accent Sedan 2012 图像特征维度: (512,)
+处理类别: Hyundai Genesis Sedan 2012
+类别 Hyundai Genesis Sedan 2012 图像特征维度: (512,)
+处理类别: Hyundai Sonata Sedan 2012
+类别 Hyundai Sonata Sedan 2012 图像特征维度: (512,)
+处理类别: Hyundai Elantra Touring Hatchback 2012
+类别 Hyundai Elantra Touring Hatchback 2012 图像特征维度: (512,)
+处理类别: Hyundai Azera Sedan 2012
+类别 Hyundai Azera Sedan 2012 图像特征维度: (512,)
+处理类别: Infiniti G Coupe IPL 2012
+类别 Infiniti G Coupe IPL 2012 图像特征维度: (512,)
+处理类别: Infiniti QX56 SUV 2011
+类别 Infiniti QX56 SUV 2011 图像特征维度: (512,)
+处理类别: Isuzu Ascender SUV 2008
+类别 Isuzu Ascender SUV 2008 图像特征维度: (512,)
+处理类别: Jaguar XK XKR 2012
+类别 Jaguar XK XKR 2012 图像特征维度: (512,)
+处理类别: Jeep Patriot SUV 2012
+类别 Jeep Patriot SUV 2012 图像特征维度: (512,)
+处理类别: Jeep Wrangler SUV 2012
+类别 Jeep Wrangler SUV 2012 图像特征维度: (512,)
+处理类别: Jeep Liberty SUV 2012
+类别 Jeep Liberty SUV 2012 图像特征维度: (512,)
+处理类别: Jeep Grand Cherokee SUV 2012
+类别 Jeep Grand Cherokee SUV 2012 图像特征维度: (512,)
+处理类别: Jeep Compass SUV 2012
+类别 Jeep Compass SUV 2012 图像特征维度: (512,)
+处理类别: Lamborghini Reventon Coupe 2008
+[2025-11-27 22:26:24] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Lamborghini Reventon Coupe 2008 图像特征维度: (512,)
+处理类别: Lamborghini Aventador Coupe 2012
+类别 Lamborghini Aventador Coupe 2012 图像特征维度: (512,)
+处理类别: Lamborghini Gallardo LP 570-4 Superleggera 2012
+ 78%|███████▊  | 152/196 [00:23<00:04, 10.04it/s] 79%|███████▊  | 154/196 [00:23<00:04,  9.44it/s] 80%|███████▉  | 156/196 [00:23<00:03, 10.41it/s] 81%|████████  | 158/196 [00:23<00:03, 10.66it/s] 82%|████████▏ | 160/196 [00:24<00:03,  9.43it/s] 83%|████████▎ | 162/196 [00:24<00:03,  8.60it/s] 84%|████████▎ | 164/196 [00:24<00:03,  8.56it/s] 84%|████████▍ | 165/196 [00:24<00:03,  8.66it/s] 85%|████████▌ | 167/196 [00:25<00:03,  8.94it/s] 86%|████████▌ | 169/196 [00:25<00:02,  9.44it/s] 87%|████████▋ | 170/196 [00:25<00:03,  8.21it/s] 88%|████████▊ | 172/196 [00:25<00:02,  8.73it/s] 88%|████████▊ | 173/196 [00:25<00:02,  8.43it/s] 89%|████████▉ | 175/196 [00:25<00:02,  8.98it/s] 90%|████████▉ | 176/196 [00:26<00:02,  8.67it/s] 91%|█████████ | 178/196 [00:26<00:01,  9.48it/s] 91%|█████████▏| 179/196 [00:26<00:01,  8.82it/s] 92%|█████████▏| 181/196 [00:26<00:01,  9.55it/s] 93%|█████████▎| 182/196 [00:26<00:01,  8.75it/s] 93%|█████████▎| 183/196 [00:27<00:02,  6.17it/s] 94%|█████████▍| 184/196 [00:27<00:01,  6.59it/s] 95%|█████████▍| 186/196 [00:27<00:01,  7.82it/s] 96%|█████████▌| 188/196 [00:27<00:00,  8.78it/s] 96%|█████████▋| 189/196 [00:27<00:00,  8.80it/s] 97%|█████████▋| 191/196 [00:27<00:00,  9.21it/s] 98%|█████████▊| 193/196 [00:28<00:00,  9.28it/s] 99%|█████████▉| 194/196 [00:28<00:00,  9.39it/s]100%|██████████| 196/196 [00:28<00:00, 10.22it/s]100%|██████████| 196/196 [00:28<00:00,  6.91it/s]
+类别 Lamborghini Gallardo LP 570-4 Superleggera 2012 图像特征维度: (512,)
+处理类别: Lamborghini Diablo Coupe 2001
+类别 Lamborghini Diablo Coupe 2001 图像特征维度: (512,)
+处理类别: Land Rover Range Rover SUV 2012
+类别 Land Rover Range Rover SUV 2012 图像特征维度: (512,)
+处理类别: Land Rover LR2 SUV 2012
+类别 Land Rover LR2 SUV 2012 图像特征维度: (512,)
+处理类别: Lincoln Town Car Sedan 2011
+类别 Lincoln Town Car Sedan 2011 图像特征维度: (512,)
+处理类别: MINI Cooper Roadster Convertible 2012
+类别 MINI Cooper Roadster Convertible 2012 图像特征维度: (512,)
+处理类别: Maybach Landaulet Convertible 2012
+类别 Maybach Landaulet Convertible 2012 图像特征维度: (512,)
+处理类别: Mazda Tribute SUV 2011
+类别 Mazda Tribute SUV 2011 图像特征维度: (512,)
+处理类别: McLaren MP4-12C Coupe 2012
+类别 McLaren MP4-12C Coupe 2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz 300-Class Convertible 1993
+类别 Mercedes-Benz 300-Class Convertible 1993 图像特征维度: (512,)
+处理类别: Mercedes-Benz C-Class Sedan 2012
+类别 Mercedes-Benz C-Class Sedan 2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz SL-Class Coupe 2009
+类别 Mercedes-Benz SL-Class Coupe 2009 图像特征维度: (512,)
+处理类别: Mercedes-Benz E-Class Sedan 2012
+类别 Mercedes-Benz E-Class Sedan 2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz S-Class Sedan 2012
+类别 Mercedes-Benz S-Class Sedan 2012 图像特征维度: (512,)
+处理类别: Mercedes-Benz Sprinter Van 2012
+类别 Mercedes-Benz Sprinter Van 2012 图像特征维度: (512,)
+处理类别: Mitsubishi Lancer Sedan 2012
+类别 Mitsubishi Lancer Sedan 2012 图像特征维度: (512,)
+处理类别: Nissan Leaf Hatchback 2012
+类别 Nissan Leaf Hatchback 2012 图像特征维度: (512,)
+处理类别: Nissan NV Passenger Van 2012
+类别 Nissan NV Passenger Van 2012 图像特征维度: (512,)
+处理类别: Nissan Juke Hatchback 2012
+类别 Nissan Juke Hatchback 2012 图像特征维度: (512,)
+处理类别: Nissan 240SX Coupe 1998
+类别 Nissan 240SX Coupe 1998 图像特征维度: (512,)
+处理类别: Plymouth Neon Coupe 1999
+类别 Plymouth Neon Coupe 1999 图像特征维度: (512,)
+处理类别: Porsche Panamera Sedan 2012
+类别 Porsche Panamera Sedan 2012 图像特征维度: (512,)
+处理类别: Ram C/V Cargo Van Minivan 2012
+类别 Ram C/V Cargo Van Minivan 2012 图像特征维度: (512,)
+处理类别: Rolls-Royce Phantom Drophead Coupe Convertible 2012
+类别 Rolls-Royce Phantom Drophead Coupe Convertible 2012 图像特征维度: (512,)
+处理类别: Rolls-Royce Ghost Sedan 2012
+类别 Rolls-Royce Ghost Sedan 2012 图像特征维度: (512,)
+处理类别: Rolls-Royce Phantom Sedan 2012
+类别 Rolls-Royce Phantom Sedan 2012 图像特征维度: (512,)
+处理类别: Scion xD Hatchback 2012
+[2025-11-27 22:26:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 Scion xD Hatchback 2012 图像特征维度: (512,)
+处理类别: Spyker C8 Convertible 2009
+类别 Spyker C8 Convertible 2009 图像特征维度: (512,)
+处理类别: Spyker C8 Coupe 2009
+类别 Spyker C8 Coupe 2009 图像特征维度: (512,)
+处理类别: Suzuki Aerio Sedan 2007
+类别 Suzuki Aerio Sedan 2007 图像特征维度: (512,)
+处理类别: Suzuki Kizashi Sedan 2012
+类别 Suzuki Kizashi Sedan 2012 图像特征维度: (512,)
+处理类别: Suzuki SX4 Hatchback 2012
+类别 Suzuki SX4 Hatchback 2012 图像特征维度: (512,)
+处理类别: Suzuki SX4 Sedan 2012
+类别 Suzuki SX4 Sedan 2012 图像特征维度: (512,)
+处理类别: Tesla Model S Sedan 2012
+类别 Tesla Model S Sedan 2012 图像特征维度: (512,)
+处理类别: Toyota Sequoia SUV 2012
+类别 Toyota Sequoia SUV 2012 图像特征维度: (512,)
+处理类别: Toyota Camry Sedan 2012
+类别 Toyota Camry Sedan 2012 图像特征维度: (512,)
+处理类别: Toyota Corolla Sedan 2012
+类别 Toyota Corolla Sedan 2012 图像特征维度: (512,)
+处理类别: Toyota 4Runner SUV 2012
+类别 Toyota 4Runner SUV 2012 图像特征维度: (512,)
+处理类别: Volkswagen Golf Hatchback 2012
+类别 Volkswagen Golf Hatchback 2012 图像特征维度: (512,)
+处理类别: Volkswagen Golf Hatchback 1991
+类别 Volkswagen Golf Hatchback 1991 图像特征维度: (512,)
+处理类别: Volkswagen Beetle Hatchback 2012
+类别 Volkswagen Beetle Hatchback 2012 图像特征维度: (512,)
+处理类别: Volvo C30 Hatchback 2012
+类别 Volvo C30 Hatchback 2012 图像特征维度: (512,)
+处理类别: Volvo 240 Sedan 1993
+类别 Volvo 240 Sedan 1993 图像特征维度: (512,)
+处理类别: Volvo XC90 SUV 2007
+类别 Volvo XC90 SUV 2007 图像特征维度: (512,)
+处理类别: smart fortwo Convertible 2012
+类别 smart fortwo Convertible 2012 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/196 [00:00<?, ?it/s]  1%|          | 1/196 [00:19<1:02:22, 19.19s/it]  1%|          | 2/196 [00:37<1:00:34, 18.73s/it]  2%|▏         | 3/196 [00:58<1:03:26, 19.72s/it]处理类别: AM General Hummer SUV 2000
+[2025-11-27 22:26:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:26:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:26:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:26:39] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for AM General Hummer SUV 2000 category.
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-27 22:26:42] [显存监控] 已分配=16.98GB, 已保留=17.22GB, 空闲=30.42GB
+[2025-11-27 22:26:45] [显存监控] 已分配=17.00GB, 已保留=19.87GB, 空闲=30.40GB
+[2025-11-27 22:26:48] [显存监控] 已分配=17.00GB, 已保留=19.88GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.88GB, 剩余=30.50GB
+MLLM description: The AM General Hummer SUV 2000 is characterized by its robust and boxy design, with a high ground clearance and large tires, making it well-suited for off-road conditions. Its distinctive features include a prominent front grille with vertical slats, round headlights, and a rugged bumper. The vehicle in the first image is painted in a vibrant red color, while the second and third images feature vehicles in silver and white, respectively. The size and proportions of the Hummer are large and imposing, with a long wheelbase and wide stance. The behavioral characteristic observed in the first image is the vehicle driving through snow, showcasing its capability to handle challenging terrains. The unique identifying traits of the Hummer include its iconic design elements such as the large grille, round headlights, and the overall boxy shape.
+类别 AM General Hummer SUV 2000 文本特征维度: (512,)
+描述: The AM General Hummer SUV 2000 is characterized by its robust and boxy design, with a high ground cl...
+处理类别: Acura RL Sedan 2012
+[2025-11-27 22:26:51] [显存监控] 已分配=16.91GB, 已保留=19.88GB, 空闲=30.50GB
+[2025-11-27 22:26:54] [显存监控] 已分配=16.91GB, 已保留=19.88GB, 空闲=30.50GB
+[2025-11-27 22:26:57] [显存监控] 已分配=16.91GB, 已保留=19.88GB, 空闲=30.50GB
+wiki desc: Description for Acura RL Sedan 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:27:00] [显存监控] 已分配=17.00GB, 已保留=19.06GB, 空闲=30.40GB
+[2025-11-27 22:27:03] [显存监控] 已分配=17.00GB, 已保留=19.06GB, 空闲=30.41GB
+[2025-11-27 22:27:06] [显存监控] 已分配=17.00GB, 已保留=19.06GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.06GB, 剩余=30.50GB
+MLLM description: The Acura RL Sedan 2012 is a mid-size luxury sedan with a sleek and elegant design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The RL Sedan has a long, low-slung profile with a prominent grille featuring the Acura logo at the center. The headlights are sharp and angular, contributing to a modern and sophisticated look. The car has a smooth, flowing bodyline with subtle curves along the sides, emphasizing its elegance. The rear end is characterized by a wide stance, with a prominent trunk lid and dual exhaust outlets.
+
+2. **Color Patterns and Markings**: The RL Sedan in the images is available in various colors, including silver, black, and metallic shades. The silver model in image 1 has a shiny finish, while the black model in image 3 appears more subdued due to the darker color. The silver model in image 2 has a metallic sheen, giving it a premium appearance.
+
+3. **Size and Proportions**: The RL Sedan is a mid-size sedan, offering ample space inside for passengers and cargo. It has a balanced proportion with a long hood, short overhangs, and a spacious cabin. The wheelbase is relatively long,
+类别 Acura RL Sedan 2012 文本特征维度: (512,)
+描述: The Acura RL Sedan 2012 is a mid-size luxury sedan with a sleek and elegant design. Here's a detaile...
+处理类别: Acura TL Sedan 2012
+[2025-11-27 22:27:09] [显存监控] 已分配=16.91GB, 已保留=19.06GB, 空闲=30.50GB
+[2025-11-27 22:27:12] [显存监控] 已分配=16.91GB, 已保留=19.06GB, 空闲=30.50GB
+[2025-11-27 22:27:15] [显存监控] 已分配=16.91GB, 已保留=19.06GB, 空闲=30.50GB
+[2025-11-27 22:27:18] [显存监控] 已分配=16.91GB, 已保留=19.06GB, 空闲=30.50GB
+wiki desc: Description for Acura TL Sedan 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:27:21] [显存监控] 已分配=16.96GB, 已保留=18.62GB, 空闲=30.44GB
+[2025-11-27 22:27:24] [显存监控] 已分配=17.00GB, 已保留=18.63GB, 空闲=30.41GB
+[2025-11-27 22:27:27] [显存监控] 已分配=17.00GB, 已保留=18.63GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.63GB, 剩余=30.50GB
+MLLM description: The Acura TL Sedan 2012 is a sleek and modern vehicle with a distinctive design. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The TL Sedan 2012 features a long hood, short deck, and a low-slung profile, giving it a sporty appearance. The front end showcases a prominent grille with the Acura logo, flanked by sharp LED headlights. The side profile reveals smooth lines, alloy wheels, and a subtle curve along the body. The rear end has a clean design with integrated taillights and a subtle spoiler.
+
+2. **Color Patterns and Markings**: The TL Sedan 2012 comes in various colors, including metallic shades like silver or gray, which reflect light and enhance its sleekness. The car's paint appears to be well-maintained, with no visible scratches or dents.
+
+3. **Size and Proportions**: The TL Sedan 2012 is a mid-size sedan, measuring approximately 196 inches in length, 72 inches in width, and 58 inches in height. It has a balanced stance, with a slightly longer wheelbase than its competitors, providing ample interior space.
+
+
+类别 Acura TL Sedan 2012 文本特征维度: (512,)
+描述: The Acura TL Sedan 2012 is a sleek and modern vehicle with a distinctive design. Here's a breakdown ...
+处理类别: Acura TL Type-S 2008
+[2025-11-27 22:27:30] [显存监控] 已分配=16.91GB, 已保留=18.63GB, 空闲=30.50GB
+[2025-11-27 22:27:33] [显存监控] 已分配=16.91GB, 已保留=18.63GB, 空闲=30.50GB
+[2025-11-27 22:27:36] [显存监控] 已分配=16.91GB, 已保留=18.63GB, 空闲=30.50GB
+[2025-11-27 22:27:39] [显存监控] 已分配=16.91GB, 已保留=18.63GB, 空闲=30.50GB
+wiki desc: Description for Acura TL Type-S 2008 category.
+[2025-11-27 22:27:42] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:27:45] [显存监控] 已分配=16.97GB, 已保留=18.62GB, 空闲=30.44GB
+[2025-11-27 22:27:48] [显存监控] 已分配=17.01GB, 已保留=18.62GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=18.62GB, 剩余=30.50GB
+  2%|▏         | 4/196 [01:21<1:06:50, 20.89s/it]  3%|▎         | 5/196 [01:40<1:04:28, 20.26s/it]  3%|▎         | 6/196 [02:06<1:10:45, 22.35s/it]  4%|▎         | 7/196 [02:25<1:06:31, 21.12s/it]MLLM description: The Acura TL Type-S 2008 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The TL Type-S is characterized by its sleek, aerodynamic design with a prominent front grille featuring the Acura logo, sharp LED headlights, and a sporty profile. The car's side mirrors are body-colored, and it has a set of alloy wheels.
+
+2. **Color Patterns and Markings**: The TL Type-S in the images comes in various colors, including blue, silver, and metallic shades. The color appears to be evenly distributed across the vehicle, with no visible patterns or markings other than the standard manufacturer branding.
+
+3. **Size and Proportions**: The TL Type-S is a mid-size sedan, slightly longer and wider than a compact car but shorter and narrower than a full-size sedan. Its proportions are balanced, with a long hood and short rear deck, typical of performance-oriented sedans.
+
+4. **Behavioral Characteristics**: As a vehicle, the TL Type-S would exhibit typical driving behavior associated with a sedan, such as smooth acceleration, responsive handling, and a comfortable ride. However, since these are static images, behavioral characteristics cannot be determined.
+
+5. **Unique Identifying Traits**: The TL Type-S can be distinguished by
+类别 Acura TL Type-S 2008 文本特征维度: (512,)
+描述: The Acura TL Type-S 2008 exhibits several distinctive features:
+
+1. **Distinctive Physical Features*...
+处理类别: Acura TSX Sedan 2012
+[2025-11-27 22:27:51] [显存监控] 已分配=16.91GB, 已保留=18.62GB, 空闲=30.50GB
+[2025-11-27 22:27:54] [显存监控] 已分配=16.91GB, 已保留=18.62GB, 空闲=30.50GB
+[2025-11-27 22:27:57] [显存监控] 已分配=16.91GB, 已保留=18.62GB, 空闲=30.50GB
+[2025-11-27 22:28:00] [显存监控] 已分配=16.91GB, 已保留=18.62GB, 空闲=30.50GB
+wiki desc: Description for Acura TSX Sedan 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:28:03] [显存监控] 已分配=16.96GB, 已保留=18.35GB, 空闲=30.44GB
+[2025-11-27 22:28:06] [显存监控] 已分配=16.96GB, 已保留=18.35GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.35GB, 剩余=30.50GB
+MLLM description: The Acura TSX Sedan 2012 is a compact executive car known for its sleek and sporty design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The TSX has a long hood, short deck, and a low-slung profile, giving it a dynamic appearance. It features a prominent grille with the Acura logo at the center, flanked by sharp LED headlights. The side profile showcases smooth lines, alloy wheels, and a subtle spoiler at the rear.
+
+2. **Color Patterns and Markings**: The car in image 1 is white, while the one in image 2 is silver, and the third image shows a maroon color. The silver model in image 2 has a glossy finish, reflecting light and emphasizing its sleek lines. The maroon car in image 3 has a more vibrant and bold appearance, contrasting with the neutral tones of the other two cars.
+
+3. **Size and Proportions**: The TSX is compact yet spacious inside, designed to offer a comfortable ride for four passengers. Its proportions are balanced, with a long wheelbase providing ample legroom and a wide stance for stability. The car's height is relatively low, enhancing its sporty look.
+
+4
+类别 Acura TSX Sedan 2012 文本特征维度: (512,)
+描述: The Acura TSX Sedan 2012 is a compact executive car known for its sleek and sporty design. Here's a ...
+处理类别: Acura Integra Type R 2001
+[2025-11-27 22:28:09] [显存监控] 已分配=16.91GB, 已保留=18.35GB, 空闲=30.50GB
+[2025-11-27 22:28:12] [显存监控] 已分配=16.91GB, 已保留=18.35GB, 空闲=30.50GB
+[2025-11-27 22:28:15] [显存监控] 已分配=16.91GB, 已保留=18.35GB, 空闲=30.50GB
+[2025-11-27 22:28:18] [显存监控] 已分配=16.91GB, 已保留=18.35GB, 空闲=30.50GB
+[2025-11-27 22:28:21] [显存监控] 已分配=16.91GB, 已保留=18.35GB, 空闲=30.50GB
+wiki desc: Description for Acura Integra Type R 2001 category.
+推理前显存: 已分配=16.93GB, 已保留=17.21GB, 剩余=30.47GB
+[2025-11-27 22:28:24] [显存监控] 已分配=17.23GB, 已保留=32.21GB, 空闲=30.17GB
+[2025-11-27 22:28:27] [显存监控] 已分配=17.01GB, 已保留=32.21GB, 空闲=30.39GB
+[2025-11-27 22:28:30] [显存监控] 已分配=17.08GB, 已保留=32.22GB, 空闲=30.32GB
+[2025-11-27 22:28:33] [显存监控] 已分配=17.08GB, 已保留=32.22GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=32.22GB, 剩余=30.50GB
+MLLM description: The Acura Integra Type R 2001 is a sporty two-door coupe with a sleek and aerodynamic design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The car has a low-slung profile with a wide stance, emphasized by its large wheels and prominent wheel arches. The front end features a bold, aggressive bumper with integrated fog lights, while the rear showcases a large rear spoiler and dual exhaust outlets. The side skirts and side mirrors are also black, enhancing the sporty look.
+
+2. **Color Patterns and Markings**: The car is painted in a vibrant yellow color, which stands out against the black accents on the roof, side skirts, and rear spoiler. The "Integra Type R" badge is prominently displayed on the rear, along with the "Hawaii" license plate, indicating a possible custom or regional customization.
+
+3. **Size and Proportions**: The vehicle is compact yet muscular, with a balanced ratio between length and width. The short wheelbase contributes to its nimble handling, making it ideal for spirited driving.
+
+4. **Behavioral Characteristics**: Although not directly observable in the images, the Type R is known for its high performance, thanks to its powerful engine and
+类别 Acura Integra Type R 2001 文本特征维度: (512,)
+描述: The Acura Integra Type R 2001 is a sporty two-door coupe with a sleek and aerodynamic design. Here's...
+处理类别: Acura ZDX Hatchback 2012
+[2025-11-27 22:28:36] [显存监控] 已分配=16.91GB, 已保留=32.22GB, 空闲=30.50GB
+[2025-11-27 22:28:39] [显存监控] 已分配=16.91GB, 已保留=32.22GB, 空闲=30.50GB
+[2025-11-27 22:28:42] [显存监控] 已分配=16.91GB, 已保留=32.22GB, 空闲=30.50GB
+[2025-11-27 22:28:45] [显存监控] 已分配=16.91GB, 已保留=32.22GB, 空闲=30.50GB
+wiki desc: Description for Acura ZDX Hatchback 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.15GB, 剩余=30.49GB
+[2025-11-27 22:28:48] [显存监控] 已分配=16.97GB, 已保留=18.74GB, 空闲=30.44GB
+[2025-11-27 22:28:51] [显存监控] 已分配=17.00GB, 已保留=18.74GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.74GB, 剩余=30.50GB
+MLLM description: The Acura ZDX Hatchback 2012 is a mid-size luxury crossover SUV with a sleek and sporty design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The ZDX has a unique combination of coupe-like roofline and hatchback rear end, giving it a distinctive silhouette. It features a prominent grille with the Acura logo, sharp LED headlights, and a bold front bumper. The side profile showcases a smooth, flowing line with a subtle curve towards the rear, accentuating its aerodynamic shape. The rear end is characterized by a wide stance, a large spoiler, and dual exhaust pipes.
+
+2. **Color Patterns and Markings**: The car in the images is black, which highlights its sleek lines and sporty appearance. The black paint contrasts with the silver accents on the grille, door handles, and side mirrors. The wheels are also black, complementing the overall dark theme. The silver version in the third image features a more metallic finish, giving it a more premium look.
+
+3. **Size and Proportions**: The ZDX is a mid-size vehicle, slightly larger than a compact SUV but smaller than a full-size SUV. Its length is approximately 189 inches, width around
+类别 Acura ZDX Hatchback 2012 文本特征维度: (512,)
+描述: The Acura ZDX Hatchback 2012 is a mid-size luxury crossover SUV with a sleek and sporty design. Here...
+  4%|▍         | 8/196 [02:43<1:03:37, 20.30s/it]  5%|▍         | 9/196 [03:10<1:09:54, 22.43s/it]  5%|▌         | 10/196 [03:35<1:12:00, 23.23s/it]处理类别: Aston Martin V8 Vantage Convertible 2012
+[2025-11-27 22:28:54] [显存监控] 已分配=16.91GB, 已保留=18.74GB, 空闲=30.50GB
+[2025-11-27 22:28:57] [显存监控] 已分配=16.91GB, 已保留=18.74GB, 空闲=30.50GB
+[2025-11-27 22:29:00] [显存监控] 已分配=16.91GB, 已保留=18.74GB, 空闲=30.50GB
+[2025-11-27 22:29:03] [显存监控] 已分配=16.91GB, 已保留=18.74GB, 空闲=30.50GB
+wiki desc: Description for Aston Martin V8 Vantage Convertible 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:29:06] [显存监控] 已分配=16.95GB, 已保留=18.15GB, 空闲=30.45GB
+[2025-11-27 22:29:09] [显存监控] 已分配=16.96GB, 已保留=18.15GB, 空闲=30.44GB
+[2025-11-27 22:29:12] [显存监控] 已分配=16.97GB, 已保留=18.15GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.15GB, 剩余=30.50GB
+MLLM description: The Aston Martin V8 Vantage Convertible 2012 is a sleek, high-performance sports car known for its elegant design and powerful performance. Here's a detailed breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**:  
+   - The V8 Vantage Convertible boasts a long hood, short rear deck, and a low-slung profile, emphasizing its sporty character.  
+   - It features a prominent grille with the Aston Martin logo at the center, flanked by sharp, angular headlights.  
+   - The car has a convertible top, which can be retracted to reveal the open-air driving experience.  
+   - The side profile showcases muscular wheel arches, large alloy wheels, and a subtle hint of a fastback silhouette.
+
+2. **Color Patterns and Markings**:  
+   - The first image displays a silver or light gray metallic finish, while the second image shows a vibrant green color. The third image presents a striking red paint job. These colors highlight the car's versatility in terms of customization options.  
+   - The bodywork appears smooth and glossy, reflecting light and emphasizing the vehicle's curves.
+
+3. **Size and Proportions**:  
+   - The V8 Vantage Convertible is compact yet imposing,
+类别 Aston Martin V8 Vantage Convertible 2012 文本特征维度: (512,)
+描述: The Aston Martin V8 Vantage Convertible 2012 is a sleek, high-performance sports car known for its e...
+处理类别: Aston Martin V8 Vantage Coupe 2012
+[2025-11-27 22:29:15] [显存监控] 已分配=16.91GB, 已保留=18.15GB, 空闲=30.50GB
+[2025-11-27 22:29:18] [显存监控] 已分配=16.91GB, 已保留=18.15GB, 空闲=30.50GB
+[2025-11-27 22:29:21] [显存监控] 已分配=16.91GB, 已保留=18.15GB, 空闲=30.50GB
+wiki desc: Description for Aston Martin V8 Vantage Coupe 2012 category.
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+[2025-11-27 22:29:24] [显存监控] 已分配=16.91GB, 已保留=18.15GB, 空闲=30.50GB
+[2025-11-27 22:29:27] [显存监控] 已分配=16.93GB, 已保留=17.19GB, 空闲=30.48GB
+推理前显存: 已分配=16.93GB, 已保留=17.19GB, 剩余=30.48GB
+[2025-11-27 22:29:30] [显存监控] 已分配=17.19GB, 已保留=29.78GB, 空闲=30.21GB
+[2025-11-27 22:29:33] [显存监控] 已分配=17.07GB, 已保留=29.79GB, 空闲=30.34GB
+[2025-11-27 22:29:36] [显存监控] 已分配=17.07GB, 已保留=29.79GB, 空闲=30.33GB
+[2025-11-27 22:29:39] [显存监控] 已分配=17.07GB, 已保留=29.79GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=29.79GB, 剩余=30.50GB
+MLLM description: The Aston Martin V8 Vantage Coupe 2012 is a sleek, two-door sports car with a distinctive design. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The V8 Vantage has a low-slung profile, emphasizing its sporty character. It features a long hood, short rear deck, and a prominent grille with the Aston Martin logo. The car's body is smooth and aerodynamic, with sharp lines and curves that give it a modern and aggressive look.
+
+2. **Color Patterns and Markings**: The car in Image 1 is a vibrant blue, while the one in Image 2 is black. Both cars have a glossy finish that reflects their surroundings. The blue car in Image 1 has a subtle stripe design on the hood, adding a touch of elegance to its appearance. The black car in Image 2 has a clean, unadorned look, emphasizing its sleek lines.
+
+3. **Size and Proportions**: The V8 Vantage is a mid-size sports car, designed for performance and agility rather than luxury or spaciousness. Its proportions are balanced, with a long wheelbase and short overhangs, contributing to its nimble handling. The car appears to be slightly
+类别 Aston Martin V8 Vantage Coupe 2012 文本特征维度: (512,)
+描述: The Aston Martin V8 Vantage Coupe 2012 is a sleek, two-door sports car with a distinctive design. He...
+处理类别: Aston Martin Virage Convertible 2012
+[2025-11-27 22:29:42] [显存监控] 已分配=16.91GB, 已保留=29.79GB, 空闲=30.50GB
+[2025-11-27 22:29:45] [显存监控] 已分配=16.91GB, 已保留=29.79GB, 空闲=30.50GB
+[2025-11-27 22:29:48] [显存监控] 已分配=16.91GB, 已保留=29.79GB, 空闲=30.50GB
+wiki desc: Description for Aston Martin Virage Convertible 2012 category.
+图像过大 (3264x2448)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.93GB, 已保留=17.14GB, 剩余=30.47GB
+[2025-11-27 22:29:51] [显存监控] 已分配=17.23GB, 已保留=32.35GB, 空闲=30.17GB
+[2025-11-27 22:29:54] [显存监控] 已分配=17.30GB, 已保留=32.35GB, 空闲=30.10GB
+[2025-11-27 22:29:57] [显存监控] 已分配=17.08GB, 已保留=32.35GB, 空闲=30.33GB
+[2025-11-27 22:30:00] [显存监控] 已分配=17.08GB, 已保留=32.35GB, 空闲=30.32GB
+[2025-11-27 22:30:03] [显存监控] 已分配=17.13GB, 已保留=32.35GB, 空闲=30.28GB
+推理后显存: 已分配=16.91GB, 已保留=32.35GB, 剩余=30.50GB
+MLLM description: The Aston Martin Virage Convertible 2012 is a sleek, elegant, and luxurious sports car with a distinctive design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car has a long hood, short rear deck, and a low-slung profile, emphasizing its sporty character. The front grille is large and prominent, featuring the Aston Martin logo at the center. The headlights are sharp and angular, contributing to the car's aggressive stance. The side profile showcases a smooth, flowing line with a subtle curve along the body, accentuating its elegance. The rear end is clean and balanced, with a subtle spoiler and dual exhaust pipes.
+
+2. **Color Patterns and Markings**: The car in image 1 appears to have a dark metallic finish, possibly black or dark blue, which reflects light beautifully, giving it a sophisticated look. The car in image 2 is silver, which provides a more neutral and versatile appearance. Both cars feature chrome accents on the wheels and grille, adding a touch of luxury.
+
+3. **Size and Proportions**: The car is compact yet imposing, with a length of approximately 4.8 meters. It has a low and wide stance, enhancing its dynamic presence. The wheelbase is relatively
+类别 Aston Martin Virage Convertible 2012 文本特征维度: (512,)
+描述: The Aston Martin Virage Convertible 2012 is a sleek, elegant, and luxurious sports car with a distin...
+处理类别: Aston Martin Virage Coupe 2012
+[2025-11-27 22:30:06] [显存监控] 已分配=16.91GB, 已保留=32.35GB, 空闲=30.50GB
+[2025-11-27 22:30:09] [显存监控] 已分配=16.91GB, 已保留=32.35GB, 空闲=30.50GB
+[2025-11-27 22:30:12] [显存监控] 已分配=16.91GB, 已保留=32.35GB, 空闲=30.50GB
+[2025-11-27 22:30:15] [显存监控] 已分配=16.91GB, 已保留=32.35GB, 空闲=30.50GB
+wiki desc: Description for Aston Martin Virage Coupe 2012 category.
+图像过大 (1600x900)，缩小到 (1440x810) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 22:30:18] [显存监控] 已分配=17.16GB, 已保留=27.35GB, 空闲=30.24GB
+[2025-11-27 22:30:22] [显存监控] 已分配=17.05GB, 已保留=27.36GB, 空闲=30.35GB
+[2025-11-27 22:30:25] [显存监控] 已分配=17.05GB, 已保留=27.36GB, 空闲=30.35GB
+[2025-11-27 22:30:28] [显存监控] 已分配=17.06GB, 已保留=27.36GB, 空闲=30.34GB
+  6%|▌         | 11/196 [03:59<1:11:44, 23.27s/it]  6%|▌         | 12/196 [04:13<1:02:59, 20.54s/it]  7%|▋         | 13/196 [04:37<1:05:31, 21.48s/it]  7%|▋         | 14/196 [04:58<1:04:59, 21.42s/it]推理后显存: 已分配=16.91GB, 已保留=27.36GB, 剩余=30.50GB
+MLLM description: The Aston Martin Virage Coupe 2012 is a sleek, two-door sports car with a distinctive design that sets it apart from other similar models. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The Virage Coupe boasts a low-slung profile with a long hood and short rear deck, emphasizing its sporty character. Its sharp lines and curves give it a modern yet classic look. The front features a prominent grille with the Aston Martin logo, flanked by sleek, angular headlights. The side profile showcases a smooth, flowing body with a subtle hint of a fastback silhouette. The rear is characterized by a compact, integrated taillight design and dual exhaust pipes.
+
+2. **Color Patterns and Markings**: The car in the images is painted in a vibrant orange color, which stands out against the backdrop of natural landscapes. The license plate reads "AML I," which could be a unique identifier or a personal touch added to the vehicle.
+
+3. **Size and Proportions**: The Virage Coupe is a mid-size sports car, designed for performance and agility rather than luxury. It has a compact yet spacious interior, with a focus on driver-centric ergonomics. The proportions are balanced, with a wide stance and a low center
+类别 Aston Martin Virage Coupe 2012 文本特征维度: (512,)
+描述: The Aston Martin Virage Coupe 2012 is a sleek, two-door sports car with a distinctive design that se...
+处理类别: Audi RS 4 Convertible 2008
+[2025-11-27 22:30:31] [显存监控] 已分配=16.91GB, 已保留=27.36GB, 空闲=30.50GB
+[2025-11-27 22:30:34] [显存监控] 已分配=16.91GB, 已保留=27.36GB, 空闲=30.50GB
+[2025-11-27 22:30:37] [显存监控] 已分配=16.91GB, 已保留=27.36GB, 空闲=30.50GB
+wiki desc: Description for Audi RS 4 Convertible 2008 category.
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+[2025-11-27 22:30:40] [显存监控] 已分配=16.91GB, 已保留=27.36GB, 空闲=30.50GB
+推理前显存: 已分配=16.94GB, 已保留=17.14GB, 剩余=30.46GB
+MLLM描述生成失败: CUDA out of memory. Tried to allocate 16.98 GiB. GPU 0 has a total capacity of 47.40 GiB of which 8.13 GiB is free. Process 2936332 has 3.30 GiB memory in use. Including non-PyTorch memory, this process has 35.96 GiB memory in use. Of the allocated memory 35.38 GiB is allocated by PyTorch, and 273.92 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+类别 Audi RS 4 Convertible 2008 文本特征维度: (512,)
+描述: Description for Audi RS 4 Convertible 2008 category....
+处理类别: Audi A5 Coupe 2012
+[2025-11-27 22:30:43] [显存监控] 已分配=16.91GB, 已保留=35.64GB, 空闲=30.50GB
+[2025-11-27 22:30:46] [显存监控] 已分配=16.91GB, 已保留=35.64GB, 空闲=30.50GB
+[2025-11-27 22:30:49] [显存监控] 已分配=16.91GB, 已保留=35.64GB, 空闲=30.50GB
+[2025-11-27 22:30:52] [显存监控] 已分配=16.91GB, 已保留=35.64GB, 空闲=30.50GB
+[2025-11-27 22:30:55] [显存监控] 已分配=16.91GB, 已保留=35.64GB, 空闲=30.50GB
+wiki desc: Description for Audi A5 Coupe 2012 category.
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 22:30:58] [显存监控] 已分配=17.07GB, 已保留=22.20GB, 空闲=30.33GB
+[2025-11-27 22:31:01] [显存监控] 已分配=17.03GB, 已保留=22.20GB, 空闲=30.37GB
+[2025-11-27 22:31:04] [显存监控] 已分配=17.05GB, 已保留=22.20GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=22.20GB, 剩余=30.50GB
+MLLM description: The Audi A5 Coupe 2012 is a sleek, two-door coupe with a sporty design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car features a long hood, short rear deck, and a low-slung profile, emphasizing its sporty character. The front grille is large and prominently displays the Audi logo. The headlights are sharp and angular, contributing to the car's aggressive look. The taillights are also distinctive, with a three-dimensional design that adds depth to the rear view.
+
+2. **Color Patterns and Markings**: The car in image 1 has a dark green metallic finish, while the one in image 2 is silver. Both cars have a clean, polished appearance, reflecting their well-maintained condition. The license plates are visible, but the text is not legible in the images.
+
+3. **Size and Proportions**: The A5 Coupe is compact yet elegant, with a length of approximately 4.6 meters. It has a balanced stance, with the wheels positioned towards the corners, giving it a planted feel. The proportions are harmonious, with a long wheelbase and short overhangs, enhancing its agility and handling.
+
+4. **Behavioral Characteristics**: As a
+类别 Audi A5 Coupe 2012 文本特征维度: (512,)
+描述: The Audi A5 Coupe 2012 is a sleek, two-door coupe with a sporty design. Here's a detailed descriptio...
+处理类别: Audi TTS Coupe 2012
+[2025-11-27 22:31:07] [显存监控] 已分配=16.91GB, 已保留=22.20GB, 空闲=30.50GB
+[2025-11-27 22:31:10] [显存监控] 已分配=16.91GB, 已保留=22.20GB, 空闲=30.50GB
+[2025-11-27 22:31:13] [显存监控] 已分配=16.91GB, 已保留=22.20GB, 空闲=30.50GB
+[2025-11-27 22:31:16] [显存监控] 已分配=16.91GB, 已保留=22.20GB, 空闲=30.50GB
+wiki desc: Description for Audi TTS Coupe 2012 category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:31:19] [显存监控] 已分配=17.08GB, 已保留=22.93GB, 空闲=30.32GB
+[2025-11-27 22:31:22] [显存监控] 已分配=17.03GB, 已保留=22.93GB, 空闲=30.37GB
+[2025-11-27 22:31:25] [显存监控] 已分配=17.03GB, 已保留=22.93GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.93GB, 剩余=30.50GB
+MLLM description: The Audi TTS Coupe 2012 is a sleek, sporty two-door coupe with a distinctive design that sets it apart from other similar models. Here's a detailed breakdown:
+
+1. **Distinctive Physical Features**: The TTS Coupe boasts a low-slung profile, sharp lines, and a wide stance, emphasizing its sporty character. The front grille is large and prominent, featuring the iconic Audi four-ring logo. The headlights are angular and integrated into the grille, contributing to the car's aggressive look. The side profile showcases a long hood, short rear deck, and a fastback roofline that slopes sharply towards the rear. The wheels are large and sporty, enhancing the car's dynamic appearance.
+
+2. **Color Patterns and Markings**: The TTS Coupe can come in various colors, including black, white, and metallic shades. In the images, we see a black car in the first image, a white car in the second image, and a dark gray/black car in the third image. The color choices highlight the car's versatility and appeal to different tastes.
+
+3. **Size and Proportions**: The TTS Coupe is compact yet muscular, with a length of approximately 4.4 meters and a width of around 1.
+类别 Audi TTS Coupe 2012 文本特征维度: (512,)
+描述: The Audi TTS Coupe 2012 is a sleek, sporty two-door coupe with a distinctive design that sets it apa...
+处理类别: Audi R8 Coupe 2012
+[2025-11-27 22:31:28] [显存监控] 已分配=16.91GB, 已保留=22.93GB, 空闲=30.50GB
+[2025-11-27 22:31:31] [显存监控] 已分配=16.91GB, 已保留=22.93GB, 空闲=30.50GB
+[2025-11-27 22:31:34] [显存监控] 已分配=16.91GB, 已保留=22.93GB, 空闲=30.50GB
+[2025-11-27 22:31:37] [显存监控] 已分配=16.91GB, 已保留=22.93GB, 空闲=30.50GB
+wiki desc: Description for Audi R8 Coupe 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:31:41] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-27 22:31:44] [显存监控] 已分配=17.00GB, 已保留=19.02GB, 空闲=30.40GB
+[2025-11-27 22:31:47] [显存监控] 已分配=17.00GB, 已保留=19.02GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.02GB, 剩余=30.50GB
+  8%|▊         | 15/196 [05:20<1:04:39, 21.43s/it]  8%|▊         | 16/196 [05:37<1:00:45, 20.25s/it]  9%|▊         | 17/196 [06:02<1:04:41, 21.68s/it]  9%|▉         | 18/196 [06:20<1:00:59, 20.56s/it]MLLM description: The Audi R8 Coupe 2012 is a sleek, high-performance sports car with a distinctive design. Here's a breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The R8 features a low-slung, aerodynamic body with sharp lines and curves. The front end showcases a large grille with the iconic Audi logo, flanked by angular LED headlights. The side profile emphasizes the car's wide stance and short rear deck, while the rear end has a prominent diffuser and dual exhaust outlets.
+
+2. **Color Patterns and Markings**: The car in image 1 is black, while the one in image 2 is also black, but with silver rims. Image 3 shows a white R8 with a contrasting black interior. The license plates provide unique identifiers: "OY09 WXJ" in image 1, "HN-GT 8003" in image 3.
+
+3. **Size and Proportions**: The R8 is compact yet muscular, with a long hood and short rear deck. It has a low roofline and a wide track, giving it a balanced and aggressive stance. The wheels are large and prominently displayed, enhancing the car's sporty appearance.
+
+4. **Behavioral
+类别 Audi R8 Coupe 2012 文本特征维度: (512,)
+描述: The Audi R8 Coupe 2012 is a sleek, high-performance sports car with a distinctive design. Here's a b...
+处理类别: Audi V8 Sedan 1994
+[2025-11-27 22:31:50] [显存监控] 已分配=16.91GB, 已保留=19.02GB, 空闲=30.50GB
+[2025-11-27 22:31:53] [显存监控] 已分配=16.91GB, 已保留=19.02GB, 空闲=30.50GB
+[2025-11-27 22:31:56] [显存监控] 已分配=16.91GB, 已保留=19.02GB, 空闲=30.50GB
+[2025-11-27 22:31:59] [显存监控] 已分配=16.91GB, 已保留=19.02GB, 空闲=30.50GB
+wiki desc: Description for Audi V8 Sedan 1994 category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-27 22:32:02] [显存监控] 已分配=16.95GB, 已保留=17.67GB, 空闲=30.45GB
+[2025-11-27 22:32:05] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+MLLM description: The Audi V8 Sedan 1994 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The car has a sleek, elongated body with a long hood and short rear deck, typical of luxury sedans. It features a prominent grille with the iconic Audi logo, sharp headlights, and a smooth, aerodynamic profile. The side profile showcases a set of five-spoke alloy wheels, which add to its sporty appearance.
+
+2. **Color Patterns and Markings**: The car in image 1 is silver, while the one in image 2 is beige. Both cars have a clean, polished finish, with no visible damage or scratches. The beige car in image 2 has a "For Sale" sign on the windshield, indicating it might be a used vehicle.
+
+3. **Size and Proportions**: The Audi V8 Sedan 1994 is a mid-size luxury sedan, larger than a compact car but smaller than a full-size sedan. Its proportions are balanced, with a long wheelbase providing ample interior space. The car's stance is low and wide, suggesting a focus on performance and handling.
+
+4. **Behavioral Characteristics**: As a luxury sedan, the Audi V8 Sedan 1994
+类别 Audi V8 Sedan 1994 文本特征维度: (512,)
+描述: The Audi V8 Sedan 1994 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**:...
+处理类别: Audi 100 Sedan 1994
+[2025-11-27 22:32:08] [显存监控] 已分配=16.91GB, 已保留=17.69GB, 空闲=30.50GB
+[2025-11-27 22:32:11] [显存监控] 已分配=16.91GB, 已保留=17.69GB, 空闲=30.50GB
+[2025-11-27 22:32:14] [显存监控] 已分配=16.91GB, 已保留=17.69GB, 空闲=30.50GB
+[2025-11-27 22:32:17] [显存监控] 已分配=16.91GB, 已保留=17.69GB, 空闲=30.50GB
+wiki desc: Description for Audi 100 Sedan 1994 category.
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.93GB, 已保留=17.13GB, 剩余=30.48GB
+[2025-11-27 22:32:20] [显存监控] 已分配=17.21GB, 已保留=30.76GB, 空闲=30.19GB
+[2025-11-27 22:32:23] [显存监控] 已分配=16.97GB, 已保留=30.76GB, 空闲=30.43GB
+[2025-11-27 22:32:26] [显存监控] 已分配=17.07GB, 已保留=30.76GB, 空闲=30.33GB
+[2025-11-27 22:32:29] [显存监控] 已分配=17.08GB, 已保留=30.76GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=30.76GB, 剩余=30.50GB
+MLLM description: The Audi 100 Sedan from 1994 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The car has a sleek, aerodynamic design with a long hood and short rear deck, typical of luxury sedans of its era. It features a prominent grille with the iconic four-ring Audi logo at the center, flanked by rectangular headlights. The front bumper is wide and integrated with fog lights. The side profile showcases smooth lines, with subtle curves along the body, and the wheels have multi-spoke alloy rims.
+
+2. **Color Patterns and Markings**: The car in all three images appears to be black, with no visible color variations or markings. The monochrome presentation emphasizes the vehicle's form and lines rather than any specific color.
+
+3. **Size and Proportions**: The sedan is mid-sized, designed for comfort and practicality. Its proportions are balanced, with a slightly longer wheelbase compared to compact cars, providing ample space inside. The overall length and width suggest a spacious interior, ideal for family use.
+
+4. **Behavioral Characteristics**: As a static image, there are no behavioral characteristics to describe. However, based on its design, it would likely exhibit smooth handling and a refined driving experience, characteristic of Audi
+类别 Audi 100 Sedan 1994 文本特征维度: (512,)
+描述: The Audi 100 Sedan from 1994 exhibits several distinctive features:
+
+1. **Distinctive Physical Featu...
+处理类别: Audi 100 Wagon 1994
+[2025-11-27 22:32:32] [显存监控] 已分配=16.91GB, 已保留=30.76GB, 空闲=30.50GB
+[2025-11-27 22:32:35] [显存监控] 已分配=16.91GB, 已保留=30.76GB, 空闲=30.50GB
+[2025-11-27 22:32:38] [显存监控] 已分配=16.91GB, 已保留=30.76GB, 空闲=30.50GB
+[2025-11-27 22:32:41] [显存监控] 已分配=16.91GB, 已保留=30.76GB, 空闲=30.50GB
+wiki desc: Description for Audi 100 Wagon 1994 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:32:44] [显存监控] 已分配=16.96GB, 已保留=18.25GB, 空闲=30.44GB
+[2025-11-27 22:32:47] [显存监控] 已分配=16.96GB, 已保留=18.25GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.25GB, 剩余=30.50GB
+MLLM description: The Audi 100 Wagon 1994 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The car has a boxy yet elegant design typical of the 1990s. It features a prominent grille with the Audi logo, sleek headlights, and a smooth, curved roofline. The rear end is characterized by a slightly raised boot lid, which is characteristic of wagons.
+
+2. **Color Patterns and Markings**: The car in image 1 is black, while the one in image 2 is silver. Both have European license plates, indicating their origin or current location. The silver car in image 2 also has a "GS" marking on its license plate, suggesting it might be a special edition or model.
+
+3. **Size and Proportions**: The cars are mid-sized, designed to comfortably seat five people. They appear to be slightly longer than a standard sedan due to the extended rear section accommodating the cargo area. The wheels are relatively small compared to modern vehicles, reflecting the design trends of the time.
+
+4. **Behavioral Characteristics**: As these are static images, no behavioral characteristics can be observed. However, the presence of a sunroof on the silver car suggests a preference for open-air driving.
+
+
+类别 Audi 100 Wagon 1994 文本特征维度: (512,)
+描述: The Audi 100 Wagon 1994 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**...
+处理类别: Audi TT Hatchback 2011
+[2025-11-27 22:32:50] [显存监控] 已分配=16.91GB, 已保留=18.25GB, 空闲=30.50GB
+[2025-11-27 22:32:53] [显存监控] 已分配=16.91GB, 已保留=18.25GB, 空闲=30.50GB
+ 10%|▉         | 19/196 [06:39<59:39, 20.22s/it]   10%|█         | 20/196 [06:58<57:53, 19.74s/it] 11%|█         | 21/196 [07:19<58:41, 20.12s/it][2025-11-27 22:32:56] [显存监控] 已分配=16.91GB, 已保留=18.25GB, 空闲=30.50GB
+[2025-11-27 22:32:59] [显存监控] 已分配=16.91GB, 已保留=18.25GB, 空闲=30.50GB
+wiki desc: Description for Audi TT Hatchback 2011 category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:33:02] [显存监控] 已分配=17.00GB, 已保留=20.40GB, 空闲=30.40GB
+[2025-11-27 22:33:05] [显存监控] 已分配=17.00GB, 已保留=20.40GB, 空闲=30.40GB
+[2025-11-27 22:33:08] [显存监控] 已分配=17.02GB, 已保留=20.40GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.40GB, 剩余=30.50GB
+MLLM description: The Audi TT Hatchback 2011 is a compact sports car known for its sleek and aerodynamic design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The TT has a low-slung profile with a long hood and short rear deck, emphasizing its sporty character. It features a prominent grille with the Audi logo at the center, flanked by sharp LED headlights. The side profile showcases a smooth, flowing line from the front to the rear, accentuated by alloy wheels with a multi-spoke design.
+
+2. **Color Patterns and Markings**: The car in the images is predominantly white, which highlights its clean lines and sporty silhouette. The black roof contrasts with the body, creating a two-tone effect. The license plate is visible in all three images, indicating the car's registration details.
+
+3. **Size and Proportions**: The TT is a compact vehicle, designed for agility and performance. Its dimensions are relatively small compared to larger sedans or SUVs, making it ideal for urban driving and maneuverability. The proportions are balanced, with a short wheelbase and a long hood, contributing to its dynamic appearance.
+
+4. **Behavioral Characteristics**: While not directly observable in the images, the TT
+类别 Audi TT Hatchback 2011 文本特征维度: (512,)
+描述: The Audi TT Hatchback 2011 is a compact sports car known for its sleek and aerodynamic design. Here'...
+处理类别: Audi S6 Sedan 2011
+[2025-11-27 22:33:11] [显存监控] 已分配=16.91GB, 已保留=20.40GB, 空闲=30.50GB
+[2025-11-27 22:33:14] [显存监控] 已分配=16.91GB, 已保留=20.40GB, 空闲=30.50GB
+[2025-11-27 22:33:17] [显存监控] 已分配=16.91GB, 已保留=20.40GB, 空闲=30.50GB
+wiki desc: Description for Audi S6 Sedan 2011 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:33:20] [显存监控] 已分配=16.99GB, 已保留=18.90GB, 空闲=30.41GB
+[2025-11-27 22:33:23] [显存监控] 已分配=17.00GB, 已保留=18.98GB, 空闲=30.41GB
+[2025-11-27 22:33:26] [显存监控] 已分配=17.01GB, 已保留=18.98GB, 空闲=30.39GB
+推理后显存: 已分配=16.91GB, 已保留=18.98GB, 剩余=30.50GB
+MLLM description: The Audi S6 Sedan 2011 is a luxury vehicle characterized by its sleek and sporty design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car exhibits a long hood, short rear deck, and a low-slung profile, typical of high-performance sedans. It has a prominent grille with the iconic Audi four-ring logo, flanked by sharp LED headlights. The front bumper includes large air intakes for improved cooling and aerodynamics.
+
+2. **Color Patterns and Markings**: The car can come in various colors, including metallic shades like blue or silver, as seen in the images. The bodywork appears smooth and polished, reflecting light, indicating a well-maintained finish. There are no visible distinctive markings or logos apart from the Audi emblem.
+
+3. **Size and Proportions**: The S6 Sedan is a mid-size luxury sedan, slightly longer than a standard sedan but shorter than an SUV. Its proportions are balanced, with a wide stance and a long wheelbase providing ample interior space. The wheels are large, enhancing the car's sporty appearance.
+
+4. **Behavioral Characteristics**: As a performance-oriented sedan, the S6 is designed to handle well on both highways and winding roads. Its
+类别 Audi S6 Sedan 2011 文本特征维度: (512,)
+描述: The Audi S6 Sedan 2011 is a luxury vehicle characterized by its sleek and sporty design. Here's a de...
+处理类别: Audi S5 Convertible 2012
+[2025-11-27 22:33:29] [显存监控] 已分配=16.91GB, 已保留=18.98GB, 空闲=30.50GB
+[2025-11-27 22:33:32] [显存监控] 已分配=16.91GB, 已保留=18.98GB, 空闲=30.50GB
+[2025-11-27 22:33:35] [显存监控] 已分配=16.91GB, 已保留=18.98GB, 空闲=30.50GB
+[2025-11-27 22:33:38] [显存监控] 已分配=16.91GB, 已保留=18.98GB, 空闲=30.50GB
+wiki desc: Description for Audi S5 Convertible 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:33:41] [显存监控] 已分配=16.99GB, 已保留=18.79GB, 空闲=30.41GB
+[2025-11-27 22:33:44] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+[2025-11-27 22:33:47] [显存监控] 已分配=17.00GB, 已保留=18.87GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.87GB, 剩余=30.50GB
+MLLM description: The Audi S5 Convertible 2012 is a sleek, two-door convertible with a sporty design. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The car has a long hood, short rear deck, and a low-slung profile, emphasizing its sporty character. The front grille is large and features the iconic Audi logo. The headlights are sharp and angular, contributing to the car's aggressive look. The side profile showcases a smooth, flowing line from the front fender to the rear, accentuated by the prominent wheel arches and alloy wheels.
+
+2. **Color Patterns and Markings**: The car can come in various colors, as seen in the images. The first image shows a white car, while the second and third images display blue and red cars, respectively. The color of the car can significantly impact its appearance and appeal.
+
+3. **Size and Proportions**: The car is compact yet elegant, with a length of approximately 4.6 meters and a width of around 1.8 meters. It has a low roofline and a long wheelbase, which contributes to its dynamic stance. The proportions are well-balanced, with the front and rear sections appearing harmonious.
+
+4. **
+类别 Audi S5 Convertible 2012 文本特征维度: (512,)
+描述: The Audi S5 Convertible 2012 is a sleek, two-door convertible with a sporty design. Here's a breakdo...
+处理类别: Audi S5 Coupe 2012
+[2025-11-27 22:33:50] [显存监控] 已分配=16.91GB, 已保留=18.87GB, 空闲=30.50GB
+[2025-11-27 22:33:53] [显存监控] 已分配=16.91GB, 已保留=18.87GB, 空闲=30.50GB
+[2025-11-27 22:33:56] [显存监控] 已分配=16.91GB, 已保留=18.87GB, 空闲=30.50GB
+[2025-11-27 22:33:59] [显存监控] 已分配=16.91GB, 已保留=18.87GB, 空闲=30.50GB
+wiki desc: Description for Audi S5 Coupe 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:34:02] [显存监控] 已分配=16.95GB, 已保留=17.93GB, 空闲=30.45GB
+[2025-11-27 22:34:05] [显存监控] 已分配=16.95GB, 已保留=17.94GB, 空闲=30.45GB
+[2025-11-27 22:34:08] [显存监控] 已分配=16.96GB, 已保留=17.94GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.94GB, 剩余=30.50GB
+ 11%|█         | 22/196 [07:40<58:52, 20.30s/it] 12%|█▏        | 23/196 [07:59<57:36, 19.98s/it] 12%|█▏        | 24/196 [08:18<56:38, 19.76s/it] 13%|█▎        | 25/196 [08:38<56:37, 19.87s/it]MLLM description: The Audi S5 Coupe 2012 exhibits a sleek and sporty design with a low-slung profile, short overhangs, and a long wheelbase. Its distinctive features include:
+
+* **Distinctive Physical Features:** The car has a prominent grille with the Audi logo at the center, flanked by sharp LED headlights. The side profile showcases a smooth, flowing line from the front to the rear, accentuated by large alloy wheels and a subtle spoiler at the rear. The taillights are angular and feature a three-dimensional design.
+
+* **Color Patterns and Markings:** The car can come in various colors, including the examples shown here: red, silver, and black. The color is applied uniformly across the body, with no visible patterns or markings.
+
+* **Size and Proportions:** The S5 Coupe is a mid-size luxury coupe, slightly larger than a compact car but smaller than a full-size sedan. It has a balanced stance, with a wide track and a low roofline. The proportions emphasize its sporty character.
+
+* **Behavioral Characteristics:** As a performance-oriented vehicle, the S5 Coupe is designed for dynamic driving experiences. Its handling is agile, and it accelerates quickly, making it suitable for both spirited driving and everyday
+类别 Audi S5 Coupe 2012 文本特征维度: (512,)
+描述: The Audi S5 Coupe 2012 exhibits a sleek and sporty design with a low-slung profile, short overhangs,...
+处理类别: Audi S4 Sedan 2012
+[2025-11-27 22:34:11] [显存监控] 已分配=16.91GB, 已保留=17.94GB, 空闲=30.50GB
+[2025-11-27 22:34:14] [显存监控] 已分配=16.91GB, 已保留=17.94GB, 空闲=30.50GB
+[2025-11-27 22:34:17] [显存监控] 已分配=16.91GB, 已保留=17.94GB, 空闲=30.50GB
+wiki desc: Description for Audi S4 Sedan 2012 category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:34:20] [显存监控] 已分配=17.04GB, 已保留=20.67GB, 空闲=30.36GB
+[2025-11-27 22:34:23] [显存监控] 已分配=17.00GB, 已保留=20.67GB, 空闲=30.40GB
+[2025-11-27 22:34:26] [显存监控] 已分配=17.02GB, 已保留=20.67GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.67GB, 剩余=30.50GB
+MLLM description: The Audi S4 Sedan 2012 is a mid-size luxury sedan with a sleek and sporty design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car features a prominent front grille with the iconic Audi four-ring logo, flanked by sharp LED headlights. The hood has a subtle bulge, indicating a powerful engine beneath. The side profile showcases a long, flowing roofline, a short rear deck, and alloy wheels with a multi-spoke design. The rear end is characterized by a wide stance, dual exhaust pipes, and a diffuser.
+
+2. **Color Patterns and Markings**: The car can come in various colors, including white, red, silver, or black. In the images, we see a white, red, and silver model. The color is applied uniformly across the body, with no additional patterns or markings.
+
+3. **Size and Proportions**: The Audi S4 Sedan is a mid-size vehicle, slightly longer than a compact sedan but shorter than a full-size sedan. It has a balanced and elegant silhouette, with a low-slung profile and a long wheelbase. The proportions are harmonious, with a strong emphasis on aerodynamics.
+
+4. **Behavioral Characteristics**: As a
+类别 Audi S4 Sedan 2012 文本特征维度: (512,)
+描述: The Audi S4 Sedan 2012 is a mid-size luxury sedan with a sleek and sporty design. Here's a detailed ...
+处理类别: Audi S4 Sedan 2007
+[2025-11-27 22:34:29] [显存监控] 已分配=16.91GB, 已保留=20.67GB, 空闲=30.50GB
+[2025-11-27 22:34:32] [显存监控] 已分配=16.91GB, 已保留=20.67GB, 空闲=30.50GB
+[2025-11-27 22:34:35] [显存监控] 已分配=16.91GB, 已保留=20.67GB, 空闲=30.50GB
+[2025-11-27 22:34:38] [显存监控] 已分配=16.91GB, 已保留=20.67GB, 空闲=30.50GB
+wiki desc: Description for Audi S4 Sedan 2007 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:34:41] [显存监控] 已分配=16.96GB, 已保留=18.56GB, 空闲=30.44GB
+[2025-11-27 22:34:44] [显存监控] 已分配=16.97GB, 已保留=18.56GB, 空闲=30.43GB
+[2025-11-27 22:34:47] [显存监控] 已分配=17.00GB, 已保留=18.56GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.56GB, 剩余=30.50GB
+MLLM description: The Audi S4 Sedan 2007 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The car is characterized by its sleek, aerodynamic design with a prominent front grille featuring the iconic Audi logo. The headlights are sharp and angular, contributing to the sporty aesthetic. The side profile showcases a long, low-slung body with a smooth, flowing line along the sides, accentuated by alloy wheels.
+
+2. **Color Patterns and Markings**: The car in the first image is black, while the second and third images feature a silver color. The license plate in the first image reads "5XHP293" and is located at the bottom center of the front bumper. The second and third images do not display any visible license plates.
+
+3. **Size and Proportions**: The Audi S4 Sedan 2007 is a mid-size luxury sedan, slightly longer than a compact car but shorter than a full-size sedan. It has a balanced stance with a short front overhang and a long rear deck, typical of performance sedans. The wheelbase appears to be moderate, providing ample interior space.
+
+4. **Behavioral Characteristics**: As a vehicle, it is designed for driving, with features like a powerful
+类别 Audi S4 Sedan 2007 文本特征维度: (512,)
+描述: The Audi S4 Sedan 2007 exhibits several distinctive features:
+
+1. **Distinctive Physical Features**:...
+处理类别: Audi TT RS Coupe 2012
+[2025-11-27 22:34:50] [显存监控] 已分配=16.91GB, 已保留=18.56GB, 空闲=30.50GB
+[2025-11-27 22:34:53] [显存监控] 已分配=16.91GB, 已保留=18.56GB, 空闲=30.50GB
+[2025-11-27 22:34:56] [显存监控] 已分配=16.91GB, 已保留=18.56GB, 空闲=30.50GB
+wiki desc: Description for Audi TT RS Coupe 2012 category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:34:59] [显存监控] 已分配=17.06GB, 已保留=22.11GB, 空闲=30.34GB
+[2025-11-27 22:35:02] [显存监控] 已分配=17.05GB, 已保留=22.11GB, 空闲=30.35GB
+[2025-11-27 22:35:05] [显存监控] 已分配=17.03GB, 已保留=22.11GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.11GB, 剩余=30.50GB
+MLLM description: The Audi TT RS Coupe 2012 is a sporty two-door coupe with a sleek and aerodynamic design. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: The TT RS features a low-slung profile, sharp lines, and a wide stance, emphasizing its performance-oriented nature. The front end showcases a prominent grille with the Audi logo, flanked by angular headlights. The side profile reveals a long hood, short rear deck, and a set of large alloy wheels, enhancing its aggressive appearance.
+
+2. **Color Patterns and Markings**: The car in Image 1 is painted in a vibrant red color, while the one in Image 2 is white. Both cars have a glossy finish, reflecting their polished and well-maintained condition. The red car in Image 1 has gold-colored alloy wheels, adding a touch of luxury to its sporty look. The white car in Image 2 has black alloy wheels, which contrast sharply with the body color, further accentuating its sporty aesthetic.
+
+3. **Size and Proportions**: The TT RS is compact yet muscular, with a length of approximately 4.3 meters and a width of around 1.8 meters. Its proportions are optimized for agility
+类别 Audi TT RS Coupe 2012 文本特征维度: (512,)
+描述: The Audi TT RS Coupe 2012 is a sporty two-door coupe with a sleek and aerodynamic design. Here's a d...
+处理类别: BMW ActiveHybrid 5 Sedan 2012
+[2025-11-27 22:35:08] [显存监控] 已分配=16.91GB, 已保留=22.11GB, 空闲=30.50GB
+[2025-11-27 22:35:11] [显存监控] 已分配=16.91GB, 已保留=22.11GB, 空闲=30.50GB
+[2025-11-27 22:35:14] [显存监控] 已分配=16.91GB, 已保留=22.11GB, 空闲=30.50GB
+ 13%|█▎        | 26/196 [09:00<57:23, 20.25s/it] 14%|█▍        | 27/196 [09:19<56:00, 19.88s/it] 14%|█▍        | 28/196 [09:39<56:12, 20.07s/it] 15%|█▍        | 29/196 [09:57<53:39, 19.28s/it][2025-11-27 22:35:17] [显存监控] 已分配=16.91GB, 已保留=22.11GB, 空闲=30.50GB
+wiki desc: Description for BMW ActiveHybrid 5 Sedan 2012 category.
+推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-27 22:35:20] [显存监控] 已分配=17.21GB, 已保留=30.97GB, 空闲=30.19GB
+[2025-11-27 22:35:23] [显存监控] 已分配=17.21GB, 已保留=30.97GB, 空闲=30.19GB
+[2025-11-27 22:35:26] [显存监控] 已分配=17.07GB, 已保留=30.98GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=30.98GB, 剩余=30.50GB
+MLLM description: The BMW ActiveHybrid 5 Sedan 2012 is characterized by its sleek and modern design, featuring a prominent kidney grille with a silver finish, flanked by sharp LED headlights. The car's body is painted in a metallic silver or gray, reflecting light and giving it a polished appearance. The vehicle has a balanced and elegant silhouette, with smooth lines and a slightly sloping roofline, indicative of a mid-size sedan. The wheels are alloy, adding to the sporty aesthetic. The license plate is visible, displaying a European format. The car appears to be in motion in the first two images, suggesting dynamic performance, while the third image shows the car stationary, highlighting its static elegance. The ActiveHybrid designation implies hybrid technology, which may contribute to its efficiency and quiet operation.
+类别 BMW ActiveHybrid 5 Sedan 2012 文本特征维度: (512,)
+描述: The BMW ActiveHybrid 5 Sedan 2012 is characterized by its sleek and modern design, featuring a promi...
+处理类别: BMW 1 Series Convertible 2012
+[2025-11-27 22:35:29] [显存监控] 已分配=16.91GB, 已保留=30.98GB, 空闲=30.50GB
+[2025-11-27 22:35:32] [显存监控] 已分配=16.91GB, 已保留=30.98GB, 空闲=30.50GB
+[2025-11-27 22:35:35] [显存监控] 已分配=16.91GB, 已保留=30.98GB, 空闲=30.50GB
+[2025-11-27 22:35:38] [显存监控] 已分配=16.91GB, 已保留=30.98GB, 空闲=30.50GB
+wiki desc: Description for BMW 1 Series Convertible 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:35:41] [显存监控] 已分配=17.00GB, 已保留=19.73GB, 空闲=30.40GB
+[2025-11-27 22:35:44] [显存监控] 已分配=17.02GB, 已保留=19.74GB, 空闲=30.39GB
+[2025-11-27 22:35:47] [显存监控] 已分配=17.02GB, 已保留=19.74GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.74GB, 剩余=30.50GB
+MLLM description: The BMW 1 Series Convertible 2012 is a compact luxury convertible with a sleek and sporty design. Here's a detailed breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The car boasts a low-slung profile with a long hood and short rear deck, emphasizing its sporty character. The front end features a prominent kidney grille, sharp LED headlights, and a bold bumper with air intakes. The side profile showcases a smooth, flowing line with a subtle curve along the roofline, leading to a taut rear deck. The rear end is characterized by a wide stance, a diffuser, and dual exhaust outlets.
+
+2. **Color Patterns and Markings**: The car in the first image is silver, while the second and third images feature white and light blue models, respectively. The color variations highlight the versatility of the model. The cars also have a black soft top, which contrasts with the body color and adds to the sporty aesthetic.
+
+3. **Size and Proportions**: The 1 Series Convertible is compact yet elegant, with dimensions that make it ideal for urban driving. It has a balanced proportion between the length, width, and height, giving it a refined appearance. The wheelbase is relatively short compared
+类别 BMW 1 Series Convertible 2012 文本特征维度: (512,)
+描述: The BMW 1 Series Convertible 2012 is a compact luxury convertible with a sleek and sporty design. He...
+处理类别: BMW 1 Series Coupe 2012
+[2025-11-27 22:35:50] [显存监控] 已分配=16.91GB, 已保留=19.74GB, 空闲=30.50GB
+[2025-11-27 22:35:53] [显存监控] 已分配=16.91GB, 已保留=19.74GB, 空闲=30.50GB
+[2025-11-27 22:35:56] [显存监控] 已分配=16.91GB, 已保留=19.74GB, 空闲=30.50GB
+wiki desc: Description for BMW 1 Series Coupe 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:35:59] [显存监控] 已分配=16.95GB, 已保留=18.08GB, 空闲=30.45GB
+[2025-11-27 22:36:02] [显存监控] 已分配=16.95GB, 已保留=18.13GB, 空闲=30.45GB
+[2025-11-27 22:36:05] [显存监控] 已分配=16.96GB, 已保留=18.13GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.13GB, 剩余=30.50GB
+MLLM description: The BMW 1 Series Coupe 2012 is a compact luxury vehicle with a sleek and sporty design. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The car has a low-slung profile with a long hood and short rear deck, emphasizing its sporty character. The front end features a prominent kidney grille, flanked by sharp LED headlights. The side profile showcases a smooth, flowing line with a subtle curve along the roofline, leading to a coupe-like silhouette. The rear end is characterized by a clean, minimalist design with a subtle spoiler and dual exhaust outlets.
+
+2. **Color Patterns and Markings**: The car in image 1 is painted in a light blue metallic color, while the one in image 2 is red. Both cars feature a two-tone paint job, with the lower portion of the body in a darker shade, creating a striking contrast against the lighter upper section. The wheels are silver, complementing the overall aesthetic.
+
+3. **Size and Proportions**: The BMW 1 Series Coupe is compact yet elegant, with dimensions that make it ideal for urban driving. It has a balanced stance, with a short wheelbase and a wide track, providing stability and agility. The proportions are harmonious, with
+[2025-11-27 22:36:08] [显存监控] 已分配=16.91GB, 已保留=18.13GB, 空闲=30.50GB
+类别 BMW 1 Series Coupe 2012 文本特征维度: (512,)
+描述: The BMW 1 Series Coupe 2012 is a compact luxury vehicle with a sleek and sporty design. Here's a det...
+处理类别: BMW 3 Series Sedan 2012
+[2025-11-27 22:36:11] [显存监控] 已分配=16.91GB, 已保留=18.13GB, 空闲=30.50GB
+[2025-11-27 22:36:14] [显存监控] 已分配=16.91GB, 已保留=18.13GB, 空闲=30.50GB
+[2025-11-27 22:36:17] [显存监控] 已分配=16.91GB, 已保留=18.13GB, 空闲=30.50GB
+wiki desc: Description for BMW 3 Series Sedan 2012 category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:36:20] [显存监控] 已分配=16.98GB, 已保留=18.63GB, 空闲=30.42GB
+[2025-11-27 22:36:23] [显存监控] 已分配=16.97GB, 已保留=18.71GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=18.71GB, 剩余=30.50GB
+MLLM description: The 2012 BMW 3 Series Sedan is a sleek and modern vehicle with a distinctive design. Its most notable feature is the iconic BMW logo prominently displayed on the front grille. The car's color is a vibrant red, which stands out against the backdrop of the urban setting in the first two images and the natural landscape in the third image. The car has a streamlined shape with smooth lines and curves, giving it a sporty yet elegant appearance. The size and proportions of the car are compact and balanced, making it an ideal choice for city driving. The car's behavioral characteristics include its powerful engine, as indicated by the "3.0-liter, TwinPower Turbo, 6-cylinder engine generating 300 HP" text in the first image. This engine provides a smooth and responsive driving experience. The car's unique identifying traits include its distinctive grille, sleek lines, and vibrant red color.
+类别 BMW 3 Series Sedan 2012 文本特征维度: (512,)
+描述: The 2012 BMW 3 Series Sedan is a sleek and modern vehicle with a distinctive design. Its most notabl...
+处理类别: BMW 3 Series Wagon 2012
+[2025-11-27 22:36:26] [显存监控] 已分配=16.91GB, 已保留=18.71GB, 空闲=30.50GB
+[2025-11-27 22:36:29] [显存监控] 已分配=16.91GB, 已保留=18.71GB, 空闲=30.50GB
+ 15%|█▌        | 30/196 [10:11<49:05, 17.74s/it] 16%|█▌        | 31/196 [10:29<49:13, 17.90s/it]Terminated

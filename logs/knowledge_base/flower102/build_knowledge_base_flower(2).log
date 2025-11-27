@@ -1,0 +1,1498 @@
+[INFO] === Build Knowledge Base 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=1  # 使用的GPU编号
+Dataset: flower (num_classes=)  # 数据集及类别数
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/flower102/knowledge_base  # 知识库目录
+Config File: ./configs/expts/flower102_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/knowledge_base/flower102/build_knowledge_base_flower(2).log  # 日志文件路径
+Run Mode: build_knowledge_base  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: flower (flower102)
+类别数: 102
+实验目录: ./experiments/flower102
+✅ JSON文件检查通过: ./experiments/flower102/images_split
+当前使用的 GPU 为：1
+
+=== Experiment Start Time: 2025-11-27 22:46:25 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/flower102_all.yml',
+ 'fusion_method': 'concat',
+ 'gallery_out': None,
+ 'knowledge_base_dir': './experiments/flower102/knowledge_base',
+ 'kshot': None,
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'region_num': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'superclass': None,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/flowers_102',
+ 'dataset_name': 'flower',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/flower102',
+ 'expt_dir_describe': './experiments/flower102/describe',
+ 'expt_dir_gallery': './experiments/flower102/gallery',
+ 'expt_dir_grouping': './experiments/flower102/grouping',
+ 'expt_dir_guess': './experiments/flower102/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 51,
+ 'num_classes': 102,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/flower102/gallery/flower_image_descriptions_attn',
+ 'path_identify_answers': './experiments/flower102/identify',
+ 'path_llm_gussed_names': './experiments/flower102/guess/flower_llm_gussed_names',
+ 'path_llm_prompts': './experiments/flower102/describe/flower_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/flower102/guess/flower_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/flower102/guess/flower_llm_replies_raw',
+ 'path_references': './experiments/flower102/gallery/flower_image_references',
+ 'path_regions': './experiments/flower102/gallery/flower_image_regions',
+ 'path_vqa_answers': './experiments/flower102/describe/flower_attributes_pairs',
+ 'path_vqa_questions': './experiments/flower102/describe/flower_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "flower102",
+    "num_classes": 102,
+    "config_file": "flower102_all.yml",
+    "data_dir": "flowers_102",
+    "experiment_dir": "flower102",
+    "stats_file": "flower102/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/flower102/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/flower102"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:04<00:17,  4.33s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:07,  2.66s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:07<00:04,  2.11s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:11<00:02,  2.84s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.03s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.37s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-27 22:46:38
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/flower102/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/flower102/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 709 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-27 22:46:44
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x744f73dcaa60>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x744f73f1eeb0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/flower102/knowledge_base
+使用数据集: flower, 类别数: 102
+✅ 慢思考模块初始化完成，类别映射数量: 102
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-27 22:46:44] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+🔄 从训练集随机抽取发现集 (模式: _4)
+🔄 开始抽取发现集: flower, 每类4个样本
+🔒 固定种子模式: seed=1
+✓ 加载训练数据: 102 个类别
+✓ 抽取发现集: 102 个类别
+✓ 发现集已保存到: ./experiments/flower102/result/discovering_extract/images_discovery_all_4.json
+✓ JSON文件验证通过: 102 个类别
+从JSON文件加载发现集: ./experiments/flower102/result/discovering_extract/images_discovery_all_4.json
+✓ 加载完成: 102 个类别，共 408 张图像
+✓ 发现集统计: 102 个类别，共 408 张图像
+✓ 创建JSON发现集对象: 102 个类别
+构建知识库，包含 102 个类别, dog datasets:102
+从 ./experiments/flower102/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/flower102/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/flower102/knowledge_base 加载
+图像知识库类别数: 102
+文本知识库类别数: 102
+类别描述数: 102
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+构建知识库...
+训练样本包含 102 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/102 [00:00<?, ?it/s]  1%|          | 1/102 [00:00<00:29,  3.48it/s]  4%|▍         | 4/102 [00:00<00:08, 11.01it/s]  7%|▋         | 7/102 [00:00<00:06, 15.30it/s] 10%|▉         | 10/102 [00:00<00:05, 17.85it/s] 13%|█▎        | 13/102 [00:00<00:04, 19.59it/s] 16%|█▌        | 16/102 [00:00<00:04, 20.84it/s] 19%|█▊        | 19/102 [00:01<00:03, 21.61it/s] 22%|██▏       | 22/102 [00:01<00:03, 22.15it/s] 25%|██▍       | 25/102 [00:01<00:03, 22.45it/s] 27%|██▋       | 28/102 [00:01<00:03, 22.64it/s] 30%|███       | 31/102 [00:01<00:03, 22.58it/s] 33%|███▎      | 34/102 [00:01<00:03, 22.67it/s] 36%|███▋      | 37/102 [00:01<00:02, 22.85it/s] 39%|███▉      | 40/102 [00:01<00:02, 23.09it/s] 42%|████▏     | 43/102 [00:02<00:02, 22.95it/s] 45%|████▌     | 46/102 [00:02<00:02, 23.04it/s] 48%|████▊     | 49/102 [00:02<00:02, 23.04it/s] 51%|█████     | 52/102 [00:02<00:02, 23.39it/s] 54%|█████▍    | 55/102 [00:02<00:02, 23.31it/s] 57%|█████▋    | 58/102 [00:02<00:01, 23.29it/s] 60%|█████▉    | 61/102 [00:02<00:01, 23.13it/s] 63%|██████▎   | 64/102 [00:03<00:01, 23.09it/s] 66%|██████▌   | 67/102 [00:03<00:01, 23.09it/s] 69%|██████▊   | 70/102 [00:03<00:01, 22.78it/s] 72%|███████▏  | 73/102 [00:03<00:01, 22.71it/s] 75%|███████▍  | 76/102 [00:03<00:01, 22.64it/s] 77%|███████▋  | 79/102 [00:03<00:01, 22.74it/s] 80%|████████  | 82/102 [00:03<00:00, 22.84it/s] 83%|████████▎ | 85/102 [00:03<00:00, 22.82it/s] 86%|████████▋ | 88/102 [00:04<00:00, 22.91it/s] 89%|████████▉ | 91/102 [00:04<00:00, 22.74it/s] 92%|█████████▏| 94/102 [00:04<00:00, 22.97it/s] 95%|█████████▌| 97/102 [00:04<00:00, 22.68it/s] 98%|█████████▊| 100/102 [00:04<00:00, 22.83it/s]100%|██████████| 102/102 [00:04<00:00, 21.79it/s]
+处理类别: alpine sea holly
+类别 alpine sea holly 图像特征维度: (512,)
+处理类别: anthurium
+类别 anthurium 图像特征维度: (512,)
+处理类别: artichoke
+类别 artichoke 图像特征维度: (512,)
+处理类别: azalea
+类别 azalea 图像特征维度: (512,)
+处理类别: ball moss
+类别 ball moss 图像特征维度: (512,)
+处理类别: balloon flower
+类别 balloon flower 图像特征维度: (512,)
+处理类别: barbeton daisy
+类别 barbeton daisy 图像特征维度: (512,)
+处理类别: bearded iris
+类别 bearded iris 图像特征维度: (512,)
+处理类别: bee balm
+类别 bee balm 图像特征维度: (512,)
+处理类别: bird of paradise
+类别 bird of paradise 图像特征维度: (512,)
+处理类别: bishop of llandaff
+类别 bishop of llandaff 图像特征维度: (512,)
+处理类别: black-eyed susan
+类别 black-eyed susan 图像特征维度: (512,)
+处理类别: blackberry lily
+类别 blackberry lily 图像特征维度: (512,)
+处理类别: blanket flower
+类别 blanket flower 图像特征维度: (512,)
+处理类别: bolero deep blue
+类别 bolero deep blue 图像特征维度: (512,)
+处理类别: bougainvillea
+类别 bougainvillea 图像特征维度: (512,)
+处理类别: bromelia
+类别 bromelia 图像特征维度: (512,)
+处理类别: buttercup
+类别 buttercup 图像特征维度: (512,)
+处理类别: californian poppy
+类别 californian poppy 图像特征维度: (512,)
+处理类别: camellia
+类别 camellia 图像特征维度: (512,)
+处理类别: canna lily
+类别 canna lily 图像特征维度: (512,)
+处理类别: canterbury bells
+类别 canterbury bells 图像特征维度: (512,)
+处理类别: cape flower
+类别 cape flower 图像特征维度: (512,)
+处理类别: carnation
+类别 carnation 图像特征维度: (512,)
+处理类别: cautleya spicata
+类别 cautleya spicata 图像特征维度: (512,)
+处理类别: clematis
+类别 clematis 图像特征维度: (512,)
+处理类别: colt's foot
+类别 colt's foot 图像特征维度: (512,)
+处理类别: columbine
+类别 columbine 图像特征维度: (512,)
+处理类别: common dandelion
+类别 common dandelion 图像特征维度: (512,)
+处理类别: corn poppy
+类别 corn poppy 图像特征维度: (512,)
+处理类别: cyclamen 
+类别 cyclamen  图像特征维度: (512,)
+处理类别: daffodil
+类别 daffodil 图像特征维度: (512,)
+处理类别: desert-rose
+类别 desert-rose 图像特征维度: (512,)
+处理类别: english marigold
+类别 english marigold 图像特征维度: (512,)
+处理类别: fire lily
+类别 fire lily 图像特征维度: (512,)
+处理类别: foxglove
+类别 foxglove 图像特征维度: (512,)
+处理类别: frangipani
+类别 frangipani 图像特征维度: (512,)
+处理类别: fritillary
+类别 fritillary 图像特征维度: (512,)
+处理类别: garden phlox
+类别 garden phlox 图像特征维度: (512,)
+处理类别: gaura
+类别 gaura 图像特征维度: (512,)
+处理类别: gazania
+类别 gazania 图像特征维度: (512,)
+处理类别: geranium
+类别 geranium 图像特征维度: (512,)
+处理类别: giant white arum lily
+类别 giant white arum lily 图像特征维度: (512,)
+处理类别: globe thistle
+类别 globe thistle 图像特征维度: (512,)
+处理类别: globe-flower
+类别 globe-flower 图像特征维度: (512,)
+处理类别: grape hyacinth
+类别 grape hyacinth 图像特征维度: (512,)
+处理类别: great masterwort
+类别 great masterwort 图像特征维度: (512,)
+处理类别: hard-leaved pocket orchid
+类别 hard-leaved pocket orchid 图像特征维度: (512,)
+处理类别: hibiscus
+类别 hibiscus 图像特征维度: (512,)
+处理类别: hippeastrum 
+类别 hippeastrum  图像特征维度: (512,)
+处理类别: japanese anemone
+类别 japanese anemone 图像特征维度: (512,)
+处理类别: king protea
+类别 king protea 图像特征维度: (512,)
+处理类别: lenten rose
+类别 lenten rose 图像特征维度: (512,)
+处理类别: lotus
+类别 lotus 图像特征维度: (512,)
+处理类别: love in the mist
+类别 love in the mist 图像特征维度: (512,)
+处理类别: magnolia
+类别 magnolia 图像特征维度: (512,)
+处理类别: mallow
+类别 mallow 图像特征维度: (512,)
+处理类别: marigold
+类别 marigold 图像特征维度: (512,)
+处理类别: mexican aster
+类别 mexican aster 图像特征维度: (512,)
+处理类别: mexican petunia
+类别 mexican petunia 图像特征维度: (512,)
+处理类别: monkshood
+类别 monkshood 图像特征维度: (512,)
+处理类别: moon orchid
+类别 moon orchid 图像特征维度: (512,)
+处理类别: morning glory
+[2025-11-27 22:46:47] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 morning glory 图像特征维度: (512,)
+处理类别: orange dahlia
+类别 orange dahlia 图像特征维度: (512,)
+处理类别: osteospermum
+类别 osteospermum 图像特征维度: (512,)
+处理类别: oxeye daisy
+类别 oxeye daisy 图像特征维度: (512,)
+处理类别: passion flower
+类别 passion flower 图像特征维度: (512,)
+处理类别: pelargonium
+类别 pelargonium 图像特征维度: (512,)
+处理类别: peruvian lily
+类别 peruvian lily 图像特征维度: (512,)
+处理类别: petunia
+类别 petunia 图像特征维度: (512,)
+处理类别: pincushion flower
+类别 pincushion flower 图像特征维度: (512,)
+处理类别: pink primrose
+类别 pink primrose 图像特征维度: (512,)
+处理类别: pink-yellow dahlia?
+类别 pink-yellow dahlia? 图像特征维度: (512,)
+处理类别: poinsettia
+类别 poinsettia 图像特征维度: (512,)
+处理类别: primula
+类别 primula 图像特征维度: (512,)
+处理类别: prince of wales feathers
+类别 prince of wales feathers 图像特征维度: (512,)
+处理类别: purple coneflower
+类别 purple coneflower 图像特征维度: (512,)
+处理类别: red ginger
+类别 red ginger 图像特征维度: (512,)
+处理类别: rose
+类别 rose 图像特征维度: (512,)
+处理类别: ruby-lipped cattleya
+类别 ruby-lipped cattleya 图像特征维度: (512,)
+处理类别: siam tulip
+类别 siam tulip 图像特征维度: (512,)
+处理类别: silverbush
+类别 silverbush 图像特征维度: (512,)
+处理类别: snapdragon
+类别 snapdragon 图像特征维度: (512,)
+处理类别: spear thistle
+类别 spear thistle 图像特征维度: (512,)
+处理类别: spring crocus
+类别 spring crocus 图像特征维度: (512,)
+处理类别: stemless gentian
+类别 stemless gentian 图像特征维度: (512,)
+处理类别: sunflower
+类别 sunflower 图像特征维度: (512,)
+处理类别: sweet pea
+类别 sweet pea 图像特征维度: (512,)
+处理类别: sweet william
+类别 sweet william 图像特征维度: (512,)
+处理类别: sword lily
+类别 sword lily 图像特征维度: (512,)
+处理类别: thorn apple
+类别 thorn apple 图像特征维度: (512,)
+处理类别: tiger lily
+类别 tiger lily 图像特征维度: (512,)
+处理类别: toad lily
+类别 toad lily 图像特征维度: (512,)
+处理类别: tree mallow
+类别 tree mallow 图像特征维度: (512,)
+处理类别: tree poppy
+类别 tree poppy 图像特征维度: (512,)
+处理类别: trumpet creeper
+类别 trumpet creeper 图像特征维度: (512,)
+处理类别: wallflower
+类别 wallflower 图像特征维度: (512,)
+处理类别: water lily
+类别 water lily 图像特征维度: (512,)
+处理类别: watercress
+类别 watercress 图像特征维度: (512,)
+处理类别: wild pansy
+类别 wild pansy 图像特征维度: (512,)
+处理类别: windflower
+类别 windflower 图像特征维度: (512,)
+处理类别: yellow iris
+类别 yellow iris 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/102 [00:00<?, ?it/s]  1%|          | 1/102 [00:19<33:39, 20.00s/it]  2%|▏         | 2/102 [00:41<34:39, 20.79s/it]  3%|▎         | 3/102 [01:02<34:26, 20.87s/it]处理类别: alpine sea holly
+[2025-11-27 22:46:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:46:53] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-27 22:46:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for alpine sea holly category.
+[2025-11-27 22:46:59] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:47:02] [显存监控] 已分配=17.00GB, 已保留=21.17GB, 空闲=30.40GB
+[2025-11-27 22:47:05] [显存监控] 已分配=17.03GB, 已保留=21.17GB, 空闲=30.38GB
+[2025-11-27 22:47:08] [显存监控] 已分配=17.03GB, 已保留=21.17GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.17GB, 剩余=30.50GB
+MLLM description: The Alpine Sea Holly (Eryngium alpinum) is characterized by its distinctive spiky, silvery-blue foliage and a central, spherical, greenish-brown flower head composed of densely packed, small, tubular flowers. Here's a detailed breakdown of its key visual characteristics:
+
+1. **Distinctive Physical Features**: The plant has long, slender, needle-like leaves that radiate outward in a circular pattern, creating a crown-like appearance. These leaves are sharp and serrated, giving the plant a somewhat thorny look.
+
+2. **Color Patterns and Markings**: The leaves are predominantly silvery-blue, with a subtle sheen that can appear almost metallic under certain lighting conditions. The flower head is a muted greenish-brown, contrasting sharply with the blue-green leaves. The flowers themselves are small and densely clustered, forming a spherical shape at the center of the plant.
+
+3. **Size and Proportions**: Alpine Sea Holly typically grows to a height of around 1-2 feet (30-60 cm). The plant's structure is compact, with the flower head being the focal point, surrounded by the dense foliage. The leaves are relatively thin and elongated, contributing to the overall upright and sturdy appearance of the plant.
+
+
+类别 alpine sea holly 文本特征维度: (512,)
+描述: The Alpine Sea Holly (Eryngium alpinum) is characterized by its distinctive spiky, silvery-blue foli...
+处理类别: anthurium
+[2025-11-27 22:47:11] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+[2025-11-27 22:47:14] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+[2025-11-27 22:47:17] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+wiki desc: Description for anthurium category.
+[2025-11-27 22:47:20] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:47:23] [显存监控] 已分配=17.00GB, 已保留=21.49GB, 空闲=30.40GB
+[2025-11-27 22:47:26] [显存监控] 已分配=17.03GB, 已保留=21.49GB, 空闲=30.38GB
+[2025-11-27 22:47:29] [显存监控] 已分配=17.03GB, 已保留=21.49GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.49GB, 剩余=30.50GB
+MLLM description: Anthuriums are characterized by their distinctive spathe and spadix. The spathe is the large, leaf-like structure that encloses the spadix, which is the central column of the flower. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features**: Anthuriums have a unique spathe that can vary in shape, size, and color. The spadix is typically a slender, elongated structure that protrudes from the center of the spathe.
+
+2. **Color Patterns and Markings**: Anthuriums come in a wide range of colors, including red, pink, white, and various shades in between. The coloration can be uniform or patterned with spots, stripes, or gradients. Some varieties may also have metallic or glittery accents, as seen in the third image.
+
+3. **Size and Proportions**: Anthuriums can vary significantly in size, depending on the variety. The spathe can range from small and compact to large and dramatic. The spadix is usually shorter than the spathe and is often a contrasting color.
+
+4. **Behavioral Characteristics**: Anthuriums are tropical plants that thrive in warm, humid environments. They are not known for
+类别 anthurium 文本特征维度: (512,)
+描述: Anthuriums are characterized by their distinctive spathe and spadix. The spathe is the large, leaf-l...
+处理类别: artichoke
+[2025-11-27 22:47:32] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:47:35] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:47:38] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+wiki desc: Description for artichoke category.
+[2025-11-27 22:47:42] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:47:45] [显存监控] 已分配=17.00GB, 已保留=21.26GB, 空闲=30.40GB
+[2025-11-27 22:47:48] [显存监控] 已分配=17.03GB, 已保留=21.26GB, 空闲=30.38GB
+[2025-11-27 22:47:51] [显存监控] 已分配=17.03GB, 已保留=21.26GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.26GB, 剩余=30.50GB
+MLLM description: The images depict artichokes, which are characterized by their distinctive spiky, purple-tipped leaves that form a tight, globe-like structure. Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Artichokes have a unique appearance with their tightly packed, overlapping leaf-like bracts that enclose the flower head. These bracts are typically greenish-brown or purplish in color, with the tips often tinged with purple or blue.
+
+2. **Color Patterns and Markings**: The coloration of artichokes is primarily green, with the outer leaves being more prominent and the inner ones becoming more tightly packed as they approach the center. The tips of the leaves are often a vibrant purple or blue, creating a striking contrast against the green base. The coloration can vary slightly depending on the variety and growing conditions.
+
+3. **Size and Proportions**: Artichokes can range in size, but generally, they are relatively large compared to other vegetables. The size can vary significantly based on factors such as the variety, age, and growing conditions. The proportion between the bracts and the flower head is consistent across different varieties, with the bracts forming a protective layer around the flower head.
+
+4. **
+类别 artichoke 文本特征维度: (512,)
+描述: The images depict artichokes, which are characterized by their distinctive spiky, purple-tipped leav...
+处理类别: azalea
+[2025-11-27 22:47:54] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 22:47:57] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 22:48:00] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+wiki desc: Description for azalea category.
+[2025-11-27 22:48:03] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:48:06] [显存监控] 已分配=17.00GB, 已保留=21.03GB, 空闲=30.40GB
+[2025-11-27 22:48:09] [显存监控] 已分配=17.05GB, 已保留=21.03GB, 空闲=30.36GB
+[2025-11-27 22:48:12] [显存监控] 已分配=17.03GB, 已保留=21.03GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.03GB, 剩余=30.50GB
+  4%|▍         | 4/102 [01:24<34:38, 21.21s/it]  5%|▍         | 5/102 [01:45<34:15, 21.19s/it]  6%|▌         | 6/102 [02:06<33:51, 21.16s/it]  7%|▋         | 7/102 [02:30<35:03, 22.14s/it]MLLM description: Azaleas are a genus of flowering plants in the family Ericaceae, known for their vibrant and diverse floral displays. Here's a detailed description of their distinctive features:
+
+1. **Distinctive Physical Features**: Azaleas have broad, leathery leaves that are typically evergreen or deciduous, depending on the species. The flowers are usually arranged in clusters at the tips of branches.
+
+2. **Color Patterns and Markings**: Azaleas come in a wide range of colors, including red, pink, white, yellow, and purple. The petals often have intricate patterns, such as stripes, spots, or speckles, which can vary by species. In the images provided, we see red, pink, and light pink azaleas with prominent stamens and pistils.
+
+3. **Size and Proportions**: Azaleas can vary greatly in size, ranging from small shrubs to large trees. The flowers themselves are generally medium-sized, with petals that can be either rounded or slightly pointed. The stamens and pistils are often long and slender, adding to the flower's delicate appearance.
+
+4. **Behavioral Characteristics**: Azaleas are primarily pollinated by insects, particularly bees and butterflies. They are also attractive to
+类别 azalea 文本特征维度: (512,)
+描述: Azaleas are a genus of flowering plants in the family Ericaceae, known for their vibrant and diverse...
+处理类别: ball moss
+[2025-11-27 22:48:15] [显存监控] 已分配=16.91GB, 已保留=21.03GB, 空闲=30.50GB
+[2025-11-27 22:48:18] [显存监控] 已分配=16.91GB, 已保留=21.03GB, 空闲=30.50GB
+[2025-11-27 22:48:21] [显存监控] 已分配=16.91GB, 已保留=21.03GB, 空闲=30.50GB
+wiki desc: Description for ball moss category.
+[2025-11-27 22:48:25] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:48:28] [显存监控] 已分配=17.02GB, 已保留=21.04GB, 空闲=30.38GB
+[2025-11-27 22:48:31] [显存监控] 已分配=17.03GB, 已保留=21.04GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.04GB, 剩余=30.50GB
+MLLM description: The images depict ball moss, characterized by its distinctive physical features:
+
+1. **Distinctive Physical Features**: Ball moss has a unique, rounded, and often spherical shape, which distinguishes it from other mosses or similar plants. Its leaves are tightly packed and form a dense, cushion-like structure.
+
+2. **Color Patterns and Markings**: The coloration of ball moss can vary, with shades of pink, purple, and sometimes green. In the provided images, the flowers display vibrant hues of pink and purple, with some showing a gradient effect where the petals transition from one color to another. The leaves are typically a deep green, contrasting with the colorful flowers.
+
+3. **Size and Proportions**: Ball moss is relatively small in size, with a diameter usually ranging from a few centimeters to about 10-15 cm. The flowers are smaller compared to the overall plant size, emphasizing the dense, compact nature of the foliage.
+
+4. **Behavioral Characteristics**: Ball moss is epiphytic, meaning it grows on other plants without harming them. It absorbs nutrients and moisture from the air and rainwater. It does not have roots in the traditional sense; instead, it has specialized structures called "holdfasts" that anchor it to surfaces like
+[2025-11-27 22:48:34] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+类别 ball moss 文本特征维度: (512,)
+描述: The images depict ball moss, characterized by its distinctive physical features:
+
+1. **Distinctive P...
+处理类别: balloon flower
+[2025-11-27 22:48:37] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:48:40] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:48:43] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+wiki desc: Description for balloon flower category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:48:47] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-27 22:48:50] [显存监控] 已分配=17.00GB, 已保留=21.26GB, 空闲=30.40GB
+[2025-11-27 22:48:53] [显存监控] 已分配=17.03GB, 已保留=21.26GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.26GB, 剩余=30.50GB
+MLLM description: The balloon flower exhibits distinctive physical features such as its star-shaped petals with prominent veins radiating from the center. The petals are typically a vibrant shade of purple, sometimes with subtle variations in hue or faint white markings near the center. The flowers are relatively small to medium-sized, with a diameter ranging from about 2-4 inches. The petals are slightly ruffled at the edges, giving them a delicate and airy appearance.
+
+The color patterns and markings are characterized by the deep purple petals with lighter veins and subtle white accents near the center. The petals have a smooth texture, and the overall shape is rounded and bell-like, resembling a small balloon when fully opened.
+
+The balloon flower does not exhibit any specific behavioral characteristics, as it is a stationary plant. However, it is known to attract pollinators like bees and butterflies due to its vibrant color and sweet fragrance.
+
+Unique identifying traits include the star-shaped petals, the prominent veins, the vibrant purple color, and the subtle white markings near the center. These features set the balloon flower apart from other similar categories, such as the lily or the orchid, which have different petal shapes, colors, and patterns.
+类别 balloon flower 文本特征维度: (512,)
+描述: The balloon flower exhibits distinctive physical features such as its star-shaped petals with promin...
+处理类别: barbeton daisy
+[2025-11-27 22:48:56] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 22:48:59] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 22:49:02] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 22:49:05] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+wiki desc: Description for barbeton daisy category.
+[2025-11-27 22:49:08] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:49:11] [显存监控] 已分配=17.00GB, 已保留=21.03GB, 空闲=30.40GB
+[2025-11-27 22:49:14] [显存监控] 已分配=17.03GB, 已保留=21.04GB, 空闲=30.38GB
+[2025-11-27 22:49:17] [显存监控] 已分配=17.03GB, 已保留=21.04GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.04GB, 剩余=30.50GB
+MLLM description: The barberton daisy, also known as Gerbera daisy, is a vibrant flower with distinctive features that set it apart from other similar categories.
+
+1. **Distinctive Physical Features**: Barberton daisies have large, rounded flower heads with numerous overlapping petals radiating outward from a central disc. These petals can vary in shape and size, giving the flower a full and lush appearance.
+
+2. **Color Patterns and Markings**: The color of the petals can range from bright yellow to deep pink or red, depending on the variety. The center of the flower typically has a darker, more intense color, often with a textured or fuzzy appearance. Some varieties may have a gradient effect, transitioning from one shade to another along the petal edges.
+
+3. **Size and Proportions**: Barberton daisies are generally larger than their wild counterparts, such as the African daisy. They can grow up to 10 inches in diameter, making them a striking focal point in gardens or floral arrangements.
+
+4. **Behavioral Characteristics**: While not directly observable in still images, barberton daisies are known to attract pollinators like bees and butterflies due to their vibrant colors and nectar-rich centers. They require regular watering and
+类别 barbeton daisy 文本特征维度: (512,)
+描述: The barberton daisy, also known as Gerbera daisy, is a vibrant flower with distinctive features that...
+  8%|▊         | 8/102 [02:50<33:25, 21.33s/it]  9%|▉         | 9/102 [03:13<34:09, 22.04s/it] 10%|▉         | 10/102 [03:32<32:06, 20.94s/it]处理类别: bearded iris
+[2025-11-27 22:49:20] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:49:23] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:49:26] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:49:29] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+wiki desc: Description for bearded iris category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:49:32] [显存监控] 已分配=17.00GB, 已保留=19.87GB, 空闲=30.40GB
+[2025-11-27 22:49:35] [显存监控] 已分配=17.00GB, 已保留=19.87GB, 空闲=30.40GB
+[2025-11-27 22:49:38] [显存监控] 已分配=17.02GB, 已保留=19.87GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.87GB, 剩余=30.50GB
+MLLM description: Bearded irises, as depicted in these images, exhibit several distinctive features that set them apart:
+
+1. **Distinctive Physical Features**: Bearded irises have a beard-like structure on their falls (the lower petals), which is a defining characteristic. This beard is often brightly colored and contrasts with the rest of the flower.
+
+2. **Color Patterns and Markings**: The coloration of bearded irises can vary widely. In the first image, the flower has a light beige or cream color with a subtle hint of yellow. The second image showcases a deep purple iris with a lighter inner section and a prominent beard. The third image presents a pale yellow iris with a creamy white beard. These color variations are common among bearded irises, allowing for a diverse range of appearances.
+
+3. **Size and Proportions**: Bearded irises generally have large flowers, typically measuring between 6 to 8 inches across. The petals are broad and rounded, contributing to their robust appearance. The leaves are long and narrow, providing a strong contrast to the flower's size.
+
+4. **Behavioral Characteristics**: While not directly observable in still images, bearded irises are known to be pollinated by bees and butterflies due to their vibrant colors and sweet fragrance.
+类别 bearded iris 文本特征维度: (512,)
+描述: Bearded irises, as depicted in these images, exhibit several distinctive features that set them apar...
+处理类别: bee balm
+[2025-11-27 22:49:41] [显存监控] 已分配=16.91GB, 已保留=19.87GB, 空闲=30.50GB
+[2025-11-27 22:49:44] [显存监控] 已分配=16.91GB, 已保留=19.87GB, 空闲=30.50GB
+[2025-11-27 22:49:47] [显存监控] 已分配=16.91GB, 已保留=19.87GB, 空闲=30.50GB
+[2025-11-27 22:49:50] [显存监控] 已分配=16.91GB, 已保留=19.87GB, 空闲=30.50GB
+wiki desc: Description for bee balm category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:49:53] [显存监控] 已分配=17.05GB, 已保留=21.35GB, 空闲=30.35GB
+[2025-11-27 22:49:56] [显存监控] 已分配=17.00GB, 已保留=21.35GB, 空闲=30.40GB
+[2025-11-27 22:49:59] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.38GB
+[2025-11-27 22:50:02] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.35GB, 剩余=30.50GB
+MLLM description: Bee balm, also known as Monarda, is a flowering plant characterized by its distinctive tubular flowers with elongated, fringed petals. Here's a detailed description of its key visual characteristics:
+
+1. **Distinctive Physical Features**: Bee balm has a tall, upright growth habit, often reaching heights of up to 3-4 feet. Its leaves are typically oval-shaped, serrated, and have a dark green color. The stems are sturdy and can be slightly hairy.
+
+2. **Color Patterns and Markings**: The flowers come in various colors, including shades of pink, red, purple, and white. The petals are often striped or spotted with contrasting colors, such as white or yellow. The center of the flower is usually darker, sometimes appearing almost black.
+
+3. **Size and Proportions**: The flowers are relatively small, measuring around 1-2 inches in diameter. They grow in clusters at the top of the stem, creating a dense, cone-like appearance. The leaves are medium-sized, with a length of about 2-4 inches.
+
+4. **Behavioral Characteristics**: Bee balm is a nectar-rich plant, attracting pollinators like bees, butterflies, and hummingbirds. It is also known to attract beneficial
+类别 bee balm 文本特征维度: (512,)
+描述: Bee balm, also known as Monarda, is a flowering plant characterized by its distinctive tubular flowe...
+处理类别: bird of paradise
+[2025-11-27 22:50:05] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:50:08] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:50:11] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+wiki desc: Description for bird of paradise category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:50:14] [显存监控] 已分配=17.05GB, 已保留=21.35GB, 空闲=30.35GB
+[2025-11-27 22:50:17] [显存监控] 已分配=17.04GB, 已保留=21.35GB, 空闲=30.37GB
+[2025-11-27 22:50:20] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.35GB, 剩余=30.50GB
+MLLM description: The bird of paradise flower is characterized by its distinctive physical features, including a tall, upright spadix surrounded by a large, colorful spathe. The spathe is typically orange-yellow with blue or purple markings near the base, transitioning to a lighter shade towards the tip. The spadix is elongated and has a purplish-brown coloration. The flower's size can vary, but it generally measures around 10-15 cm in height.
+
+Behaviorally, the bird of paradise attracts pollinators such as hummingbirds and butterflies due to its vibrant colors and unique shape. It is also known for its ability to sway in the wind, which may help in attracting pollinators.
+
+Unique identifying traits include the combination of the spadix and spathe, the contrasting colors of the spathe, and the overall shape of the flower. These features set the bird of paradise apart from other similar flowers, such as the heliconia or the strelitzia.
+类别 bird of paradise 文本特征维度: (512,)
+描述: The bird of paradise flower is characterized by its distinctive physical features, including a tall,...
+处理类别: bishop of llandaff
+[2025-11-27 22:50:23] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:50:26] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:50:29] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+wiki desc: Description for bishop of llandaff category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:50:32] [显存监控] 已分配=17.07GB, 已保留=22.06GB, 空闲=30.34GB
+[2025-11-27 22:50:35] [显存监控] 已分配=17.03GB, 已保留=22.06GB, 空闲=30.37GB
+[2025-11-27 22:50:38] [显存监控] 已分配=17.05GB, 已保留=22.06GB, 空闲=30.35GB
+[2025-11-27 22:50:41] [显存监控] 已分配=17.03GB, 已保留=22.06GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.06GB, 剩余=30.50GB
+ 11%|█         | 11/102 [03:52<31:38, 20.86s/it] 12%|█▏        | 12/102 [04:10<29:39, 19.77s/it] 13%|█▎        | 13/102 [04:30<29:32, 19.91s/it] 14%|█▎        | 14/102 [04:53<30:42, 20.94s/it]MLLM description: The Bishop of Llandaff is a vibrant red flower with a distinctive appearance. Here's a detailed description:
+
+1. **Distinctive Physical Features**: The flower has a cup-shaped center surrounded by numerous petal-like structures that radiate outward. These petals are broad and flat, giving the flower a full and rounded appearance.
+
+2. **Color Patterns and Markings**: The petals are a deep, rich red color, which contrasts beautifully with the yellow stamens in the center. There are no visible patterns or markings on the petals; they are uniformly colored.
+
+3. **Size and Proportions**: The flower appears to be medium-sized, neither too large nor too small. The petals are proportionally large compared to the overall size of the flower, contributing to its fullness.
+
+4. **Behavioral Characteristics**: As a flower, it does not exhibit any specific behavioral characteristics. However, it is likely to sway slightly in the wind due to its delicate structure.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of the Bishop of Llandaff is its vibrant red color and the contrast between the red petals and the yellow stamens. Additionally, the cup-shaped center and the broad, flat petals are characteristic of this species.
+类别 bishop of llandaff 文本特征维度: (512,)
+描述: The Bishop of Llandaff is a vibrant red flower with a distinctive appearance. Here's a detailed desc...
+处理类别: black-eyed susan
+[2025-11-27 22:50:44] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+[2025-11-27 22:50:47] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+[2025-11-27 22:50:50] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+wiki desc: Description for black-eyed susan category.
+[2025-11-27 22:50:53] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:50:56] [显存监控] 已分配=17.00GB, 已保留=21.17GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=21.17GB, 剩余=30.50GB
+MLLM description: The black-eyed susan is characterized by its bright yellow petals radiating outward from a dark brown or black central disk. The petals are long, narrow, and slightly curved at the tips, giving the flower a distinctive appearance. The color pattern is consistent across all three images, with the vibrant yellow contrasting sharply against the dark center. The size and proportions of the flowers appear similar in all images, suggesting they are taken from the same plant or a closely related species. There are no visible behavioral characteristics in these still images. The unique identifying trait of the black-eyed susan is its striking color combination and petal arrangement.
+类别 black-eyed susan 文本特征维度: (512,)
+描述: The black-eyed susan is characterized by its bright yellow petals radiating outward from a dark brow...
+处理类别: blackberry lily
+[2025-11-27 22:50:59] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+[2025-11-27 22:51:02] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+[2025-11-27 22:51:05] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+[2025-11-27 22:51:08] [显存监控] 已分配=16.91GB, 已保留=21.17GB, 空闲=30.50GB
+wiki desc: Description for blackberry lily category.
+[2025-11-27 22:51:12] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:51:15] [显存监控] 已分配=17.00GB, 已保留=19.78GB, 空闲=30.40GB
+[2025-11-27 22:51:18] [显存监控] 已分配=17.00GB, 已保留=19.78GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.78GB, 剩余=30.50GB
+MLLM description: The blackberry lily, also known as leopard lily or tiger lily, is characterized by its distinctive orange-red petals with dark spots or streaks. The petals are typically six in number and have a slightly recurved shape, giving the flower a unique appearance. The center of the flower is yellow, contrasting with the vibrant petals.
+
+In terms of size and proportions, the blackberry lily can grow up to 60 cm tall and has a robust stem. The leaves are long and narrow, often arranged in a basal rosette at the base of the plant.
+
+Behaviorally, the blackberry lily is a perennial herbaceous plant that blooms in late spring to early summer. It is pollinated by bees and other insects, and the seeds are dispersed by birds and other animals.
+
+The most distinguishing feature of the blackberry lily is its unique color pattern and markings. The orange-red petals are adorned with dark spots or streaks, creating a striking contrast against the yellow center. This pattern is not present in other similar categories of flowers, making it a key identifier for the blackberry lily.
+类别 blackberry lily 文本特征维度: (512,)
+描述: The blackberry lily, also known as leopard lily or tiger lily, is characterized by its distinctive o...
+处理类别: blanket flower
+[2025-11-27 22:51:21] [显存监控] 已分配=16.91GB, 已保留=19.78GB, 空闲=30.50GB
+[2025-11-27 22:51:24] [显存监控] 已分配=16.91GB, 已保留=19.78GB, 空闲=30.50GB
+[2025-11-27 22:51:27] [显存监控] 已分配=16.91GB, 已保留=19.78GB, 空闲=30.50GB
+[2025-11-27 22:51:30] [显存监控] 已分配=16.91GB, 已保留=19.78GB, 空闲=30.50GB
+wiki desc: Description for blanket flower category.
+[2025-11-27 22:51:33] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:51:36] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 22:51:39] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 22:51:42] [显存监控] 已分配=17.03GB, 已保留=20.83GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.83GB, 剩余=30.50GB
+MLLM description: The blanket flower, also known as Gaillardia, is characterized by its vibrant, daisy-like blooms with a distinctive color pattern. Here's a detailed description:
+
+1. **Distinctive Physical Features**: Blanket flowers have a flat, disc-shaped head composed of numerous ray florets surrounding a central disk floret. The petals are typically broad and flat, giving the flower a flat, open appearance.
+
+2. **Color Patterns and Markings**: The petals of blanket flowers exhibit a striking color gradient, transitioning from yellow at the tips to deep red or orange towards the base. This creates a beautiful, sunburst effect. The center of the flower is often a bright yellow or golden color, contrasting sharply with the outer petals.
+
+3. **Size and Proportions**: Blanket flowers can vary in size depending on the species, but they generally range from 6 to 18 inches tall. The diameter of the flower head is usually between 2 and 4 inches.
+
+4. **Behavioral Characteristics**: Blanket flowers are perennials, meaning they return year after year. They are drought-tolerant and thrive in full sun, making them popular choices for gardens and natural landscapes. They attract pollinators like bees and butterflies due to their bright colors and
+类别 blanket flower 文本特征维度: (512,)
+描述: The blanket flower, also known as Gaillardia, is characterized by its vibrant, daisy-like blooms wit...
+处理类别: bolero deep blue
+[2025-11-27 22:51:45] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:51:48] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:51:51] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+wiki desc: Description for bolero deep blue category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:51:55] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-27 22:51:58] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.83GB, 剩余=30.50GB
+ 15%|█▍        | 15/102 [05:11<29:05, 20.07s/it] 16%|█▌        | 16/102 [05:32<28:56, 20.20s/it] 17%|█▋        | 17/102 [05:51<28:07, 19.86s/it] 18%|█▊        | 18/102 [06:09<27:01, 19.31s/it]MLLM description: The Bolero Deep Blue is a vibrant purple flower with a distinctively deep blue hue. Its petals are large, rounded, and slightly ruffled, giving it a full and lush appearance. The center of the flower is dark purple, contrasting sharply with the lighter blue petals. The stamens are green and yellow, adding a pop of color to the center. The flower's size is medium, neither too small nor too large, making it a visually appealing addition to any garden or floral arrangement. It does not exhibit any specific behavioral characteristics as it is a stationary plant. Its unique identifying trait is its deep blue color, which sets it apart from other similar flowers.
+类别 bolero deep blue 文本特征维度: (512,)
+描述: The Bolero Deep Blue is a vibrant purple flower with a distinctively deep blue hue. Its petals are l...
+处理类别: bougainvillea
+[2025-11-27 22:52:01] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:52:04] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:52:07] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:52:10] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+wiki desc: Description for bougainvillea category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:52:13] [显存监控] 已分配=17.03GB, 已保留=20.43GB, 空闲=30.37GB
+[2025-11-27 22:52:16] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 22:52:19] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: Bougainvillea is a genus of flowering plants in the family Nyctaginaceae, known for its vibrant and colorful bracts that surround the small, inconspicuous flowers. Here's a detailed description of the key visual characteristics:
+
+1. **Distinctive Physical Features**: Bougainvillea has large, showy bracts that are typically the most noticeable feature. These bracts are usually leathery and papery, and can be found in various colors such as pink, red, purple, white, or yellow. The actual flowers are small and clustered at the center of the bracts.
+
+2. **Color Patterns and Markings**: The bracts come in a wide range of colors, including shades of pink, red, purple, white, and yellow. The color intensity can vary depending on the variety and environmental conditions. The flowers are small and white, often with a yellow center.
+
+3. **Size and Proportions**: Bougainvillea bracts can grow to be quite large, sometimes reaching up to 6 inches in diameter. The flowers are much smaller, typically measuring around 0.2 inches in diameter. The bracts are attached to the stem by a thin stalk, which allows them to droop slightly.
+
+4
+类别 bougainvillea 文本特征维度: (512,)
+描述: Bougainvillea is a genus of flowering plants in the family Nyctaginaceae, known for its vibrant and ...
+处理类别: bromelia
+[2025-11-27 22:52:22] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:52:25] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:52:28] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:52:31] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for bromelia category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:52:34] [显存监控] 已分配=17.00GB, 已保留=20.04GB, 空闲=30.40GB
+[2025-11-27 22:52:37] [显存监控] 已分配=17.00GB, 已保留=20.04GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.04GB, 剩余=30.50GB
+MLLM description: The images depict bromeliads, characterized by their distinctive rosette-like growth habit with overlapping, fleshy leaves. Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Bromeliads have a central rosette of thick, fleshy leaves that form a cup or vase shape at the center. This cup can hold water and serve as a habitat for small organisms.
+
+2. **Color Patterns and Markings**: The flowers in these images exhibit vibrant red petals with darker red or maroon tips. Some petals may show slight discoloration or spotting, particularly near the edges. The leaves are typically green with some red or purple tones, especially towards the tips.
+
+3. **Size and Proportions**: The size of the bromeliad appears to vary slightly between the images, but they generally have a compact, rounded appearance. The flowers are relatively small compared to the overall size of the plant, with the flower head being the most prominent feature.
+
+4. **Behavioral Characteristics**: While not directly observable in still images, bromeliads are known to be epiphytes, meaning they grow on other plants without harming them. They are also adapted to store water in their leaf cups, which is beneficial in arid environments
+类别 bromelia 文本特征维度: (512,)
+描述: The images depict bromeliads, characterized by their distinctive rosette-like growth habit with over...
+处理类别: buttercup
+[2025-11-27 22:52:40] [显存监控] 已分配=16.91GB, 已保留=20.04GB, 空闲=30.50GB
+[2025-11-27 22:52:43] [显存监控] 已分配=16.91GB, 已保留=20.04GB, 空闲=30.50GB
+[2025-11-27 22:52:46] [显存监控] 已分配=16.91GB, 已保留=20.04GB, 空闲=30.50GB
+[2025-11-27 22:52:49] [显存监控] 已分配=16.91GB, 已保留=20.04GB, 空闲=30.50GB
+[2025-11-27 22:52:52] [显存监控] 已分配=16.91GB, 已保留=20.04GB, 空闲=30.50GB
+wiki desc: Description for buttercup category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:52:55] [显存监控] 已分配=17.00GB, 已保留=20.62GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.62GB, 剩余=30.50GB
+MLLM description: The images depict buttercups, characterized by their bright yellow petals with a smooth texture and rounded shape. The petals are arranged in a circular pattern around a central disk of yellow stamens. The flowers appear to be relatively small, with a diameter of approximately 2-3 cm. The background is a soft green, indicating a natural setting. There are no visible behavioral characteristics in the images. The buttercup's distinctive physical features include its vibrant yellow color, smooth petals, and central disk of stamens. These features set it apart from other similar categories such as daisies or sunflowers, which have different petal shapes and arrangements.
+类别 buttercup 文本特征维度: (512,)
+描述: The images depict buttercups, characterized by their bright yellow petals with a smooth texture and ...
+处理类别: californian poppy
+[2025-11-27 22:52:58] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 22:53:01] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 22:53:04] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 22:53:07] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+wiki desc: Description for californian poppy category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:53:10] [显存监控] 已分配=17.05GB, 已保留=21.35GB, 空闲=30.35GB
+[2025-11-27 22:53:13] [显存监控] 已分配=17.00GB, 已保留=21.35GB, 空闲=30.40GB
+[2025-11-27 22:53:16] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.35GB, 剩余=30.50GB
+ 19%|█▊        | 19/102 [06:30<27:22, 19.79s/it] 20%|█▉        | 20/102 [06:50<27:10, 19.89s/it] 21%|██        | 21/102 [07:10<26:58, 19.99s/it] 22%|██▏       | 22/102 [07:32<27:16, 20.46s/it]MLLM description: The Californian poppy is a distinctive flower with several unique features:
+
+1. **Distinctive Physical Features**: The Californian poppy has a cup-shaped or saucer-like bloom with four petals. The petals are typically broad and rounded at the base, tapering to a point at the tip.
+
+2. **Color Patterns and Markings**: The flower can come in various colors, including bright yellow, orange, red, pink, and white. The petals often have a gradient effect, with the outer edges being lighter than the center. Some varieties may have darker spots or stripes near the center.
+
+3. **Size and Proportions**: The size of the flower can vary depending on the variety, but it generally ranges from 2 to 6 inches in diameter. The leaves are narrow and feathery, with a serrated edge, and grow in a basal rosette around the stem.
+
+4. **Behavioral Characteristics**: The flower blooms in the morning and closes by late afternoon or early evening. It is pollinated by insects such as bees and butterflies.
+
+5. **Unique Identifying Traits**: The combination of the cup-shaped bloom, the color variations, and the feathery leaves make the Californian poppy easily recognizable. Additionally, its ability to
+类别 californian poppy 文本特征维度: (512,)
+描述: The Californian poppy is a distinctive flower with several unique features:
+
+1. **Distinctive Physic...
+处理类别: camellia
+[2025-11-27 22:53:19] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:53:22] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:53:25] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:53:28] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+wiki desc: Description for camellia category.
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:53:31] [显存监控] 已分配=17.01GB, 已保留=19.62GB, 空闲=30.39GB
+[2025-11-27 22:53:34] [显存监控] 已分配=17.00GB, 已保留=19.62GB, 空闲=30.40GB
+[2025-11-27 22:53:37] [显存监控] 已分配=17.00GB, 已保留=19.62GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.62GB, 剩余=30.50GB
+MLLM description: The images depict Camellia flowers, which are characterized by their large, glossy, and leathery leaves, and showy, cup-shaped blooms with overlapping petals. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**: Camellias have a robust, woody stem and are evergreen shrubs or small trees. Their leaves are typically dark green, leathery, and elliptical to ovate in shape.
+
+2. **Color Patterns and Markings**: The flowers come in various colors, including white, pink, red, and yellow, often with a gradient effect. Some varieties may have a mix of colors within the same bloom. The petals can be smooth or slightly ruffled, and the center of the flower is usually yellow or orange, containing the stamens.
+
+3. **Size and Proportions**: Camellia flowers vary in size depending on the species and variety. They can range from 2 to 8 inches in diameter. The petals are large and often overlap, creating a full, rounded appearance.
+
+4. **Behavioral Characteristics**: Camellias are primarily pollinated by insects, such as bees and butterflies. They are also self-pollinating, meaning they can produce seeds without the need for cross
+类别 camellia 文本特征维度: (512,)
+描述: The images depict Camellia flowers, which are characterized by their large, glossy, and leathery lea...
+处理类别: canna lily
+[2025-11-27 22:53:40] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 22:53:43] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 22:53:46] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 22:53:49] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+wiki desc: Description for canna lily category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:53:52] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 22:53:55] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 22:53:58] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: The images showcase canna lilies, characterized by their large, showy flowers with distinctive physical features:
+
+1. **Distinctive Physical Features**: Canna lilies have broad, strap-like leaves and large, trumpet-shaped flowers. The flowers are typically borne on tall stems, rising above the foliage.
+
+2. **Color Patterns and Markings**: The flowers exhibit vibrant colors, including shades of orange, red, yellow, and pink. The petals often display intricate patterns or speckles, such as the orange spots on the yellow petals in Image 3. The petals may also have a gradient effect, transitioning from one color to another.
+
+3. **Size and Proportions**: Canna lilies are known for their large flowers, which can measure up to 8 inches across. The flowers are proportionally large compared to the plant's height, making them visually striking.
+
+4. **Behavioral Characteristics**: While not directly observable in these still images, canna lilies are known to be pollinated by insects, particularly bees and butterflies. They are also sensitive to cold temperatures and require warm climates to thrive.
+
+5. **Unique Identifying Traits**: The combination of the large, trumpet-shaped flowers, broad leaves, and vibrant coloration is unique to canna lilies
+类别 canna lily 文本特征维度: (512,)
+描述: The images showcase canna lilies, characterized by their large, showy flowers with distinctive physi...
+处理类别: canterbury bells
+[2025-11-27 22:54:01] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:54:04] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:54:07] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for canterbury bells category.
+[2025-11-27 22:54:11] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:54:14] [显存监控] 已分配=17.00GB, 已保留=20.93GB, 空闲=30.40GB
+[2025-11-27 22:54:17] [显存监控] 已分配=17.02GB, 已保留=20.93GB, 空闲=30.38GB
+[2025-11-27 22:54:20] [显存监控] 已分配=17.03GB, 已保留=20.93GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.93GB, 剩余=30.50GB
+MLLM description: Canterbury bells, also known as Campanula medium, exhibit several distinctive features that set them apart:
+
+1. **Distinctive Physical Features**: Canterbury bells have a bell-shaped flower with five lobes, typically ranging in color from deep purple to blue or white. The flowers are attached to a slender stem, and the leaves are lanceolate and serrated.
+
+2. **Color Patterns and Markings**: The flowers are predominantly purple, though variations exist. The petals are smooth and slightly ruffled at the edges, giving them a delicate appearance. The center of the flower often has a lighter hue, sometimes with a yellow or greenish tinge.
+
+3. **Size and Proportions**: Canterbury bells are relatively small, with each flower measuring around 1-2 inches in diameter. The plant itself is compact, growing up to 18 inches tall, making it an ideal choice for borders, rock gardens, or containers.
+
+4. **Behavioral Characteristics**: These plants are hardy and adaptable, thriving in full sun to partial shade. They prefer well-draining soil and are drought-tolerant once established. Canterbury bells self-seed readily, so they may spread over time if not controlled.
+
+5. **Unique Identifying Traits**: The combination of the bell
+类别 canterbury bells 文本特征维度: (512,)
+描述: Canterbury bells, also known as Campanula medium, exhibit several distinctive features that set them...
+处理类别: cape flower
+ 23%|██▎       | 23/102 [07:51<26:23, 20.05s/it] 24%|██▎       | 24/102 [08:08<24:50, 19.11s/it] 25%|██▍       | 25/102 [08:29<25:18, 19.73s/it] 25%|██▌       | 26/102 [08:52<26:24, 20.85s/it][2025-11-27 22:54:23] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 22:54:26] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 22:54:29] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+wiki desc: Description for cape flower category.
+[2025-11-27 22:54:33] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:54:36] [显存监控] 已分配=17.01GB, 已保留=20.43GB, 空闲=30.39GB
+[2025-11-27 22:54:39] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: The Cape Flower, also known as Nerine bowdenii, is characterized by its delicate, lacy petals with a soft pink hue. The petals are long and narrow, with a slightly ruffled or frilly edge, giving them a graceful appearance. The center of the flower is marked by prominent stamens, which are slender and pink, extending outward. The flowers bloom in clusters, with multiple blooms per stem, creating a full and lush appearance. The size of the Cape Flower can vary, but they typically range from 6 to 8 inches tall. The plant has a sturdy, upright growth habit, with green, strap-like leaves that are often seen at the base of the flower stems. The Cape Flower is native to South Africa and thrives in well-draining soil in partial shade. It is a popular choice for gardeners due to its attractive appearance and relatively low maintenance requirements.
+类别 cape flower 文本特征维度: (512,)
+描述: The Cape Flower, also known as Nerine bowdenii, is characterized by its delicate, lacy petals with a...
+处理类别: carnation
+[2025-11-27 22:54:42] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:54:45] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:54:48] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for carnation category.
+[2025-11-27 22:54:51] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:54:54] [显存监控] 已分配=17.02GB, 已保留=20.53GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.53GB, 剩余=30.50GB
+MLLM description: The images showcase carnations with distinctive physical features, including ruffled petals with a gradient of color from white to pink or red at the edges. The petals have a delicate, layered appearance, creating a soft and intricate texture. The color patterns and markings are characterized by a blend of white and pink or red hues, with the latter accentuating the petal edges. The size and proportions vary slightly between the images, but generally, the flowers appear medium-sized with a full bloom. Carnations are known for their long-lasting blooms, making them popular in floral arrangements. Their unique identifying traits include the ruffled petals, the gradient color pattern, and the overall shape and structure of the flower.
+类别 carnation 文本特征维度: (512,)
+描述: The images showcase carnations with distinctive physical features, including ruffled petals with a g...
+处理类别: cautleya spicata
+[2025-11-27 22:54:57] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 22:55:00] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 22:55:03] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 22:55:06] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+wiki desc: Description for cautleya spicata category.
+[2025-11-27 22:55:10] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:55:13] [显存监控] 已分配=17.03GB, 已保留=21.82GB, 空闲=30.38GB
+[2025-11-27 22:55:16] [显存监控] 已分配=17.03GB, 已保留=21.82GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.82GB, 剩余=30.50GB
+MLLM description: Cautleya spicata is a plant characterized by its distinctive inflorescence, which is composed of numerous small, tubular flowers clustered together in a dense spike-like structure. The flowers have a unique color pattern, with the upper part of each flower being a vibrant yellow or orange, while the lower part transitions to a deep maroon or purple. The leaves are large, broad, and have a glossy texture, often with a slightly wavy edge. The size of the plant can vary depending on the growing conditions, but it typically has a height ranging from 1 to 2 meters. Cautleya spicata is known for its ability to attract pollinators such as bees and butterflies due to its bright colors and sweet fragrance. Its unique identifying traits include the combination of the yellow-orange and maroon-purple coloration of the flowers, the glossy texture of the leaves, and the dense, spike-like arrangement of the inflorescence.
+类别 cautleya spicata 文本特征维度: (512,)
+描述: Cautleya spicata is a plant characterized by its distinctive inflorescence, which is composed of num...
+处理类别: clematis
+[2025-11-27 22:55:19] [显存监控] 已分配=16.91GB, 已保留=21.82GB, 空闲=30.50GB
+[2025-11-27 22:55:22] [显存监控] 已分配=16.91GB, 已保留=21.82GB, 空闲=30.50GB
+[2025-11-27 22:55:25] [显存监控] 已分配=16.91GB, 已保留=21.82GB, 空闲=30.50GB
+[2025-11-27 22:55:28] [显存监控] 已分配=16.91GB, 已保留=21.82GB, 空闲=30.50GB
+wiki desc: Description for clematis category.
+[2025-11-27 22:55:32] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:55:35] [显存监控] 已分配=17.00GB, 已保留=21.03GB, 空闲=30.40GB
+[2025-11-27 22:55:38] [显存监控] 已分配=17.03GB, 已保留=21.04GB, 空闲=30.38GB
+[2025-11-27 22:55:41] [显存监控] 已分配=17.03GB, 已保留=21.04GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.04GB, 剩余=30.50GB
+MLLM description: The images showcase three distinct varieties of clematis, each with unique physical features:
+
+1. **Distinctive Physical Features**: Clematis flowers are characterized by their large, showy blooms with five to eight petals. They have a trumpet-like shape with a prominent central column containing stamens. The leaves are typically compound and alternate along the stem.
+
+2. **Color Patterns and Markings**:  
+   - Image 1: The flower has white petals with a pinkish-purple stripe running down the center, creating a subtle gradient effect.  
+   - Image 2: The petals are a vibrant magenta-pink, with a lighter pink or white stripe radiating outward from the center.  
+   - Image 3: The petals are a deep, rich blue, with a darker blue or purple hue near the center, transitioning to a lighter shade towards the edges.  
+
+3. **Size and Proportions**: All three images depict flowers of similar size, with wide, open petals that dominate the frame. The proportion between the petals and the central column is consistent across all varieties.
+
+4. **Behavioral Characteristics**: Clematis are climbing plants, so they may appear in various orientations depending on their support structure. However, the images do not provide information about their growth
+类别 clematis 文本特征维度: (512,)
+描述: The images showcase three distinct varieties of clematis, each with unique physical features:
+
+1. **...
+处理类别: colt's foot
+[2025-11-27 22:55:44] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:55:47] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+[2025-11-27 22:55:50] [显存监控] 已分配=16.91GB, 已保留=21.04GB, 空闲=30.50GB
+wiki desc: Description for colt's foot category.
+[2025-11-27 22:55:54] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+ 26%|██▋       | 27/102 [09:14<26:15, 21.00s/it] 27%|██▋       | 28/102 [09:35<26:13, 21.26s/it] 28%|██▊       | 29/102 [09:55<25:18, 20.80s/it][2025-11-27 22:55:57] [显存监控] 已分配=17.00GB, 已保留=20.53GB, 空闲=30.40GB
+[2025-11-27 22:56:00] [显存监控] 已分配=17.00GB, 已保留=20.53GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.53GB, 剩余=30.50GB
+MLLM description: The colt's foot is a distinctive plant with several key visual characteristics:
+
+1. **Distinctive Physical Features**: The flower has a flat, circular shape with numerous thin, yellow petals radiating outward from a central disk. The petals are slightly curved and have a slightly serrated edge.
+
+2. **Color Patterns and Markings**: The petals are uniformly bright yellow, with no visible patterns or markings. The center of the flower is also yellow, but it appears denser and more compact than the surrounding petals.
+
+3. **Size and Proportions**: The flower is relatively small, typically measuring around 2-3 cm in diameter. The petals are slender and elongated, giving the flower a delicate appearance.
+
+4. **Behavioral Characteristics**: As a flowering plant, colt's foot does not exhibit any specific behavioral characteristics beyond its natural growth pattern. It blooms in early spring and is often found growing in open areas such as meadows, roadsides, and disturbed soil.
+
+5. **Unique Identifying Traits**: The combination of the flat, circular shape, the uniform yellow coloration, and the slender, elongated petals are unique to colt's foot. No other plant shares these exact characteristics.
+类别 colt's foot 文本特征维度: (512,)
+描述: The colt's foot is a distinctive plant with several key visual characteristics:
+
+1. **Distinctive Ph...
+处理类别: columbine
+[2025-11-27 22:56:03] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 22:56:06] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 22:56:09] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 22:56:12] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+wiki desc: Description for columbine category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:56:15] [显存监控] 已分配=17.13GB, 已保留=17.35GB, 空闲=30.28GB
+[2025-11-27 22:56:18] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 22:56:21] [显存监控] 已分配=17.02GB, 已保留=20.43GB, 空闲=30.38GB
+[2025-11-27 22:56:24] [显存监控] 已分配=17.03GB, 已保留=20.43GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: Columbines are distinctive flowers with unique physical features, including spurred petals and a spurred nectar spur. Here's a breakdown of their key characteristics:
+
+1. **Distinctive Physical Features**: Columbines have five petals arranged in a cross-like pattern, with two upper petals forming a "hood" or "helmet," and three lower petals forming a "spur" or "spike." The spurred petals are often elongated and curved, creating a distinctive shape.
+
+2. **Color Patterns and Markings**: Columbines exhibit a wide range of color combinations, including white, pink, red, purple, and yellow. The coloration can vary between the upper and lower petals, with the upper petals often being more vibrant than the lower ones. Some varieties may also display streaks, spots, or gradients of color.
+
+3. **Size and Proportions**: Columbines typically grow to a height of 6-30 inches (15-75 cm) and have a spread of 6-18 inches (15-45 cm). The flower size ranges from 1.5-3 inches (4-7.5 cm) in diameter, depending on the variety.
+
+4. **Behavioral Characteristics**: Columb
+类别 columbine 文本特征维度: (512,)
+描述: Columbines are distinctive flowers with unique physical features, including spurred petals and a spu...
+处理类别: common dandelion
+[2025-11-27 22:56:27] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:56:30] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:56:33] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for common dandelion category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:56:36] [显存监控] 已分配=17.05GB, 已保留=21.35GB, 空闲=30.35GB
+[2025-11-27 22:56:39] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.38GB
+[2025-11-27 22:56:42] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.35GB, 剩余=30.50GB
+MLLM description: The images depict common dandelions, characterized by their bright yellow petals arranged in a circular pattern around a central disk. Here's a detailed description:
+
+1. **Distinctive Physical Features**: Dandelions have a taproot system, which is not visible in the images but is characteristic of the species. The leaves are basal and often have a jagged or lobed edge.
+
+2. **Color Patterns and Markings**: The flowers are predominantly bright yellow, with individual petals radiating outward from the center. The center of the flower can vary slightly in color, sometimes appearing more orange or brownish, especially as the flower matures.
+
+3. **Size and Proportions**: Dandelions can range in size, but the flowers shown in the images appear to be mature and fully open, indicating they are likely larger than when they first bloom. The diameter of the flower head can vary, but it typically ranges from about 1.5 to 3 inches (3.8 to 7.6 cm).
+
+4. **Behavioral Characteristics**: While not directly observable in the images, dandelions are known for their ability to spread via wind-dispersed seeds (achenes) attached to fluffy white pappi. They are also pollinated by insects, including
+类别 common dandelion 文本特征维度: (512,)
+描述: The images depict common dandelions, characterized by their bright yellow petals arranged in a circu...
+处理类别: corn poppy
+[2025-11-27 22:56:45] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:56:48] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:56:51] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:56:54] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+wiki desc: Description for corn poppy category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:56:57] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 22:57:00] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 22:57:03] [显存监控] 已分配=17.03GB, 已保留=20.83GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.83GB, 剩余=30.50GB
+MLLM description: The images depict corn poppies, characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Corn poppies have large, cup-shaped flowers with five petals that are typically bright red or orange-red in color. The petals are slightly ruffled or fringed at the edges, giving them a textured appearance.
+
+2. **Color Patterns and Markings**: The petals are a vibrant red-orange hue, often with subtle variations in shade. The center of the flower is dark, usually black or deep purple, contrasting sharply with the bright petals. Some corn poppies may have a lighter, cream-colored center.
+
+3. **Size and Proportions**: Corn poppies are relatively large flowers, with each petal being broad and rounded. The overall size can vary depending on the specific variety, but they generally range from about 2 to 4 inches in diameter.
+
+4. **Behavioral Characteristics**: Corn poppies are pollinated by insects such as bees and butterflies. They are often found growing in fields, meadows, and along roadsides, where they attract pollinators and provide a colorful display.
+
+5. **Unique Identifying Traits**: The combination of the bright red-orange petals, the dark center, and the ruffled edges of the petals is unique to
+类别 corn poppy 文本特征维度: (512,)
+ 29%|██▉       | 30/102 [10:15<24:28, 20.40s/it] 30%|███       | 31/102 [10:32<22:55, 19.38s/it] 31%|███▏      | 32/102 [10:53<23:09, 19.86s/it] 32%|███▏      | 33/102 [11:13<22:59, 19.99s/it]描述: The images depict corn poppies, characterized by their distinctive physical features:
+
+1. **Distinct...
+处理类别: cyclamen 
+[2025-11-27 22:57:06] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:57:09] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:57:12] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+wiki desc: Description for cyclamen  category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:57:15] [显存监控] 已分配=17.05GB, 已保留=21.49GB, 空闲=30.35GB
+[2025-11-27 22:57:18] [显存监控] 已分配=17.03GB, 已保留=21.49GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=21.49GB, 剩余=30.50GB
+MLLM description: Cyclamen flowers exhibit distinctive physical features such as their heart-shaped petals with a ruffled or fringed edge, and a prominent, downward-facing spur at the base of each petal. The color patterns and markings can vary widely, ranging from soft pastel pinks to deep purples, often with a gradient effect from the center to the edges. The size and proportions of cyclamen flowers are relatively small compared to other flowering plants, typically measuring around 2-4 inches in diameter. Cyclamen flowers are known for their long-lasting blooms, often lasting several weeks, and they are commonly found in shaded areas, thriving in partial sunlight. The unique identifying traits of cyclamen include their characteristic petal shape, the presence of the spur, and their ability to bloom in cooler temperatures.
+类别 cyclamen  文本特征维度: (512,)
+描述: Cyclamen flowers exhibit distinctive physical features such as their heart-shaped petals with a ruff...
+处理类别: daffodil
+[2025-11-27 22:57:21] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:57:24] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:57:27] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:57:30] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+wiki desc: Description for daffodil category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:57:33] [显存监控] 已分配=17.04GB, 已保留=20.83GB, 空闲=30.36GB
+[2025-11-27 22:57:36] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 22:57:39] [显存监控] 已分配=17.03GB, 已保留=20.83GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.83GB, 剩余=30.50GB
+MLLM description: The images depict daffodils, characterized by their distinctive trumpet-shaped corona surrounded by six tepals (petal-like structures). Here's a breakdown of their key visual characteristics:
+
+1. **Distinctive Physical Features**: Daffodils have a central trumpet-shaped corona, which is typically yellow or white, depending on the variety. The tepals are usually curved back from the corona, creating a cup-like appearance. The flowers are attached to a single stem with green leaves.
+
+2. **Color Patterns and Markings**: The color of the tepals can vary widely, ranging from bright yellow to white, orange, pink, and even bi-color combinations. The corona is often a contrasting color, such as yellow or white, and may have subtle markings or stripes. In some varieties, the tepals may have a gradient of colors, transitioning from one shade to another.
+
+3. **Size and Proportions**: Daffodils come in various sizes, with some being quite large and others smaller. The size can depend on the variety and growing conditions. The trumpet and tepals are proportionally balanced, with the trumpet being slightly smaller than the tepals.
+
+4. **Behavioral Characteristics**: Daffodils are perennial plants, meaning they return
+类别 daffodil 文本特征维度: (512,)
+描述: The images depict daffodils, characterized by their distinctive trumpet-shaped corona surrounded by ...
+处理类别: desert-rose
+[2025-11-27 22:57:42] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:57:45] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:57:48] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 22:57:51] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+wiki desc: Description for desert-rose category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:57:54] [显存监控] 已分配=17.03GB, 已保留=20.62GB, 空闲=30.37GB
+[2025-11-27 22:57:57] [显存监控] 已分配=17.00GB, 已保留=20.62GB, 空闲=30.40GB
+[2025-11-27 22:58:00] [显存监控] 已分配=17.02GB, 已保留=20.62GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.62GB, 剩余=30.50GB
+MLLM description: The desert-rose, scientifically known as *Adenium obesum*, is a succulent plant characterized by its thick, fleshy stems and vibrant, trumpet-shaped flowers. Here's a detailed description of its distinctive features:
+
+1. **Distinctive Physical Features**: Desert-rose plants have a robust, columnar or shrub-like structure with thick, succulent stems that store water. The leaves are small, leathery, and often drop off during dry periods.
+
+2. **Color Patterns and Markings**: The flowers are the most striking feature of the desert-rose. They come in various shades of pink, ranging from light to deep hues, with a white or cream-colored center. The petals are typically five in number, with a ruffled or fringed edge, giving them a delicate appearance. The color gradient can vary, with the outer petals being more intense than the inner ones.
+
+3. **Size and Proportions**: Desert-rose flowers are relatively large compared to their sizeable stems. Each flower can measure up to 6 inches across, making them quite eye-catching. The plant itself can grow up to 8 feet tall, though it may remain smaller in cultivation.
+
+4. **Behavioral Characteristics**: As a succulent, the
+类别 desert-rose 文本特征维度: (512,)
+描述: The desert-rose, scientifically known as *Adenium obesum*, is a succulent plant characterized by its...
+处理类别: english marigold
+[2025-11-27 22:58:03] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 22:58:06] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 22:58:09] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+wiki desc: Description for english marigold category.
+[2025-11-27 22:58:12] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:58:15] [显存监控] 已分配=17.00GB, 已保留=21.35GB, 空闲=30.40GB
+[2025-11-27 22:58:18] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.38GB
+[2025-11-27 22:58:21] [显存监控] 已分配=17.03GB, 已保留=21.35GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.35GB, 剩余=30.50GB
+ 33%|███▎      | 34/102 [11:33<22:47, 20.11s/it] 34%|███▍      | 35/102 [11:52<22:01, 19.72s/it] 35%|███▌      | 36/102 [12:12<21:35, 19.63s/it] 36%|███▋      | 37/102 [12:32<21:25, 19.77s/it]MLLM description: The English marigold, also known as Calendula officinalis, is a vibrant flower with distinctive features that set it apart from other similar species.
+
+1. **Distinctive Physical Features**: English marigolds have a daisy-like appearance with a central disc floret surrounded by ray florets. The petals are typically bright orange or yellow, with a darker center. The leaves are alternate, simple, and serrated, often with a silvery or grayish underside.
+
+2. **Color Patterns and Markings**: The coloration of English marigolds can vary, but they are predominantly orange or yellow. The petals are usually a solid color, though some varieties may exhibit subtle variations in hue or a slight gradient from the center to the tips. The center of the flower is dark, often appearing almost black or deep red, which contrasts sharply with the surrounding petals.
+
+3. **Size and Proportions**: English marigolds are relatively small flowers, typically measuring between 2-6 inches in diameter. They are compact and bushy, with multiple blooms per plant. The size and shape of the petals are consistent across different varieties, with a slightly ruffled or wavy edge.
+
+4. **Behavioral Characteristics**: English marigolds are hardy
+类别 english marigold 文本特征维度: (512,)
+描述: The English marigold, also known as Calendula officinalis, is a vibrant flower with distinctive feat...
+处理类别: fire lily
+[2025-11-27 22:58:24] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:58:27] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+[2025-11-27 22:58:30] [显存监控] 已分配=16.91GB, 已保留=21.35GB, 空闲=30.50GB
+wiki desc: Description for fire lily category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:58:35] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-27 22:58:38] [显存监控] 已分配=17.00GB, 已保留=20.34GB, 空闲=30.40GB
+[2025-11-27 22:58:41] [显存监控] 已分配=17.00GB, 已保留=20.34GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.34GB, 剩余=30.50GB
+MLLM description: The fire lily, also known as the gloriosa lily or glory lily, is characterized by its distinctive flame-like petals with a gradient of colors ranging from yellow to orange and red. The petals are long, narrow, and slightly curved, giving the flower a dramatic and fiery appearance. The center of the flower is green and consists of numerous stamens. The size of the flower can vary, but it typically measures around 6-8 inches in diameter. Fire lilies are often found growing in tropical and subtropical regions, and they are known for their ability to thrive in sunny locations. They are also known for their climbing habit, with the stem often growing up to 10 feet tall. The unique identifying trait of the fire lily is its striking coloration and shape, which sets it apart from other similar flowers.
+类别 fire lily 文本特征维度: (512,)
+描述: The fire lily, also known as the gloriosa lily or glory lily, is characterized by its distinctive fl...
+处理类别: foxglove
+[2025-11-27 22:58:44] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+[2025-11-27 22:58:47] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+[2025-11-27 22:58:50] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+wiki desc: Description for foxglove category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:58:53] [显存监控] 已分配=16.94GB, 已保留=20.43GB, 空闲=30.46GB
+[2025-11-27 22:58:56] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 22:58:59] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: Foxgloves are tall, herbaceous plants with tubular flowers arranged in a spiral pattern along a central stem. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**: Foxgloves have a sturdy, upright stem that can grow up to 6 feet tall. The leaves are large, lance-shaped, and often have serrated edges.
+
+2. **Color Patterns and Markings**: The flowers come in various colors, including white, pink, purple, yellow, and bi-color combinations. The petals have a speckled or spotted pattern near the throat, which is more prominent in some varieties than others.
+
+3. **Size and Proportions**: The flowers are relatively small compared to the overall size of the plant. Each flower is about 1-2 inches long, while the entire plant can reach heights of 3-6 feet.
+
+4. **Behavioral Characteristics**: Foxgloves are pollinated by insects such as bees and butterflies. They attract pollinators with their vibrant colors and sweet nectar. The flowers open in sequence from bottom to top, allowing pollinators to visit multiple blooms before moving on to the next flower.
+
+5. **Unique Identifying Traits**: The most distinctive feature of foxglo
+类别 foxglove 文本特征维度: (512,)
+描述: Foxgloves are tall, herbaceous plants with tubular flowers arranged in a spiral pattern along a cent...
+处理类别: frangipani
+[2025-11-27 22:59:02] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:59:05] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 22:59:08] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for frangipani category.
+[2025-11-27 22:59:11] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 22:59:14] [显存监控] 已分配=17.00GB, 已保留=21.49GB, 空闲=30.40GB
+[2025-11-27 22:59:17] [显存监控] 已分配=17.05GB, 已保留=21.49GB, 空闲=30.35GB
+[2025-11-27 22:59:20] [显存监控] 已分配=17.03GB, 已保留=21.49GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.49GB, 剩余=30.50GB
+MLLM description: The images depict frangipani flowers, characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Frangipani flowers have five large, overlapping petals with a smooth texture. The petals are typically white or pale yellow, with a subtle gradient towards the center where the stamen is located.
+
+2. **Color Patterns and Markings**: The petals exhibit a soft, creamy white coloration that transitions to a pale yellow near the center. The center of the flower contains the stamen, which is often a contrasting color, such as yellow or orange, adding a vibrant focal point.
+
+3. **Size and Proportions**: Frangipani flowers are relatively small to medium-sized, with each petal being broad and rounded. The overall size can vary slightly depending on the variety, but they generally measure around 2-4 inches in diameter.
+
+4. **Behavioral Characteristics**: While not directly observable in these still images, frangipani flowers are known to attract pollinators like bees and butterflies due to their bright colors and sweet fragrance. They are also sensitive to temperature changes and may wilt if exposed to extreme heat or cold.
+
+5. **Unique Identifying Traits**: Frangipani flowers are easily recognizable by their distinctive shape and color
+类别 frangipani 文本特征维度: (512,)
+描述: The images depict frangipani flowers, characterized by their distinctive physical features:
+
+1. **Di...
+处理类别: fritillary
+[2025-11-27 22:59:23] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:59:26] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 22:59:29] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+wiki desc: Description for fritillary category.
+[2025-11-27 22:59:33] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:59:36] [显存监控] 已分配=17.00GB, 已保留=20.93GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.93GB, 剩余=30.50GB
+ 37%|███▋      | 38/102 [12:49<20:12, 18.95s/it] 38%|███▊      | 39/102 [13:06<19:14, 18.33s/it] 39%|███▉      | 40/102 [13:25<19:18, 18.69s/it] 40%|████      | 41/102 [13:45<19:15, 18.95s/it]MLLM description: The fritillaries in these images exhibit distinctive physical features, including drooping, bell-shaped flowers with a mottled or speckled pattern. The coloration is primarily shades of maroon, purple, and pink, often with lighter spots or markings. The size and proportions vary slightly between the images, but generally, the flowers are medium-sized, with a relatively wide opening compared to their length. The flowers hang downward, giving them a unique appearance. No specific behavioral characteristics are observed in the images. The unique identifying traits include the drooping habit, bell shape, and mottled coloration.
+类别 fritillary 文本特征维度: (512,)
+描述: The fritillaries in these images exhibit distinctive physical features, including drooping, bell-sha...
+处理类别: garden phlox
+[2025-11-27 22:59:39] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 22:59:42] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 22:59:45] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 22:59:48] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+wiki desc: Description for garden phlox category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 22:59:51] [显存监控] 已分配=17.00GB, 已保留=20.93GB, 空闲=30.40GB
+[2025-11-27 22:59:54] [显存监控] 已分配=17.02GB, 已保留=20.93GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.93GB, 剩余=30.50GB
+MLLM description: Garden phlox exhibits distinctive physical features such as their dense clusters of small, five-petaled flowers with a tubular throat. The petals are typically arranged in a star-like shape, with a prominent central eye. The color patterns and markings can vary widely, ranging from deep purples to soft pinks, with some varieties displaying a gradient or speckled pattern. The size and proportions of garden phlox are relatively small, with individual flowers measuring around 1-2 inches in diameter. They are known for their long blooming period, often lasting several weeks, and attract pollinators like bees and butterflies. Unique identifying traits include their compact growth habit, which allows them to form large, showy clusters, and their ability to thrive in various soil conditions, making them popular choices for gardens and landscaping projects.
+类别 garden phlox 文本特征维度: (512,)
+描述: Garden phlox exhibits distinctive physical features such as their dense clusters of small, five-peta...
+处理类别: gaura
+[2025-11-27 22:59:57] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 23:00:00] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 23:00:03] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+wiki desc: Description for gaura category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:00:06] [显存监控] 已分配=17.04GB, 已保留=20.73GB, 空闲=30.36GB
+[2025-11-27 23:00:09] [显存监控] 已分配=17.00GB, 已保留=20.74GB, 空闲=30.40GB
+[2025-11-27 23:00:12] [显存监控] 已分配=17.03GB, 已保留=20.74GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.74GB, 剩余=30.50GB
+MLLM description: The gaura in these images exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: Gaura flowers have delicate, star-shaped blooms with four petals each. The petals are typically white or pale pink, with a subtle gradient towards the center. The flower's stamens are prominent, extending beyond the petals, giving it a feathery appearance.
+
+2. **Color Patterns and Markings**: The primary color is white or pale pink, with some variation in hue depending on the specific variety. The petals are smooth and slightly translucent, allowing light to pass through. There are no distinct markings or patterns on the petals themselves.
+
+3. **Size and Proportions**: Gaura flowers are relatively small, with an average diameter of around 1-2 inches. The flowers are arranged in clusters along a slender stem, which can grow up to 3 feet tall. The overall proportions are slender and graceful.
+
+4. **Behavioral Characteristics**: Gaura is a perennial plant that thrives in sunny locations with well-draining soil. It is known for its ability to attract pollinators like bees and butterflies due to its nectar-rich flowers. The plant is drought-tolerant once established and requires minimal maintenance.
+
+5. **Unique Identifying Traits**: The combination
+类别 gaura 文本特征维度: (512,)
+描述: The gaura in these images exhibits several distinctive features:
+
+1. **Distinctive Physical Features...
+处理类别: gazania
+[2025-11-27 23:00:15] [显存监控] 已分配=16.91GB, 已保留=20.74GB, 空闲=30.50GB
+[2025-11-27 23:00:18] [显存监控] 已分配=16.91GB, 已保留=20.74GB, 空闲=30.50GB
+[2025-11-27 23:00:21] [显存监控] 已分配=16.91GB, 已保留=20.74GB, 空闲=30.50GB
+[2025-11-27 23:00:24] [显存监控] 已分配=16.91GB, 已保留=20.74GB, 空闲=30.50GB
+wiki desc: Description for gazania category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:00:27] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 23:00:30] [显存监控] 已分配=17.00GB, 已保留=20.83GB, 空闲=30.40GB
+[2025-11-27 23:00:33] [显存监控] 已分配=17.03GB, 已保留=20.83GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.83GB, 剩余=30.50GB
+MLLM description: The images depict gazania flowers with distinctive features:
+
+1. **Distinctive Physical Features**: Gazanias have daisy-like blooms with a central disc surrounded by radiating petals. The petals are typically broad and flat, giving the flower a flat, open appearance.
+
+2. **Color Patterns and Markings**: Gazanias exhibit vibrant colors, predominantly yellow with red or orange stripes along the petal edges. The center of the flower is often a darker shade, sometimes appearing as a deep brown or maroon. The coloration can vary slightly between different cultivars.
+
+3. **Size and Proportions**: Gazanias are relatively small to medium-sized flowers, with a diameter ranging from about 2 to 6 inches (5-15 cm). The petals are usually arranged in a circular pattern around the central disc, creating a symmetrical appearance.
+
+4. **Behavioral Characteristics**: Gazanias are perennial plants, meaning they live for more than two years. They are known for their ability to thrive in sunny conditions and are often used in gardens and landscapes for their bright, cheerful appearance. They do not exhibit any specific behavioral characteristics beyond their growth habits.
+
+5. **Unique Identifying Traits**: Gazanias are easily recognizable due to their distinctive coloration,
+类别 gazania 文本特征维度: (512,)
+描述: The images depict gazania flowers with distinctive features:
+
+1. **Distinctive Physical Features**: ...
+处理类别: geranium
+[2025-11-27 23:00:36] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 23:00:39] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+[2025-11-27 23:00:42] [显存监控] 已分配=16.91GB, 已保留=20.83GB, 空闲=30.50GB
+wiki desc: Description for geranium category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 23:00:45] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+[2025-11-27 23:00:48] [显存监控] 已分配=17.03GB, 已保留=22.06GB, 空闲=30.37GB
+[2025-11-27 23:00:51] [显存监控] 已分配=17.05GB, 已保留=22.06GB, 空闲=30.35GB
+[2025-11-27 23:00:54] [显存监控] 已分配=17.03GB, 已保留=22.06GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=22.06GB, 剩余=30.50GB
+ 41%|████      | 42/102 [14:06<19:40, 19.67s/it] 42%|████▏     | 43/102 [14:27<19:46, 20.10s/it] 43%|████▎     | 44/102 [14:49<19:57, 20.64s/it] 44%|████▍     | 45/102 [15:13<20:36, 21.68s/it]MLLM description: The images depict geraniums with vibrant red petals, characterized by their five-petaled structure and prominent central stamens. Here's a detailed description:
+
+1. **Distinctive Physical Features**: Geraniums have a robust, bushy growth habit with serrated leaves. The flowers are typically clustered together in a dense, rounded shape.
+
+2. **Color Patterns and Markings**: The flowers in these images display a uniform bright red color, with some subtle variations in shade. There are no visible patterns or markings on the petals beyond the natural petal structure itself.
+
+3. **Size and Proportions**: The flowers appear to be medium-sized, with each bloom consisting of five overlapping petals. The size of the individual flowers is consistent across the images, suggesting they are part of the same plant.
+
+4. **Behavioral Characteristics**: As plants, geraniums do not exhibit behaviors like animals do. However, they can respond to environmental stimuli such as light and water availability, which may influence their growth and flowering.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of geraniums is their distinctive five-petaled flower structure, which is clearly visible in all three images. Additionally, the serrated leaves and the overall bushy growth habit are characteristic
+类别 geranium 文本特征维度: (512,)
+描述: The images depict geraniums with vibrant red petals, characterized by their five-petaled structure a...
+处理类别: giant white arum lily
+[2025-11-27 23:00:57] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+[2025-11-27 23:01:00] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+[2025-11-27 23:01:03] [显存监控] 已分配=16.91GB, 已保留=22.06GB, 空闲=30.50GB
+wiki desc: Description for giant white arum lily category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:01:08] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-27 23:01:11] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 23:01:14] [显存监控] 已分配=17.02GB, 已保留=20.43GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: The giant white arum lily is characterized by its distinctive spathe, which is a large, leaf-like structure that encloses the spadix, the central column of the flower. The spathe is typically white or pale green, with a smooth texture and a slightly curved shape. The spadix is yellowish-green and has a fuzzy appearance.
+
+In terms of size and proportions, the giant white arum lily can grow quite large, with the spathe reaching up to 10 inches in length. The leaves are also large and broad, often growing in a fan-like arrangement around the base of the plant.
+
+The color pattern of the giant white arum lily is predominantly white, with the spathe being the most prominent feature. The spadix is yellowish-green and contrasts with the white spathe. There are no distinct markings or patterns on the spathe itself.
+
+Behaviorally, the giant white arum lily is a terrestrial plant that grows in a variety of environments, including wetlands, forests, and gardens. It is pollinated by insects, particularly beetles, which are attracted to the spadix's scent and color.
+
+Unique identifying traits include the spathe's large size, smooth texture, and curved shape, as well
+类别 giant white arum lily 文本特征维度: (512,)
+描述: The giant white arum lily is characterized by its distinctive spathe, which is a large, leaf-like st...
+处理类别: globe thistle
+[2025-11-27 23:01:17] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 23:01:20] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 23:01:23] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 23:01:26] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for globe thistle category.
+[2025-11-27 23:01:29] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:01:32] [显存监控] 已分配=17.00GB, 已保留=20.62GB, 空闲=30.40GB
+[2025-11-27 23:01:35] [显存监控] 已分配=17.00GB, 已保留=20.62GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.62GB, 剩余=30.50GB
+MLLM description: The images depict globe thistles, characterized by their spherical, spiky flower heads composed of densely packed, tubular florets. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features**: Globe thistles have a unique, spiky appearance due to the rigid, bristly leaves surrounding the flower head. These leaves are often serrated or toothed.
+
+2. **Color Patterns and Markings**: The flowers can vary in color, with shades ranging from deep purple to light blue or white. The petals are tightly packed together, creating a dense, spherical shape. In some cases, the petals may appear slightly frayed or worn at the tips.
+
+3. **Size and Proportions**: Globe thistles typically grow to a height of around 1-3 feet (30-90 cm) and have a diameter of about 6-8 inches (15-20 cm). The flower head is usually the focal point of the plant, standing out prominently against the foliage.
+
+4. **Behavioral Characteristics**: Globe thistles are not known for any specific behaviors, as they are plants and do not exhibit movement or action like animals. However, they are known to attract pollinators such as bees and butterflies due
+类别 globe thistle 文本特征维度: (512,)
+描述: The images depict globe thistles, characterized by their spherical, spiky flower heads composed of d...
+处理类别: globe-flower
+[2025-11-27 23:01:38] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 23:01:41] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 23:01:44] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+[2025-11-27 23:01:47] [显存监控] 已分配=16.91GB, 已保留=20.62GB, 空闲=30.50GB
+wiki desc: Description for globe-flower category.
+[2025-11-27 23:01:51] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:01:54] [显存监控] 已分配=17.00GB, 已保留=20.53GB, 空闲=30.40GB
+[2025-11-27 23:01:57] [显存监控] 已分配=17.00GB, 已保留=20.53GB, 空闲=30.40GB
+[2025-11-27 23:02:00] [显存监控] 已分配=17.02GB, 已保留=20.53GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.53GB, 剩余=30.50GB
+MLLM description: The globe-flower exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The flower has a rounded, globe-like shape with petals that are slightly curled at the edges. The petals are smooth and have a glossy appearance.
+
+2. **Color Patterns and Markings**: The petals are a vibrant yellow color, with a subtle gradient from a lighter shade near the center to a deeper yellow towards the tips. There are no visible patterns or markings on the petals.
+
+3. **Size and Proportions**: The globe-flower is relatively small, with a diameter typically ranging from 2-3 cm. The petals are proportionally large in relation to the overall size of the flower.
+
+4. **Behavioral Characteristics**: The globe-flower is pollinated by insects, particularly flies, as seen in image 2. The flower's structure encourages insect interaction, which aids in pollination.
+
+5. **Unique Identifying Traits**: The globe-flower's unique identifying trait is its distinctive globe-like shape, which sets it apart from other flowers with similar petal arrangements. Additionally, the bright yellow coloration and the presence of a fly on the flower in image 2 can help differentiate it from other yellow flowers.
+类别 globe-flower 文本特征维度: (512,)
+描述: The globe-flower exhibits several distinctive features:
+
+1. **Distinctive Physical Features**: The f...
+处理类别: grape hyacinth
+ 45%|████▌     | 46/102 [15:34<20:05, 21.53s/it] 46%|████▌     | 47/102 [15:55<19:29, 21.27s/it] 47%|████▋     | 48/102 [16:14<18:38, 20.70s/it][2025-11-27 23:02:03] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 23:02:06] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 23:02:09] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+[2025-11-27 23:02:12] [显存监控] 已分配=16.91GB, 已保留=20.53GB, 空闲=30.50GB
+wiki desc: Description for grape hyacinth category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-27 23:02:15] [显存监控] 已分配=17.05GB, 已保留=21.49GB, 空闲=30.35GB
+[2025-11-27 23:02:18] [显存监控] 已分配=17.03GB, 已保留=21.49GB, 空闲=30.38GB
+[2025-11-27 23:02:21] [显存监控] 已分配=17.03GB, 已保留=21.49GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.49GB, 剩余=30.50GB
+MLLM description: The images depict grape hyacinths, characterized by their distinctive physical features:
+
+1. **Distinctive Physical Features**: Grape hyacinths have a unique, clustered arrangement of small, bell-shaped flowers that grow in a dense spike. Each flower has a tubular shape with a slightly flared opening at the top.
+
+2. **Color Patterns and Markings**: The flowers are typically deep blue or purple, sometimes with white or cream-colored markings near the base of each flower. The coloration can vary depending on the specific variety.
+
+3. **Size and Proportions**: The flowers are relatively small, with individual blooms measuring around 0.5 to 1 inch in diameter. The overall height of the plant can range from 6 to 18 inches, depending on the variety.
+
+4. **Behavioral Characteristics**: Grape hyacinths are pollinated by bees, as shown in Image 2, where a bee is seen visiting a flower. They also attract other pollinators like butterflies and hummingbirds.
+
+5. **Unique Identifying Traits**: The most distinguishing feature of grape hyacinths is their unique, densely packed flower spikes. Additionally, the flowers often have a slightly fuzzy texture due to the presence of trichomes on the petals.
+类别 grape hyacinth 文本特征维度: (512,)
+描述: The images depict grape hyacinths, characterized by their distinctive physical features:
+
+1. **Disti...
+处理类别: great masterwort
+[2025-11-27 23:02:24] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 23:02:27] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 23:02:30] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+[2025-11-27 23:02:33] [显存监控] 已分配=16.91GB, 已保留=21.49GB, 空闲=30.50GB
+wiki desc: Description for great masterwort category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:02:36] [显存监控] 已分配=17.03GB, 已保留=20.34GB, 空闲=30.37GB
+[2025-11-27 23:02:39] [显存监控] 已分配=17.00GB, 已保留=20.34GB, 空闲=30.40GB
+[2025-11-27 23:02:42] [显存监控] 已分配=17.00GB, 已保留=20.34GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.34GB, 剩余=30.50GB
+MLLM description: The great masterwort exhibits distinctive physical features such as its star-shaped flowers with white petals that have greenish or purplish tints near the edges. The petals are arranged in a circular pattern around a central cluster of small, pinkish-purple stamens. The flower heads are large and rounded, with multiple layers of petals. The size of the flowers can vary, but they generally range from 2 to 4 inches in diameter.
+
+The color patterns and markings are characterized by the contrast between the white petals and the greenish or purplish tints near the edges. The petals also have a subtle texture, which adds depth to their appearance. The central cluster of stamens is a vibrant pinkish-purple, providing a striking contrast against the white petals.
+
+The size and proportions of the great masterwort are notable due to the large, rounded flower heads and the numerous petals surrounding the central cluster of stamens. The petals are relatively thin and delicate, giving the flower a light and airy appearance.
+
+While not explicitly mentioned in the images, great masterwort is known to attract pollinators like bees and butterflies due to its nectar-rich flowers. It is also known to be drought-tolerant and can thrive in various soil types, making it a versatile
+类别 great masterwort 文本特征维度: (512,)
+描述: The great masterwort exhibits distinctive physical features such as its star-shaped flowers with whi...
+处理类别: hard-leaved pocket orchid
+[2025-11-27 23:02:45] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+[2025-11-27 23:02:48] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+[2025-11-27 23:02:51] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+[2025-11-27 23:02:54] [显存监控] 已分配=16.91GB, 已保留=20.34GB, 空闲=30.50GB
+wiki desc: Description for hard-leaved pocket orchid category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:02:57] [显存监控] 已分配=17.00GB, 已保留=20.93GB, 空闲=30.40GB
+[2025-11-27 23:03:00] [显存监控] 已分配=17.02GB, 已保留=20.93GB, 空闲=30.38GB
+[2025-11-27 23:03:03] [显存监控] 已分配=17.03GB, 已保留=20.93GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.93GB, 剩余=30.50GB
+MLLM description: The hard-leaved pocket orchid exhibits several distinctive physical features:
+
+* **Distinctive physical features:** The flower has a large, inflated pouch-like lip that is typically greenish-yellow with brown or reddish-brown veining. The petals are smaller and more delicate, with a lighter coloration compared to the lip. The sepals are also small and inconspicuous.
+
+* **Color patterns and markings:** The lip is the most prominent feature, displaying a complex pattern of brown or reddish-brown veins that create a network-like design against the greenish-yellow background. The petals are usually pale yellow or cream-colored, sometimes with subtle veining. The sepals are often greenish-yellow with brown or reddish-brown markings.
+
+* **Size and proportions:** The flower is relatively large, with the pouch-like lip being the most noticeable part. The petals and sepals are smaller in comparison, creating a balanced yet asymmetrical appearance.
+
+* **Behavioral characteristics:** As an orchid, the hard-leaved pocket orchid is pollinated by insects, particularly bees. The flower's shape and coloration are designed to attract these pollinators, which insert their proboscis into the pouch to reach the nectar at the bottom. This interaction triggers the release
+类别 hard-leaved pocket orchid 文本特征维度: (512,)
+描述: The hard-leaved pocket orchid exhibits several distinctive physical features:
+
+* **Distinctive physi...
+处理类别: hibiscus
+[2025-11-27 23:03:06] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 23:03:09] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 23:03:12] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+[2025-11-27 23:03:15] [显存监控] 已分配=16.91GB, 已保留=20.93GB, 空闲=30.50GB
+wiki desc: Description for hibiscus category.
+[2025-11-27 23:03:19] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:03:22] [显存监控] 已分配=17.02GB, 已保留=21.26GB, 空闲=30.38GB
+[2025-11-27 23:03:25] [显存监控] 已分配=17.05GB, 已保留=21.26GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=21.26GB, 剩余=30.50GB
+ 48%|████▊     | 49/102 [16:39<19:21, 21.92s/it] 49%|████▉     | 50/102 [17:00<18:45, 21.65s/it] 50%|█████     | 51/102 [17:23<18:37, 21.92s/it]MLLM description: The images showcase three distinct varieties of hibiscus flowers, each with unique physical features, color patterns, size, and proportions:
+
+1. **Image 1:** This flower exhibits a vibrant red hue with a darker center, featuring prominent stamens with yellow anthers. The petals are broad and slightly ruffled, with a subtle gradient from deep red at the base to lighter shades towards the tips. The flower is relatively large in proportion to its green leaves.
+
+2. **Image 2:** This hibiscus displays a bright pink coloration with a darker pink center. The petals are smooth and have a slight sheen, possibly due to dew or water droplets. The flower's size appears smaller compared to the first image, with more delicate and pointed petals. The surrounding foliage is lush and green.
+
+3. **Image 3:** This flower presents a striking yellow color with a vivid red center, surrounded by numerous small, translucent water droplets. The petals are wide and slightly curled at the edges, giving it a full and rounded appearance. The flower is medium-sized, with a dark background that accentuates its bright colors.
+
+In summary, these hibiscus varieties can be distinguished by their distinctive physical features such as petal shape, color,
+[2025-11-27 23:03:28] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+类别 hibiscus 文本特征维度: (512,)
+描述: The images showcase three distinct varieties of hibiscus flowers, each with unique physical features...
+处理类别: hippeastrum 
+[2025-11-27 23:03:31] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 23:03:34] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+[2025-11-27 23:03:37] [显存监控] 已分配=16.91GB, 已保留=21.26GB, 空闲=30.50GB
+wiki desc: Description for hippeastrum  category.
+[2025-11-27 23:03:41] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:03:44] [显存监控] 已分配=17.00GB, 已保留=19.62GB, 空闲=30.40GB
+[2025-11-27 23:03:47] [显存监控] 已分配=17.00GB, 已保留=19.62GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.62GB, 剩余=30.50GB
+MLLM description: Hippeastrum flowers exhibit several distinctive features that set them apart:
+
+1. **Distinctive Physical Features**: Hippeastrum flowers have large, showy blooms with six tepals (blades) that are typically arranged in a star-like pattern. The tepals are often broad and flat, giving the flower a robust appearance.
+
+2. **Color Patterns and Markings**: Hippeastrum flowers display a wide range of colors, including shades of pink, red, white, yellow, and orange. The petals often have subtle or prominent stripes, spots, or marbling, adding to their visual appeal. In the provided images, the flowers showcase soft pastel hues with delicate streaks and gradients.
+
+3. **Size and Proportions**: Hippeastrum flowers can vary in size depending on the variety, but they generally have a substantial diameter, often exceeding 6 inches. The flowers in the images appear to be medium-sized, with a full and rounded shape.
+
+4. **Behavioral Characteristics**: Hippeastrum flowers are known for their long-lasting blooms, often lasting up to several weeks indoors. They are also relatively easy to care for, requiring minimal maintenance once established.
+
+5. **Unique Identifying Traits**: Hippeastrum flowers are easily recognizable
+类别 hippeastrum  文本特征维度: (512,)
+描述: Hippeastrum flowers exhibit several distinctive features that set them apart:
+
+1. **Distinctive Phys...
+处理类别: japanese anemone
+[2025-11-27 23:03:50] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 23:03:53] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 23:03:56] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+[2025-11-27 23:03:59] [显存监控] 已分配=16.91GB, 已保留=19.62GB, 空闲=30.50GB
+wiki desc: Description for japanese anemone category.
+[2025-11-27 23:04:03] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:04:06] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+[2025-11-27 23:04:09] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: The Japanese anemone exhibits several distinctive physical features that set it apart from other similar categories:
+
+1. **Distinctive Physical Features**: Japanese anemones have large, rounded petals with a slightly ruffled or fringed edge, giving them a delicate and ethereal appearance. The petals are typically arranged in a circular pattern around the central disc.
+
+2. **Color Patterns and Markings**: The flowers can vary in color, ranging from white to pink, purple, red, and even bicolor combinations. The center of the flower is usually yellow or orange, contrasting sharply with the white or pastel-colored petals. In some varieties, the petals may have subtle gradients or speckles, adding to their visual appeal.
+
+3. **Size and Proportions**: Japanese anemones are generally medium-sized flowers, with a diameter of about 4-8 inches (10-20 cm). The size can vary depending on the specific variety and growing conditions.
+
+4. **Behavioral Characteristics**: Japanese anemones are perennials, meaning they return year after year. They prefer partial shade to full sun and well-draining soil. They are relatively easy to grow and maintain, making them popular garden plants.
+
+5. **Unique Identifying Traits**: The combination of
+类别 japanese anemone 文本特征维度: (512,)
+描述: The Japanese anemone exhibits several distinctive physical features that set it apart from other sim...
+处理类别: king protea
+[2025-11-27 23:04:12] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 23:04:15] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 23:04:18] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+[2025-11-27 23:04:21] [显存监控] 已分配=16.91GB, 已保留=20.43GB, 空闲=30.50GB
+wiki desc: Description for king protea category.
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-27 23:04:24] [显存监控] 已分配=16.97GB, 已保留=20.43GB, 空闲=30.44GB
+[2025-11-27 23:04:27] [显存监控] 已分配=17.01GB, 已保留=20.43GB, 空闲=30.39GB
+[2025-11-27 23:04:30] [显存监控] 已分配=17.00GB, 已保留=20.43GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=20.43GB, 剩余=30.50GB
+MLLM description: The images depict King Proteas, characterized by their distinctive spiky, cone-shaped flower heads with long, pointed bracts radiating outward in a circular pattern. These bracts are typically pink or red, with white or cream-colored tips, creating a striking contrast. The central part of the flower head is densely packed with small, tubular florets, which are often yellowish-white.
+
+The size and proportions of the King Protea vary depending on the specific variety, but they generally have a large, robust appearance. The bracts are arranged in a tight, overlapping manner, giving the flower its conical shape. The leaves are broad and fleshy, often with a waxy texture, and are typically green, sometimes with a reddish tinge.
+
+King Proteas are not known for their behavioral characteristics, as they are plants and do not exhibit movement or behavior like animals. However, they are pollinated by insects, particularly bees, which are attracted to the bright colors and sweet nectar produced by the flower.
+
+The unique identifying traits of King Proteas include their distinctive spiky, cone-shaped flower heads, the contrasting coloration of the bracts, and the dense arrangement of the central florets. These features make them easily recognizable and distinguishable from
+类别 king protea 文本特征维度: (512,)
+ 51%|█████     | 52/102 [17:42<17:42, 21.26s/it] 52%|█████▏    | 53/102 [18:02<16:52, 20.66s/it]/tmp/run_build_knowledge_base_flower_4017652.sh: line 5: 4017720 Killed                  python discovering.py --mode=build_knowledge_base --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/flower102_all.yml --num_per_category=4 --knowledge_base_dir=./experiments/flower102/knowledge_base
