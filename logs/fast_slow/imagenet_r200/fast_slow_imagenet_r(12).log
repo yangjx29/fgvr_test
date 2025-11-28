@@ -1,0 +1,822 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=4  # 使用的GPU编号
+Dataset: imagenet_r (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/imagenet_r200/knowledge_base  # 知识库目录
+Results Out: ./results/imagenet_r_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/imagenet_r200_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/imagenet_r200/fast_slow_imagenet_r(12).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: imagenet_r (imagenet_r200)
+类别数: 200
+实验目录: ./experiments/imagenet_r200
+✅ JSON文件检查通过: ./experiments/imagenet_r200/images_split
+当前使用的 GPU 为：4
+
+=== Experiment Start Time: 2025-11-28 15:32:16 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/imagenet_r200_all.yml',
+ 'knowledge_base_dir': './experiments/imagenet_r200/knowledge_base',
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'results_out': './results/imagenet_r_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/ImageNet_R',
+ 'dataset_name': 'imagenet_r',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/imagenet_r200',
+ 'expt_dir_describe': './experiments/imagenet_r200/describe',
+ 'expt_dir_gallery': './experiments/imagenet_r200/gallery',
+ 'expt_dir_grouping': './experiments/imagenet_r200/grouping',
+ 'expt_dir_guess': './experiments/imagenet_r200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/imagenet_r200/gallery/imagenet_r_image_descriptions_attn',
+ 'path_identify_answers': './experiments/imagenet_r200/identify',
+ 'path_llm_gussed_names': './experiments/imagenet_r200/guess/imagenet_r_llm_gussed_names',
+ 'path_llm_prompts': './experiments/imagenet_r200/describe/imagenet_r_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/imagenet_r200/guess/imagenet_r_llm_replies_raw',
+ 'path_references': './experiments/imagenet_r200/gallery/imagenet_r_image_references',
+ 'path_regions': './experiments/imagenet_r200/gallery/imagenet_r_image_regions',
+ 'path_vqa_answers': './experiments/imagenet_r200/describe/imagenet_r_attributes_pairs',
+ 'path_vqa_questions': './experiments/imagenet_r200/describe/imagenet_r_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "imagenet_r200",
+    "num_classes": 200,
+    "config_file": "imagenet_r200_all.yml",
+    "data_dir": "ImageNet_R",
+    "experiment_dir": "imagenet_r200",
+    "stats_file": "imagenet_r200/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/imagenet_r200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/imagenet_r200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.14s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.42s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.93s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.72s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.32s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.56s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-28 15:32:25
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/imagenet_r200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 800 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-28 15:34:07
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x76841cf1ba90>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x76841cf1b9d0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/imagenet_r200/knowledge_base
+使用数据集: imagenet_r, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-28 15:34:07] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/imagenet_r200/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/imagenet_r200/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/imagenet_r200/knowledge_base 加载
+图像知识库类别数: 187
+文本知识库类别数: 187
+类别描述数: 187
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x76841cf1b9d0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x76840ffe6370>
+📦 数据集信息: {'full_name': 'imagenet_r200', 'num_classes': 200, 'config_file': 'imagenet_r200_all.yml', 'data_dir': 'ImageNet_R', 'experiment_dir': 'imagenet_r200', 'stats_file': 'imagenet_r200/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/imagenet_r200/knowledge_base/stats.json', 'experiment_dir_full': './experiments/imagenet_r200'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/imagenet_r200/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: imagenet_r200
+数据集根目录: ./datasets
+测试百分比: 100.0%
+说明: 使用完整测试集的 100.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/imagenet_r200/images_split/images_test.json
+  类别数量: 187
+  总图像数: 5924
+  平均每类: 31.7 张
+  图像范围: 10 - 86 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 5924 张图像，覆盖 187 个类别
+  平均每类: 31.7 张
+======================================================================
+test sample keys: ['goldfish', 'great white shark', 'tiger shark', 'stingray', 'cock']...
+[fast and slow] 测试数据集包含 187 个类别
+  0%|          | 0/187 [00:00<?, ?it/s][2025-11-28 15:34:07] Processing fast-slow:   0%|          | 0/187 [00:00<?, ?it/s]开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_11.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_11.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'cliff', 'pufferfish', 'American goldfinch', 'bustard', 'wild boar', 'snorkel', 'lionfish', 'banana', 'tiger shark', 'chameleon', 'gibbon', 'Pomeranian', 'bald eagle', 'skunk', 'great white shark']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:34:10] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1512)
+总耗时: 4.26秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1512
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_113.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_113.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['American goldfinch', 'goldfish', 'hair spray', 'bee', 'pizza', 'lemon', 'bath', 'n02883205', 'water bottle', 'banana', 'monarch butterfly', 'hog', 'Pomeranian', 'hummingbird', 'cheetah', 'American black bear', 'Chihuahua', 'cock']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:34:13] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:16] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1136)
+总耗时: 6.88秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1136
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_120.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_120.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'snorkel', 'American goldfinch', 'cliff', 'jellyfish', 'water bottle', 'submarine', 'golf ball', 'spotted salamander', 'beer glass', 'bustard', 'parachute', 'hummingbird', 'pelican', 'dragonfly', 'canoe', 'pomegranate']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:34:19] [显存监控] 已分配=16.94GB, 已保留=17.14GB, 空闲=30.46GB
+[2025-11-28 15:34:22] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1288)
+总耗时: 7.31秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1288
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_123.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_123.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'marmot', 'red fox', 'American goldfinch', 'wild boar', 'hummingbird', 'snorkel', 'bustard', 'grasshopper', 'Samoyed', 'Bouvier des Flandres', 'skunk', 'cat', 'pelican', 'fox squirrel', 'beer glass', 'brambling', 'n02364673', 'junco']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:34:30] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1603)
+总耗时: 6.59秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1603
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_128.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_128.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'tiger shark', 'water bottle', 'starfish', 'submarine', 'jellyfish', 'cassette player', 'wild boar', 'hair spray', 'bath', 'cliff', 'American goldfinch', 'bustard', 'bell pepper', 'Pomeranian', 'skunk']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:34:33] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1384)
+总耗时: 3.55秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1384
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_133.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_133.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'snorkel', 'brambling', 'beer glass', 'bustard', 'bathtub', 'golf ball', 'bath', 'n02906734', 'wild boar', 'chameleon', 'dragonfly', 'grasshopper', 'toucan', 'junco', 'cassette player', 'green iguana']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:36] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-28 15:34:39] [显存监控] 已分配=16.96GB, 已保留=17.72GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.72GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1260)
+总耗时: 5.53秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1260
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_138.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_138.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'beer glass', 'bustard', 'lionfish', 'bath', 'monarch butterfly', 'wine bottle', 'dragonfly', 'brambling', 'hummingbird', 'tiger shark', 'jellyfish', 'Border collie', 'pufferfish', 'toucan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:34:42] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:45] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:wine glass
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:34:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:52] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfish (置信度: 0.9500)
+总耗时: 12.23秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_145.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.5192)
+总耗时: 0.04秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.5192
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_155.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_155.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'American goldfinch', 'marmot', 'snorkel', 'beer glass', 'hummingbird', 'bustard', 'chameleon', 'pufferfish', 'wild boar', 'stingray', 'guinea pig', 'tiger shark', 'toucan', 'grasshopper', 'green iguana', 'hog', 'cock']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:55] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1562)
+总耗时: 5.19秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1562
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_16.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.5789)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.5789
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_167.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_167.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'tiger shark', 'monarch butterfly', 'hummingbird', 'wild boar', 'American goldfinch', 'marmot', 'n02364673', 'beagle', 'beer glass', 'brambling', 'Bouvier des Flandres', 'fox squirrel', 'dragonfly', 'cat', 'jellyfish', 'pelican']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:34:58] [显存监控] 已分配=16.91GB, 已保留=17.55GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:01] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1715)
+总耗时: 4.47秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1715
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_169.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.4691)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.4691
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_177.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_177.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'wild boar', 'submarine', 'tiger shark', 'hog', 'bustard', 'great white shark', 'lionfish', 'airliner', 'guinea pig', 'chameleon', 'toucan', 'centipede', 'cheetah', 'Bernese mountain dog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:04] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:35:07] [显存监控] 已分配=16.97GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1633)
+总耗时: 5.71秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1633
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_181.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_181.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['marmot', 'goldfish', 'wild boar', 'cat', 'bustard', 'orangutan', 'red fox', 'American goldfinch', 'mushroom', 'banana', 'chameleon', 'skunk', 'Pomeranian', 'water bottle', 'brambling', 'dragonfly', 'n02364673']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:10] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+发现新类别:goldfish
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:13] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:35:16] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: goldfish (置信度: 0.9500)
+总耗时: 8.58秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_187.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_187.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bee', 'American goldfinch', 'n02909870', 'n02906734', 'guacamole', 'golf ball', 'beer glass', 'banana', 'monarch butterfly', 'hair spray', 'lemon', 'dragonfly', 'bustard', 'chameleon', 'cucumber', 'toucan', 'grasshopper', 'goldfish', 'centipede']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:19] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:toucan
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:35:22] [显存监控] 已分配=16.91GB, 已保留=17.56GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:25] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: banana (置信度: 0.8000)
+总耗时: 10.65秒
+failed. pred cate:banana, true cate:goldfish, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_19.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_19.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'cliff', 'snorkel', 'hair spray', 'bee', 'pufferfish', 'American goldfinch', 'wild boar', 'n02906734', 'banana', 'bustard', 'lionfish', 'cucumber', 'Pomeranian', 'green iguana', 'milk can', 'hog', 'fox squirrel']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:35:28] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 15:35:31] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1722)
+总耗时: 5.63秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1722
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_190.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_190.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'pufferfish', 'snorkel', 'warship', 'lionfish', 'cliff', 'airliner', 'stingray', 'mortarboard', 'chameleon', 'great white shark', 'vulture', 'wild boar', 'bald eagle', 'lorikeet', 'motor scooter']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:34] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 15:35:37] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1402)
+总耗时: 4.55秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1402
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_192.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.4212)
+总耗时: 0.04秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.4212
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_194.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.3629)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.3629
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_198.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_198.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'wild boar', 'brambling', 'airliner', 'lorikeet', 'chain saw', 'American goldfinch', 'lesser panda', 'cockroach', 'spotted salamander', 'cheetah', 'n02909870', 'toucan', 'cock', 'grasshopper', 'submarine', 'great white shark', 'pelican']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:41] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB
+发现新类别:spotted salamander
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:35:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:48] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: spotted salamander (置信度: 0.8000)
+总耗时: 12.35秒
+failed. pred cate:spotted salamander, true cate:goldfish, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_199.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_199.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'acorn', 'American goldfinch', 'wild boar', 'guinea pig', 'marmot', 'pufferfish', 'duck', 'snail', 'n02364673', 'chameleon', 'tiger shark', 'fox squirrel', 'hog', 'lemon', 'toucan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:35:52] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:55] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1884)
+总耗时: 5.50秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1884
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_2.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.3918)
+总耗时: 0.03秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.3918
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_201.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.6579)
+总耗时: 0.15秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.6579
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_206.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_206.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'lionfish', 'wild boar', 'bustard', 'beer glass', 'snorkel', 'golf ball', 'submarine', 'tiger shark', 'chain saw', 'chameleon', 'brambling', 'dragonfly', 'jellyfish', 'lorikeet', 'vulture', 'pelican']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:58] [显存监控] 已分配=16.94GB, 已保留=17.27GB, 空闲=30.46GB
+[2025-11-28 15:36:01] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1355)
+总耗时: 6.87秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1355
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_215.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.3929)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.3929
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_228.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.5973)
+总耗时: 0.03秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.5973
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_27.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.6167)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.6167
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_28.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_28.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'pufferfish', 'bustard', 'cliff', 'snorkel', 'bathtub', 'golf ball', 'parking meter', 'warship', 'neck brace', 'lionfish', 'cucumber', 'milk can', 'duck', 'king penguin', 'Pomeranian', 'hog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:04] [显存监控] 已分配=17.00GB, 已保留=17.23GB, 空闲=30.41GB
+[2025-11-28 15:36:07] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1726)
+总耗时: 7.04秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1726
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_3.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.2190)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.2190
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_30.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_30.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'wild boar', 'beer glass', 'pufferfish', 'American goldfinch', 'bustard', 'tiger shark', 'n02909870', 'sea lion', 'golf ball', 'cheetah', 'toucan', 'chameleon', 'pelican', 'dragonfly', 'great white shark', 'grasshopper']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:36:12] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1386)
+总耗时: 5.00秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1386
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_38.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_38.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bath', 'milk can', 'toucan', 'beer glass', 'banana', 'wild boar', 'bagel', 'pretzel', 'panda', 'guinea pig', 'espresso', 'cheeseburger', 'hog', 'pug', 'American goldfinch', 'cucumber', 'ladybug']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:15] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-28 15:36:18] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1342)
+总耗时: 3.98秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1342
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_42.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_42.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'snorkel', 'beer glass', 'mortarboard', 'wild boar', 'guacamole', 'warship', 'submarine', 'American goldfinch', 'toucan', 'cheeseburger', 'parachute', 'lemon', 'pufferfish', 'cucumber', 'cock', 'guinea pig']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:36:21] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1881)
+总耗时: 4.67秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1881
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_43.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.3043)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.3043
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_48.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.3566)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.3566
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_5.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_5.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'cliff', 'sea lion', 'pufferfish', 'wild boar', 'guinea pig', 'lionfish', 'tiger shark', 'marmot', 'chameleon', 'skunk', 'gibbon', 'Pomeranian', 'snow leopard', 'junco', 'Bernese mountain dog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 15:36:25] [显存监控] 已分配=17.02GB, 已保留=19.85GB, 空闲=30.38GB
+[2025-11-28 15:36:28] [显存监控] 已分配=17.02GB, 已保留=19.85GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.85GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1544)
+总耗时: 4.93秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1544
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_54.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_54.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['marmot', 'goldfish', 'snorkel', 'sulphur-crested cockatoo', 'king penguin', 'goose', 'American goldfinch', 'hummingbird', 'grasshopper', 'wild boar', 'stingray', 'toucan', 'chameleon', 'whistle', 'Bouvier des Flandres', 'tiger shark', 'lorikeet', 'pelican', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:31] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-28 15:36:34] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:goldfish
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:37] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+分类完成: goldfish (置信度: 0.9500)
+总耗时: 10.27秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_56.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_56.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['vulture', 'bustard', 'lorikeet', 'goldfish', 'American goldfinch', 'hummingbird', 'bald eagle', 'beer glass', 'monarch butterfly', 'lionfish', 'chameleon', 'junco', 'hen', 'pelican', 'skunk', 'Pomeranian', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:36:41] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=18.13GB, 剩余=30.50GB
+发现新类别:goldfish
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 15:36:44] [显存监控] 已分配=16.96GB, 已保留=18.07GB, 空闲=30.44GB
+[2025-11-28 15:36:47] [显存监控] 已分配=16.96GB, 已保留=18.07GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.07GB, 剩余=30.50GB
+分类完成: goldfish (置信度: 0.8000)
+总耗时: 9.58秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_58.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.2512)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.2512
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_59.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.2746)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.2746
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_7.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_7.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'pufferfish', 'lionfish', 'tiger shark', 'wild boar', 'snorkel', 'American goldfinch', 'submarine', 'great white shark', 'great egret', 'bald eagle', 'fox squirrel', 'chameleon', 'lesser panda', 'junco']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:50] [显存监控] 已分配=16.95GB, 已保留=17.61GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1598)
+总耗时: 2.15秒
+[2025-11-28 15:34:07] Processing fast-slow:   1%|          | 1/187 [03:22<10:28:41, 202.80s/it][2025-11-28 15:37:30] Processing fast-slow:   1%|          | 1/187 [03:22<10:28:41, 202.80s/it]succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1598
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_71.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfish (置信度: 0.3069)
+总耗时: 0.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:False, confidence:0.3069
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_84.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_84.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['marmot', 'goldfish', 'bald eagle', 'candle', 'acorn', 'monarch butterfly', 'Japanese spaniel', 'lorikeet', 'Irish water spaniel', 'bustard', 'toucan', 'chameleon', 'hog', 'wild boar', 'beer glass', 'dragonfly', 'lemon', 'jellyfish', 'vulture']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:53] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:goldfish
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:56] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:36:59] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfish (置信度: 0.9500)
+总耗时: 10.02秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_94.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_94.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'wild boar', 'pufferfish', 'lionfish', 'bustard', 'American goldfinch', 'snorkel', 'submarine', 'great white shark', 'tiger shark', 'Pomeranian', 'Bernese mountain dog', 'chameleon', 'bald eagle', 'green iguana', 'motor scooter']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:37:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1484)
+总耗时: 5.44秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1484
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_95.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_95.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'bustard', 'bathtub', 'cliff', 'lionfish', 'beer glass', 'wild boar', 'pufferfish', 'spotted salamander', 'hermit crab', 'parachute', 'Pomeranian', 'n02909870', 'centipede', 'cock', 'chameleon', 'broccoli']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:37:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:09] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1605)
+总耗时: 5.98秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1605
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_96.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_96.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfish', 'pufferfish', 'bustard', 'wild boar', 'snorkel', 'submarine', 'beer glass', 'n02909870', 'American goldfinch', 'cliff', 'cheetah', 'chameleon', 'skunk', 'pelican', 'vulture', 'Bernese mountain dog', 'gibbon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:12] [显存监控] 已分配=16.92GB, 已保留=17.24GB, 空闲=30.48GB
+[2025-11-28 15:37:15] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfish
+分类完成: goldfish (置信度: 0.1546)
+总耗时: 3.36秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.1546
+开始分类图像: ./datasets/ImageNet_R/images/n01443537/goldfish_99.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01443537/goldfish_99.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pufferfish', 'goldfish', 'bustard', 'lionfish', 'American goldfinch', 'hog', 'wild boar', 'sea lion', 'tiger shark', 'snorkel', 'chameleon', 'junco', 'basset', 'Bernese mountain dog', 'snow leopard', 'Bouvier des Flandres', 'skunk', 'n02364673']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:18] [显存监控] 已分配=16.95GB, 已保留=17.67GB, 空闲=30.45GB
+[2025-11-28 15:37:21] [显存监控] 已分配=16.96GB, 已保留=17.67GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.67GB, 剩余=30.50GB
+发现新类别:goldfish
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:37:25] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:28] [显存监控] 已分配=16.95GB, 已保留=17.61GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+分类完成: goldfish (置信度: 0.9500)
+总耗时: 14.00秒
+succ. pred cate:goldfish, true cate:goldfish, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_R/images/n01484850/great_white_shark_1.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: great white shark (置信度: 0.2115)
+总耗时: 0.02秒
+succ. pred cate:great white shark, true cate:great white shark, used_slow:False, confidence:0.2115
+开始分类图像: ./datasets/ImageNet_R/images/n01484850/great_white_shark_101.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: great white shark (置信度: 0.4709)
+总耗时: 0.02秒
+succ. pred cate:great white shark, true cate:great white shark, used_slow:False, confidence:0.4709
+开始分类图像: ./datasets/ImageNet_R/images/n01484850/great_white_shark_103.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: great white shark (置信度: 0.3541)
+总耗时: 0.02秒
+succ. pred cate:great white shark, true cate:great white shark, used_slow:False, confidence:0.3541
+开始分类图像: ./datasets/ImageNet_R/images/n01484850/great_white_shark_108.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: great white shark (置信度: 0.2242)
+总耗时: 0.02秒
+succ. pred cate:great white shark, true cate:great white shark, used_slow:False, confidence:0.2242
+开始分类图像: ./datasets/ImageNet_R/images/n01484850/great_white_shark_109.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_R/images/n01484850/great_white_shark_109.jpg
+步骤1: 提取快思考候选类别...

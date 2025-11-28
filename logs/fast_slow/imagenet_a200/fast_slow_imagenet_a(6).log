@@ -1,0 +1,661 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=3  # 使用的GPU编号
+Dataset: imagenet_a (num_classes=200)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/imagenet_a200/knowledge_base  # 知识库目录
+Results Out: ./results/imagenet_a_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/imagenet_a200_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/imagenet_a200/fast_slow_imagenet_a(6).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: imagenet_a (imagenet_a200)
+类别数: 200
+实验目录: ./experiments/imagenet_a200
+✅ JSON文件检查通过: ./experiments/imagenet_a200/images_split
+当前使用的 GPU 为：3
+
+=== Experiment Start Time: 2025-11-28 15:31:56 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/imagenet_a200_all.yml',
+ 'knowledge_base_dir': './experiments/imagenet_a200/knowledge_base',
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'results_out': './results/imagenet_a_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/ImageNet_A',
+ 'dataset_name': 'imagenet_a',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/imagenet_a200',
+ 'expt_dir_describe': './experiments/imagenet_a200/describe',
+ 'expt_dir_gallery': './experiments/imagenet_a200/gallery',
+ 'expt_dir_grouping': './experiments/imagenet_a200/grouping',
+ 'expt_dir_guess': './experiments/imagenet_a200/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 100,
+ 'num_classes': 200,
+ 'num_novel': 100,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/imagenet_a200/gallery/imagenet_a_image_descriptions_attn',
+ 'path_identify_answers': './experiments/imagenet_a200/identify',
+ 'path_llm_gussed_names': './experiments/imagenet_a200/guess/imagenet_a_llm_gussed_names',
+ 'path_llm_prompts': './experiments/imagenet_a200/describe/imagenet_a_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/imagenet_a200/guess/imagenet_a_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/imagenet_a200/guess/imagenet_a_llm_replies_raw',
+ 'path_references': './experiments/imagenet_a200/gallery/imagenet_a_image_references',
+ 'path_regions': './experiments/imagenet_a200/gallery/imagenet_a_image_regions',
+ 'path_vqa_answers': './experiments/imagenet_a200/describe/imagenet_a_attributes_pairs',
+ 'path_vqa_questions': './experiments/imagenet_a200/describe/imagenet_a_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "imagenet_a200",
+    "num_classes": 200,
+    "config_file": "imagenet_a200_all.yml",
+    "data_dir": "ImageNet_A",
+    "experiment_dir": "imagenet_a200",
+    "stats_file": "imagenet_a200/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/imagenet_a200/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/imagenet_a200"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:15,  3.78s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:07,  2.40s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:03,  2.00s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:10<00:02,  2.59s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.90s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.18s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-28 15:32:08
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/imagenet_a200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/imagenet_a200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 800 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-28 15:33:10
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7cbb5b3d1a30>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7cbb56b90520>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/imagenet_a200/knowledge_base
+使用数据集: imagenet_a, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-28 15:33:10] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/imagenet_a200/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/imagenet_a200/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/imagenet_a200/knowledge_base 加载
+图像知识库类别数: 200
+文本知识库类别数: 200
+类别描述数: 200
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7cbb56b90520>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7cbb5b50e880>
+📦 数据集信息: {'full_name': 'imagenet_a200', 'num_classes': 200, 'config_file': 'imagenet_a200_all.yml', 'data_dir': 'ImageNet_A', 'experiment_dir': 'imagenet_a200', 'stats_file': 'imagenet_a200/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/imagenet_a200/knowledge_base/stats.json', 'experiment_dir_full': './experiments/imagenet_a200'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/imagenet_a200/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: imagenet_a200
+数据集根目录: ./datasets
+测试百分比: 100.0%
+说明: 使用完整测试集的 100.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/imagenet_a200/images_split/images_test.json
+  类别数量: 200
+  总图像数: 1424
+  平均每类: 7.1 张
+  图像范围: 1 - 20 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 1424 张图像，覆盖 200 个类别
+  平均每类: 7.1 张
+======================================================================
+test sample keys: ['stingray', 'goldfinch', 'junco', 'American robin', 'jay']...
+[fast and slow] 测试数据集包含 200 个类别
+  0%|          | 0/200 [00:00<?, ?it/s][2025-11-28 15:33:10] Processing fast-slow:   0%|          | 0/200 [00:00<?, ?it/s]开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.001295_submarine _ submarine_0.9607397.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sea lion (置信度: 0.2041)
+总耗时: 0.30秒
+failed. pred cate:sea lion, true cate:stingray, used_slow:False, confidence:0.2041
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.002610_jellyfish _ jellyfish_0.9947035.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.002610_jellyfish _ jellyfish_0.9947035.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sea lion', 'flatworm', 'jellyfish', 'stingray', 'pufferfish', 'newt', 'German Shepherd Dog', 'lion', 'small white', 'cowboy boot', 'starfish', 'sea anemone', 'monarch butterfly', 'crayfish', 'American alligator']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:13] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+[2025-11-28 15:33:16] [显存监控] 已分配=16.97GB, 已保留=17.51GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:19] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8500)
+总耗时: 10.94秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.003780_jellyfish _ jellyfish_0.9781212.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.003780_jellyfish _ jellyfish_0.9781212.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['jellyfish', 'stingray', 'wine bottle', 'starfish', 'balloon', 'sea lion', 'small white', 'bubble', 'candle', 'quill', 'monarch butterfly', 'sea anemone', 'dragonfly', 'fly', 'pufferfish', 'banjo', 'spider web']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:33:24] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:27] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:31] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:33:34] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8500)
+总耗时: 14.67秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.004671_marmot _ marmot_0.28429142.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.004671_marmot _ marmot_0.28429142.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['small white', 'nail', 'goose', 'shipwreck', 'sundial', 'American alligator', 'stingray', 'parachute', 'quill', 'canoe', 'sea anemone', 'monarch butterfly', 'green iguana', 'junco', 'dragonfly', 'pelican', 'stick insect', 'pufferfish', 'spider web', 'fly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:33:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:41] [显存监控] 已分配=16.96GB, 已保留=17.71GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.71GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:44] [显存监控] 已分配=16.95GB, 已保留=17.67GB, 空闲=30.46GB
+[2025-11-28 15:33:47] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8000)
+总耗时: 12.84秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.005839_snail _ snail_0.7540516.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.005839_snail _ snail_0.7540516.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['jellyfish', 'pufferfish', 'starfish', 'flatworm', 'sea anemone', 'shipwreck', 'hermit crab', 'small white', 'centipede', 'carbonara', 'stingray', 'crayfish', 'newt', 'American alligator']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:50] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-28 15:33:53] [显存监控] 已分配=16.95GB, 已保留=17.60GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:56] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.46GB
+[2025-11-28 15:33:59] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+分类完成: jellyfish (置信度: 0.8500)
+总耗时: 10.50秒
+failed. pred cate:jellyfish, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.008238_pufferfish _ pufferfish_0.9980763.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pufferfish (置信度: 0.4715)
+总耗时: 0.04秒
+failed. pred cate:pufferfish, true cate:stingray, used_slow:False, confidence:0.4715
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.009826_oystercatcher _ oystercatcher_0.507203.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: sea lion (置信度: 0.2324)
+总耗时: 0.04秒
+failed. pred cate:sea lion, true cate:stingray, used_slow:False, confidence:0.2324
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.010562_jellyfish _ jellyfish_0.9875066.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.010562_jellyfish _ jellyfish_0.9875066.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['jellyfish', 'stingray', 'hermit crab', 'acorn', 'starfish', 'pufferfish', 'barn', 'snail', 'small white', 'sea lion', 'sea anemone', 'scorpion', 'weevil', 'American alligator', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:02] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:34:05] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:08] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+[2025-11-28 15:34:11] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8500)
+总耗时: 12.73秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.014708_sea lion _ sea lion_0.99241525.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.014708_sea lion _ sea lion_0.99241525.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sea lion', 'stingray', 'goose', 'quill', 'reel', 'pelican', 'toucan', 'bow', 'broom', 'starfish', 'jellyfish', 'pufferfish', 'hermit crab', 'armadillo', 'American alligator', 'dragonfly', 'sea anemone', 'grasshopper']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:14] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:34:17] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:20] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+[2025-11-28 15:34:23] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.9500)
+总耗时: 11.14秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.030269_sea lion _ sea lion_0.9981798.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.030269_sea lion _ sea lion_0.9981798.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pufferfish', 'sea lion', 'stingray', 'jellyfish', 'ocarina', 'American alligator', 'shipwreck', 'starfish', 'flatworm', 'green iguana', 'sea anemone', 'newt', 'hermit crab', 'dragonfly', 'African bush elephant']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:26] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:29] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:34:32] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8500)
+总耗时: 9.31秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.038485_stethoscope _ stethoscope_0.68355024.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.038485_stethoscope _ stethoscope_0.68355024.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['stingray', 'pufferfish', 'armadillo', 'starfish', 'reel', 'newt', 'small white', 'flatworm', 'sea lion', 'teddy bear', 'sea anemone', 'hermit crab', 'jellyfish', 'gossamer-winged butterfly', 'scorpion', 'crayfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:34:35] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:38] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:stingray
+分类完成: stingray (置信度: 0.1619)
+总耗时: 7.75秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.1619
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.052774_hermit crab _ hermit crab_0.84354925.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.052774_hermit crab _ hermit crab_0.84354925.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pufferfish', 'starfish', 'jellyfish', 'acorn', 'hermit crab', 'stingray', 'small white', 'flatworm', 'snail', 'crayfish', 'sea anemone', 'weevil', 'scorpion', 'newt']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:34:42] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:45] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:34:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:52] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8500)
+总耗时: 13.82秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.063213_submarine _ submarine_0.798916.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.063213_submarine _ submarine_0.798916.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sea lion', 'stingray', 'quill', 'goose', 'toucan', 'jay', 'starfish', 'ocarina', 'jellyfish', 'broom', 'pufferfish', 'dragonfly', 'American alligator', 'pelican', 'schooner']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:34:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:59] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:35:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:06] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: stingray (置信度: 0.8500)
+总耗时: 13.66秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.067647_volcano _ volcano_0.6579329.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.067647_volcano _ volcano_0.6579329.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['flatworm', 'jellyfish', 'pufferfish', 'mitten', 'stingray', 'starfish', 'jay', 'newt', 'small white', 'nail', 'sea anemone', 'crayfish', 'scorpion', 'American alligator', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:35:10] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:13] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+[2025-11-28 15:33:10] Processing fast-slow:   0%|          | 1/200 [02:12<7:19:55, 132.64s/it][2025-11-28 15:35:23] Processing fast-slow:   0%|          | 1/200 [02:12<7:19:55, 132.64s/it]发现新类别:stingray
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:35:20] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: jellyfish (置信度: 0.8500)
+总耗时: 14.15秒
+failed. pred cate:jellyfish, true cate:stingray, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.103865_pufferfish _ pufferfish_0.7756802.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: pufferfish (置信度: 0.5196)
+总耗时: 0.76秒
+failed. pred cate:pufferfish, true cate:stingray, used_slow:False, confidence:0.5196
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000036_lighthouse _ lighthouse_0.9377955.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000036_lighthouse _ lighthouse_0.9377955.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['great egret', 'goose', 'balance beam', 'goldfinch', 'cheeseburger', 'red fox', 'flamingo', 'canoe', 'reel', 'bald eagle', 'pelican', 'junco', 'green iguana', 'cottontail rabbit', 'lynx', 'dragonfly', 'porcupine', 'marmot']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:35:24] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:27] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:35:31] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:34] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.8000)
+总耗时: 12.31秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000152_lighthouse _ lighthouse_0.64318764.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000152_lighthouse _ lighthouse_0.64318764.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['canoe', 'goldfinch', 'sundial', 'bow', 'bald eagle', 'reel', 'broom', 'school bus', 'parachute', 'toucan', 'sulphur-crested cockatoo', 'fox squirrel', 'junco', 'American robin', 'bee', 'cottontail rabbit', 'jay', 'marmot', 'great egret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:35:41] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:35:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:48] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.9500)
+总耗时: 14.29秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000158_broom _ broom_0.51670414.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000158_broom _ broom_0.51670414.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'junco', 'goldfinch', 'jay', 'American robin', 'cottontail rabbit', 'lynx', 'skunk', 'goose', 'bald eagle', 'green iguana', 'porcupine', 'fox squirrel', 'marmot']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:52] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:junco
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:55] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-28 15:35:58] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: junco (置信度: 0.8500)
+总耗时: 11.03秒
+failed. pred cate:junco, true cate:goldfinch, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000288_golf cart _ golf cart_0.7313616.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000288_golf cart _ golf cart_0.7313616.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfinch', 'jay', 'red fox', 'golf cart', 'toucan', 'hummingbird', 'shovel', 'broom', 'mantis', 'cottontail rabbit', 'junco', 'fox squirrel', 'marmot', 'bee', 'porcupine', 'lynx']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:01] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.46GB
+[2025-11-28 15:36:04] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfinch
+分类完成: goldfinch (置信度: 0.1286)
+总耗时: 4.71秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.1286
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000409_suspension bridge _ suspension bridge_0.5387355.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000409_suspension bridge _ suspension bridge_0.5387355.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'goldfinch', 'junco', 'jay', 'balance beam', 'fox squirrel', 'sleeping bag', 'cheeseburger', 'Chihuahua', 'toucan', 'marmot', 'porcupine', 'bald eagle', 'green iguana', 'American robin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:07] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-28 15:36:10] [显存监控] 已分配=16.97GB, 已保留=17.58GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:13] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-28 15:36:16] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.9500)
+总耗时: 11.81秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000522_junco _ junco_0.9991372.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000522_junco _ junco_0.9991372.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfinch', 'junco', 'jay', 'quill', 'American robin', 'goose', 'sulphur-crested cockatoo', 'small white', 'mitten', 'bald eagle', 'green iguana', 'porcupine', 'dragonfly', 'duck', 'toucan', 'red fox', 'box turtle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:36:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:23] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+分类完成: goldfinch (置信度: 0.1944)
+总耗时: 7.70秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.1944
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000559_stick insect _ centipede_0.32616335.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000559_stick insect _ centipede_0.32616335.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['mantis', 'green iguana', 'chameleon', 'hummingbird', 'American bullfrog', 'garter snake', 'koala', 'red fox', 'mongoose', 'agama', 'junco', 'grasshopper', 'porcupine', 'cottontail rabbit', 'bee', 'marmot', 'crayfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:36:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:30] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+发现新类别:junco
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:36:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:37] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: green iguana (置信度: 0.8000)
+总耗时: 14.68秒
+failed. pred cate:green iguana, true cate:goldfinch, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000610_spider web _ dragonfly_0.52035344.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000610_spider web _ dragonfly_0.52035344.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['jay', 'goldfinch', 'balance beam', 'junco', 'cheeseburger', 'hummingbird', 'toucan', 'red fox', 'fox squirrel', 'skunk', 'green iguana', 'lynx', 'American robin', 'porcupine', 'bee', 'dragonfly', 'marmot']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:36:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:44] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:36:47] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.8500)
+总耗时: 10.42秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000690_sundial _ golf cart_0.37056988.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000690_sundial _ golf cart_0.37056988.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfinch', 'toucan', 'sulphur-crested cockatoo', 'hummingbird', 'cheeseburger', 'junco', 'lorikeet', 'jay', 'flamingo', 'American robin', 'fox squirrel', 'bee', 'red fox', 'dragonfly', 'mantis', 'vulture', 'green iguana', 'duck']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:50] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 15:36:53] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+分类完成: goldfinch (置信度: 0.1763)
+总耗时: 4.79秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.1763
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000927_junco _ junco_0.9956185.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfinch (置信度: 0.3369)
+总耗时: 0.03秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:False, confidence:0.3369
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.001249_duck _ duck_0.38502443.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.001249_duck _ duck_0.38502443.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['duck', 'American bullfrog', 'goldfinch', 'garter snake', 'junco', 'goose', 'small white', 'hummingbird', 'sea lion', 'reel', 'green iguana', 'dragonfly', 'sea anemone', 'pufferfish', 'porcupine', 'toucan', 'American alligator', 'stingray']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:56] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 15:36:59] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:37:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:06] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.8500)
+总耗时: 13.50秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.001738_submarine _ submarine_0.90098894.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.001738_submarine _ submarine_0.90098894.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sea lion', 'great egret', 'reel', 'goose', 'toucan', 'suspension bridge', 'quill', 'flamingo', 'bald eagle', 'broom', 'pelican', 'sea anemone', 'dragonfly', 'jellyfish', 'cottontail rabbit', 'goldfinch', 'sulphur-crested cockatoo', 'American robin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:37:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:14] [显存监控] 已分配=16.96GB, 已保留=17.50GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:37:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB

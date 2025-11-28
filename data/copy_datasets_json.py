@@ -249,7 +249,8 @@ def get_datasets_from_config(config_file, specific_dataset=None):
     supported_datasets = [
         'car', 'pet', 'aircraft', 'eurosat', 'food', 'dtd', 
         'caltech101', 'caltech256', 'deepfashion_multimodal', 
-        'sun397', 'imagenet_a', 'imagenet_r', 'dog', 'bird', 'flower'
+        'sun397', 'imagenet_a', 'imagenet_r', 'dog', 'bird', 'flower',
+        'ucf'
     ]
     
     # Filter datasets based on specific_dataset or use all supported

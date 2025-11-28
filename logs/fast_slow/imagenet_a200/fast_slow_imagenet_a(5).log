@@ -103,4 +103,2561 @@ Using a slow image processor as `use_fast` is unset and a slow processor was sav
 🖥️ 设备: GPU - cuda:0
 🤖 使用 8bit 推理: 否
 🔍 使用数据类型: float16（FP32）
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:07<00:31,  7.81s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:27<00:44, 14.83s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:52<00:38, 19.39s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:07<00:31,  7.81s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:27<00:44, 14.83s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:52<00:38, 19.39s/it]Loading checkpoint shards:  80%|████████  | 4/5 [01:12<00:19, 19.82s/it]Loading checkpoint shards: 100%|██████████| 5/5 [01:19<00:00, 15.11s/it]Loading checkpoint shards: 100%|██████████| 5/5 [01:19<00:00, 15.92s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-28 14:51:22
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/imagenet_a200/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/imagenet_a200/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 800 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-28 14:53:31
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x73481154b400>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x73481154b430>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/imagenet_a200/knowledge_base
+使用数据集: imagenet_a, 类别数: 200
+✅ 慢思考模块初始化完成，类别映射数量: 200
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-28 14:53:31] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/imagenet_a200/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/imagenet_a200/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/imagenet_a200/knowledge_base 加载
+图像知识库类别数: 200
+文本知识库类别数: 200
+类别描述数: 200
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x73481154b430>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x734811501df0>
+📦 数据集信息: {'full_name': 'imagenet_a200', 'num_classes': 200, 'config_file': 'imagenet_a200_all.yml', 'data_dir': 'ImageNet_A', 'experiment_dir': 'imagenet_a200', 'stats_file': 'imagenet_a200/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/imagenet_a200/knowledge_base/stats.json', 'experiment_dir_full': './experiments/imagenet_a200'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/imagenet_a200/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: imagenet_a200
+数据集根目录: ./datasets
+测试百分比: 10.0%
+说明: 使用完整测试集的 10.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/imagenet_a200/images_split/images_test.json
+  类别数量: 200
+  总图像数: 1424
+  平均每类: 7.1 张
+  图像范围: 1 - 20 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 142 张图像，覆盖 82 个类别
+  平均每类: 1.7 张
+======================================================================
+test sample keys: ['mongoose', 'washing machine', 'goldfinch', 'mask', 'Chihuahua']...
+[fast and slow] 测试数据集包含 82 个类别
+  0%|          | 0/82 [00:00<?, ?it/s][2025-11-28 14:53:31] Processing fast-slow:   0%|          | 0/82 [00:00<?, ?it/s][2025-11-28 14:53:31] Processing fast-slow:   1%|          | 1/82 [00:11<15:05, 11.17s/it][2025-11-28 14:53:42] Processing fast-slow:   1%|          | 1/82 [00:11<15:05, 11.17s/it][2025-11-28 14:53:42] Processing fast-slow:   2%|▏         | 2/82 [00:24<16:56, 12.71s/it][2025-11-28 14:53:56] Processing fast-slow:   2%|▏         | 2/82 [00:24<16:56, 12.71s/it]开始分类图像: ./datasets/ImageNet_A/images/n02137549/0.002130_volcano _ shovel_0.32789814.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02137549/0.002130_volcano _ shovel_0.32789814.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['armadillo', 'mongoose', 'porcupine', 'green iguana', 'red fox', 'skunk', 'small white', 'cottontail rabbit', 'stingray', 'American alligator', 'African bush elephant', 'crayfish', 'lynx', 'sea anemone', 'starfish', 'pufferfish', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:53:34] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:African bush elephant
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:53:37] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:53:40] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: mongoose (置信度: 0.8000)
+总耗时: 11.17秒
+succ. pred cate:mongoose, true cate:mongoose, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n04554684/0.002615_broccoli _ broccoli_0.7496433.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04554684/0.002615_broccoli _ broccoli_0.7496433.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['hair dryer', 'washing machine', 'fountain', 'sewing machine', 'bubble', 'shovel', 'spatula', 'quill', 'acoustic guitar', 'doormat', 'balloon', 'spider web', 'sea anemone', 'fly', 'weevil', 'small white', 'starfish', 'beaker']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:53:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:53:47] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+发现新类别:washing machine
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:53:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 14:53:54] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: washing machine (置信度: 0.8500)
+总耗时: 13.78秒
+succ. pred cate:washing machine, true cate:washing machine, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000927_junco _ junco_0.9956185.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goldfinch (置信度: 0.3369)
+总耗时: 0.06秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:False, confidence:0.3369
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000288_golf cart _ golf cart_0.7313616.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000288_golf cart _ golf cart_0.7313616.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goldfinch', 'jay', 'red fox', 'golf cart', 'toucan', 'hummingbird', 'shovel', 'broom', 'mantis', 'cottontail rabbit', 'junco', 'fox squirrel', 'marmot', 'bee', 'porcupine', 'lynx']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:53:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:01] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfinch
+分类完成: goldfinch (置信度: 0.1286)
+总耗时: 6.75秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.1286
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000610_spider web _ dragonfly_0.52035344.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000610_spider web _ dragonfly_0.52035344.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['jay', 'goldfinch', 'balance beam', 'junco', 'cheeseburger', 'hummingbird', 'toucan', 'red fox', 'fox squirrel', 'skunk', 'green iguana', 'lynx', 'American robin', 'porcupine', 'bee', 'dragonfly', 'marmot']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:54:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:08] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+[2025-11-28 14:54:11] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.8500)
+总耗时: 9.81秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.000036_lighthouse _ lighthouse_0.9377955.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.000036_lighthouse _ lighthouse_0.9377955.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['great egret', 'goose', 'balance beam', 'goldfinch', 'cheeseburger', 'red fox', 'flamingo', 'canoe', 'reel', 'bald eagle', 'pelican', 'junco', 'green iguana', 'cottontail rabbit', 'lynx', 'dragonfly', 'porcupine', 'marmot']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:14] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 14:54:17] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goldfinch
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:20] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 14:54:23] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: goldfinch (置信度: 0.8000)
+总耗时: 11.45秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.002854_cockroach _ cockroach_0.62932307.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: junco (置信度: 0.2067)
+总耗时: 0.04秒
+failed. pred cate:junco, true cate:goldfinch, used_slow:False, confidence:0.2067
+开始分类图像: ./datasets/ImageNet_A/images/n01531178/0.001871_agama _ ant_0.9171445.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01531178/0.001871_agama _ ant_0.9171445.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-28 14:53:56] Processing fast-slow:   4%|▎         | 3/82 [01:00<30:11, 22.93s/it][2025-11-28 14:54:31] Processing fast-slow:   4%|▎         | 3/82 [01:00<30:11, 22.93s/it][2025-11-28 14:54:31] Processing fast-slow:   5%|▍         | 4/82 [01:20<28:35, 21.99s/it][2025-11-28 14:54:51] Processing fast-slow:   5%|▍         | 4/82 [01:20<28:35, 21.99s/it][2025-11-28 14:54:51] Processing fast-slow:   6%|▌         | 5/82 [01:29<21:59, 17.13s/it][2025-11-28 14:55:00] Processing fast-slow:   6%|▌         | 5/82 [01:29<21:59, 17.13s/it][2025-11-28 14:55:00] Processing fast-slow:   7%|▋         | 6/82 [01:37<17:44, 14.01s/it][2025-11-28 14:55:08] Processing fast-slow:   7%|▋         | 6/82 [01:37<17:44, 14.01s/it][2025-11-28 14:55:08] Processing fast-slow:   9%|▊         | 7/82 [01:49<16:46, 13.42s/it][2025-11-28 14:55:20] Processing fast-slow:   9%|▊         | 7/82 [01:49<16:46, 13.42s/it]快思考Top-10候选类别: ['goldfinch', 'junco', 'hummingbird', 'small white', 'garter snake', 'balance beam', 'duck', 'nail', 'jay', 'bee', 'green iguana', 'dragonfly', 'grasshopper', 'porcupine', 'toucan', 'sea anemone', 'lynx']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:54:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:29] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:goldfinch
+分类完成: goldfinch (置信度: 0.1514)
+总耗时: 6.98秒
+succ. pred cate:goldfinch, true cate:goldfinch, used_slow:True, confidence:0.1514
+开始分类图像: ./datasets/ImageNet_A/images/n03724870/0.000156_syringe _ syringe_0.67969024.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03724870/0.000156_syringe _ syringe_0.67969024.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crayfish', 'syringe', 'pretzel', 'mask', 'mitten', 'spatula', 'organ', 'acoustic guitar', 'stethoscope', 'flamingo', 'balloon', 'banjo', 'bow tie', 'Chihuahua', 'bubble', 'ocarina', 'lighter', 'accordion', 'nail']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:54:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:36] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:mask
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:54:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:44] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: mask (置信度: 0.8000)
+总耗时: 14.05秒
+succ. pred cate:mask, true cate:mask, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n03724870/0.000186_jack-o'-lantern _ jack-o'-lantern_0.99003255.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03724870/0.000186_jack-o'-lantern _ jack-o'-lantern_0.99003255.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['mask', 'syringe', 'parachute', 'hockey puck', 'basketball', 'balloon', 'rugby ball', 'bubble', 'crayfish', 'ladybug', 'monarch butterfly', 'spider web', 'nail', 'banjo', 'breastplate', 'toaster', 'fly', 'stick insect', 'starfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:54:48] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:51] [显存监控] 已分配=16.96GB, 已保留=17.67GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.67GB, 剩余=30.50GB
+发现新类别:mask
+分类完成: mask (置信度: 0.1670)
+总耗时: 6.50秒
+succ. pred cate:mask, true cate:mask, used_slow:True, confidence:0.1670
+开始分类图像: ./datasets/ImageNet_A/images/n02085620/0.002748_nail _ obelisk_0.35308507.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02085620/0.002748_nail _ obelisk_0.35308507.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rottweiler', 'pug', 'bow tie', 'Chihuahua', 'jay', 'toucan', 'skunk', 'goldfinch', 'kimono', 'German Shepherd Dog', 'spider web', 'balloon', 'nail', 'green iguana', 'agama', 'junco', 'sewing machine', 'sulphur-crested cockatoo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:54] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:Chihuahua
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:54:57] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 14:55:00] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Chihuahua (置信度: 0.9500)
+总耗时: 8.52秒
+succ. pred cate:Chihuahua, true cate:Chihuahua, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n03720891/0.001854_African bush elephant _ African bush elephant_0.722115.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03720891/0.001854_African bush elephant _ African bush elephant_0.722115.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ocarina', 'quill', 'armadillo', 'pelican', 'toucan', 'goose', 'doormat', 'flamingo', 'banjo', 'mantis', 'spider web', 'green iguana', 'agama', 'balloon', 'nail', 'sulphur-crested cockatoo', 'goldfinch', 'stick insect', 'weevil']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:03] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+[2025-11-28 14:55:06] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB
+发现新类别:ocarina
+分类完成: ocarina (置信度: 0.1123)
+总耗时: 7.94秒
+succ. pred cate:ocarina, true cate:maraca, used_slow:True, confidence:0.1123
+开始分类图像: ./datasets/ImageNet_A/images/n01694178/0.025200_leafhopper _ grasshopper_0.8321722.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01694178/0.025200_leafhopper _ grasshopper_0.8321722.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['weevil', 'cockroach', 'nail', 'stick insect', 'hermit crab', 'ant', 'small white', 'snail', 'harvestman', 'pretzel', 'flatworm', 'green iguana', 'starfish', 'scorpion', 'spider web', 'leafhopper', 'hummingbird', 'dragonfly', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:55:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 14:55:12] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+发现新类别:stick insect
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:55:16] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 14:55:19] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: stick insect (置信度: 0.8000)
+总耗时: 12.21秒
+failed. pred cate:stick insect, true cate:chameleon, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07734744/0.000000_cockroach _ cockroach_0.9996309.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07734744/0.000000_cockroach _ cockroach_0.9996309.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-28 14:55:20] Processing fast-slow:  10%|▉         | 8/82 [02:37<30:22, 24.63s/it][2025-11-28 14:56:09] Processing fast-slow:  10%|▉         | 8/82 [02:37<30:22, 24.63s/it]快思考Top-10候选类别: ['newt', 'cockroach', 'nail', 'ladybug', 'crayfish', 'centipede', 'flatworm', 'monarch butterfly', 'quill', 'small white', 'hummingbird', 'harvestman', 'leafhopper', 'weevil', 'scorpion', 'gossamer-winged butterfly', 'dragonfly', 'ant', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:22] [显存监控] 已分配=16.95GB, 已保留=17.31GB, 空闲=30.45GB
+[2025-11-28 14:55:25] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:quill
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:55:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:33] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: quill (置信度: 0.8500)
+总耗时: 13.96秒
+failed. pred cate:quill, true cate:mushroom, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n07734744/0.000006_nail _ nail_0.99794155.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07734744/0.000006_nail _ nail_0.99794155.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['newt', 'flatworm', 'garter snake', 'starfish', 'nail', 'ocarina', 'quill', 'jay', 'jellyfish', 'crayfish', 'hummingbird', 'scorpion', 'leafhopper', 'harvestman', 'small white', 'sea anemone', 'centipede']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:55:37] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:40] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:mushroom
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:43] [显存监控] 已分配=16.92GB, 已保留=17.26GB, 空闲=30.48GB
+[2025-11-28 14:55:46] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: mushroom (置信度: 0.8500)
+总耗时: 13.46秒
+succ. pred cate:mushroom, true cate:mushroom, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n07734744/0.007445_beaker _ beaker_0.9925264.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07734744/0.007445_beaker _ beaker_0.9925264.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['nail', 'harvestman', 'small white', 'flatworm', 'quill', 'jellyfish', 'newt', 'mantis', 'centipede', 'stick insect', 'starfish', 'sea anemone', 'scorpion', 'spider web', 'fly', 'hummingbird', 'mushroom', 'gossamer-winged butterfly', 'weevil']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:49] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-28 14:55:52] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:mushroom
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:55] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: fungi (置信度: 0.8000)
+总耗时: 10.34秒
+failed. pred cate:fungi, true cate:mushroom, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07734744/0.001121_marimba _ marimba_0.63139063.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07734744/0.001121_marimba _ marimba_0.63139063.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['reel', 'flatworm', 'quill', 'starfish', 'ocarina', 'flamingo', 'mantis', 'garter snake', 'banjo', 'bow', 'scorpion', 'sea anemone', 'centipede', 'newt', 'ant', 'leafhopper', 'bee', 'pelican']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:55:58] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-28 14:56:01] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:quill
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:56:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:08] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: fungi (置信度: 0.8000)
+总耗时: 10.90秒
+failed. pred cate:fungi, true cate:mushroom, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01819313/0.001983_airliner _ airliner_0.29967448.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01819313/0.001983_airliner _ airliner_0.29967448.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['obelisk', 'water tower', 'great egret', 'suspension bridge', 'parachute', 'schooner', 'small white', 'goose', 'flagpole', 'broom', 'green iguana', 'junco', 'pelican', 'red fox', 'toucan', 'sulphur-crested cockatoo', 'cottontail rabbit', 'goldfinch', 'fox squirrel']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:11] [显存监控] 已分配=16.96GB, 已保留=17.71GB, 空闲=30.45GB
+[2025-11-28 14:56:14] [显存监控] 已分配=16.96GB, 已保留=17.71GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.71GB, 剩余=30.50GB
+发现新类别:great egret
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:17] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-28 14:56:20] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: great egret (置信度: 0.8000)
+总耗时: 11.61秒
+failed. pred cate:great egret, true cate:sulphur-crested cockatoo, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01819313/0.002271_flagpole _ schooner_0.88249266.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01819313/0.002271_flagpole _ schooner_0.88249266.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['small white', 'toucan', 'mantis', 'suspension bridge', 'goldfinch', 'jay', 'green iguana', 'parachute', 'hummingbird', 'jellyfish', 'sulphur-crested cockatoo', 'American robin', 'fox squirrel', 'lorikeet', 'junco', 'monarch butterfly', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:23] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:Sulphur-crested Cockatoo
+[2025-11-28 14:56:09] Processing fast-slow:  11%|█         | 9/82 [03:00<29:15, 24.04s/it][2025-11-28 14:56:31] Processing fast-slow:  11%|█         | 9/82 [03:00<29:15, 24.04s/it][2025-11-28 14:56:31] Processing fast-slow:  12%|█▏        | 10/82 [03:21<27:43, 23.10s/it][2025-11-28 14:56:52] Processing fast-slow:  12%|█▏        | 10/82 [03:21<27:43, 23.10s/it][2025-11-28 14:56:52] Processing fast-slow:  13%|█▎        | 11/82 [03:42<26:31, 22.41s/it][2025-11-28 14:57:13] Processing fast-slow:  13%|█▎        | 11/82 [03:42<26:31, 22.41s/it]快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:56:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:29] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: toucan (置信度: 0.8000)
+总耗时: 11.14秒
+failed. pred cate:toucan, true cate:sulphur-crested cockatoo, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07583066/0.000777_lighter _ mask_0.65991294.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07583066/0.000777_lighter _ mask_0.65991294.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['spatula', 'banana', 'toucan', 'apron', 'hot dog', 'goldfinch', 'corn', 'carbonara', 'pretzel', 'sleeping bag', 'broccoli', 'tricycle', 'cheeseburger', 'lighter', 'couch', 'toaster', 'bow tie', 'banjo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:broccoli
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:36] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 14:56:39] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: banana (置信度: 0.8000)
+总耗时: 8.93秒
+failed. pred cate:banana, true cate:guacamole, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07583066/0.000010_drumstick _ drumstick_0.9068981.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07583066/0.000010_drumstick _ drumstick_0.9068981.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['wine bottle', 'spatula', 'broom', 'reel', 'bow', 'shovel', 'banjo', 'quill', 'carbonara', 'ocarina', 'billiard table', 'schooner', 'revolver', 'lighter', 'tricycle', 'shipwreck', 'clothes iron', 'corn']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:42] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 14:56:45] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:spatula
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:48] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 14:56:51] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: spatula (置信度: 0.8000)
+总耗时: 12.07秒
+failed. pred cate:spatula, true cate:guacamole, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02233338/0.006855_broccoli _ broccoli_0.76079756.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02233338/0.006855_broccoli _ broccoli_0.76079756.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['rhinoceros beetle', 'ant', 'bee', 'crayfish', 'armadillo', 'newt', 'harvestman', 'mantis', 'cockroach', 'American alligator', 'leafhopper', 'centipede', 'porcupine', 'scorpion', 'flatworm', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:56:54] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:cockroach
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:56:57] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 14:57:00] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: cockroach (置信度: 0.8500)
+总耗时: 9.34秒
+succ. pred cate:cockroach, true cate:cockroach, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02233338/0.018933_grasshopper _ grasshopper_0.8779267.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02233338/0.018933_grasshopper _ grasshopper_0.8779267.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garter snake', 'crayfish', 'American bullfrog', 'newt', 'mantis', 'scorpion', 'chameleon', 'box turtle', 'hermit crab', 'agama', 'green iguana', 'hummingbird', 'leafhopper', 'sea anemone', 'bee', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 14:57:03] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+发现新类别:scorpion
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:57:07] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 14:57:10] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-28 14:57:13] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+分类完成: scorpion (置信度: 0.8500)
+总耗时: 11.50秒
+succ. pred cate:scorpion, true cate:cockroach, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01687978/0.000140_jeep _ jeep_0.7560116.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01687978/0.000140_jeep _ jeep_0.7560116.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['small white', 'digital clock', 'mantis', 'armadillo', 'bee', 'red fox', 'newt', 'box turtle', 'ant', 'reel', 'scorpion', 'sea anemone', 'crayfish', 'goldfinch', 'stick insect', 'gossamer-winged butterfly', 'junco']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:16] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 14:57:19] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:lizard
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:57:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:26] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: lizard (置信度: 0.8000)
+总耗时: 13.10秒
+failed. pred cate:lizard, true cate:agama, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01687978/0.000438_breastplate _ breastplate_0.54241073.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01687978/0.000438_breastplate _ breastplate_0.54241073.jpg
+[2025-11-28 14:57:13] Processing fast-slow:  15%|█▍        | 12/82 [04:17<30:40, 26.29s/it][2025-11-28 14:57:48] Processing fast-slow:  15%|█▍        | 12/82 [04:17<30:40, 26.29s/it][2025-11-28 14:57:48] Processing fast-slow:  16%|█▌        | 13/82 [04:47<31:28, 27.37s/it][2025-11-28 14:58:18] Processing fast-slow:  16%|█▌        | 13/82 [04:47<31:28, 27.37s/it][2025-11-28 14:58:18] Processing fast-slow:  17%|█▋        | 14/82 [04:53<23:40, 20.90s/it][2025-11-28 14:58:24] Processing fast-slow:  17%|█▋        | 14/82 [04:53<23:40, 20.90s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bee', 'rhinoceros beetle', 'mantis', 'agama', 'crayfish', 'harvestman', 'dragonfly', 'small white', 'broom', 'ladybug', 'scorpion', 'hermit crab', 'sea anemone', 'leafhopper', 'ant', 'hummingbird']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:29] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:agama
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:32] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 14:57:35] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: agama (置信度: 0.8000)
+总耗时: 8.53秒
+succ. pred cate:agama, true cate:agama, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01687978/0.048751_bow _ bow_0.99134374.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01687978/0.048751_bow _ bow_0.99134374.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['mantis', 'bow', 'newt', 'scorpion', 'hummingbird', 'goldfinch', 'reel', 'crayfish', 'broom', 'toucan', 'fox squirrel', 'green iguana', 'stick insect', 'American bullfrog', 'fly', 'agama', 'monarch butterfly', 'dragonfly', 'armadillo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:38] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-28 14:57:41] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:green iguana
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:57:44] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:47] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: lizard (置信度: 0.8500)
+总耗时: 13.54秒
+failed. pred cate:lizard, true cate:agama, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02165456/0.004238_pomegranate _ pomegranate_0.9934756.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02165456/0.004238_pomegranate _ pomegranate_0.9934756.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pomegranate', 'bee', 'barn', 'custard apple', 'acorn', 'lemon', 'ladybug', 'organ', 'mantis', 'carbonara', 'scorpion', 'ant', 'leafhopper', 'small white', 'weevil', 'gossamer-winged butterfly', 'flatworm', 'centipede']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:57:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 14:57:54] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:ladybug
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:57:59] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:02] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: apple (置信度: 0.9500)
+总耗时: 14.83秒
+failed. pred cate:apple, true cate:ladybug, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02165456/0.000055_mushroom _ mushroom_0.653666.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02165456/0.000055_mushroom _ mushroom_0.653666.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['harvestman', 'bee', 'balance beam', 'ladybug', 'ant', 'nail', 'centipede', 'small white', 'monarch butterfly', 'crayfish', 'scorpion', 'leafhopper', 'sea anemone', 'tarantula', 'mantis', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:58:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:08] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:ladybug
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:11] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: ant (置信度: 0.9000)
+总耗时: 11.04秒
+failed. pred cate:ant, true cate:ladybug, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/ImageNet_A/images/n02165456/0.001599_rotary dial telephone _ rotary dial telephone_0.48614877.jpg
+执行快思考...
+[2025-11-28 14:58:14] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02165456/0.001599_rotary dial telephone _ rotary dial telephone_0.48614877.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ladybug', 'acorn', 'nail', 'barn', 'small white', 'hockey puck', 'rhinoceros beetle', 'cockroach', 'ant', 'snail', 'leafhopper', 'centipede', 'scorpion', 'flatworm', 'weevil', 'sea anemone', 'fly', 'hummingbird']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:17] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:ladybug
+分类完成: ladybug (置信度: 0.1645)
+总耗时: 3.97秒
+succ. pred cate:ladybug, true cate:ladybug, used_slow:True, confidence:0.1645
+开始分类图像: ./datasets/ImageNet_A/images/n01770081/0.002190_spider web _ spider web_0.36890563.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01770081/0.002190_spider web _ spider web_0.36890563.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['harvestman', 'mantis', 'crayfish', 'centipede', 'spider web', 'garter snake', 'bow', 'dragonfly', 'stick insect', 'nail', 'scorpion', 'leafhopper', 'bee', 'ant', 'flatworm', 'tarantula', 'sea anemone', 'porcupine']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:58:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:23] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:harvestman
+分类完成: harvestman (置信度: 0.1661)
+总耗时: 5.95秒
+succ. pred cate:harvestman, true cate:harvestman, used_slow:True, confidence:0.1661
+开始分类图像: ./datasets/ImageNet_A/images/n04147183/0.006039_unicycle _ unicycle_0.5165531.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04147183/0.006039_unicycle _ unicycle_0.5165531.jpg
+[2025-11-28 14:58:24] Processing fast-slow:  18%|█▊        | 15/82 [04:58<18:10, 16.27s/it][2025-11-28 14:58:30] Processing fast-slow:  18%|█▊        | 15/82 [04:58<18:10, 16.27s/it][2025-11-28 14:58:30] Processing fast-slow:  20%|█▉        | 16/82 [05:04<14:13, 12.94s/it][2025-11-28 14:58:35] Processing fast-slow:  20%|█▉        | 16/82 [05:04<14:13, 12.94s/it][2025-11-28 14:58:35] Processing fast-slow:  21%|██        | 17/82 [05:15<13:34, 12.53s/it][2025-11-28 14:58:47] Processing fast-slow:  21%|██        | 17/82 [05:15<13:34, 12.53s/it][2025-11-28 14:58:47] Processing fast-slow:  22%|██▏       | 18/82 [05:23<11:44, 11.00s/it][2025-11-28 14:58:54] Processing fast-slow:  22%|██▏       | 18/82 [05:23<11:44, 11.00s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['schooner', 'bow', 'sea lion', 'shipwreck', 'canoe', 'toucan', 'unicycle', 'balance beam', 'reel', 'bikini', 'pelican', 'submarine', 'kimono', 'parachute', 'sandal', 'washing machine']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:26] [显存监控] 已分配=16.94GB, 已保留=17.49GB, 空闲=30.46GB
+[2025-11-28 14:58:29] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+发现新类别:schooner
+分类完成: schooner (置信度: 0.1482)
+总耗时: 5.54秒
+succ. pred cate:schooner, true cate:schooner, used_slow:True, confidence:0.1482
+开始分类图像: ./datasets/ImageNet_A/images/n02119022/0.038083_mongoose _ mongoose_0.97185135.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: red fox (置信度: 0.4814)
+总耗时: 0.02秒
+succ. pred cate:red fox, true cate:red fox, used_slow:False, confidence:0.4814
+开始分类图像: ./datasets/ImageNet_A/images/n02119022/0.002057_mongoose _ billiard table_0.61428297.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02119022/0.002057_mongoose _ billiard table_0.61428297.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'mongoose', 'porcupine', 'armadillo', 'skunk', 'German Shepherd Dog', 'cottontail rabbit', 'newt', 'baboon', 'American alligator', 'American black bear', 'koala', 'box turtle', 'marmot', 'lynx', 'lion']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:32] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+发现新类别:red fox
+分类完成: red fox (置信度: 0.1846)
+总耗时: 5.17秒
+succ. pred cate:red fox, true cate:red fox, used_slow:True, confidence:0.1846
+开始分类图像: ./datasets/ImageNet_A/images/n02226429/0.000819_chain _ chain_0.67087233.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02226429/0.000819_chain _ chain_0.67087233.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garter snake', 'green iguana', 'mantis', 'mongoose', 'balance beam', 'American alligator', 'agama', 'centipede', 'chameleon', 'chain', 'grasshopper', 'junco', 'fox squirrel', 'porcupine', 'stick insect', 'vulture']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:35] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-28 14:58:38] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:grasshopper
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:58:42] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:45] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: mantis (置信度: 0.8500)
+总耗时: 11.53秒
+failed. pred cate:mantis, true cate:grasshopper, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02226429/0.003286_banana _ banana_0.42406338.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: mantis (置信度: 0.3102)
+总耗时: 0.04秒
+failed. pred cate:mantis, true cate:grasshopper, used_slow:False, confidence:0.3102
+开始分类图像: ./datasets/ImageNet_A/images/n04118538/0.001082_digital clock _ digital clock_0.7883831.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04118538/0.001082_digital clock _ digital clock_0.7883831.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['volleyball', 'basketball', 'wine bottle', 'cliff', 'rugby ball', 'racket', 'broom', 'feather boa', 'toucan', 'spatula', 'accordion', 'nail', 'sulphur-crested cockatoo', 'torch', 'green iguana', 'pelican', 'banjo', 'canoe', 'spider web', 'baseball player']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:58:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:52] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:rugby ball
+分类完成: rugby ball (置信度: 0.0972)
+总耗时: 7.45秒
+succ. pred cate:rugby ball, true cate:rugby ball, used_slow:True, confidence:0.0972
+开始分类图像: ./datasets/ImageNet_A/images/n02356798/0.001023_teddy bear _ teddy bear_0.9552311.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02356798/0.001023_teddy bear _ teddy bear_0.9552311.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'fox squirrel', 'mongoose', 'cottontail rabbit', 'acorn', 'cheeseburger', 'teddy bear', 'German Shepherd Dog', 'armadillo', 'marmot', 'junco', 'koala', 'Persian cat', 'porcupine', 'green iguana', 'duck', 'agama', 'jay']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:58:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:58:59] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:fox squirrel
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:04] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 14:59:07] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: fox squirrel (置信度: 0.8500)
+总耗时: 13.99秒
+succ. pred cate:fox squirrel, true cate:fox squirrel, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02356798/0.001115_acorn _ acorn_0.9005853.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02356798/0.001115_acorn _ acorn_0.9005853.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['custard apple', 'mongoose', 'baboon', 'fox squirrel', 'koala', 'armadillo', 'acorn', 'red fox', 'lynx', 'green iguana', 'marmot', 'porcupine', 'American robin', 'cottontail rabbit', 'junco', 'vulture', 'lorikeet']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:59:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:14] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:fox squirrel
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 14:59:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:20] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: fox squirrel (置信度: 0.8000)
+总耗时: 13.58秒
+[2025-11-28 14:58:54] Processing fast-slow:  23%|██▎       | 19/82 [05:50<16:46, 15.98s/it][2025-11-28 14:59:22] Processing fast-slow:  23%|██▎       | 19/82 [05:50<16:46, 15.98s/it][2025-11-28 14:59:22] Processing fast-slow:  24%|██▍       | 20/82 [06:02<15:12, 14.72s/it][2025-11-28 14:59:33] Processing fast-slow:  24%|██▍       | 20/82 [06:02<15:12, 14.72s/it][2025-11-28 14:59:33] Processing fast-slow:  26%|██▌       | 21/82 [06:28<18:24, 18.10s/it][2025-11-28 14:59:59] Processing fast-slow:  26%|██▌       | 21/82 [06:28<18:24, 18.10s/it]succ. pred cate:fox squirrel, true cate:fox squirrel, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n03888257/0.001471_cliff _ cliff_0.9978771.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03888257/0.001471_cliff _ cliff_0.9978771.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['suspension bridge', 'cliff', 'parachute', 'sea lion', 'jellyfish', 'jeep', 'shipwreck', 'wine bottle', 'basketball', 'unicycle', 'pelican', 'submarine', 'schooner', 'volcano', 'canoe']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:23] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-28 14:59:26] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:parachute
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:29] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 14:59:32] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: parachute (置信度: 0.8000)
+总耗时: 11.79秒
+succ. pred cate:parachute, true cate:parachute, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02279972/0.002014_acorn _ acorn_0.8066717.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02279972/0.002014_acorn _ acorn_0.8066717.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['monarch butterfly', 'small white', 'bee', 'cheeseburger', 'garter snake', 'parachute', 'gossamer-winged butterfly', 'mantis', 'ladybug', 'sleeping bag', 'green iguana', 'porcupine', 'toucan', 'junco', 'grasshopper', 'goldfinch', 'dragonfly', 'cottontail rabbit']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:35] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:monarch butterfly
+分类完成: monarch butterfly (置信度: 0.1662)
+总耗时: 4.40秒
+succ. pred cate:monarch butterfly, true cate:monarch butterfly, used_slow:True, confidence:0.1662
+开始分类图像: ./datasets/ImageNet_A/images/n02279972/0.000036_doormat _ doormat_0.8057074.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02279972/0.000036_doormat _ doormat_0.8057074.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['doormat', 'parachute', 'nail', 'parking meter', 'small white', 'racket', 'billiard table', 'basketball', 'teddy bear', 'volleyball', 'sulphur-crested cockatoo', 'stick insect', 'green iguana', 'monarch butterfly', 'fox squirrel', 'American robin', 'spider web', 'harvestman', 'goldfinch']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 14:59:39] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:42] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:monarch butterfly
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:45] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 14:59:48] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: parking meter (置信度: 0.8000)
+总耗时: 12.06秒
+succ. pred cate:parking meter, true cate:monarch butterfly, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02279972/0.000894_balloon _ balloon_0.4366478.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02279972/0.000894_balloon _ balloon_0.4366478.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['doormat', 'duck', 'toucan', 'parking meter', 'parachute', 'golf cart', 'balance beam', 'flamingo', 'broom', 'red fox', 'sulphur-crested cockatoo', 'great egret', 'pelican', 'fountain', 'cottontail rabbit', 'green iguana', 'umbrella', 'shipwreck', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:52] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 14:59:55] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+发现新类别:butterfly
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 14:59:58] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: butterfly (置信度: 0.8500)
+总耗时: 9.52秒
+succ. pred cate:butterfly, true cate:monarch butterfly, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02236044/0.001535_sundial _ sundial_0.86245567.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02236044/0.001535_sundial _ sundial_0.86245567.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['digital clock', 'quill', 'reel', 'bow', 'washing machine', 'pretzel', 'harvestman', 'sundial', 'rotary dial telephone', 'billiard table', 'balloon', 'sewing machine', 'nail', 'sulphur-crested cockatoo', 'scorpion', 'mushroom', 'fly', 'stick insect', 'beaker']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:01] [显存监控] 已分配=16.95GB, 已保留=17.62GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.62GB, 剩余=30.50GB
+发现新类别:stick insect
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:04] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+[2025-11-28 15:00:07] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+分类完成: clock (置信度: 0.9500)
+总耗时: 10.49秒
+failed. pred cate:clock, true cate:mantis, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02236044/0.001850_broom _ toaster_0.37702286.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02236044/0.001850_broom _ toaster_0.37702286.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['nail', 'mantis', 'garter snake', 'quill', 'broom', 'green iguana', 'parking meter', 'chameleon', 'spatula', 'bow', 'stick insect', 'sea anemone', 'scorpion', 'sulphur-crested cockatoo', 'fly', 'spider web', 'American robin', 'bee']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:10] [显存监控] 已分配=16.95GB, 已保留=17.29GB, 空闲=30.45GB
+[2025-11-28 15:00:13] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 14:59:59] Processing fast-slow:  27%|██▋       | 22/82 [07:00<22:21, 22.36s/it][2025-11-28 15:00:32] Processing fast-slow:  27%|██▋       | 22/82 [07:00<22:21, 22.36s/it][2025-11-28 15:00:32] Processing fast-slow:  28%|██▊       | 23/82 [07:17<20:26, 20.79s/it][2025-11-28 15:00:49] Processing fast-slow:  28%|██▊       | 23/82 [07:17<20:26, 20.79s/it]推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:mantis
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:16] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: mantis (置信度: 0.8500)
+总耗时: 8.71秒
+succ. pred cate:mantis, true cate:mantis, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02236044/0.000196_shovel _ umbrella_0.5735567.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02236044/0.000196_shovel _ umbrella_0.5735567.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['wine bottle', 'sleeping bag', 'flamingo', 'Christmas stocking', 'mongoose', 'hummingbird', 'chest', 'balance beam', 'nail', 'marimba', 'green iguana', 'stick insect', 'toucan', 'monarch butterfly', 'balloon', 'spider web', 'dragonfly', 'junco', 'pelican', 'lorikeet']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:00:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:23] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:bird
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:00:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:30] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: flamingo (置信度: 0.8000)
+总耗时: 13.10秒
+failed. pred cate:flamingo, true cate:mantis, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02127052/0.000779_suspension bridge _ suspension bridge_0.69638765.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02127052/0.000779_suspension bridge _ suspension bridge_0.69638765.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Golden Retriever', 'red fox', 'doormat', 'lynx', 'bison', 'German Shepherd Dog', 'hot dog', 'Chihuahua', 'mongoose', 'rocking chair', 'fox squirrel', 'cottontail rabbit', 'American black bear', 'porcupine', 'junco', 'lion', 'baboon', 'great egret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:00:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+发现新类别:red fox
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:00:37] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+[2025-11-28 15:00:40] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+分类完成: red fox (置信度: 0.8500)
+总耗时: 8.56秒
+failed. pred cate:red fox, true cate:lynx, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02127052/0.005152_mongoose _ mongoose_0.95879406.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02127052/0.005152_mongoose _ mongoose_0.95879406.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'cottontail rabbit', 'lynx', 'mongoose', 'fox squirrel', 'marmot', 'German Shepherd Dog', 'armadillo', 'broom', 'lion', 'porcupine', 'box turtle', 'green iguana', 'African bush elephant', 'grasshopper', 'koala']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:43] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:lynx
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:46] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: lynx (置信度: 0.8000)
+总耗时: 8.57秒
+succ. pred cate:lynx, true cate:lynx, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01735189/0.000011_sleeping bag _ sleeping bag_0.8492054.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01735189/0.000011_sleeping bag _ sleeping bag_0.8492054.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['shovel', 'wheelbarrow', 'newt', 'spatula', 'sleeping bag', 'jay', 'garter snake', 'acorn', 'armadillo', 'American alligator', 'ant', 'scorpion', 'bee', 'leafhopper', 'sea anemone', 'tarantula', 'stick insect', 'junco', 'goldfinch', 'hummingbird']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:00:49] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:52] [显存监控] 已分配=16.96GB, 已保留=17.71GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.71GB, 剩余=30.50GB
+发现新类别:garter snake
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:00:55] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.46GB
+[2025-11-28 15:00:58] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: garter snake (置信度: 0.8500)
+总耗时: 10.47秒
+succ. pred cate:garter snake, true cate:garter snake, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01735189/0.000799_shovel _ wheelbarrow_0.5682479.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01735189/0.000799_shovel _ wheelbarrow_0.5682479.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['shovel', 'broom', 'spatula', 'balance beam', 'billiard table', 'suspension bridge', 'bow', 'acoustic guitar', 'nail', 'wheelbarrow', 'bee', 'ant', 'centipede', 'scorpion', 'stick insect', 'clothes iron', 'sea anemone', 'leafhopper', 'fly', 'sulphur-crested cockatoo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:01:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:05] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+发现新类别:snake
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:01:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:12] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: snake (置信度: 0.9500)
+总耗时: 13.42秒
+succ. pred cate:snake, true cate:garter snake, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01735189/0.000633_Chihuahua _ Chihuahua_0.9593342.jpg
+执行快思考...
+[2025-11-28 15:00:49] Processing fast-slow:  29%|██▉       | 24/82 [08:01<26:37, 27.54s/it][2025-11-28 15:01:32] Processing fast-slow:  29%|██▉       | 24/82 [08:01<26:37, 27.54s/it][2025-11-28 15:01:32] Processing fast-slow:  30%|███       | 25/82 [08:11<21:18, 22.44s/it][2025-11-28 15:01:43] Processing fast-slow:  30%|███       | 25/82 [08:11<21:18, 22.44s/it][2025-11-28 15:01:43] Processing fast-slow:  32%|███▏      | 26/82 [08:36<21:43, 23.27s/it][2025-11-28 15:02:08] Processing fast-slow:  32%|███▏      | 26/82 [08:36<21:43, 23.27s/it]快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01735189/0.000633_Chihuahua _ Chihuahua_0.9593342.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['skunk', 'German Shepherd Dog', 'broom', 'Persian cat', 'red fox', 'garter snake', 'Chihuahua', 'cottontail rabbit', 'balance beam', 'shovel', 'porcupine', 'marmot', 'junco', 'box turtle', 'lion', 'lynx']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:15] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-28 15:01:18] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+发现新类别:garter snake
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:21] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: garter snake (置信度: 0.8500)
+总耗时: 9.81秒
+succ. pred cate:garter snake, true cate:garter snake, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01735189/0.000142_weevil _ scorpion_0.44302225.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01735189/0.000142_weevil _ scorpion_0.44302225.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['rhinoceros beetle', 'flatworm', 'small white', 'acorn', 'ladybug', 'ant', 'newt', 'bee', 'snail', 'chameleon', 'centipede', 'leafhopper', 'crayfish', 'gossamer-winged butterfly', 'scorpion', 'hummingbird', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:24] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+[2025-11-28 15:01:27] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:snake
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:30] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: snake (置信度: 0.9500)
+总耗时: 9.61秒
+succ. pred cate:snake, true cate:garter snake, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n03854065/0.000001_hockey puck _ hockey puck_0.99970394.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03854065/0.000001_hockey puck _ hockey puck_0.99970394.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['salt shaker', 'organ', 'accordion', 'rotary dial telephone', 'parking meter', 'washing machine', 'saxophone', 'chest', 'soap dispenser', 'acoustic guitar', 'quill', 'nail', 'sewing machine', 'rocking chair', 'clothes iron', 'spider web', 'balloon']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:33] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+[2025-11-28 15:01:36] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+发现新类别:organ
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:39] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-28 15:01:42] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: organ (置信度: 0.9500)
+总耗时: 10.52秒
+succ. pred cate:organ, true cate:organ, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02346627/0.005469_white-headed capuchin _ white-headed capuchin_0.98505485.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02346627/0.005469_white-headed capuchin _ white-headed capuchin_0.98505485.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['vulture', 'sleeping bag', 'porcupine', 'koala', 'fox squirrel', 'bald eagle', 'jay', 'green iguana', 'garter snake', 'red fox', 'toucan', 'lynx', 'junco', 'marmot', 'grasshopper', 'goldfinch']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:01:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:48] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:porcupine
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:01:51] [显存监控] 已分配=16.93GB, 已保留=17.27GB, 空闲=30.47GB
+[2025-11-28 15:01:54] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: koala (置信度: 0.8000)
+总耗时: 14.29秒
+failed. pred cate:koala, true cate:porcupine, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02346627/0.003124_baboon _ baboon_0.89225477.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02346627/0.003124_baboon _ baboon_0.89225477.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['armadillo', 'porcupine', 'skunk', 'baboon', 'American black bear', 'bald eagle', 'marmot', 'goose', 'mongoose', 'pug', 'box turtle', 'red fox', 'junco', 'vulture', 'lynx', 'koala']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:02:00] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:03] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:porcupine
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:06] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: porcupine (置信度: 0.8500)
+总耗时: 10.92秒
+succ. pred cate:porcupine, true cate:porcupine, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n03124043/0.001154_bow tie _ bow tie_0.9622156.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03124043/0.001154_bow tie _ bow tie_0.9622156.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['saxophone', 'kimono', 'hair dryer', 'feather boa', 'ocarina', 'banana', 'banjo', 'pretzel', 'Christmas stocking', 'German Shepherd Dog', 'bow tie', 'couch', 'mask', 'clothes iron', 'balloon', 'lighter', 'hot dog', 'spatula', 'tricycle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:09] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+[2025-11-28 15:02:12] [显存监控] 已分配=16.96GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB[2025-11-28 15:02:08] Processing fast-slow:  33%|███▎      | 27/82 [08:48<18:03, 19.70s/it][2025-11-28 15:02:19] Processing fast-slow:  33%|███▎      | 27/82 [08:48<18:03, 19.70s/it][2025-11-28 15:02:19] Processing fast-slow:  33%|███▎      | 27/82 [08:48<18:03, 19.70s/it][2025-11-28 15:02:19] Processing fast-slow:  35%|███▌      | 29/82 [09:13<14:34, 16.51s/it][2025-11-28 15:02:45] Processing fast-slow:  35%|███▌      | 29/82 [09:13<14:34, 16.51s/it][2025-11-28 15:02:45] Processing fast-slow:  37%|███▋      | 30/82 [09:17<11:27, 13.23s/it][2025-11-28 15:02:48] Processing fast-slow:  37%|███▋      | 30/82 [09:17<11:27, 13.23s/it][2025-11-28 15:02:48] Processing fast-slow:  38%|███▊      | 31/82 [09:22<09:30, 11.19s/it][2025-11-28 15:02:53] Processing fast-slow:  38%|███▊      | 31/82 [09:22<09:30, 11.19s/it][2025-11-28 15:02:53] Processing fast-slow:  39%|███▉      | 32/82 [09:31<08:44, 10.50s/it][2025-11-28 15:03:02] Processing fast-slow:  39%|███▉      | 32/82 [09:31<08:44, 10.50s/it]
+发现新类别:cowboy boot
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:15] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:02:18] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: feather boa (置信度: 0.8000)
+总耗时: 11.38秒
+failed. pred cate:feather boa, true cate:cowboy boot, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02948072/0.000104_breastplate _ breastplate_0.7970899.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: mitten (置信度: 0.7267)
+总耗时: 0.04秒
+failed. pred cate:mitten, true cate:candle, used_slow:False, confidence:0.7267
+开始分类图像: ./datasets/ImageNet_A/images/n07718472/0.002664_bow tie _ bow tie_0.41345066.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07718472/0.002664_bow tie _ bow tie_0.41345066.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['guacamole', 'broccoli', 'garter snake', 'mantis', 'American bullfrog', 'newt', 'sleeping bag', 'baseball player', 'American alligator', 'toucan', 'mitten', 'carbonara', 'bow tie', 'spatula', 'tricycle', 'couch', 'piggy bank', 'bubble', 'hot dog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:02:21] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:24] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:headband
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:02:28] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:31] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: sleeping bag (置信度: 0.8000)
+总耗时: 13.31秒
+failed. pred cate:sleeping bag, true cate:cucumber, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07718472/0.000552_goblet _ goblet_0.93129337.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07718472/0.000552_goblet _ goblet_0.93129337.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['toucan', 'spatula', 'pretzel', 'mantis', 'guacamole', 'crayfish', 'broccoli', 'garter snake', 'sea lion', 'carbonara', 'bow tie', 'piggy bank', 'bell pepper', 'hot dog', 'cheeseburger', 'banjo', 'balloon', 'lighter']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:35] [显存监控] 已分配=16.95GB, 已保留=17.28GB, 空闲=30.45GB
+[2025-11-28 15:02:38] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:broccoli
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:41] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:02:44] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: guacamole (置信度: 0.8000)
+总耗时: 12.21秒
+succ. pred cate:guacamole, true cate:cucumber, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01855672/0.004789_skunk _ skunk_0.8446201.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01855672/0.004789_skunk _ skunk_0.8446201.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['goose', 'jay', 'skunk', 'bald eagle', 'quill', 'toucan', 'vulture', 'duck', 'American robin', 'goldfinch', 'porcupine', 'green iguana', 'junco', 'marmot', 'red fox', 'dragonfly', 'koala']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:47] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:goose
+分类完成: goose (置信度: 0.1542)
+总耗时: 3.26秒
+succ. pred cate:goose, true cate:goose, used_slow:True, confidence:0.1542
+开始分类图像: ./datasets/ImageNet_A/images/n01855672/0.008839_lynx _ lynx_0.7836374.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: goose (置信度: 0.3049)
+总耗时: 0.04秒
+succ. pred cate:goose, true cate:goose, used_slow:False, confidence:0.3049
+开始分类图像: ./datasets/ImageNet_A/images/n02701002/0.000536_snowplow _ snowplow_0.99114627.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02701002/0.000536_snowplow _ snowplow_0.99114627.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ambulance', 'snowplow', 'jeep', 'mitten', 'school bus', 'parking meter', 'shovel', 'snowmobile', 'cliff', 'hot dog', 'garbage truck', 'canoe', 'steam locomotive', 'barn', 'sulphur-crested cockatoo', 'jay']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:02:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.66GB, 剩余=30.50GB
+发现新类别:ambulance
+分类完成: ambulance (置信度: 0.1455)
+总耗时: 5.41秒
+succ. pred cate:ambulance, true cate:ambulance, used_slow:True, confidence:0.1455
+开始分类图像: ./datasets/ImageNet_A/images/n04509417/0.008322_canoe _ canoe_0.11603108.jpg
+执行快思考...
+[2025-11-28 15:02:53] [显存监控] 已分配=16.91GB, 已保留=17.66GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04509417/0.008322_canoe _ canoe_0.11603108.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['banjo', 'jeep', 'golf cart', 'small white', 'American alligator', 'garter snake', 'water tower', 'balance beam', 'basketball', 'shovel', 'steam locomotive', 'goldfinch', 'green iguana', 'lynx', 'pelican', 'forklift', 'shipwreck', 'monarch butterfly', 'canoe', 'barn']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:56] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+发现新类别:bicycle wheel
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:02:59] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: bicycle wheel (置信度: 0.8000)
+总耗时: 8.65秒
+succ. pred cate:bicycle wheel, true cate:unicycle, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02123394/0.005290_lynx _ lynx_0.9907051.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02123394/0.005290_lynx _ lynx_0.9907051.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-28 15:03:02] Processing fast-slow:  40%|████      | 33/82 [09:52<11:00, 13.47s/it][2025-11-28 15:03:23] Processing fast-slow:  40%|████      | 33/82 [09:52<11:00, 13.47s/it][2025-11-28 15:03:23] Processing fast-slow:  41%|████▏     | 34/82 [10:01<09:49, 12.28s/it][2025-11-28 15:03:33] Processing fast-slow:  41%|████▏     | 34/82 [10:01<09:49, 12.28s/it][2025-11-28 15:03:33] Processing fast-slow:  43%|████▎     | 35/82 [10:15<10:03, 12.85s/it][2025-11-28 15:03:47] Processing fast-slow:  43%|████▎     | 35/82 [10:15<10:03, 12.85s/it][2025-11-28 15:03:47] Processing fast-slow:  44%|████▍     | 36/82 [10:29<09:58, 13.01s/it][2025-11-28 15:04:00] Processing fast-slow:  44%|████▍     | 36/82 [10:29<09:58, 13.01s/it]快思考Top-10候选类别: ['lynx', 'Persian cat', 'German Shepherd Dog', 'lion', 'cottontail rabbit', 'teddy bear', 'garter snake', 'baboon', 'goose', 'school bus', 'Golden Retriever', 'marmot', 'pug', 'red fox', 'stick insect', 'white-headed capuchin', 'koala', 'harvestman']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:03] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-28 15:03:06] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 15:03:09] [显存监控] 已分配=16.97GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:Persian cat
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:12] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:03:15] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Persian cat (置信度: 0.8000)
+总耗时: 15.13秒
+succ. pred cate:Persian cat, true cate:Persian cat, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02123394/0.000179_American black bear _ American black bear_0.99555063.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02123394/0.000179_American black bear _ American black bear_0.99555063.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['skunk', 'American black bear', 'baboon', 'Persian cat', 'porcupine', 'German Shepherd Dog', 'red fox', 'lion', 'bison', 'broom', 'marmot', 'fox squirrel', 'koala', 'mongoose', 'white-headed capuchin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:03:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 15:03:23] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+发现新类别:skunk
+分类完成: skunk (置信度: 0.1598)
+总耗时: 6.00秒
+failed. pred cate:skunk, true cate:Persian cat, used_slow:True, confidence:0.1598
+开始分类图像: ./datasets/ImageNet_A/images/n02325366/0.014205_mongoose _ baboon_0.5237016.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02325366/0.014205_mongoose _ baboon_0.5237016.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['nail', 'balance beam', 'broom', 'cottontail rabbit', 'red fox', 'mongoose', 'garter snake', 'shovel', 'marmot', 'spatula', 'porcupine', 'junco', 'dragonfly', 'green iguana', 'scorpion', 'stick insect', 'bee', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:26] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:cottontail rabbit
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:29] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:03:32] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: cottontail rabbit (置信度: 0.8500)
+总耗时: 9.30秒
+succ. pred cate:cottontail rabbit, true cate:cottontail rabbit, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02268443/0.003969_tarantula _ tarantula_0.69844633.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02268443/0.003969_tarantula _ tarantula_0.69844633.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ant', 'scorpion', 'mantis', 'cockroach', 'nail', 'crayfish', 'centipede', 'weevil', 'small white', 'dragonfly', 'leafhopper', 'bee', 'grasshopper', 'rhinoceros beetle', 'ladybug', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:35] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:dragonfly
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:38] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:03:41] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: dragonfly (置信度: 0.8500)
+总耗时: 9.40秒
+succ. pred cate:dragonfly, true cate:dragonfly, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02268443/0.006822_stick insect _ stick insect_0.9665846.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02268443/0.006822_stick insect _ stick insect_0.9665846.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['dragonfly', 'mantis', 'centipede', 'garter snake', 'bee', 'scorpion', 'crayfish', 'small white', 'saxophone', 'chameleon', 'leafhopper', 'newt', 'flatworm', 'grasshopper', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:44] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:03:47] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:dragonfly
+分类完成: dragonfly (置信度: 0.1453)
+总耗时: 4.84秒
+succ. pred cate:dragonfly, true cate:dragonfly, used_slow:True, confidence:0.1453
+开始分类图像: ./datasets/ImageNet_A/images/n04344873/0.004638_pug _ pug_0.49572718.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04344873/0.004638_pug _ pug_0.49572718.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['couch', 'pug', 'German Shepherd Dog', 'Persian cat', 'sea lion', 'lynx', 'mitten', 'sleeping bag', 'jay', 'armadillo', 'tricycle', 'spatula', 'clothes iron', 'Golden Retriever', 'bow tie', 'hot dog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:50] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:03:53] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:Persian cat
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:03:56] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:03:59] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Persian cat (置信度: 0.8000)
+总耗时: 13.39秒
+failed. pred cate:Persian cat, true cate:couch, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02280649/0.006631_cowboy boot _ cowboy boot_0.41380128.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+[2025-11-28 15:04:00] Processing fast-slow:  45%|████▌     | 37/82 [10:54<12:32, 16.72s/it][2025-11-28 15:04:26] Processing fast-slow:  45%|████▌     | 37/82 [10:54<12:32, 16.72s/it][2025-11-28 15:04:26] Processing fast-slow:  46%|████▋     | 38/82 [11:06<11:06, 15.16s/it][2025-11-28 15:04:37] Processing fast-slow:  46%|████▋     | 38/82 [11:06<11:06, 15.16s/it][2025-11-28 15:04:37] Processing fast-slow:  48%|████▊     | 39/82 [11:34<13:34, 18.93s/it][2025-11-28 15:05:05] Processing fast-slow:  48%|████▊     | 39/82 [11:34<13:34, 18.93s/it]开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02280649/0.006631_cowboy boot _ cowboy boot_0.41380128.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['quill', 'flatworm', 'hummingbird', 'lighter', 'mantis', 'candle', 'garter snake', 'jellyfish', 'hermit crab', 'ocarina', 'small white', 'gossamer-winged butterfly', 'harvestman', 'scorpion', 'bee', 'ant', 'newt', 'sea anemone', 'fly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:04:06] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:gossamer-winged butterfly
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:04:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:12] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: butterfly (置信度: 0.8000)
+总耗时: 14.84秒
+failed. pred cate:butterfly, true cate:small white, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02280649/0.000004_toaster _ cowboy boot_0.54292923.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02280649/0.000004_toaster _ cowboy boot_0.54292923.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['shovel', 'cowboy boot', 'hair dryer', 'reel', 'jeep', 'golf cart', 'spatula', 'unicycle', 'parking meter', 'nail', 'tarantula', 'fly', 'stick insect', 'centipede', 'scorpion', 'bee', 'clothes iron', 'junco', 'ant', 'fox squirrel']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:16] [显存监控] 已分配=16.94GB, 已保留=17.14GB, 空闲=30.46GB
+[2025-11-28 15:04:19] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:unicycle
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:22] [显存监控] 已分配=17.10GB, 已保留=17.41GB, 空闲=30.30GB
+[2025-11-28 15:04:25] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: shovel (置信度: 0.8500)
+总耗时: 10.75秒
+succ. pred cate:shovel, true cate:small white, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02802426/0.005883_racket _ racket_0.20537515.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02802426/0.005883_racket _ racket_0.20537515.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['kimono', 'racket', 'rugby ball', 'mitten', 'breastplate', 'academic gown', 'American alligator', 'steam locomotive', 'basketball', 'hummingbird', 'cello', 'banjo', 'lighter', 'spider web', 'hot dog', 'accordion', 'toaster', 'organ', 'revolver']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:28] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+发现新类别:basketball
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:04:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:36] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: basketball (置信度: 0.9500)
+总耗时: 11.46秒
+succ. pred cate:basketball, true cate:basketball, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02077923/0.022346_shipwreck _ shipwreck_0.9715077.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02077923/0.022346_shipwreck _ shipwreck_0.9715077.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sea lion', 'pufferfish', 'shipwreck', 'starfish', 'newt', 'goose', 'toucan', 'flatworm', 'crayfish', 'green iguana', 'stingray', 'American alligator', 'jellyfish', 'sea anemone', 'submarine', 'dragonfly', 'pelican']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:04:40] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:43] [显存监控] 已分配=16.95GB, 已保留=17.59GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+发现新类别:sea lion
+分类完成: sea lion (置信度: 0.1818)
+总耗时: 7.31秒
+succ. pred cate:sea lion, true cate:sea lion, used_slow:True, confidence:0.1818
+开始分类图像: ./datasets/ImageNet_A/images/n02077923/0.001824_pufferfish _ pufferfish_0.7965083.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02077923/0.001824_pufferfish _ pufferfish_0.7965083.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['stingray', 'shipwreck', 'crayfish', 'newt', 'starfish', 'pufferfish', 'sea lion', 'centipede', 'flatworm', 'jellyfish', 'sea anemone', 'American alligator', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:04:47] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:50] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:stingray
+分类完成: stingray (置信度: 0.1573)
+总耗时: 7.24秒
+succ. pred cate:stingray, true cate:sea lion, used_slow:True, confidence:0.1573
+开始分类图像: ./datasets/ImageNet_A/images/n02077923/0.014615_forklift _ forklift_0.95283836.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02077923/0.014615_forklift _ forklift_0.95283836.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['reel', 'sea lion', 'American alligator', 'armadillo', 'submarine', 'jeep', 'washing machine', 'goose', 'quill', 'shovel', 'sea anemone', 'pelican', 'dragonfly', 'jellyfish', 'bee', 'stick insect', 'cottontail rabbit', 'porcupine', 'marmot', 'great egret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:04:54] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:04:57] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:sea lion
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:05:01] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:04] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: sea lion (置信度: 0.8000)
+总耗时: 13.29秒
+succ. pred cate:sea lion, true cate:sea lion, used_slow:True, confidence:0.8000
+[2025-11-28 15:05:05] Processing fast-slow:  49%|████▉     | 40/82 [11:37<10:02, 14.34s/it][2025-11-28 15:05:09] Processing fast-slow:  49%|████▉     | 40/82 [11:37<10:02, 14.34s/it][2025-11-28 15:05:09] Processing fast-slow:  50%|█████     | 41/82 [11:50<09:22, 13.71s/it][2025-11-28 15:05:21] Processing fast-slow:  50%|█████     | 41/82 [11:50<09:22, 13.71s/it][2025-11-28 15:05:21] Processing fast-slow:  51%|█████     | 42/82 [11:59<08:21, 12.54s/it][2025-11-28 15:05:31] Processing fast-slow:  51%|█████     | 42/82 [11:59<08:21, 12.54s/it][2025-11-28 15:05:31] Processing fast-slow:  52%|█████▏    | 43/82 [12:08<07:26, 11.44s/it][2025-11-28 15:05:39] Processing fast-slow:  52%|█████▏    | 43/82 [12:08<07:26, 11.44s/it][2025-11-28 15:05:39] Processing fast-slow:  54%|█████▎    | 44/82 [12:24<08:02, 12.70s/it][2025-11-28 15:05:55] Processing fast-slow:  54%|█████▎    | 44/82 [12:24<08:02, 12.70s/it]开始分类图像: ./datasets/ImageNet_A/images/n02206856/0.000867_broom _ broom_0.4813245.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02206856/0.000867_broom _ broom_0.4813245.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bee', 'ant', 'dragonfly', 'mantis', 'nail', 'crayfish', 'red fox', 'hermit crab', 'ladybug', 'acorn', 'scorpion', 'leafhopper', 'sea anemone', 'green iguana', 'hummingbird', 'tarantula']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:07] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:bee
+分类完成: bee (置信度: 0.1705)
+总耗时: 3.55秒
+succ. pred cate:bee, true cate:bee, used_slow:True, confidence:0.1705
+开始分类图像: ./datasets/ImageNet_A/images/n03775071/0.003603_baseball player _ baseball player_0.5899244.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03775071/0.003603_baseball player _ baseball player_0.5899244.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['cradle', 'mitten', 'sleeping bag', 'teddy bear', 'syringe', 'Christmas stocking', 'baseball player', 'kimono', 'broom', 'pug', 'balloon', 'tricycle', 'bubble', 'harvestman', 'rugby ball', 'green iguana', 'lion']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:10] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+[2025-11-28 15:05:13] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:teddy bear
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:16] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-28 15:05:19] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: baby (置信度: 0.8000)
+总耗时: 12.22秒
+failed. pred cate:baby, true cate:mitten, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n04456115/0.003307_go-kart _ go-kart_0.37415358.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04456115/0.003307_go-kart _ go-kart_0.37415358.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['feather boa', 'broom', 'bow', 'steam locomotive', 'kimono', 'scorpion', 'torch', 'banjo', 'unicycle', 'saxophone', "jack-o'-lantern", 'accordion', 'drumstick', 'breastplate', 'revolver', 'balloon', 'ocarina']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:05:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:torch
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:26] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 15:05:29] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: torch (置信度: 0.8000)
+总耗时: 9.79秒
+succ. pred cate:torch, true cate:torch, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n04562935/0.002692_parking meter _ parking meter_0.9255531.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04562935/0.002692_parking meter _ parking meter_0.9255531.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['parking meter', 'broom', 'mitten', 'pretzel', 'schooner', 'obelisk', 'jeep', 'flagpole', 'bison', 'school bus', 'ambulance', 'umbrella', 'steam locomotive', 'sulphur-crested cockatoo', 'water tower', 'chain', 'garbage truck', 'barn']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:32] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:water tower
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:35] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 15:05:38] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: water tower (置信度: 0.8500)
+总耗时: 8.87秒
+succ. pred cate:water tower, true cate:water tower, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01774750/0.012071_cowboy boot _ cowboy boot_0.7343274.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01774750/0.012071_cowboy boot _ cowboy boot_0.7343274.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['cottontail rabbit', 'red fox', 'cowboy boot', 'box turtle', 'harvestman', 'nail', 'mitten', 'small white', 'garter snake', 'armadillo', 'scorpion', 'porcupine', 'green iguana', 'tarantula', 'stick insect', 'sea anemone', 'leafhopper', 'crayfish', 'fly', 'hummingbird']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:41] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+发现新类别:scorpion
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:05:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:48] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: cowboy boot (置信度: 0.9500)
+总耗时: 9.57秒
+failed. pred cate:cowboy boot, true cate:tarantula, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01774750/0.003675_balance beam _ balance beam_0.4192368.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01774750/0.003675_balance beam _ balance beam_0.4192368.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['tarantula', 'harvestman', 'spider web', 'bee', 'crayfish', 'porcupine', 'rhinoceros beetle', 'starfish', 'American black bear', 'nail', 'sea anemone', 'green iguana', 'stick insect', 'scorpion', 'dragonfly', 'grasshopper']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:51] [显存监控] 已分配=16.94GB, 已保留=17.31GB, 空闲=30.46GB
+[2025-11-28 15:05:54] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+发现新类别:tarantula
+分类完成: tarantula (置信度: 0.1398)
+总耗时: 6.08秒
+succ. pred cate:tarantula, true cate:tarantula, used_slow:True, confidence:0.1398
+开始分类图像: ./datasets/ImageNet_A/images/n04270147/0.000901_pretzel _ pretzel_0.99144155.jpg
+执行快思考...
+[2025-11-28 15:05:55] Processing fast-slow:  54%|█████▎    | 44/82 [12:24<08:02, 12.70s/it][2025-11-28 15:05:55] Processing fast-slow:  56%|█████▌    | 46/82 [12:32<05:10,  8.63s/it][2025-11-28 15:06:03] Processing fast-slow:  56%|█████▌    | 46/82 [12:32<05:10,  8.63s/it][2025-11-28 15:06:03] Processing fast-slow:  57%|█████▋    | 47/82 [12:41<05:06,  8.77s/it][2025-11-28 15:06:12] Processing fast-slow:  57%|█████▋    | 47/82 [12:41<05:06,  8.77s/it][2025-11-28 15:06:12] Processing fast-slow:  59%|█████▊    | 48/82 [12:51<05:08,  9.08s/it][2025-11-28 15:06:22] Processing fast-slow:  59%|█████▊    | 48/82 [12:51<05:08,  9.08s/it][2025-11-28 15:06:22] Processing fast-slow:  60%|█████▉    | 49/82 [13:06<05:52, 10.70s/it][2025-11-28 15:06:37] Processing fast-slow:  60%|█████▉    | 49/82 [13:06<05:52, 10.70s/it]快思考结果确定，直接返回...
+分类完成: corn (置信度: 0.3092)
+总耗时: 0.05秒
+failed. pred cate:corn, true cate:spatula, used_slow:False, confidence:0.3092
+开始分类图像: ./datasets/ImageNet_A/images/n09835506/0.002215_stethoscope _ stethoscope_0.83343834.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n09835506/0.002215_stethoscope _ stethoscope_0.83343834.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['feather boa', 'academic gown', 'kimono', 'sleeping bag', 'skunk', 'hot dog', 'pretzel', 'sulphur-crested cockatoo', 'toucan', 'washing machine', 'couch', 'tricycle', 'lighter', 'billiard table', 'spatula', 'accordion', 'broom', 'schooner', "jack-o'-lantern"]
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:05:57] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:None of the given categories fit the costumes in the image.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:00] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:06:03] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: academic gown (置信度: 0.8000)
+总耗时: 7.71秒
+failed. pred cate:academic gown, true cate:baseball player, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01616318/0.000090_volcano _ volcano_0.9827927.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01616318/0.000090_volcano _ volcano_0.9827927.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bald eagle', 'vulture', 'toucan', 'American black bear', 'goldfinch', 'mongoose', 'rhinoceros beetle', 'baboon', 'bison', 'skunk', 'green iguana', 'porcupine', 'pelican', 'scorpion', 'American alligator', 'sea anemone', 'goose', 'stick insect']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:06] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:vulture
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:09] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:06:12] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: vulture (置信度: 0.9500)
+总耗时: 9.17秒
+succ. pred cate:vulture, true cate:vulture, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01631663/0.001583_cliff _ shovel_0.9212211.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01631663/0.001583_cliff _ shovel_0.9212211.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['nail', 'ant', 'harvestman', 'newt', 'rhinoceros beetle', 'small white', 'green iguana', 'mantis', 'jeep', 'spatula', 'centipede', 'scorpion', 'leafhopper', 'bee', 'crayfish', 'tarantula', 'flatworm', 'hermit crab', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:15] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:newt
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:18] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:06:21] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: newt (置信度: 0.8000)
+总耗时: 9.96秒
+succ. pred cate:newt, true cate:newt, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n04310018/0.000293_viaduct _ viaduct_0.9978751.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04310018/0.000293_viaduct _ viaduct_0.9978751.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['steam locomotive', 'red fox', 'limousine', 'jeep', 'German Shepherd Dog', 'suspension bridge', 'viaduct', 'American black bear', 'skunk', 'bow', 'forklift', 'rapeseed', 'pelican', 'sundial', 'cliff', 'shipwreck', 'chain']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:24] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:steam locomotive
+分类完成: steam locomotive (置信度: 0.1269)
+总耗时: 4.21秒
+succ. pred cate:steam locomotive, true cate:steam locomotive, used_slow:True, confidence:0.1269
+开始分类图像: ./datasets/ImageNet_A/images/n04310018/0.000992_snowplow _ snowplow_0.9974656.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04310018/0.000992_snowplow _ snowplow_0.9974656.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['mitten', 'snowplow', 'cliff', 'shovel', 'steam locomotive', 'snowmobile', 'school bus', 'bison', 'kimono', 'jeep', 'forklift', 'garbage truck', 'ambulance', 'canoe', 'sulphur-crested cockatoo', 'jay', 'shipwreck', 'tank']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:06:28] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:steam locomotive
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:31] [显存监控] 已分配=16.92GB, 已保留=17.26GB, 空闲=30.48GB
+[2025-11-28 15:06:34] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: steam locomotive (置信度: 0.8500)
+总耗时: 10.81秒
+succ. pred cate:steam locomotive, true cate:steam locomotive, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01558993/0.000192_rotary dial telephone _ parking meter_0.97169656.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01558993/0.000192_rotary dial telephone _ parking meter_0.97169656.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lynx', 'red fox', 'baboon', 'reel', 'hummingbird', 'mantis', 'cottontail rabbit', 'American robin', 'mongoose', 'lion', 'fox squirrel', 'junco', 'marmot', 'porcupine', 'goldfinch', 'jay', 'bee']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:37] [显存监控] 已分配=16.93GB, 已保留=17.26GB, 空闲=30.47GB
+[2025-11-28 15:06:40] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:American robin
+[2025-11-28 15:06:37] Processing fast-slow:  61%|██████    | 50/82 [13:29<07:35, 14.23s/it][2025-11-28 15:07:00] Processing fast-slow:  61%|██████    | 50/82 [13:29<07:35, 14.23s/it][2025-11-28 15:07:00] Processing fast-slow:  62%|██████▏   | 51/82 [13:50<08:21, 16.19s/it][2025-11-28 15:07:21] Processing fast-slow:  62%|██████▏   | 51/82 [13:50<08:21, 16.19s/it]快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:43] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:06:46] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: American robin (置信度: 0.9500)
+总耗时: 9.78秒
+succ. pred cate:American robin, true cate:American robin, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01558993/0.000612_snowplow _ snowplow_0.7577714.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01558993/0.000612_snowplow _ snowplow_0.7577714.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['American robin', 'goose', 'red fox', 'goldfinch', 'junco', 'jay', 'duck', 'toucan', 'hummingbird', 'quill', 'porcupine', 'box turtle', 'great egret', 'fox squirrel']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:49] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-28 15:06:52] [显存监控] 已分配=16.96GB, 已保留=17.51GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:American robin
+分类完成: American robin (置信度: 0.1447)
+总耗时: 7.17秒
+succ. pred cate:American robin, true cate:American robin, used_slow:True, confidence:0.1447
+开始分类图像: ./datasets/ImageNet_A/images/n01558993/0.001622_mongoose _ baseball player_0.5721143.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01558993/0.001622_mongoose _ baseball player_0.5721143.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['American robin', 'red fox', 'mongoose', 'toucan', 'goldfinch', 'small white', 'jay', 'hummingbird', 'cottontail rabbit', 'cheeseburger', 'green iguana', 'junco', 'duck', 'porcupine', 'vulture', 'grasshopper', 'bald eagle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:06:56] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:06:59] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:American robin
+分类完成: American robin (置信度: 0.1504)
+总耗时: 6.39秒
+succ. pred cate:American robin, true cate:American robin, used_slow:True, confidence:0.1504
+开始分类图像: ./datasets/ImageNet_A/images/n01677366/0.000567_cottontail rabbit _ doormat_0.9422838.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01677366/0.000567_cottontail rabbit _ doormat_0.9422838.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['green iguana', 'cottontail rabbit', 'red fox', 'armadillo', 'goldfinch', 'American bullfrog', 'jay', 'lorikeet', 'mongoose', 'doormat', 'junco', 'marmot', 'American robin', 'fox squirrel', 'bee', 'porcupine', 'agama']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:07:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:05] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:green iguana
+分类完成: green iguana (置信度: 0.1436)
+总耗时: 5.36秒
+succ. pred cate:green iguana, true cate:green iguana, used_slow:True, confidence:0.1436
+开始分类图像: ./datasets/ImageNet_A/images/n01677366/0.052124_American alligator _ American alligator_0.94567734.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01677366/0.052124_American alligator _ American alligator_0.94567734.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'goose', 'German Shepherd Dog', 'American alligator', 'duck', 'cottontail rabbit', 'sea lion', 'newt', 'Golden Retriever', 'armadillo', 'porcupine', 'lynx', 'pelican', 'lion', 'marmot', 'great egret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:08] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:iguana
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:11] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: American alligator (置信度: 0.8500)
+总耗时: 7.57秒
+succ. pred cate:American alligator, true cate:green iguana, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01677366/0.009563_vulture _ marimba_0.454378.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01677366/0.009563_vulture _ marimba_0.454378.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['agama', 'green iguana', 'mantis', 'scorpion', 'bee', 'chameleon', 'crayfish', 'garter snake', 'jay', 'small white', 'toucan', 'grasshopper', 'dragonfly', 'sulphur-crested cockatoo', 'leafhopper']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:14] [显存监控] 已分配=17.00GB, 已保留=17.23GB, 空闲=30.41GB
+[2025-11-28 15:07:17] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.46GB
+[2025-11-28 15:07:20] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+发现新类别:agama
+分类完成: agama (置信度: 0.1334)
+总耗时: 8.16秒
+failed. pred cate:agama, true cate:green iguana, used_slow:True, confidence:0.1334
+开始分类图像: ./datasets/ImageNet_A/images/n04208210/0.007005_snowmobile _ snowmobile_0.6322953.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04208210/0.007005_snowmobile _ snowmobile_0.6322953.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sleeping bag', 'mitten', 'feather boa', 'snowmobile', 'shovel', 'cliff', 'bison', 'sea lion', 'goose', 'reel', 'canoe', 'billiard table', 'spatula', 'banjo', 'tricycle', 'stick insect', 'couch', 'lighter', 'hot dog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:23] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+[2025-11-28 15:07:26] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:shovel
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:07:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:33] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: shovel (置信度: 0.8000)
+总耗时: 13.29秒
+succ. pred cate:shovel, true cate:shovel, used_slow:True, confidence:0.8000
+[2025-11-28 15:07:21] Processing fast-slow:  63%|██████▎   | 52/82 [14:14<09:10, 18.36s/it][2025-11-28 15:07:45] Processing fast-slow:  63%|██████▎   | 52/82 [14:14<09:10, 18.36s/it]开始分类图像: ./datasets/ImageNet_A/images/n04208210/0.007107_steam locomotive _ steam locomotive_0.7209487.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04208210/0.007107_steam locomotive _ steam locomotive_0.7209487.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['balance beam', 'broom', 'suspension bridge', 'mitten', 'red fox', 'shovel', 'academic gown', 'German Shepherd Dog', 'box turtle', 'cradle', 'forklift', 'steam locomotive', 'garbage truck', 'school bus', 'rapeseed', 'snowplow', 'ambulance', 'porcupine']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:07:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:shovel
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:41] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:07:44] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: shovel (置信度: 0.8000)
+总耗时: 10.38秒
+succ. pred cate:shovel, true cate:shovel, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01770393/0.001885_lighter _ lighter_0.31403312.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01770393/0.001885_lighter _ lighter_0.31403312.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['small white', 'hermit crab', 'newt', 'mantis', 'cockroach', 'nail', 'harvestman', 'ant', 'garter snake', 'candle', 'sea anemone', 'gossamer-winged butterfly', 'centipede', 'scorpion', 'stick insect', 'crayfish', 'dragonfly', 'hummingbird']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:47] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:scorpion
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:07:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:07:54] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Flinders Ranges Scorpion (置信度: 0.9000)
+总耗时: 11.18秒
+succ. pred cate:Flinders Ranges Scorpion, true cate:scorpion, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/ImageNet_A/images/n01770393/0.016023_cockroach _ hermit crab_0.8870538.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01770393/0.016023_cockroach _ hermit crab_0.8870538.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['nail', 'garter snake', 'hermit crab', 'hummingbird', 'syringe', 'box turtle', 'cockroach', 'acorn', 'bee', 'chameleon', 'gossamer-winged butterfly', 'scorpion', 'harvestman', 'small white', 'stick insect', 'fly', 'ant', 'leafhopper', 'centipede']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:07:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:01] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+发现新类别:scorpion
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:08:08] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: scorpion (置信度: 0.9500)
+总耗时: 13.74秒
+succ. pred cate:scorpion, true cate:scorpion, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01770393/0.017128_tarantula _ tarantula_0.85020137.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01770393/0.017128_tarantula _ tarantula_0.85020137.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['skunk', 'flatworm', 'newt', 'ant', 'Persian cat', 'centipede', 'cockroach', 'bee', 'red fox', 'acorn', 'hummingbird', 'gossamer-winged butterfly', 'pufferfish', 'small white', 'crayfish', 'leafhopper', 'starfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:08:12] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:15] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+发现新类别:centipede
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:18] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: centipede (置信度: 0.8000)
+总耗时: 9.24秒
+failed. pred cate:centipede, true cate:scorpion, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01770393/0.010757_tarantula _ tarantula_0.9450035.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01770393/0.010757_tarantula _ tarantula_0.9450035.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['mantis', 'stick insect', 'harvestman', 'green iguana', 'scorpion', 'dragonfly', 'chameleon', 'ant', 'small white', 'garter snake', 'toucan', 'flatworm', 'sea anemone', 'leafhopper', 'custard apple']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:21] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+发现新类别:scorpion
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:24] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 15:08:27] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: scorpion (置信度: 0.8500)
+总耗时: 8.71秒
+succ. pred cate:scorpion, true cate:scorpion, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01770393/0.015062_American bullfrog _ harvestman_0.56707484.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01770393/0.015062_American bullfrog _ harvestman_0.56707484.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['newt', 'dragonfly', 'mantis', 'garter snake', 'American bullfrog', 'crayfish', 'nail', 'ant', 'small white', 'flatworm', 'leafhopper', 'scorpion', 'green iguana', 'grasshopper', 'sea anemone', 'bee']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:30] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:07:45] Processing fast-slow:  65%|██████▍   | 53/82 [15:06<13:41, 28.31s/it][2025-11-28 15:08:38] Processing fast-slow:  65%|██████▍   | 53/82 [15:06<13:41, 28.31s/it][2025-11-28 15:08:38] Processing fast-slow:  65%|██████▍   | 53/82 [15:06<13:41, 28.31s/it][2025-11-28 15:08:38] Processing fast-slow:  67%|██████▋   | 55/82 [15:15<07:47, 17.33s/it][2025-11-28 15:08:46] Processing fast-slow:  67%|██████▋   | 55/82 [15:15<07:47, 17.33s/it][2025-11-28 15:08:46] Processing fast-slow:  68%|██████▊   | 56/82 [15:34<07:43, 17.81s/it][2025-11-28 15:09:05] Processing fast-slow:  68%|██████▊   | 56/82 [15:34<07:43, 17.81s/it][2025-11-28 15:09:05] Processing fast-slow:  70%|██████▉   | 57/82 [15:42<06:25, 15.42s/it][2025-11-28 15:09:14] Processing fast-slow:  70%|██████▉   | 57/82 [15:42<06:25, 15.42s/it]推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:scorpion
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:08:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:36] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: scorpion (置信度: 0.8500)
+总耗时: 9.49秒
+succ. pred cate:scorpion, true cate:scorpion, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02895154/0.001627_drumstick _ reel_0.4070311.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: breastplate (置信度: 0.5663)
+总耗时: 0.06秒
+succ. pred cate:breastplate, true cate:breastplate, used_slow:False, confidence:0.5663
+开始分类图像: ./datasets/ImageNet_A/images/n02410509/0.059959_viaduct _ viaduct_0.39024016.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02410509/0.059959_viaduct _ viaduct_0.39024016.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['bison', 'duck', 'American black bear', 'lion', 'African bush elephant', 'baboon', 'jeep', 'flamingo', 'newt', 'teddy bear', 'fountain', 'pelican', 'steam locomotive', 'shipwreck', 'volcano', 'American alligator', 'lynx', "yellow lady's slipper"]
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:40] [显存监控] 已分配=16.95GB, 已保留=17.29GB, 空闲=30.45GB
+[2025-11-28 15:08:43] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 15:08:46] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:bison
+分类完成: bison (置信度: 0.1412)
+总耗时: 8.32秒
+succ. pred cate:bison, true cate:bison, used_slow:True, confidence:0.1412
+开始分类图像: ./datasets/ImageNet_A/images/n01985128/0.002503_wheelbarrow _ wheelbarrow_0.9707646.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01985128/0.002503_wheelbarrow _ wheelbarrow_0.9707646.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['green iguana', 'cottontail rabbit', 'small white', 'ant', 'red fox', 'mongoose', 'garter snake', 'koala', 'harvestman', 'armadillo', 'sea anemone', 'scorpion', 'leafhopper', 'junco', 'porcupine', 'stick insect', 'crayfish', 'mantis']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:49] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.46GB
+[2025-11-28 15:08:52] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+发现新类别:[None of the provided options match the observed details.]
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:08:55] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+[2025-11-28 15:08:58] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: small white (置信度: 0.7000)
+总耗时: 12.26秒
+failed. pred cate:small white, true cate:crayfish, used_slow:True, confidence:0.7000
+开始分类图像: ./datasets/ImageNet_A/images/n01985128/0.002871_centipede _ centipede_0.9954016.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01985128/0.002871_centipede _ centipede_0.9954016.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crayfish', 'centipede', 'scorpion', 'hermit crab', 'bee', 'cockroach', 'nail', 'harvestman', 'small white', 'ant', 'leafhopper', 'rhinoceros beetle', 'newt', 'flatworm', 'mantis']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:01] [显存监控] 已分配=16.95GB, 已保留=17.63GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.63GB, 剩余=30.50GB
+发现新类别:crayfish
+分类完成: crayfish (置信度: 0.1714)
+总耗时: 3.76秒
+succ. pred cate:crayfish, true cate:crayfish, used_slow:True, confidence:0.1714
+开始分类图像: ./datasets/ImageNet_A/images/n01985128/0.000273_bee _ bee_0.7309047.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01985128/0.000273_bee _ bee_0.7309047.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crayfish', 'scorpion', 'newt', 'mantis', 'hermit crab', 'small white', 'starfish', 'jellyfish', 'centipede', 'garter snake', 'leafhopper', 'pufferfish', 'bee', 'harvestman', 'sea anemone', 'flatworm']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:04] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+发现新类别:crayfish
+分类完成: crayfish (置信度: 0.1663)
+总耗时: 3.27秒
+succ. pred cate:crayfish, true cate:crayfish, used_slow:True, confidence:0.1663
+开始分类图像: ./datasets/ImageNet_A/images/n04141076/0.000056_bubble _ bubble_0.9975988.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04141076/0.000056_bubble _ bubble_0.9975988.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['acoustic guitar', 'banjo', 'saxophone', 'cradle', 'organ', 'wine bottle', 'kimono', 'feather boa', 'unicycle', 'accordion', 'drumstick', 'balloon', 'grand piano', 'quill', 'ocarina', "jack-o'-lantern", 'toaster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:07] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:saxophone
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:10] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 15:09:13] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: saxophone (置信度: 0.8500)
+总耗时: 8.61秒
+succ. pred cate:saxophone, true cate:saxophone, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n07768694/0.000220_corn _ corn_0.7085507.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07768694/0.000220_corn _ corn_0.7085507.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pretzel', 'carbonara', 'toucan', 'corn', 'ladybug', 'pomegranate', 'broccoli', 'monarch butterfly', 'barn', 'crayfish', 'lemon', 'bell pepper', 'weevil', 'guacamole', 'banana', 'salt shaker']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:16] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:09:19] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+发现新类别:pomegranate
+[2025-11-28 15:09:14] Processing fast-slow:  71%|███████   | 58/82 [16:06<07:03, 17.64s/it][2025-11-28 15:09:37] Processing fast-slow:  71%|███████   | 58/82 [16:06<07:03, 17.64s/it][2025-11-28 15:09:37] Processing fast-slow:  72%|███████▏  | 59/82 [16:25<06:50, 17.86s/it][2025-11-28 15:09:56] Processing fast-slow:  72%|███████▏  | 59/82 [16:25<06:50, 17.86s/it][2025-11-28 15:09:56] Processing fast-slow:  73%|███████▎  | 60/82 [16:37<05:59, 16.34s/it][2025-11-28 15:10:08] Processing fast-slow:  73%|███████▎  | 60/82 [16:37<05:59, 16.34s/it][2025-11-28 15:10:08] Processing fast-slow:  74%|███████▍  | 61/82 [16:44<04:48, 13.74s/it][2025-11-28 15:10:16] Processing fast-slow:  74%|███████▍  | 61/82 [16:44<04:48, 13.74s/it]快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:09:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:26] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: pomegranate (置信度: 0.8000)
+总耗时: 12.80秒
+succ. pred cate:pomegranate, true cate:pomegranate, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07768694/0.000088_beaker _ beaker_0.92879397.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07768694/0.000088_beaker _ beaker_0.92879397.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['beaker', 'wine bottle', 'salt shaker', 'corn', 'pretzel', 'soap dispenser', 'apron', 'jellyfish', 'toaster', 'digital clock', 'pomegranate', 'lemon', 'cucumber', 'balloon', 'bell pepper', 'banana', 'weevil']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:29] [显存监控] 已分配=16.95GB, 已保留=17.28GB, 空闲=30.46GB
+[2025-11-28 15:09:32] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:wine bottle
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:35] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: wine bottle (置信度: 0.8500)
+总耗时: 10.81秒
+failed. pred cate:wine bottle, true cate:pomegranate, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01924916/0.000773_garter snake _ garter snake_0.9990675.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: garter snake (置信度: 0.3556)
+总耗时: 0.02秒
+failed. pred cate:garter snake, true cate:flatworm, used_slow:False, confidence:0.3556
+开始分类图像: ./datasets/ImageNet_A/images/n01924916/0.000444_garter snake _ garter snake_0.99954516.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01924916/0.000444_garter snake _ garter snake_0.99954516.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garter snake', 'flatworm', 'centipede', 'stick insect', 'newt', 'harvestman', 'ocarina', 'nail', 'bow', 'cockroach', 'sea anemone', 'scorpion', 'grasshopper', 'crayfish', 'starfish', 'American alligator', 'green iguana']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:38] [显存监控] 已分配=16.95GB, 已保留=17.29GB, 空闲=30.45GB
+[2025-11-28 15:09:41] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:09:44] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:harvestman
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:47] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: garter snake (置信度: 0.8500)
+总耗时: 11.64秒
+failed. pred cate:garter snake, true cate:flatworm, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01924916/0.001063_nail _ nail_0.903981.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01924916/0.001063_nail _ nail_0.903981.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garter snake', 'mantis', 'stick insect', 'green iguana', 'dragonfly', 'balance beam', 'American alligator', 'nail', 'flatworm', 'centipede', 'grasshopper', 'leafhopper', 'scorpion', 'toucan', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:09:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:09:54] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:garter snake
+分类完成: garter snake (置信度: 0.1482)
+总耗时: 6.77秒
+failed. pred cate:garter snake, true cate:flatworm, used_slow:True, confidence:0.1482
+开始分类图像: ./datasets/ImageNet_A/images/n04399382/0.000565_hair dryer _ hair dryer_0.70630956.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04399382/0.000565_hair dryer _ hair dryer_0.70630956.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['dumbbell', 'hair dryer', 'apron', 'basketball', 'broom', 'bubble', 'syringe', 'sleeping bag', 'sewing machine', 'doormat', 'mitten', 'tricycle', 'carbonara', 'spatula', 'fox squirrel', 'balloon', 'cradle', 'quill']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:09:58] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:01] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:balloon
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:10:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:08] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: basketball (置信度: 0.8000)
+总耗时: 12.54秒
+failed. pred cate:basketball, true cate:teddy bear, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07697537/0.000011_syringe _ syringe_0.9890626.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n07697537/0.000011_syringe _ syringe_0.9890626.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['wine bottle', 'beaker', 'hot dog', 'carbonara', 'crayfish', 'candle', 'bubble', 'pretzel', 'scorpion', 'spatula', 'lighter', 'couch', 'tricycle', 'banjo', 'broccoli', 'billiard table', 'bow tie']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:11] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:hot dog
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:14] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: hot dog (置信度: 0.8000)
+总耗时: 7.33秒
+succ. pred cate:hot dog, true cate:hot dog, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02009912/0.001495_castle _ castle_0.34945446.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02009912/0.001495_castle _ castle_0.34945446.jpg
+步骤1: 提取快思考候选类别...
+[2025-11-28 15:10:16] Processing fast-slow:  76%|███████▌  | 62/82 [17:47<09:17, 27.88s/it][2025-11-28 15:11:18] Processing fast-slow:  76%|███████▌  | 62/82 [17:47<09:17, 27.88s/it]快思考Top-10候选类别: ['goose', 'great egret', 'quill', 'flamingo', 'American alligator', 'duck', 'red fox', 'armadillo', 'toucan', 'sulphur-crested cockatoo', 'pelican', 'cottontail rabbit', 'junco', 'fox squirrel', 'porcupine', 'dragonfly', 'American bullfrog']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:17] [显存监控] 已分配=17.16GB, 已保留=17.53GB, 空闲=30.24GB
+[2025-11-28 15:10:20] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:great egret
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:23] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:10:26] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: great egret (置信度: 0.8500)
+总耗时: 10.82秒
+succ. pred cate:great egret, true cate:great egret, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02009912/0.000208_garbage truck _ garbage truck_0.71441245.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02009912/0.000208_garbage truck _ garbage truck_0.71441245.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['parking meter', 'great egret', 'broom', 'obelisk', 'jeep', 'shovel', 'suspension bridge', 'balance beam', 'soap dispenser', 'cheeseburger', 'fox squirrel', 'sulphur-crested cockatoo', 'cottontail rabbit', 'garbage truck', 'snail', 'American robin', 'jay', 'bee', 'junco']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:29] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:great egret
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:10:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:35] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: great egret (置信度: 0.8500)
+总耗时: 9.83秒
+succ. pred cate:great egret, true cate:great egret, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n02009912/0.000052_barn _ barn_0.7265996.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02009912/0.000052_barn _ barn_0.7265996.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['doormat', 'broom', 'balance beam', 'pug', 'flamingo', 'suspension bridge', 'Persian cat', 'red fox', 'armadillo', 'skunk', 'fox squirrel', 'sulphur-crested cockatoo', 'bee', 'cottontail rabbit', 'goldfinch', 'junco', 'great egret', 'tarantula', 'stick insect', 'ant']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:10:39] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:42] [显存监控] 已分配=16.96GB, 已保留=17.57GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.57GB, 剩余=30.50GB
+发现新类别:great egret
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:46] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:10:49] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: flamingo (置信度: 0.8000)
+总耗时: 13.29秒
+failed. pred cate:flamingo, true cate:great egret, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02009912/0.000401_submarine _ obelisk_0.9914705.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02009912/0.000401_submarine _ obelisk_0.9914705.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['sea lion', 'canoe', 'reel', 'great egret', 'schooner', 'bow', 'broom', 'flamingo', 'suspension bridge', 'goose', 'pelican', 'sea anemone', 'dragonfly', 'jellyfish', 'green iguana', 'fox squirrel', 'American alligator', 'submarine']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:10:52] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+[2025-11-28 15:10:55] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:great egret
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:11:00] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:03] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: great egret (置信度: 0.8000)
+总耗时: 14.35秒
+succ. pred cate:great egret, true cate:great egret, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02009912/0.000166_mosque _ vulture_0.5398045.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02009912/0.000166_mosque _ vulture_0.5398045.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['castle', 'toucan', 'schooner', 'sundial', 'green iguana', 'quill', 'sea lion', 'shipwreck', 'jay', 'obelisk', 'pelican', 'parachute', 'great egret', 'agama', 'sea anemone', 'sulphur-crested cockatoo']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:07] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:11:10] [显存监控] 已分配=16.96GB, 已保留=17.69GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+发现新类别:great egret
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:11:13] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:16] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: castle (置信度: 0.7000)
+总耗时: 13.83秒
+succ. pred cate:castle, true cate:great egret, used_slow:True, confidence:0.7000
+开始分类图像: ./datasets/ImageNet_A/images/n01641577/0.002620_cucumber _ cucumber_0.7930473.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01641577/0.002620_cucumber _ cucumber_0.7930473.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['American bullfrog', 'mantis', 'chameleon', 'newt', 'green iguana', 'German Shepherd Dog', 'American alligator', 'lighter', 'crayfish', 'ocarina', 'gossamer-winged butterfly', 'hermit crab', 'starfish', 'small white', 'pufferfish', 'flatworm', 'leafhopper']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:11:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:18] Processing fast-slow:  77%|███████▋  | 63/82 [18:07<08:09, 25.76s/it][2025-11-28 15:11:39] Processing fast-slow:  77%|███████▋  | 63/82 [18:07<08:09, 25.76s/it][2025-11-28 15:11:39] Processing fast-slow:  78%|███████▊  | 64/82 [18:14<06:02, 20.13s/it][2025-11-28 15:11:45] Processing fast-slow:  78%|███████▊  | 64/82 [18:14<06:02, 20.13s/it][2025-11-28 15:11:45] Processing fast-slow:  79%|███████▉  | 65/82 [18:40<06:10, 21.82s/it][2025-11-28 15:12:11] Processing fast-slow:  79%|███████▉  | 65/82 [18:40<06:10, 21.82s/it][2025-11-28 15:12:11] Processing fast-slow:  80%|████████  | 66/82 [18:50<04:52, 18.28s/it][2025-11-28 15:12:21] Processing fast-slow:  80%|████████  | 66/82 [18:50<04:52, 18.28s/it][2025-11-28 15:11:23] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:American bullfrog
+分类完成: American bullfrog (置信度: 0.1441)
+总耗时: 6.78秒
+succ. pred cate:American bullfrog, true cate:American bullfrog, used_slow:True, confidence:0.1441
+开始分类图像: ./datasets/ImageNet_A/images/n01641577/0.017737_syringe _ syringe_0.9742109.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01641577/0.017737_syringe _ syringe_0.9742109.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['crayfish', 'newt', 'American bullfrog', 'mantis', 'starfish', 'cottontail rabbit', 'German Shepherd Dog', 'scorpion', 'American alligator', 'hummingbird', 'grasshopper', 'centipede', 'leafhopper', 'pufferfish', 'hermit crab', 'flatworm', 'rhinoceros beetle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:11:30] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+发现新类别:American bullfrog
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:11:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:37] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+分类完成: American bullfrog (置信度: 0.8500)
+总耗时: 13.89秒
+succ. pred cate:American bullfrog, true cate:American bullfrog, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01820546/0.021666_spider web _ spider web_0.6693071.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01820546/0.021666_spider web _ spider web_0.6693071.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['lorikeet', 'toucan', 'broom', 'hummingbird', 'goldfinch', 'quill', 'mantis', 'jay', 'umbrella', 'feather boa', 'green iguana', 'custard apple', 'dragonfly', 'pelican', 'vulture', 'agama', 'sea anemone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:40] [显存监控] 已分配=17.05GB, 已保留=17.24GB, 空闲=30.35GB
+[2025-11-28 15:11:43] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:lorikeet
+分类完成: lorikeet (置信度: 0.1742)
+总耗时: 6.77秒
+succ. pred cate:lorikeet, true cate:lorikeet, used_slow:True, confidence:0.1742
+开始分类图像: ./datasets/ImageNet_A/images/n01944390/0.002519_broom _ broom_0.39088345.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01944390/0.002519_broom _ broom_0.39088345.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['nail', 'acorn', 'small white', 'bee', 'snail', 'pufferfish', 'ladybug', 'barn', 'quill', 'porcupine', 'leafhopper', 'scorpion', 'centipede', 'sea anemone', 'flatworm', 'hermit crab', 'gossamer-winged butterfly', 'crayfish', 'tarantula']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:47] [显存监控] 已分配=17.06GB, 已保留=17.26GB, 空闲=30.35GB
+[2025-11-28 15:11:50] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:sea urchin
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:11:55] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:11:58] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: snail (置信度: 0.8000)
+总耗时: 14.57秒
+succ. pred cate:snail, true cate:snail, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n01944390/0.001867_harvestman _ harvestman_0.7849669.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01944390/0.001867_harvestman _ harvestman_0.7849669.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['small white', 'ladybug', 'harvestman', 'bee', 'mantis', 'acorn', 'barn', 'hummingbird', 'monarch butterfly', 'chameleon', 'leafhopper', 'scorpion', 'gossamer-winged butterfly', 'flatworm', 'sea anemone', 'ant', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:12:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:05] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:snail
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:08] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: snail (置信度: 0.8500)
+总耗时: 11.24秒
+succ. pred cate:snail, true cate:snail, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01784675/0.027853_syringe _ syringe_0.9584382.jpg
+执行快思考...
+[2025-11-28 15:12:11] [显存监控] 已分配=16.91GB, 已保留=17.49GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01784675/0.027853_syringe _ syringe_0.9584382.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['small white', 'nail', 'mushroom', 'flatworm', 'quill', 'newt', 'centipede', 'acorn', 'garter snake', 'shovel', 'leafhopper', 'scorpion', 'sea anemone', 'tarantula', 'ant', 'bee', 'crayfish', 'junco']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:14] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:centipede
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:17] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 15:12:20] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: centipede (置信度: 0.8000)
+总耗时: 9.93秒
+succ. pred cate:centipede, true cate:centipede, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02007558/0.060222_great egret _ great egret_0.98087627.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: flamingo (置信度: 0.4327)
+总耗时: 0.21秒
+succ. pred cate:flamingo, true cate:flamingo, used_slow:False, confidence:0.4327
+开始分类图像: ./datasets/ImageNet_A/images/n02007558/0.039973_oystercatcher _ hummingbird_0.80330664.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02007558/0.039973_oystercatcher _ hummingbird_0.80330664.jpg
+[2025-11-28 15:12:21] Processing fast-slow:  82%|████████▏ | 67/82 [19:03<04:12, 16.86s/it][2025-11-28 15:12:35] Processing fast-slow:  82%|████████▏ | 67/82 [19:03<04:12, 16.86s/it][2025-11-28 15:12:35] Processing fast-slow:  83%|████████▎ | 68/82 [19:18<03:48, 16.35s/it][2025-11-28 15:12:50] Processing fast-slow:  83%|████████▎ | 68/82 [19:18<03:48, 16.35s/it][2025-11-28 15:12:50] Processing fast-slow:  83%|████████▎ | 68/82 [19:18<03:48, 16.35s/it][2025-11-28 15:12:50] Processing fast-slow:  85%|████████▌ | 70/82 [19:23<01:59,  9.98s/it][2025-11-28 15:12:55] Processing fast-slow:  85%|████████▌ | 70/82 [19:23<01:59,  9.98s/it][2025-11-28 15:12:55] Processing fast-slow:  87%|████████▋ | 71/82 [19:28<01:35,  8.67s/it][2025-11-28 15:12:59] Processing fast-slow:  87%|████████▋ | 71/82 [19:28<01:35,  8.67s/it][2025-11-28 15:12:59] Processing fast-slow:  88%|████████▊ | 72/82 [19:35<01:22,  8.24s/it][2025-11-28 15:13:06] Processing fast-slow:  88%|████████▊ | 72/82 [19:35<01:22,  8.24s/it]步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['airliner', 'goose', 'toucan', 'parachute', 'red fox', 'flamingo', 'quill', 'mantis', 'hummingbird', 'vulture', 'green iguana', 'dragonfly', 'lorikeet', 'goldfinch', 'pelican', 'monarch butterfly', 'sea anemone', 'junco', 'duck']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:12:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:26] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:flamingo
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:30] [显存监控] 已分配=16.95GB, 已保留=17.29GB, 空闲=30.46GB
+[2025-11-28 15:12:33] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: flamingo (置信度: 0.9500)
+总耗时: 13.31秒
+succ. pred cate:flamingo, true cate:flamingo, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02281787/0.001846_pufferfish _ pufferfish_0.9590582.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02281787/0.001846_pufferfish _ pufferfish_0.9590582.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pufferfish', 'garter snake', 'green iguana', 'jay', 'mongoose', 'American bullfrog', 'hummingbird', 'armadillo', 'ant', 'small white', 'toucan', 'crayfish', 'sea anemone', 'grasshopper', 'gossamer-winged butterfly', 'hermit crab', 'American alligator', 'dragonfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:37] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:12:40] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB
+发现新类别:gossamer-winged butterfly
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:12:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:48] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: butterfly (置信度: 0.9500)
+总耗时: 15.13秒
+succ. pred cate:butterfly, true cate:gossamer-winged butterfly, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02281787/0.000423_Persian cat _ Persian cat_0.70451194.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: small white (置信度: 0.4036)
+总耗时: 0.03秒
+succ. pred cate:small white, true cate:gossamer-winged butterfly, used_slow:False, confidence:0.4036
+开始分类图像: ./datasets/ImageNet_A/images/n02793495/0.000411_snowplow _ forklift_0.59546643.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: forklift (置信度: 0.2157)
+总耗时: 0.03秒
+failed. pred cate:forklift, true cate:barn, used_slow:False, confidence:0.2157
+开始分类图像: ./datasets/ImageNet_A/images/n02672831/0.000214_cello _ cello_0.99975425.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02672831/0.000214_cello _ cello_0.99975425.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['accordion', 'ocarina', 'banjo', 'acoustic guitar', 'cello', 'saxophone', 'organ', 'maraca', 'hair dryer', 'teddy bear', 'hot dog', 'grand piano', 'couch', 'toaster', 'kimono', 'drumstick']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:12:52] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:accordion
+分类完成: accordion (置信度: 0.1342)
+总耗时: 5.03秒
+succ. pred cate:accordion, true cate:accordion, used_slow:True, confidence:0.1342
+开始分类图像: ./datasets/ImageNet_A/images/n03891332/0.003727_syringe _ syringe_0.93799996.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03891332/0.003727_syringe _ syringe_0.93799996.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['parking meter', 'spatula', 'lighter', 'saxophone', 'acorn', 'hair dryer', 'quill', 'suspension bridge', 'unicycle', 'hot dog', 'balloon', 'kimono', 'nail', 'sewing machine', 'manhole cover', 'banjo', 'clothes iron', 'Chihuahua', 'toaster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:12:55] [显存监控] 已分配=16.91GB, 已保留=17.54GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:12:58] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB
+发现新类别:parking meter
+分类完成: parking meter (置信度: 0.1577)
+总耗时: 4.68秒
+succ. pred cate:parking meter, true cate:parking meter, used_slow:True, confidence:0.1577
+开始分类图像: ./datasets/ImageNet_A/images/n04591713/0.000292_volcano _ volcano_0.43100703.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04591713/0.000292_volcano _ volcano_0.43100703.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['rapeseed', 'broccoli', 'ladybug', 'small white', 'quill', 'cucumber', 'red fox', 'harvestman', 'carbonara', 'bow tie', 'forklift', "yellow lady's slipper", 'shovel', 'sleeping bag', 'schooner', 'revolver', 'shipwreck', 'green iguana', 'pelican']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:01] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:small white
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:04] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: small white (置信度: 0.8000)
+总耗时: 7.04秒
+failed. pred cate:small white, true cate:wine bottle, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n02133161/0.032474_rocking chair _ rocking chair_0.8151106.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02133161/0.032474_rocking chair _ rocking chair_0.8151106.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['red fox', 'rocking chair', 'German Shepherd Dog', 'American black bear', 'acoustic guitar', 'spatula', 'bow', 'canoe', 'jay', 'revolver', 'fox squirrel', 'junco', 'porcupine', 'marmot', 'cottontail rabbit', 'sulphur-crested cockatoo', 'goldfinch', 'bee', 'stick insect']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:07] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+[2025-11-28 15:13:10] [显存监控] 已分配=16.96GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:American black bear
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:13:06] Processing fast-slow:  89%|████████▉ | 73/82 [19:47<01:21,  9.09s/it][2025-11-28 15:13:18] Processing fast-slow:  89%|████████▉ | 73/82 [19:47<01:21,  9.09s/it][2025-11-28 15:13:18] Processing fast-slow:  90%|█████████ | 74/82 [19:53<01:07,  8.48s/it][2025-11-28 15:13:25] Processing fast-slow:  90%|█████████ | 74/82 [19:53<01:07,  8.48s/it][2025-11-28 15:13:25] Processing fast-slow:  91%|█████████▏| 75/82 [20:07<01:10, 10.07s/it][2025-11-28 15:13:39] Processing fast-slow:  91%|█████████▏| 75/82 [20:07<01:10, 10.07s/it][2025-11-28 15:13:39] Processing fast-slow:  91%|█████████▏| 75/82 [20:08<01:10, 10.07s/it][2025-11-28 15:13:39] Processing fast-slow:  94%|█████████▍| 77/82 [20:08<00:27,  5.59s/it][2025-11-28 15:13:39] Processing fast-slow:  94%|█████████▍| 77/82 [20:08<00:27,  5.59s/it][2025-11-28 15:13:39] Processing fast-slow:  95%|█████████▌| 78/82 [20:12<00:21,  5.37s/it][2025-11-28 15:13:44] Processing fast-slow:  95%|█████████▌| 78/82 [20:12<00:21,  5.37s/it][2025-11-28 15:13:44] Processing fast-slow:  96%|█████████▋| 79/82 [20:23<00:20,  6.78s/it][2025-11-28 15:13:55] Processing fast-slow:  96%|█████████▋| 79/82 [20:23<00:20,  6.78s/it][2025-11-28 15:13:55] Processing fast-slow:  98%|█████████▊| 80/82 [20:32<00:14,  7.32s/it][2025-11-28 15:14:03] Processing fast-slow:  98%|█████████▊| 80/82 [20:32<00:14,  7.32s/it][2025-11-28 15:13:13] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+[2025-11-28 15:13:16] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: American black bear (置信度: 0.9500)
+总耗时: 11.35秒
+succ. pred cate:American black bear, true cate:American black bear, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02879718/0.000370_canoe _ canoe_0.90392596.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02879718/0.000370_canoe _ canoe_0.90392596.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['reel', 'canoe', 'banjo', 'broom', 'quill', 'goose', 'bow', 'shovel', 'kimono', 'spatula', 'pelican', 'shipwreck', 'schooner', 'jellyfish', 'goldfinch', 'American alligator', 'sea lion', 'dragonfly', 'basketball']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:13:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:23] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.53GB, 剩余=30.50GB
+发现新类别:reel
+分类完成: reel (置信度: 0.2080)
+总耗时: 6.92秒
+failed. pred cate:reel, true cate:bow, used_slow:True, confidence:0.2080
+开始分类图像: ./datasets/ImageNet_A/images/n04275548/0.001688_ant _ pomegranate_0.32644963.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n04275548/0.001688_ant _ pomegranate_0.32644963.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['barn', 'mantis', 'ladybug', 'small white', 'harvestman', 'ocarina', 'broom', 'pomegranate', 'chameleon', 'bee', 'weevil', 'scorpion', 'spider web', 'green iguana', "yellow lady's slipper", 'fountain', 'leafhopper', 'hummingbird', 'monarch butterfly']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:13:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:30] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:leafhopper
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:13:34] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:37] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: plant (置信度: 0.8000)
+总耗时: 14.06秒
+failed. pred cate:plant, true cate:spider web, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/ImageNet_A/images/n07714990/0.001087_cradle _ cradle_0.7256355.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: guacamole (置信度: 0.3482)
+总耗时: 0.05秒
+succ. pred cate:guacamole, true cate:broccoli, used_slow:False, confidence:0.3482
+开始分类图像: ./datasets/ImageNet_A/images/n04039381/0.008087_umbrella _ umbrella_0.4410262.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: racket (置信度: 0.6380)
+总耗时: 0.12秒
+succ. pred cate:racket, true cate:racket, used_slow:False, confidence:0.6380
+开始分类图像: ./datasets/ImageNet_A/images/n03026506/0.002084_Chihuahua _ Chihuahua_0.557506.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n03026506/0.002084_Chihuahua _ Chihuahua_0.557506.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Persian cat', 'feather boa', 'German Shepherd Dog', 'Christmas stocking', 'mitten', 'sea lion', 'lynx', 'mongoose', 'marmot', 'ocarina', 'bow tie', 'Chihuahua', 'hot dog', 'balloon', 'banjo', 'couch', 'mask', 'tricycle', 'pug']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:13:41] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+发现新类别:Persian cat
+分类完成: Persian cat (置信度: 0.1373)
+总耗时: 4.69秒
+failed. pred cate:Persian cat, true cate:Christmas stocking, used_slow:True, confidence:0.1373
+开始分类图像: ./datasets/ImageNet_A/images/n02992211/0.000377_chain _ chain_0.86248547.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02992211/0.000377_chain _ chain_0.86248547.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['ocarina', 'acoustic guitar', 'saxophone', 'organ', 'cello', 'pretzel', 'marimba', 'quill', 'bow', 'Christmas stocking', 'drumstick', 'grand piano', 'balloon', 'banjo', 'umbrella', 'spider web', 'candle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:44] [显存监控] 已分配=16.94GB, 已保留=17.21GB, 空闲=30.46GB
+[2025-11-28 15:13:47] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+发现新类别:cello
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:50] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-28 15:13:53] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: cello (置信度: 0.9500)
+总耗时: 10.86秒
+succ. pred cate:cello, true cate:cello, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n02317335/0.040358_sandal _ sandal_0.6972317.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n02317335/0.040358_sandal _ sandal_0.6972317.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['pretzel', 'garter snake', 'starfish', 'hermit crab', 'mitten', 'jellyfish', 'crayfish', 'sandal', 'cradle', 'centipede', 'harvestman', 'sea anemone', 'scorpion', 'weevil', 'hummingbird', 'balloon', 'newt']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:56] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.69GB, 剩余=30.50GB
+发现新类别:starfish
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:13:59] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-28 15:14:02] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: garter snake (置信度: 0.8500)
+总耗时: 8.79秒
+succ. pred cate:garter snake, true cate:starfish, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/ImageNet_A/images/n01498041/0.038485_stethoscope _ stethoscope_0.68355024.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01498041/0.038485_stethoscope _ stethoscope_0.68355024.jpg
+步骤1: 提取快思考候选类别...
+�����˸���������������������ɯ����������s�����Э����V0C.'""+/-19A=86ED[2025-11-28 15:14:03] Processing fast-slow:  99%|█████████▉| 81/82 [20:37<00:06,  6.82s/it][2025-11-28 15:14:09] Processing fast-slow:  99%|█████████▉| 81/82 [20:38<00:06,  6.82s/it][2025-11-28 15:14:09] Processing fast-slow: 100%|██████████| 82/82 [21:05<00:00, 12.56s/it][2025-11-28 15:14:09] Processing fast-slow: 100%|██████████| 82/82 [21:05<00:00, 15.43s/it]
+快思考Top-10候选类别: ['stingray', 'pufferfish', 'armadillo', 'starfish', 'reel', 'newt', 'small white', 'flatworm', 'sea lion', 'teddy bear', 'sea anemone', 'hermit crab', 'jellyfish', 'gossamer-winged butterfly', 'scorpion', 'crayfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:14:05] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:14:08] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:stingray
+分类完成: stingray (置信度: 0.1619)
+总耗时: 5.50秒
+succ. pred cate:stingray, true cate:stingray, used_slow:True, confidence:0.1619
+开始分类图像: ./datasets/ImageNet_A/images/n01833805/0.007687_garter snake _ garter snake_0.5901028.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01833805/0.007687_garter snake _ garter snake_0.5901028.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['garter snake', 'flatworm', 'newt', 'jay', 'hummingbird', 'rhinoceros beetle', 'quill', 'crayfish', 'acorn', 'toucan', 'scorpion', 'leafhopper', 'gossamer-winged butterfly', 'sea anemone', 'ant', 'hermit crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:14:11] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+[2025-11-28 15:14:14] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+发现新类别:hummingbird
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:14:17] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 15:14:20] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: hummingbird (置信度: 0.9500)
+总耗时: 11.95秒
+succ. pred cate:hummingbird, true cate:hummingbird, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/ImageNet_A/images/n01833805/0.000222_harvestman _ harvestman_0.9792812.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/ImageNet_A/images/n01833805/0.000222_harvestman _ harvestman_0.9792812.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['stick insect', 'spider web', 'harvestman', 'mantis', 'lorikeet', 'dragonfly', 'white-headed capuchin', 'barn', 'garter snake', 'gossamer-winged butterfly', 'green iguana', 'toucan', 'custard apple', 'grasshopper', 'monarch butterfly', 'goldfinch', 'flatworm']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 15:14:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:14:26] [显存监控] 已分配=16.96GB, 已保留=17.55GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+发现新类别:hummingbird
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 15:14:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:14:33] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: hummingbird (置信度: 0.8500)
+总耗时: 15.07秒
+succ. pred cate:hummingbird, true cate:hummingbird, used_slow:True, confidence:0.8500
+✅ 正确预测总数: 99
+  - 其中仅快思考正确: 8
+  - 其中慢思考触发且正确: 91
+❌ 错误预测总数: 43
+📊 慢思考触发数量: 128
+[fast and slow] 总体准确率: 0.6972 (99/142)
+[fast and slow] 快思考准确率: 0.5714
+[fast and slow] 慢思考触发比例: 0.9014
+[fast and slow] 慢思考准确率: 0.7109
+⚠️ 文件已存在，删除旧文件: ./experiments/imagenet_a200/result/classify_result/classify_result.json
+✓ 分类结果已保存到: ./experiments/imagenet_a200/result/classify_result/classify_result.json
+  总样本数: 142
+  错误分类: 43 个
+  正确分类: 99 个
+  测试集类型: test
+  采样百分比: 10.0%
+📁 分类结果已保存到: ./experiments/imagenet_a200/result/classify_result/classify_result.json
+
+=== Experiment End Time: 2025-11-28 15:14:36 ===
+=== Total Runtime: 0小时 24分 34.72秒 ===
+

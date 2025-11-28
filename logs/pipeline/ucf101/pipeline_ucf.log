@@ -1,0 +1,1334 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=2  # 使用的GPU编号
+Dataset: ucf (num_classes=101)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/ucf101/knowledge_base  # 知识库目录
+Results Out: ./results/ucf_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: ucf (ucf101)
+类别数: 101
+实验目录: ./experiments/ucf101
+✅ JSON文件检查通过: ./experiments/ucf101/images_split
+当前使用的 GPU 为：2
+
+=== Experiment Start Time: 2025-11-28 15:21:22 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/ucf101_all.yml',
+ 'knowledge_base_dir': './experiments/ucf101/knowledge_base',
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/ucf_101',
+ 'dataset_name': 'ucf',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/ucf101',
+ 'expt_dir_describe': './experiments/ucf101/describe',
+ 'expt_dir_gallery': './experiments/ucf101/gallery',
+ 'expt_dir_grouping': './experiments/ucf101/grouping',
+ 'expt_dir_guess': './experiments/ucf101/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 51,
+ 'num_classes': 101,
+ 'num_novel': 50,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/ucf101/gallery/ucf_image_descriptions_attn',
+ 'path_identify_answers': './experiments/ucf101/identify',
+ 'path_llm_gussed_names': './experiments/ucf101/guess/ucf_llm_gussed_names',
+ 'path_llm_prompts': './experiments/ucf101/describe/ucf_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/ucf101/guess/ucf_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/ucf101/guess/ucf_llm_replies_raw',
+ 'path_references': './experiments/ucf101/gallery/ucf_image_references',
+ 'path_regions': './experiments/ucf101/gallery/ucf_image_regions',
+ 'path_vqa_answers': './experiments/ucf101/describe/ucf_attributes_pairs',
+ 'path_vqa_questions': './experiments/ucf101/describe/ucf_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "ucf101",
+    "num_classes": 101,
+    "config_file": "ucf101_all.yml",
+    "data_dir": "ucf_101",
+    "experiment_dir": "ucf101",
+    "stats_file": "ucf101/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/ucf101/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/ucf101"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:22<01:28, 22.14s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:26<00:34, 11.39s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:27<00:13,  6.87s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:30<00:05,  5.17s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:30<00:00,  3.62s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:30<00:00,  6.19s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-28 15:21:54
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/ucf101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/ucf101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-28 15:22:42
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x734e2e71ab80>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x734e2e71ab50>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/ucf101/knowledge_base
+使用数据集: ucf, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-28 15:22:42] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+🔄 从训练集随机抽取发现集 (模式: _4)
+🔄 开始抽取发现集: ucf, 每类4个样本, 类型: knowledge_base
+🔒 固定种子模式: seed=1
+✓ 加载训练数据: 101 个类别
+✓ 抽取发现集: 101 个类别
+✓ 发现集已保存到: ./experiments/ucf101/result/discovering_extract_knowledge_base/pseudorandom/images_discovery_all_4.json
+✓ 保存位置: pseudorandom 子目录
+✓ JSON文件验证通过: 101 个类别
+从JSON文件加载发现集: ./experiments/ucf101/result/discovering_extract_knowledge_base/pseudorandom/images_discovery_all_4.json
+✓ 加载完成: 101 个类别，共 404 张图像
+✓ 发现集统计: 101 个类别，共 404 张图像
+✓ 创建JSON发现集对象: 101 个类别
+构建知识库，包含 101 个类别, dog datasets:101
+从 ./experiments/ucf101/knowledge_base 加载知识库...
+知识库已从 ./experiments/ucf101/knowledge_base 加载
+图像知识库类别数: 0
+文本知识库类别数: 0
+类别描述数: 0
+知识库加载完成!
+构建知识库...
+训练样本包含 101 个类别
+开始构建知识库...
+构建图像知识库...
+  0%|          | 0/101 [00:00<?, ?it/s]  1%|          | 1/101 [00:00<00:32,  3.04it/s]  5%|▍         | 5/101 [00:00<00:07, 13.65it/s]  9%|▉         | 9/101 [00:00<00:04, 20.48it/s] 12%|█▏        | 12/101 [00:00<00:04, 21.44it/s] 16%|█▌        | 16/101 [00:00<00:03, 25.54it/s] 20%|█▉        | 20/101 [00:00<00:03, 26.86it/s] 24%|██▍       | 24/101 [00:01<00:02, 29.23it/s] 28%|██▊       | 28/101 [00:01<00:02, 30.97it/s] 32%|███▏      | 32/101 [00:01<00:02, 32.22it/s] 36%|███▌      | 36/101 [00:01<00:02, 32.47it/s] 40%|███▉      | 40/101 [00:01<00:01, 33.22it/s] 44%|████▎     | 44/101 [00:01<00:01, 33.75it/s] 48%|████▊     | 48/101 [00:01<00:01, 34.25it/s] 51%|█████▏    | 52/101 [00:01<00:01, 34.42it/s] 55%|█████▌    | 56/101 [00:01<00:01, 34.79it/s] 59%|█████▉    | 60/101 [00:02<00:01, 34.92it/s] 63%|██████▎   | 64/101 [00:02<00:01, 34.98it/s] 67%|██████▋   | 68/101 [00:02<00:00, 35.06it/s] 71%|███████▏  | 72/101 [00:02<00:00, 35.11it/s] 75%|███████▌  | 76/101 [00:02<00:00, 35.22it/s] 79%|███████▉  | 80/101 [00:02<00:00, 35.17it/s] 83%|████████▎ | 84/101 [00:02<00:00, 35.12it/s] 87%|████████▋ | 88/101 [00:02<00:00, 33.60it/s] 91%|█████████ | 92/101 [00:03<00:00, 33.98it/s] 95%|█████████▌| 96/101 [00:03<00:00, 34.32it/s] 99%|█████████▉| 100/101 [00:03<00:00, 34.66it/s]100%|██████████| 101/101 [00:03<00:00, 30.94it/s]
+处理类别: ApplyEyeMakeup
+类别 ApplyEyeMakeup 图像特征维度: (512,)
+处理类别: ApplyLipstick
+类别 ApplyLipstick 图像特征维度: (512,)
+处理类别: Archery
+类别 Archery 图像特征维度: (512,)
+处理类别: BabyCrawling
+类别 BabyCrawling 图像特征维度: (512,)
+处理类别: BalanceBeam
+类别 BalanceBeam 图像特征维度: (512,)
+处理类别: BandMarching
+类别 BandMarching 图像特征维度: (512,)
+处理类别: BaseballPitch
+类别 BaseballPitch 图像特征维度: (512,)
+处理类别: Basketball
+类别 Basketball 图像特征维度: (512,)
+处理类别: BasketballDunk
+类别 BasketballDunk 图像特征维度: (512,)
+处理类别: BenchPress
+类别 BenchPress 图像特征维度: (512,)
+处理类别: Biking
+类别 Biking 图像特征维度: (512,)
+处理类别: Billiards
+类别 Billiards 图像特征维度: (512,)
+处理类别: BlowDryHair
+类别 BlowDryHair 图像特征维度: (512,)
+处理类别: BlowingCandles
+类别 BlowingCandles 图像特征维度: (512,)
+处理类别: BodyWeightSquats
+类别 BodyWeightSquats 图像特征维度: (512,)
+处理类别: Bowling
+类别 Bowling 图像特征维度: (512,)
+处理类别: BoxingPunchingBag
+类别 BoxingPunchingBag 图像特征维度: (512,)
+处理类别: BoxingSpeedBag
+类别 BoxingSpeedBag 图像特征维度: (512,)
+处理类别: BreastStroke
+类别 BreastStroke 图像特征维度: (512,)
+处理类别: BrushingTeeth
+类别 BrushingTeeth 图像特征维度: (512,)
+处理类别: CleanAndJerk
+类别 CleanAndJerk 图像特征维度: (512,)
+处理类别: CliffDiving
+类别 CliffDiving 图像特征维度: (512,)
+处理类别: CricketBowling
+类别 CricketBowling 图像特征维度: (512,)
+处理类别: CricketShot
+类别 CricketShot 图像特征维度: (512,)
+处理类别: CuttingInKitchen
+类别 CuttingInKitchen 图像特征维度: (512,)
+处理类别: Diving
+类别 Diving 图像特征维度: (512,)
+处理类别: Drumming
+类别 Drumming 图像特征维度: (512,)
+处理类别: Fencing
+类别 Fencing 图像特征维度: (512,)
+处理类别: FieldHockeyPenalty
+类别 FieldHockeyPenalty 图像特征维度: (512,)
+处理类别: FloorGymnastics
+类别 FloorGymnastics 图像特征维度: (512,)
+处理类别: FrisbeeCatch
+类别 FrisbeeCatch 图像特征维度: (512,)
+处理类别: FrontCrawl
+类别 FrontCrawl 图像特征维度: (512,)
+处理类别: GolfSwing
+类别 GolfSwing 图像特征维度: (512,)
+处理类别: Haircut
+类别 Haircut 图像特征维度: (512,)
+处理类别: HammerThrow
+类别 HammerThrow 图像特征维度: (512,)
+处理类别: Hammering
+类别 Hammering 图像特征维度: (512,)
+处理类别: HandstandPushups
+类别 HandstandPushups 图像特征维度: (512,)
+处理类别: HandstandWalking
+类别 HandstandWalking 图像特征维度: (512,)
+处理类别: HeadMassage
+类别 HeadMassage 图像特征维度: (512,)
+处理类别: HighJump
+类别 HighJump 图像特征维度: (512,)
+处理类别: HorseRace
+类别 HorseRace 图像特征维度: (512,)
+处理类别: HorseRiding
+类别 HorseRiding 图像特征维度: (512,)
+处理类别: HulaHoop
+类别 HulaHoop 图像特征维度: (512,)
+处理类别: IceDancing
+类别 IceDancing 图像特征维度: (512,)
+处理类别: JavelinThrow
+类别 JavelinThrow 图像特征维度: (512,)
+处理类别: JugglingBalls
+类别 JugglingBalls 图像特征维度: (512,)
+处理类别: JumpRope
+类别 JumpRope 图像特征维度: (512,)
+处理类别: JumpingJack
+类别 JumpingJack 图像特征维度: (512,)
+处理类别: Kayaking
+类别 Kayaking 图像特征维度: (512,)
+处理类别: Knitting
+类别 Knitting 图像特征维度: (512,)
+处理类别: LongJump
+类别 LongJump 图像特征维度: (512,)
+处理类别: Lunges
+类别 Lunges 图像特征维度: (512,)
+处理类别: MilitaryParade
+类别 MilitaryParade 图像特征维度: (512,)
+处理类别: Mixing
+类别 Mixing 图像特征维度: (512,)
+处理类别: MoppingFloor
+类别 MoppingFloor 图像特征维度: (512,)
+处理类别: Nunchucks
+类别 Nunchucks 图像特征维度: (512,)
+处理类别: ParallelBars
+类别 ParallelBars 图像特征维度: (512,)
+处理类别: PizzaTossing
+类别 PizzaTossing 图像特征维度: (512,)
+处理类别: PlayingCello
+类别 PlayingCello 图像特征维度: (512,)
+处理类别: PlayingDaf
+类别 PlayingDaf 图像特征维度: (512,)
+处理类别: PlayingDhol
+类别 PlayingDhol 图像特征维度: (512,)
+处理类别: PlayingFlute
+类别 PlayingFlute 图像特征维度: (512,)
+处理类别: PlayingGuitar
+类别 PlayingGuitar 图像特征维度: (512,)
+处理类别: PlayingPiano
+类别 PlayingPiano 图像特征维度: (512,)
+处理类别: PlayingSitar
+类别 PlayingSitar 图像特征维度: (512,)
+处理类别: PlayingTabla
+类别 PlayingTabla 图像特征维度: (512,)
+处理类别: PlayingViolin
+类别 PlayingViolin 图像特征维度: (512,)
+处理类别: PoleVault
+类别 PoleVault 图像特征维度: (512,)
+处理类别: PommelHorse
+类别 PommelHorse 图像特征维度: (512,)
+处理类别: PullUps
+类别 PullUps 图像特征维度: (512,)
+处理类别: Punch
+类别 Punch 图像特征维度: (512,)
+处理类别: PushUps
+类别 PushUps 图像特征维度: (512,)
+处理类别: Rafting
+类别 Rafting 图像特征维度: (512,)
+处理类别: RockClimbingIndoor
+类别 RockClimbingIndoor 图像特征维度: (512,)
+处理类别: RopeClimbing
+类别 RopeClimbing 图像特征维度: (512,)
+处理类别: Rowing
+类别 Rowing 图像特征维度: (512,)
+处理类别: SalsaSpin
+类别 SalsaSpin 图像特征维度: (512,)
+处理类别: ShavingBeard
+类别 ShavingBeard 图像特征维度: (512,)
+处理类别: Shotput
+类别 Shotput 图像特征维度: (512,)
+处理类别: SkateBoarding
+类别 SkateBoarding 图像特征维度: (512,)
+处理类别: Skiing
+类别 Skiing 图像特征维度: (512,)
+处理类别: Skijet
+类别 Skijet 图像特征维度: (512,)
+处理类别: SkyDiving
+类别 SkyDiving 图像特征维度: (512,)
+处理类别: SoccerJuggling
+类别 SoccerJuggling 图像特征维度: (512,)
+处理类别: SoccerPenalty
+类别 SoccerPenalty 图像特征维度: (512,)
+处理类别: StillRings
+类别 StillRings 图像特征维度: (512,)
+处理类别: SumoWrestling
+类别 SumoWrestling 图像特征维度: (512,)
+处理类别: Surfing
+类别 Surfing 图像特征维度: (512,)
+处理类别: Swing
+类别 Swing 图像特征维度: (512,)
+处理类别: TableTennisShot
+类别 TableTennisShot 图像特征维度: (512,)
+处理类别: TaiChi
+[2025-11-28 15:22:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+类别 TaiChi 图像特征维度: (512,)
+处理类别: TennisSwing
+类别 TennisSwing 图像特征维度: (512,)
+处理类别: ThrowDiscus
+类别 ThrowDiscus 图像特征维度: (512,)
+处理类别: TrampolineJumping
+类别 TrampolineJumping 图像特征维度: (512,)
+处理类别: Typing
+类别 Typing 图像特征维度: (512,)
+处理类别: UnevenBars
+类别 UnevenBars 图像特征维度: (512,)
+处理类别: VolleyballSpiking
+类别 VolleyballSpiking 图像特征维度: (512,)
+处理类别: WalkingWithDog
+类别 WalkingWithDog 图像特征维度: (512,)
+处理类别: WallPushups
+类别 WallPushups 图像特征维度: (512,)
+处理类别: WritingOnBoard
+类别 WritingOnBoard 图像特征维度: (512,)
+处理类别: YoYo
+类别 YoYo 图像特征维度: (512,)
+构建文本知识库...
+  0%|          | 0/101 [00:00<?, ?it/s]  1%|          | 1/101 [00:19<32:05, 19.26s/it]  2%|▏         | 2/101 [00:36<29:59, 18.18s/it]  3%|▎         | 3/101 [00:54<29:40, 18.17s/it]  4%|▍         | 4/101 [01:10<27:53, 17.25s/it]处理类别: ApplyEyeMakeup
+[2025-11-28 15:22:48] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 15:22:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 15:22:54] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+wiki desc: Description for ApplyEyeMakeup category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:22:57] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+[2025-11-28 15:23:00] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:23:03] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals applying eye makeup in a close-up view. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The individuals have long hair, with one having dark hair and the other light-colored hair. They are wearing black tops.
+
+2. **Color Patterns and Markings**: The background is plain white or neutral, emphasizing the subjects. There are no significant color patterns or markings apart from the black clothing.
+
+3. **Size and Proportions**: The images are close-ups, focusing on the upper body and face, particularly around the eye area. The size of the subjects appears consistent across the images.
+
+4. **Behavioral Characteristics**: The individuals are actively applying makeup to their eyes. One is using a brush, while another is holding a compact powder. Their hands are positioned near their eyes, indicating the application process.
+
+5. **Unique Identifying Traits**: The focus on the eye area and the use of makeup tools are unique identifiers for this category. The specific actions and tools used further differentiate it from other activities like hair styling or skincare.
+类别 ApplyEyeMakeup 文本特征维度: (512,)
+描述: The images depict individuals applying eye makeup in a close-up view. Here's a breakdown of the dist...
+处理类别: ApplyLipstick
+[2025-11-28 15:23:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for ApplyLipstick category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:23:18] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:23:21] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals applying lipstick in different settings. The first image shows a young girl with blonde hair, wearing a grey t-shirt with a graphic design. She is indoors, possibly in a covered patio or veranda, with a corrugated metal roof and a brick wall visible in the background. The second image features an adult woman with dark hair and tattoos on her arms. She is indoors, in what appears to be a living room, with furniture and decor visible in the background. The third image shows another adult woman with dark hair, wearing a white top and large hoop earrings. She is indoors, in front of a green wall and a window with sheer curtains. All three individuals are holding a lipstick applicator near their lips, indicating they are in the process of applying lipstick. The size and proportions of the individuals vary, as do their distinctive physical features and color patterns. However, the primary focus is on the act of applying lipstick, which is consistent across all three images.
+类别 ApplyLipstick 文本特征维度: (512,)
+描述: The images depict individuals applying lipstick in different settings. The first image shows a young...
+处理类别: Archery
+[2025-11-28 15:23:24] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:30] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Archery category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:23:33] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+[2025-11-28 15:23:36] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:23:39] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict archery, a sport involving the use of a bow and arrow to shoot at a target. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The key objects in these images are bows and arrows. Bows are typically made of wood or composite materials and have a curved shape with a string stretched across it. Arrows consist of a shaft, fletching (feathers), and a nocked arrowhead.
+
+2. **Color Patterns and Markings**: Bows can vary in color, but they often have a natural wood finish or are painted with patterns. Arrows usually have brightly colored fletching and may have markings on the shaft or arrowhead.
+
+3. **Size and Proportions**: Bows are generally larger than arrows. A typical bow is around 60 inches long, while an arrow is about 30-36 inches long. The size of the bowstring and arrowhead also varies depending on the type of bow and arrow used.
+
+4. **Behavioral Characteristics**: In the first image, the person is actively drawing back the bowstring, preparing to release the arrow. This action is characteristic of archery. The second image shows a man holding a bow and arrow, possibly
+类别 Archery 文本特征维度: (512,)
+描述: The images depict archery, a sport involving the use of a bow and arrow to shoot at a target. Here's...
+处理类别: BabyCrawling
+[2025-11-28 15:23:42] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:45] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:48] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:23:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BabyCrawling category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:23:54] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a baby crawling on a carpeted floor. The baby is wearing a yellow shirt and dark pants in the first image, while in the second image, the baby is wearing a light pink outfit. The third image shows the baby wearing a red outfit. The baby's skin tone appears fair, and their hair is short and brown. The baby's size is small, typical of an infant. The baby's behavior is focused on crawling, with arms and legs extended as they move forward. The carpet has a pattern of large flowers in shades of pink and black. The baby's face is expressive, showing curiosity or focus. There are no other objects or people visible in the images.
+类别 BabyCrawling 文本特征维度: (512,)
+描述: The images depict a baby crawling on a carpeted floor. The baby is wearing a yellow shirt and dark p...
+处理类别: BalanceBeam
+[2025-11-28 15:23:57] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:00] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:03] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BalanceBeam category.
+[2025-11-28 15:24:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:24:09] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+  5%|▍         | 5/101 [01:26<26:37, 16.64s/it]  6%|▌         | 6/101 [01:44<27:16, 17.23s/it]  7%|▋         | 7/101 [02:00<26:15, 16.76s/it]  8%|▊         | 8/101 [02:17<26:11, 16.90s/it]推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The Balance Beam is a narrow, elevated beam used in gymnastics competitions. It is typically made of wood or metal and painted white with black markings indicating its length and width. The beam is supported by two parallel bars at each end, which are also painted white. The beam's height above the ground can vary depending on the competition level, but it is generally around 10 feet high. The gymnast performs a series of acrobatic moves on the beam, including jumps, flips, and balances. The beam is designed to be challenging and requires a high degree of skill and balance to perform well.
+类别 BalanceBeam 文本特征维度: (512,)
+描述: The Balance Beam is a narrow, elevated beam used in gymnastics competitions. It is typically made of...
+处理类别: BandMarching
+[2025-11-28 15:24:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:21] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BandMarching category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:24:24] [显存监控] 已分配=16.93GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:24:27] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict three different bands marching in formation. 
+
+1. **Distinctive Physical Features**: The first image shows a band with members wearing white uniforms with black pants and hats, while the second image displays a band with members dressed in black uniforms with red accents and holding red flags. The third image features a band with members in red uniforms with black pants and hats.
+
+2. **Color Patterns and Markings**: The first image has a predominantly white uniform with black pants and hats, while the second image has a black uniform with red accents and the third image has a red uniform with black pants and hats. The flags in the second image are also red.
+
+3. **Size and Proportions**: All three images show a group of individuals marching in formation, suggesting a consistent size and proportion among the members.
+
+4. **Behavioral Characteristics**: The bands are marching in formation, which is a common characteristic of marching bands. However, the specific movements and formations may vary between the three images.
+
+5. **Unique Identifying Traits**: The unique identifying traits of each band include their distinct uniforms, colors, and the presence of flags in the second image. These traits help differentiate one band from another within the category of BandMarching.
+类别 BandMarching 文本特征维度: (512,)
+描述: The images depict three different bands marching in formation. 
+
+1. **Distinctive Physical Features*...
+处理类别: BaseballPitch
+[2025-11-28 15:24:30] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:33] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:36] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:39] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BaseballPitch category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:24:42] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:24:45] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a baseball game in progress. The players are wearing uniforms with distinct colors and patterns, such as white and blue or red and white. The pitcher is in the process of throwing the ball towards the batter, who is holding his bat in anticipation. The catcher is crouched behind the batter, ready to catch the ball if it's missed. The field is green and well-maintained, with a dirt mound where the pitcher stands. The scoreboard displays the current score and inning. The players' size and proportions are typical of adult athletes. The behavioral characteristic is the pitcher's motion of throwing the ball, which is unique to this sport.
+类别 BaseballPitch 文本特征维度: (512,)
+描述: The images depict a baseball game in progress. The players are wearing uniforms with distinct colors...
+处理类别: Basketball
+[2025-11-28 15:24:48] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:24:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Basketball category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:24:57] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:25:00] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict basketball, a team sport played with a round ball. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The ball is spherical, made of leather or synthetic material, and has a diameter of approximately 9 inches. It is typically white with black lines marking its panels.
+
+2. **Color Patterns and Markings**: The ball's surface is covered in panels, usually six, which are stitched together. The panels are typically white with black lines, although some balls may have different color schemes.
+
+3. **Size and Proportions**: The ball is relatively small compared to other sports equipment, such as soccer balls or volleyballs. Its size allows players to handle it easily while maintaining control during play.
+
+4. **Behavioral Characteristics**: In the images, the ball is being passed, dribbled, and shot by players. The players' movements and interactions with the ball demonstrate the dynamic nature of the game.
+
+5. **Unique Identifying Traits**: The ball's shape, size, and the way it is used in the game are unique identifiers. The ball's movement through the air, the way it bounces on the court, and the way players interact with it are also distinguishing features.
+类别 Basketball 文本特征维度: (512,)
+描述: The images depict basketball, a team sport played with a round ball. Here's a breakdown of its disti...
+处理类别: BasketballDunk
+[2025-11-28 15:25:03] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BasketballDunk category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:25:15] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict basketball games in progress. The distinctive physical features include players wearing jerseys with numbers and team colors, basketballs being passed or shot, and a basketball hoop. The color patterns and markings include the court's white lines, the red and blue jerseys worn by the players, and the scoreboard displaying game information. The size and proportions vary depending on the players' heights and the distance between them. The behavioral characteristics include dribbling, passing, shooting, and defensive actions. The unique identifying traits include the specific teams playing, the score displayed on the scoreboard, and the location of the game.
+类别 BasketballDunk 文本特征维度: (512,)
+  9%|▉         | 9/101 [02:31<24:37, 16.06s/it] 10%|▉         | 10/101 [02:52<26:24, 17.41s/it] 11%|█         | 11/101 [03:12<27:38, 18.42s/it] 12%|█▏        | 12/101 [03:30<26:46, 18.05s/it]描述: The images depict basketball games in progress. The distinctive physical features include players we...
+处理类别: BenchPress
+[2025-11-28 15:25:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:21] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:24] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BenchPress category.
+[2025-11-28 15:25:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:25:33] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:25:36] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals performing bench press exercises in a gym setting. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features**: The individuals are lying on a flat bench, gripping a barbell with weights attached to each end. Their arms are extended, pushing against the barbell as they lift it off the chest.
+
+2. **Color Patterns and Markings**: The barbell is metallic, likely silver or chrome, with black weight plates attached. The bench is typically a neutral color, often black or gray. The gym floor has a yellow mat with a logo printed on it. The individuals' clothing varies in color, including black, red, blue, and white.
+
+3. **Size and Proportions**: The individuals appear to be adults, with muscular builds typical of weightlifters. The barbell and weights are proportionate to the size of the individual lifting them. The gym equipment, such as the bench and weight rack, is large enough to accommodate the individuals.
+
+4. **Behavioral Characteristics**: The individuals are actively engaged in the bench press exercise, demonstrating proper form by keeping their back straight and engaging their core muscles. They are focused on lifting the weight, and their facial expressions reflect exertion.
+
+5. **Unique Identifying
+类别 BenchPress 文本特征维度: (512,)
+描述: The images depict individuals performing bench press exercises in a gym setting. Here's a breakdown ...
+处理类别: Biking
+[2025-11-28 15:25:39] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:42] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:45] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:25:48] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Biking category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:25:51] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:25:54] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:25:57] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals riding bicycles in different settings. 
+
+1. **Distinctive Physical Features**: The bicycles have two wheels, handlebars, pedals, and a frame. The rider's posture varies depending on the speed and terrain.
+
+2. **Color Patterns and Markings**: The bicycles come in various colors, such as green, white, and black. Some riders wear helmets or sunglasses, while others do not. The clothing worn by the riders also varies in color and pattern.
+
+3. **Size and Proportions**: The bicycles are relatively small compared to the riders, with the wheels being the largest part. The riders' bodies are proportionate to their bicycles, with the handlebars and pedals being at appropriate heights for their size.
+
+4. **Behavioral Characteristics**: The riders are actively pedaling and steering their bicycles. In the first image, the rider is riding on a paved road near a fence. In the second image, the rider is riding on a grassy field. In the third image, the rider is riding on a mountain road. The riders appear to be enjoying their rides, with some smiling and others focused on the road ahead.
+
+5. **Unique Identifying Traits**: The unique identifying traits of these images include the different settings (paved road,
+类别 Biking 文本特征维度: (512,)
+描述: The images depict individuals riding bicycles in different settings. 
+
+1. **Distinctive Physical Fea...
+处理类别: Billiards
+[2025-11-28 15:26:00] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:03] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Billiards category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:26:09] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:26:12] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict billiards tables with distinctive features:
+
+* **Distinctive Physical Features:** The tables have a rectangular shape with a blue felt surface, white pockets at each corner, and a rack of balls at one end. The table is surrounded by a wooden frame.
+
+* **Color Patterns and Markings:** The felt surface is blue, and the pockets are white. The balls are numbered and colored differently, with the cue ball being white. The racks are typically white or light-colored.
+
+* **Size and Proportions:** The tables appear to be standard size, approximately 9 feet long and 4.5 feet wide. The balls are small in comparison to the table's dimensions.
+
+* **Behavioral Characteristics:** The images show a person playing billiards, striking the cue ball with a cue stick to hit the other balls into the pockets. The balls move across the table in various directions after being struck.
+
+* **Unique Identifying Traits:** The presence of the chalk-off sign indicates that this is likely a promotional event or competition related to pool table cleaning. The BCN logo suggests a connection to a specific organization or brand. The Party Casino logo implies a possible sponsorship or partnership.
+类别 Billiards 文本特征维度: (512,)
+描述: The images depict billiards tables with distinctive features:
+
+* **Distinctive Physical Features:** ...
+处理类别: BlowDryHair
+[2025-11-28 15:26:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:21] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:24] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BlowDryHair category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:26:30] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:26:33] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 13%|█▎        | 13/101 [03:49<27:05, 18.47s/it] 14%|█▍        | 14/101 [04:06<26:00, 17.93s/it] 15%|█▍        | 15/101 [04:20<24:13, 16.90s/it] 16%|█▌        | 16/101 [04:38<24:24, 17.23s/it]MLLM description: The images depict individuals using a hairdryer to style their hair. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The individuals have different hair textures and lengths. One has long dark hair, another has medium-length blonde hair, and the third has short curly hair.
+
+2. **Color Patterns and Markings**: The hair colors vary: one is dark brown/black, another is blonde, and the third is dark with curls. There are no significant color patterns or markings apart from the natural hair color.
+
+3. **Size and Proportions**: The hairdryers appear to be standard-sized handheld devices, consistent in size across all three images. The individuals' hands and arms are proportionate to their bodies.
+
+4. **Behavioral Characteristics**: All individuals are actively using the hairdryer, holding it close to their hair. The actions suggest they are styling their hair, possibly drying, straightening, or curling it.
+
+5. **Unique Identifying Traits**: Each individual's unique hairstyle and hair texture make them distinct. The first person has long dark hair, the second has medium-length blonde hair, and the third has short curly hair. The hairdryers used by each person also appear to be of similar design, suggesting a
+类别 BlowDryHair 文本特征维度: (512,)
+描述: The images depict individuals using a hairdryer to style their hair. Here's a breakdown of the disti...
+处理类别: BlowingCandles
+[2025-11-28 15:26:36] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:39] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:42] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BlowingCandles category.
+[2025-11-28 15:26:46] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:26:49] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict children blowing out candles on cakes. In image 1, a child is blowing out candles on a large, round cake with a red and white patterned design. The cake has "Happy Birthday" written on it in icing. In image 2, a child wearing a pink hoodie is blowing out a single candle on a small, round cake. The cake appears to have a white base with a red and blue pattern. In image 3, multiple children are blowing out candles on a large, round cake with a blue and red patterned design. The cake has multiple lit candles, and the children are positioned around it. The distinctive physical features include the different sizes and designs of the cakes, the colors of the icing, and the number of candles. The behavioral characteristic is the act of blowing out the candles. The unique identifying trait is the presence of the birthday cake and the candles being blown out.
+类别 BlowingCandles 文本特征维度: (512,)
+描述: The images depict children blowing out candles on cakes. In image 1, a child is blowing out candles ...
+处理类别: BodyWeightSquats
+[2025-11-28 15:26:52] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:55] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:26:58] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:01] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BodyWeightSquats category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:27:04] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals performing bodyweight squats. In image 1, the person is wearing a purple shirt and gray shorts with black stripes. His posture shows him in a deep squat position, with his knees bent and his hands clasped behind his back. Image 2 shows a woman in a blue tank top and black capri pants, also in a squatting position, but her arms are crossed over her chest. Image 3 displays a man in a gray t-shirt and black shorts, standing upright without performing any squats. The key distinguishing feature is the squatting posture, which is common to all three images. However, the clothing colors and styles vary among the individuals, providing unique identifying traits.
+类别 BodyWeightSquats 文本特征维度: (512,)
+描述: The images depict individuals performing bodyweight squats. In image 1, the person is wearing a purp...
+处理类别: Bowling
+[2025-11-28 15:27:07] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:10] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:13] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Bowling category.
+[2025-11-28 15:27:16] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:27:19] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:27:22] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals bowling in a bowling alley. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features:** The individuals are wearing casual clothing, such as t-shirts and pants, which is typical attire for bowling. Their posture and body language indicate they are in the process of throwing a bowling ball.
+
+2. **Color Patterns and Markings:** The bowling balls have distinct color patterns and markings, with one being purple and another having a mix of colors. The lanes are marked with blue stripes, and the pins at the end of each lane are white.
+
+3. **Size and Proportions:** The bowling balls are relatively large compared to the size of the individuals' hands, and the pins are small in comparison to the size of the bowling ball. The lanes are long and narrow, with the pins positioned at the far end.
+
+4. **Behavioral Characteristics:** The individuals are shown in different stages of the bowling motion, from the initial stance to the follow-through after releasing the ball. This sequence of actions is characteristic of bowling.
+
+5. **Unique Identifying Traits:** The bowling alley setting, including the lanes, pins, and ball return system, is unique to this sport. The individuals' actions and the equipment used are specific to bowling.
+类别 Bowling 文本特征维度: (512,)
+描述: The images depict individuals bowling in a bowling alley. Here's a breakdown of their distinctive fe...
+处理类别: BoxingPunchingBag
+[2025-11-28 15:27:25] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:28] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:31] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:34] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BoxingPunchingBag category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:27:37] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 17%|█▋        | 17/101 [04:54<23:27, 16.75s/it] 18%|█▊        | 18/101 [05:08<22:10, 16.03s/it] 19%|█▉        | 19/101 [05:28<23:14, 17.00s/it] 20%|█▉        | 20/101 [05:47<24:00, 17.78s/it]MLLM description: The BoxingPunchingBag in all three images is a large, cylindrical object suspended by ropes or straps. It has a distinct red and black color pattern, with the red section appearing to be the top portion and the black section being the lower part. The bag appears to be made of a durable material, likely canvas or leather, designed to withstand repeated impacts from punches. Its size is substantial, allowing it to absorb significant force without breaking. In terms of behavioral characteristics, the bag remains stationary as it is suspended, while the person interacts with it by punching it. The unique identifying trait of the BoxingPunchingBag is its shape and the way it is suspended, which distinguishes it from other objects like sandbags or free-standing punching bags.
+类别 BoxingPunchingBag 文本特征维度: (512,)
+描述: The BoxingPunchingBag in all three images is a large, cylindrical object suspended by ropes or strap...
+处理类别: BoxingSpeedBag
+[2025-11-28 15:27:40] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:43] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:46] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:49] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BoxingSpeedBag category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:27:52] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The BoxingSpeedBag in Image 2 is a distinct object compared to the others due to its size and proportions. It is significantly smaller than the skateboards in Images 1 and 3, making it more compact and portable. Its color pattern is not visible as it appears to be a dark color, possibly black or dark gray, with no discernible markings. The bag is suspended by a rope or cord attached to a ceiling fixture, indicating its use for boxing training. The behavioral characteristic is the swinging motion of the bag, which is a key feature of speed bags used in boxing practice. The unique identifying trait is its purpose as a training tool for improving hand-eye coordination and reflexes.
+类别 BoxingSpeedBag 文本特征维度: (512,)
+描述: The BoxingSpeedBag in Image 2 is a distinct object compared to the others due to its size and propor...
+处理类别: BreastStroke
+[2025-11-28 15:27:55] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:27:58] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:01] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:04] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BreastStroke category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:28:07] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:28:10] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a swimmer performing the Breaststroke stroke in a pool. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features:** The swimmer is wearing swim trunks and has short hair. Their body is positioned horizontally in the water, with their arms extended forward and their legs bent at the knees.
+
+2. **Color Patterns and Markings:** The swimmer's skin tone appears light, and they have no visible markings or tattoos. The water in the pool is a clear blue-green color.
+
+3. **Size and Proportions:** The swimmer appears to be an adult, with a proportionate body size relative to the pool. The swimmer's arms and legs are relatively long compared to their torso.
+
+4. **Behavioral Characteristics:** The swimmer is performing the Breaststroke stroke, which involves a series of movements including a pull phase where the arms move forward and down, followed by a recovery phase where the arms return to the starting position. The legs perform a scissor-like motion, kicking alternately to propel the swimmer forward.
+
+5. **Unique Identifying Traits:** The swimmer's horizontal positioning, the circular motion of the arms, and the scissor-like leg movement are unique identifiers of the Breaststroke stroke.
+类别 BreastStroke 文本特征维度: (512,)
+描述: The images depict a swimmer performing the Breaststroke stroke in a pool. Here's a breakdown of the ...
+处理类别: BrushingTeeth
+[2025-11-28 15:28:13] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:16] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:19] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:22] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:25] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for BrushingTeeth category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:28:28] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:28:31] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals brushing their teeth in a bathroom setting. In image 1, a man is brushing a child's teeth while sitting on his lap. The child has light-colored hair and is wearing a red and black patterned shirt. The man is holding a toothbrush with a white handle and blue bristles. In image 2, an adult woman is brushing her teeth with a blue and white toothbrush. She is wearing a black tank top. In image 3, a man is brushing his teeth in front of a mirror. He is wearing a gray t-shirt and has short dark hair. The bathroom has a window with frosted glass and a white wall. The toothbrushes have different colors and designs, indicating individual preferences or brands. The size and proportions of the individuals vary, but they are all adults. The behavioral characteristic common to all three images is the act of brushing teeth.
+类别 BrushingTeeth 文本特征维度: (512,)
+描述: The images depict individuals brushing their teeth in a bathroom setting. In image 1, a man is brush...
+处理类别: CleanAndJerk
+[2025-11-28 15:28:34] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:37] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:40] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for CleanAndJerk category.
+[2025-11-28 15:28:45] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:28:48] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:28:51] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 21%|██        | 21/101 [06:07<24:22, 18.28s/it] 22%|██▏       | 22/101 [06:24<23:47, 18.07s/it] 23%|██▎       | 23/101 [06:43<23:37, 18.17s/it] 24%|██▍       | 24/101 [07:03<24:10, 18.84s/it]MLLM description: The Clean and Jerk is a weightlifting event where athletes lift a barbell from the floor to their shoulders (clean) and then throw it overhead (jerk). In all three images, the athletes are performing this movement. 
+
+1. **Distinctive Physical Features:** The athletes in all three images are wearing athletic attire, including shorts, t-shirts, and weightlifting shoes. They have muscular physiques, indicative of strength training.
+
+2. **Color Patterns and Markings:** The athletes' attire varies slightly in color and design. In image 1, the athlete wears a red shirt with white pants, while in image 2, the athlete wears a white shirt with dark pants. Image 3 shows an athlete in a black and gray outfit. The background also varies, with image 1 having a banner with text and logos, image 2 being a gym setting, and image 3 featuring a blue backdrop with logos.
+
+3. **Size and Proportions:** The athletes appear to be of similar size and proportion, as they are all adults participating in a weightlifting competition. The barbell weights are also consistent across the images, indicating standard equipment used in the sport.
+
+4. **Behavioral Characteristics:** The athletes are in the middle of the Clean and
+类别 CleanAndJerk 文本特征维度: (512,)
+描述: The Clean and Jerk is a weightlifting event where athletes lift a barbell from the floor to their sh...
+处理类别: CliffDiving
+[2025-11-28 15:28:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:28:57] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:00] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for CliffDiving category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:29:03] [显存监控] 已分配=16.93GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:29:06] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:29:09] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a cliff diver in action. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features:** The diver is shirtless, wearing swim trunks, and appears to be in mid-air after jumping off a cliff. His body is positioned horizontally, with his arms extended upwards and legs bent at the knees.
+
+2. **Color Patterns and Markings:** The diver's skin tone is light, and he has a muscular build. The background consists of green foliage and a rocky cliff face. There is also a banner with the Red Bull logo visible in one of the images.
+
+3. **Size and Proportions:** The diver is relatively small compared to the vastness of the cliff and the surrounding environment. This emphasizes the height and scale of the jump.
+
+4. **Behavioral Characteristics:** The diver's posture suggests he is performing a backflip or a similar acrobatic maneuver during the dive. His arms are raised above his head, and his legs are bent, indicating a controlled descent.
+
+5. **Unique Identifying Traits:** The cliff diving event is associated with the Red Bull brand, as indicated by the banner in the second image. The setting is outdoors, with a natural backdrop of trees and rocks. The diver's attire and the
+类别 CliffDiving 文本特征维度: (512,)
+描述: The images depict a cliff diver in action. Here's a breakdown of the distinctive features:
+
+1. **Dis...
+处理类别: CricketBowling
+[2025-11-28 15:29:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for CricketBowling category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:29:21] [显存监控] 已分配=16.93GB, 已保留=17.35GB, 空闲=30.47GB
+[2025-11-28 15:29:24] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:29:27] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict cricket bowlers in action, with the following distinctive features:
+
+1. **Distinctive Physical Features:** The bowlers are wearing cricket uniforms, which typically consist of a jersey, trousers, and protective gear like pads and gloves. They have a lean and athletic build, with long limbs and a strong core to generate power.
+
+2. **Color Patterns and Markings:** The uniforms often feature team colors, logos, and sometimes sponsor names. The bowlers' attire is usually bright and contrasting, making them easily identifiable against the field. The wickets (the three wooden posts) are typically yellow or orange, while the stumps (the base of the wickets) are white.
+
+3. **Size and Proportions:** The bowlers are generally tall and muscular, with a long stride and a powerful arm swing. Their body proportions emphasize their athleticism, with a strong upper body and long legs.
+
+4. **Behavioral Characteristics:** The bowlers exhibit a specific bowling action, which involves a run-up, a delivery stride, and a release of the ball. The bowler's body posture and arm movement are crucial for generating speed and accuracy. The bowler's focus is on the batsman, and they aim to deliver the ball at a high speed and
+类别 CricketBowling 文本特征维度: (512,)
+描述: The images depict cricket bowlers in action, with the following distinctive features:
+
+1. **Distinct...
+处理类别: CricketShot
+[2025-11-28 15:29:30] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:33] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:36] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:39] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for CricketShot category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:29:42] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:29:45] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:29:48] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The CricketShot category is characterized by the following distinctive features:
+
+1. **Distinctive Physical Features**: The image shows a cricket player in action, wearing protective gear such as a helmet, pads, and gloves. The player is holding a cricket bat and appears to be practicing or playing a shot. The player's stance and posture suggest they are focused on hitting the ball.
+
+2. **Color Patterns and Markings**: The player's uniform is predominantly white with some color accents, such as red and blue. The bat is black with a white handle. The field is green, and there are yellow balls scattered around, indicating a practice session.
+
+3. **Size and Proportions**: The player is relatively small compared to the field, which is vast. The batsman is positioned near the wicket, which is a small rectangular area on the pitch. The balls are small and round, while the player's body is proportionate to their age and build.
+
+4. **Behavioral Characteristics**: The player is actively engaged in the sport, demonstrating focus and skill. The positioning of the player and the scattered balls suggest a practice session rather than a competitive match.
+
+5. **Unique Identifying Traits**: The cricket bat, the wicket, and the protective gear are unique identifiers of
+类别 CricketShot 文本特征维度: (512,)
+描述: The CricketShot category is characterized by the following distinctive features:
+
+1. **Distinctive P...
+处理类别: CuttingInKitchen
+[2025-11-28 15:29:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+ 25%|██▍       | 25/101 [07:22<23:53, 18.86s/it] 26%|██▌       | 26/101 [07:40<23:25, 18.75s/it] 27%|██▋       | 27/101 [08:00<23:19, 18.91s/it][2025-11-28 15:29:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:29:57] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for CuttingInKitchen category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:30:00] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:30:03] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:30:06] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict the act of cutting various vegetables in a kitchen setting. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**:  
+   - The cutting boards are wooden with visible grain patterns, indicating their use for food preparation.  
+   - The knives have metallic blades, sharp enough to slice through the vegetables.  
+
+2. **Color Patterns and Markings**:  
+   - The vegetables vary in color: one is light green (possibly a cucumber or zucchini), another is orange (likely a carrot).  
+   - The cutting boards are a uniform brown tone, typical of wood.  
+
+3. **Size and Proportions**:  
+   - The vegetables appear to be standard sizes for cooking, not overly large or small.  
+   - The cutting boards are medium-sized, suitable for handling the vegetables comfortably.  
+
+4. **Behavioral Characteristics**:  
+   - The hands are actively engaged in slicing the vegetables, demonstrating precision and control.  
+   - The knife moves smoothly across the board, indicating a practiced technique.  
+
+5. **Unique Identifying Traits**:  
+   - The focus on the cutting process itself, rather than the entire kitchen environment, emphasizes the culinary activity.  
+   - The close-up shots highlight the interaction between the knife
+类别 CuttingInKitchen 文本特征维度: (512,)
+描述: The images depict the act of cutting various vegetables in a kitchen setting. Here's a breakdown of ...
+处理类别: Diving
+[2025-11-28 15:30:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Diving category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:30:21] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:30:24] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a diving activity in an outdoor swimming pool setting. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The images show a diving board or platform extending over the water, with a person standing at the edge preparing to dive. The pool is surrounded by trees and umbrellas, indicating a recreational environment.
+
+2. **Color Patterns and Markings**: The pool water appears clear and blue, while the diving board is white. The surrounding area has greenery and blue umbrellas, adding color contrast.
+
+3. **Size and Proportions**: The diving board is relatively small compared to the size of the pool, which is large enough to accommodate multiple swimmers. The person preparing to dive is proportionate to the size of the diving board and the pool.
+
+4. **Behavioral Characteristics**: The person is standing at the edge of the diving board, likely preparing to jump into the pool. This behavior is typical of diving activities.
+
+5. **Unique Identifying Traits**: The presence of the diving board, the person preparing to dive, and the outdoor swimming pool setting are unique identifiers for this category.
+类别 Diving 文本特征维度: (512,)
+描述: The images depict a diving activity in an outdoor swimming pool setting. Here's a breakdown of the d...
+处理类别: Drumming
+[2025-11-28 15:30:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:30] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:33] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:36] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Drumming category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:30:39] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:30:42] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a drummer playing an electronic drum set. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features:** The electronic drum set consists of several components: a bass drum pedal, a snare drum, a hi-hat, and multiple cymbals. The drums have a shiny, metallic appearance with a red and black color scheme. The drummer is seated in a black chair, wearing a dark-colored shirt and glasses.
+
+2. **Color Patterns and Markings:** The drums have a predominantly red and black color scheme, with some silver accents on the cymbals. The electronic components of the drum set are also visible, with various buttons and controls.
+
+3. **Size and Proportions:** The electronic drum set is relatively compact compared to traditional acoustic drum sets, as it lacks the size and weight of real drums. The drummer's hands and body movements are smaller and more precise due to the nature of the electronic setup.
+
+4. **Behavioral Characteristics:** The drummer is actively playing the electronic drum set, striking the pads with their hands and using the bass drum pedal to control the bass drum sound. The movements are rhythmic and coordinated, indicating a skilled performance.
+
+5. **Unique Identifying Traits:** The electronic drum set is the
+[2025-11-28 15:30:45] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+类别 Drumming 文本特征维度: (512,)
+描述: The images depict a drummer playing an electronic drum set. Here's a breakdown of the distinctive fe...
+处理类别: Fencing
+[2025-11-28 15:30:48] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:30:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Fencing category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:30:57] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+[2025-11-28 15:31:00] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:31:03] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 28%|██▊       | 28/101 [08:19<23:12, 19.08s/it] 29%|██▊       | 29/101 [08:40<23:24, 19.50s/it] 30%|██▉       | 30/101 [08:56<21:55, 18.52s/it] 31%|███       | 31/101 [09:14<21:24, 18.36s/it]MLLM description: The images depict fencers engaged in a fencing match. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features:** Fencers wear protective gear, including a helmet with a face guard, a body protector, and gloves. They also carry a sword, which is used to strike or parry.
+
+2. **Color Patterns and Markings:** The fencers' uniforms are typically white, with some variations in color depending on the team or country they represent. The helmets are usually black, and the swords are silver or bluish-gray.
+
+3. **Size and Proportions:** Fencers are generally tall and slender, as their sport requires agility and speed. Their movements are precise and controlled, showcasing their skill and training.
+
+4. **Behavioral Characteristics:** Fencers engage in a series of offensive and defensive maneuvers, such as lunging, parrying, and striking. They must maintain a proper stance and balance while moving around the court, and they often use footwork to gain an advantage over their opponent.
+
+5. **Unique Identifying Traits:** Fencing is characterized by its use of a sword and the specific rules and scoring system associated with it. The fencers' movements and techniques are highly stylized and require a high level of precision and
+类别 Fencing 文本特征维度: (512,)
+描述: The images depict fencers engaged in a fencing match. Here's a breakdown of their distinctive featur...
+处理类别: FieldHockeyPenalty
+[2025-11-28 15:31:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for FieldHockeyPenalty category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:31:18] [显存监控] 已分配=16.93GB, 已保留=17.36GB, 空闲=30.47GB
+[2025-11-28 15:31:21] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:31:24] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict Field Hockey Penalty scenarios. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The players are equipped with field hockey sticks and protective gear such as helmets and shin guards. The goalkeeper is positioned in front of the goal, ready to defend.
+
+2. **Color Patterns and Markings**: The players' uniforms vary in color, with one team wearing green and white, while the other team wears blue and red. The goalpost is white, and the field is marked with green turf.
+
+3. **Size and Proportions**: The players appear to be adults, and their size relative to the goalpost suggests a standard-sized field. The goalpost is proportionally large compared to the players.
+
+4. **Behavioral Characteristics**: The player taking the penalty shot is in a crouched position, holding the stick low to the ground, preparing to strike the ball. The goalkeeper is in a ready stance, anticipating the shot. Other players are positioned strategically around the field.
+
+5. **Unique Identifying Traits**: The presence of the penalty spot, the goalkeeper's position, and the specific setup of the field are unique identifiers for Field Hockey Penalty scenarios. The image also shows the ball being struck by the player, which is a key
+类别 FieldHockeyPenalty 文本特征维度: (512,)
+描述: The images depict Field Hockey Penalty scenarios. Here's a breakdown of the distinctive features:
+
+1...
+处理类别: FloorGymnastics
+[2025-11-28 15:31:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:30] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:33] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for FloorGymnastics category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:31:36] [显存监控] 已分配=16.93GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:31:39] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: FloorGymnastics is characterized by the gymnast's performance on a large, flat surface, typically a mat or carpet. The gymnast wears a leotard, which can come in various colors and patterns, such as solid colors, stripes, or prints. The gymnast's movements are fluid and graceful, showcasing their strength, flexibility, and balance. The gymnast may perform a variety of skills, including jumps, flips, and turns, often incorporating elements of dance and acrobatics. The gymnast's body language and facial expressions convey confidence and focus throughout the routine. The gymnast's size and proportions are proportional to their athletic build, with a lean and toned physique. The gymnast's behavior during the routine is deliberate and controlled, demonstrating precision and artistry. The gymnast's unique identifying traits include their skill level, style, and individuality, which can be observed through their choice of music, choreography, and execution of the routine.
+类别 FloorGymnastics 文本特征维度: (512,)
+描述: FloorGymnastics is characterized by the gymnast's performance on a large, flat surface, typically a ...
+处理类别: FrisbeeCatch
+[2025-11-28 15:31:42] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:45] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:48] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:31:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for FrisbeeCatch category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:31:54] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:31:57] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a Frisbee being caught by a person in an outdoor setting. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The Frisbee is circular with a flat surface, allowing it to glide through the air. It has a smooth texture and a consistent thickness.
+
+2. **Color Patterns and Markings**: The Frisbee appears to have a solid color, likely white or light-colored, with no visible patterns or markings.
+
+3. **Size and Proportions**: The Frisbee is relatively small compared to the players, with a diameter of approximately 10-12 inches. Its proportions are consistent throughout its design.
+
+4. **Behavioral Characteristics**: The Frisbee is in motion, being thrown and caught by the players. The players' movements suggest they are actively engaged in a game or practice session.
+
+5. **Unique Identifying Traits**: The Frisbee's ability to fly through the air and the players' actions of throwing and catching it are unique identifiers for this category. The outdoor setting and the presence of multiple players also contribute to the identification of this activity as FrisbeeCatch.
+类别 FrisbeeCatch 文本特征维度: (512,)
+描述: The images depict a Frisbee being caught by a person in an outdoor setting. Here's a breakdown of th...
+处理类别: FrontCrawl
+[2025-11-28 15:32:00] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:03] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for FrontCrawl category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+ 32%|███▏      | 32/101 [09:31<20:49, 18.11s/it] 33%|███▎      | 33/101 [09:49<20:23, 17.99s/it] 34%|███▎      | 34/101 [10:07<20:07, 18.02s/it] 35%|███▍      | 35/101 [10:27<20:24, 18.55s/it][2025-11-28 15:32:12] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:32:15] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a swimmer performing the FrontCrawl stroke in a pool. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features:** The swimmer is wearing a swim cap and goggles, which are standard equipment for competitive swimming. The swimmer's body is streamlined, with arms extended forward and legs kicking in a rhythmic motion.
+
+2. **Color Patterns and Markings:** The swimmer's skin tone appears light, and they are wearing a dark-colored swimsuit. The water in the pool is clear and blue-green, reflecting the lighting conditions.
+
+3. **Size and Proportions:** The swimmer's body is proportionate, with a lean and muscular build typical of a competitive swimmer. The swimmer's arms and legs are long and slender, allowing for efficient movement through the water.
+
+4. **Behavioral Characteristics:** The swimmer's arms are extended forward, with the hands positioned close together, and the legs are kicking in a continuous, alternating motion. The swimmer's head is turned to the side, allowing them to breathe while maintaining their forward momentum.
+
+5. **Unique Identifying Traits:** The swimmer's swim cap and goggles are clearly visible, indicating that they are engaged in a competitive or training session
+类别 FrontCrawl 文本特征维度: (512,)
+描述: The images depict a swimmer performing the FrontCrawl stroke in a pool. Here's a breakdown of the ke...
+处理类别: GolfSwing
+[2025-11-28 15:32:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:21] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:24] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for GolfSwing category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:32:30] [显存监控] 已分配=16.93GB, 已保留=17.35GB, 空闲=30.47GB
+[2025-11-28 15:32:33] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a golfer performing a golf swing in a grassy area with trees in the background. The golfer is wearing a red shirt, white shorts, and a white cap. The golf club is visible in the golfer's hands as they swing it. The golf ball is located on the ground near the golfer's feet. The golf bag is placed on the ground to the left of the golfer. The golf course appears to be well-maintained with lush green grass. The trees in the background provide a natural setting for the golf course. The golfer's posture and movement suggest that they are in the middle of their swing. The overall scene suggests a recreational or competitive golf game.
+类别 GolfSwing 文本特征维度: (512,)
+描述: The images depict a golfer performing a golf swing in a grassy area with trees in the background. Th...
+处理类别: Haircut
+[2025-11-28 15:32:36] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:39] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:42] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:45] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Haircut category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:32:48] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:32:51] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals undergoing haircuts. In image 1, a woman is seen holding a section of her hair with a comb, preparing to cut it. She has dark hair and is wearing a pink top. Image 2 shows a young girl smiling while getting her hair cut by a person using clippers. Her hair is light-colored, and she's wearing a black cape. Image 3 features a man getting his hair cut by a barber in a barbershop setting. The man has short, dark hair, and the barber is using clippers. The barbershop has a checkered floor and various items like bottles and tools on the counter. All three images share the common theme of hair cutting but differ in terms of the individual's appearance, the type of haircut being performed, and the setting.
+类别 Haircut 文本特征维度: (512,)
+描述: The images depict individuals undergoing haircuts. In image 1, a woman is seen holding a section of ...
+处理类别: HammerThrow
+[2025-11-28 15:32:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:32:57] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:00] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:03] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HammerThrow category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:06] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:33:09] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a Hammer Throw event. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features:** The athlete is holding a heavy metal hammer, which is the primary object used in this sport. It has a spherical head attached to a long handle.
+
+2. **Color Patterns and Markings:** The hammer appears to have a metallic sheen, reflecting light. There are no specific color patterns or markings visible on it.
+
+3. **Size and Proportions:** The hammer is significantly larger than a standard weightlifting barbell, with a diameter of around 20 cm and a length of approximately 1.2 meters. The athlete's body size relative to the hammer indicates its substantial weight.
+
+4. **Behavioral Characteristics:** The athlete is in the process of throwing the hammer. In the first image, they are preparing to throw, with their body twisted and the hammer raised above their head. In the second image, they are in mid-throw, with their arm extended and the hammer spinning rapidly. The third image shows the athlete after the throw, with the hammer in motion and the athlete's body relaxed.
+
+5. **Unique Identifying Traits:** The unique identifying trait of Hammer Throw is the use of the hammer itself. The athlete's
+[2025-11-28 15:33:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+类别 HammerThrow 文本特征维度: (512,)
+描述: The images depict a Hammer Throw event. Here's a breakdown of the distinctive features:
+
+1. **Distin...
+处理类别: Hammering
+[2025-11-28 15:33:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:21] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for Hammering category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:24] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:33:27] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:33:30] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 36%|███▌      | 36/101 [10:46<20:10, 18.62s/it] 37%|███▋      | 37/101 [11:04<19:41, 18.46s/it] 38%|███▊      | 38/101 [11:21<18:58, 18.08s/it] 39%|███▊      | 39/101 [11:37<17:58, 17.39s/it]MLLM description: The images depict three distinct activities involving hammering:
+
+1. **Image 1:** A person is using a hammer to remove or adjust a textured ceiling tile. The hammer has a dark handle and a metallic head. The ceiling is white with a textured surface, and the wall is painted purple. The person's hands are gripping the hammer firmly, and their body posture suggests they are applying force.
+
+2. **Image 2:** A man is using a sledgehammer to break apart a wooden plank. The sledgehammer has a long handle and a large, heavy head. The background shows an outdoor setting with dirt and some vegetation. The man is wearing a sleeveless shirt and gloves, indicating he is engaged in manual labor. His posture is bent forward as he strikes the wood.
+
+3. **Image 3:** A person is using a hammer to work on a piece of wood indoors. The hammer has a short handle and a smaller head compared to the sledgehammer. The person is kneeling on the floor, surrounded by various tools and materials, including a bucket of nails and a piece of wood with visible screws. The environment appears to be a workshop or garage.
+
+**Key Visual Characteristics:**
+
+* **Distinctive Physical Features:** The hammers vary significantly in size
+类别 Hammering 文本特征维度: (512,)
+描述: The images depict three distinct activities involving hammering:
+
+1. **Image 1:** A person is using ...
+处理类别: HandstandPushups
+[2025-11-28 15:33:33] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:36] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:39] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HandstandPushups category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:33:42] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:33:45] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:33:48] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals performing handstands with their bodies in a straight line, supported by their hands. Here's a breakdown of the key visual characteristics:
+
+1. **Distinctive Physical Features:** The individuals have muscular upper bodies, indicating strength and fitness. Their legs are straight and perpendicular to the ground, showcasing balance and control.
+
+2. **Color Patterns and Markings:** The individuals' clothing varies: one is wearing red pants and a white shirt, another is shirtless, and the third is wearing a black shirt. The background colors also differ, with yellow walls in the first image, a gray floor in the second, and a white wall in the third.
+
+3. **Size and Proportions:** The individuals appear to be adults, with average human proportions. Their height and weight seem proportional to their body type.
+
+4. **Behavioral Characteristics:** The individuals are performing handstands, which requires significant core strength, balance, and coordination. They maintain a straight line from head to toe throughout the movement.
+
+5. **Unique Identifying Traits:** The handstand pushup is a specific exercise that combines elements of both handstands and pushups. It requires a high level of skill and strength, making it distinct from other exercises like regular pushups or handstands alone.
+类别 HandstandPushups 文本特征维度: (512,)
+描述: The images depict individuals performing handstands with their bodies in a straight line, supported ...
+处理类别: HandstandWalking
+[2025-11-28 15:33:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:33:57] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HandstandWalking category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:00] [显存监控] 已分配=16.93GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:34:03] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The HandstandWalking category is characterized by individuals performing a handstand while walking or moving forward. Here's a breakdown of its distinctive features:
+
+1. **Distinctive Physical Features**: The primary feature is the individual's ability to balance on their hands and move forward in a handstand position. This requires significant core strength, balance, and coordination.
+
+2. **Color Patterns and Markings**: There are no specific color patterns or markings that define this category. The focus is on the physical action rather than any particular appearance.
+
+3. **Size and Proportions**: The size and proportions of the individuals performing HandstandWalking can vary widely. However, they generally appear to be adults, as children may not have the necessary strength and coordination to perform this activity.
+
+4. **Behavioral Characteristics**: The key behavioral characteristic is the continuous movement of the individual in a handstand position. They maintain this posture while walking or moving forward, showcasing their balance and control.
+
+5. **Unique Identifying Traits**: The unique identifying trait of HandstandWalking is the combination of a handstand and forward movement. It is a rare and impressive feat that requires significant skill and practice.
+[2025-11-28 15:34:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+类别 HandstandWalking 文本特征维度: (512,)
+描述: The HandstandWalking category is characterized by individuals performing a handstand while walking o...
+处理类别: HeadMassage
+[2025-11-28 15:34:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:12] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:15] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HeadMassage category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:18] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:34:21] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals receiving head massages in a barbershop setting. The first image shows a man with short hair sitting in a barber's chair, covered with a white and pink striped cape, while another person is standing behind him, presumably performing the massage. The second image shows a man with short hair sitting in a barber's chair, covered with a white cape, while another person is standing behind him, presumably performing the massage. The third image shows a man with short hair sitting in front of a mirror, while another person is standing behind him, presumably performing the massage. The key visual characteristics that distinguish this category from others include the presence of a barber's chair, a cape or towel covering the client, and the action of massaging the head. The size and proportions of the individuals vary, as do their hair styles and colors. The behavioral characteristic is the act of receiving a head massage.
+类别 HeadMassage 文本特征维度: (512,)
+描述: The images depict individuals receiving head massages in a barbershop setting. The first image shows...
+处理类别: HighJump
+[2025-11-28 15:34:24] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:30] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HighJump category.
+[2025-11-28 15:34:33] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+ 40%|███▉      | 40/101 [11:57<18:27, 18.16s/it] 41%|████      | 41/101 [12:14<17:50, 17.84s/it] 42%|████▏     | 42/101 [12:31<17:28, 17.76s/it] 43%|████▎     | 43/101 [12:50<17:21, 17.96s/it]推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:36] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:34:39] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict a high jump event in track and field. Here's a breakdown of the distinctive features:
+
+1. **Distinctive Physical Features**: The athletes are wearing athletic attire, including shorts, t-shirts, and running shoes. The high jump bar is elevated above the ground, and the mat below it is used to cushion the landing.
+
+2. **Color Patterns and Markings**: The high jump bar is red, and the mat is blue with white markings. The track is red and green, and there are white lines marking the boundaries of the jumping area.
+
+3. **Size and Proportions**: The high jump bar is relatively small compared to the height of the athlete, emphasizing the challenge of clearing it. The mat is large enough to cover the landing area, providing safety for the athlete.
+
+4. **Behavioral Characteristics**: The athletes are shown in various stages of the jump, from running up to the bar, leaping over it, and landing on the mat. The referee is observing the jump, ensuring fair play.
+
+5. **Unique Identifying Traits**: The high jump is a specific event in track and field, characterized by the use of a bar and mat, and the goal of clearing the bar without touching it. The athletes' movements and the equipment
+类别 HighJump 文本特征维度: (512,)
+描述: The images depict a high jump event in track and field. Here's a breakdown of the distinctive featur...
+处理类别: HorseRace
+[2025-11-28 15:34:42] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:45] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:48] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:34:51] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HorseRace category.
+[2025-11-28 15:34:54] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:34:57] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict horse racing. The horses have distinct physical features such as muscular bodies, long legs, and large heads with ears pointed forward. They display various color patterns and markings, including white, brown, black, and gray coats, as well as stripes, spots, and patches. The horses vary in size and proportions, with some being larger and more muscular than others. Their behavioral characteristic is running at high speeds, often in a group or pack. Unique identifying traits include their distinctive manes, tails, and racing silks.
+类别 HorseRace 文本特征维度: (512,)
+描述: The images depict horse racing. The horses have distinct physical features such as muscular bodies, ...
+处理类别: HorseRiding
+[2025-11-28 15:35:00] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:03] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:06] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:09] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HorseRiding category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:12] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:35:15] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict horses being ridden by humans in an outdoor setting. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features:** All three horses have a muscular build, which is typical for riding horses. They also have a long neck and mane, which are common among horses.
+
+2. **Color Patterns and Markings:** The first horse has a brown coat with a white marking on its face. The second horse is black with a white marking on its face. The third horse is a light brown color with a darker mane and tail.
+
+3. **Size and Proportions:** All three horses appear to be of similar size and proportion, as they are all adult horses. They have a balanced body structure, which is essential for riding.
+
+4. **Behavioral Characteristics:** The riders are actively engaged in riding the horses. In the first image, the rider is performing a jump over a fence, indicating a level of skill and training. The second image shows the rider walking at a steady pace, suggesting a calm and controlled ride. The third image shows the rider in a more formal posture, possibly during a competition or dressage event.
+
+5. **Unique Identifying Traits:** Each horse has unique physical features such as coat color, facial markings, and
+类别 HorseRiding 文本特征维度: (512,)
+描述: The images depict horses being ridden by humans in an outdoor setting. Here's a breakdown of their d...
+处理类别: HulaHoop
+[2025-11-28 15:35:18] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:21] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:24] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:27] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for HulaHoop category.
+[2025-11-28 15:35:31] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:34] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The Hula Hoop in all three images is a circular object used for exercise or play. It has a consistent physical feature: a flexible, tubular shape with a diameter that can vary depending on its size. In image 1, the hoop appears to be made of a translucent material, possibly plastic or rubber, and is light blue in color. Image 2 shows a pink and purple hula hoop, while image 3 displays a red and black one. The hoops' sizes appear to be similar across the images, suggesting they are standard-sized hula hoops designed for adult use. There are no behavioral characteristics as the objects are inanimate. The unique identifying trait of the hula hoop is its circular shape and flexibility, which allows it to be spun around the waist or body.
+类别 HulaHoop 文本特征维度: (512,)
+描述: The Hula Hoop in all three images is a circular object used for exercise or play. It has a consisten...
+处理类别: IceDancing
+[2025-11-28 15:35:37] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:40] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:43] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:35:46] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for IceDancing category.
+[2025-11-28 15:35:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:35:52] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:35:55] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 44%|████▎     | 44/101 [13:10<17:37, 18.56s/it] 45%|████▍     | 45/101 [13:28<17:17, 18.53s/it] 46%|████▌     | 46/101 [13:46<16:50, 18.38s/it] 47%|████▋     | 47/101 [14:03<16:05, 17.88s/it]MLLM description: IceDancing is characterized by its graceful and synchronized movements performed by two skaters, typically a male and female pair. In the provided images, the skaters exhibit a range of behaviors such as holding hands, spinning, and performing lifts. 
+
+In terms of distinctive physical features, the skaters are often dressed in figure skating attire, which can include leotards, tights, and boots. The color patterns and markings on their outfits may vary, with some pairs wearing contrasting colors to enhance visibility during performances. The size and proportions of the skaters are generally proportional, with the female skater typically being shorter than the male skater.
+
+The unique identifying traits of IceDancing include the emphasis on artistry, creativity, and synchronization between the two skaters. The skaters' movements are fluid and expressive, showcasing their technical skills and artistic interpretation of the music they perform to. The lifts and spins performed by the skaters require precise coordination and trust between the partners, making IceDancing a visually captivating and technically demanding discipline within figure skating.
+类别 IceDancing 文本特征维度: (512,)
+描述: IceDancing is characterized by its graceful and synchronized movements performed by two skaters, typ...
+处理类别: JavelinThrow
+[2025-11-28 15:35:58] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:01] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:04] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for JavelinThrow category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:07] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:36:10] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:36:13] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict athletes performing the JavelinThrow event. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features:** The athletes are shirtless, wearing shorts, and have muscular builds, indicative of strength and endurance required for the sport. Their arms are extended, holding the javelin, which is a long, thin, and pointed weapon.
+
+2. **Color Patterns and Markings:** The javelins are typically metallic or wooden with a pointed tip and a handle. They may have different colors or patterns depending on the competition rules or sponsorships. The athletes' uniforms are usually simple, with numbers or logos, and may include colors like blue, white, red, or black.
+
+3. **Size and Proportions:** The javelin is significantly longer than the athlete's height, emphasizing its length as a key feature. The athlete's body proportions are elongated due to the extended javelin, and their arms are stretched outwards in a throwing motion.
+
+4. **Behavioral Characteristics:** The athletes are in the process of throwing the javelin, with their bodies twisted and their arms extended. This dynamic pose showcases the power and technique involved in the throw. The athletes' facial expressions and body language convey focus and determination.
+
+5. **
+类别 JavelinThrow 文本特征维度: (512,)
+描述: The images depict athletes performing the JavelinThrow event. Here's a breakdown of their distinctiv...
+处理类别: JugglingBalls
+[2025-11-28 15:36:16] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:19] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:22] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for JugglingBalls category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:25] [显存监控] 已分配=16.93GB, 已保留=17.50GB, 空闲=30.47GB
+[2025-11-28 15:36:28] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+[2025-11-28 15:36:31] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The images depict individuals juggling balls. Here's a breakdown of their distinctive features:
+
+1. **Distinctive Physical Features:** The individuals in the images are wearing casual clothing, such as t-shirts and shorts or sweaters. They have short hair and appear to be young adults.
+
+2. **Color Patterns and Markings:** The balls being juggled are white with no visible markings or patterns. The background varies between indoor settings with furniture and plants, and plain walls.
+
+3. **Size and Proportions:** The balls are small, spherical, and appear to be standard-sized juggling balls, approximately the size of a tennis ball. The individuals' hands are proportionate to their bodies, and they are holding the balls in a way consistent with juggling techniques.
+
+4. **Behavioral Characteristics:** The individuals are actively juggling the balls, with one hand holding a ball while the other is either preparing to catch or release another ball. Their movements suggest a focus on maintaining the rhythm and coordination required for juggling.
+
+5. **Unique Identifying Traits:** The key identifying trait is the act of juggling itself, which involves the continuous motion of throwing and catching the balls. The individuals' posture and hand positions also contribute to the identification of the activity.
+类别 JugglingBalls 文本特征维度: (512,)
+描述: The images depict individuals juggling balls. Here's a breakdown of their distinctive features:
+
+1. ...
+处理类别: JumpRope
+[2025-11-28 15:36:34] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:37] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:40] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:43] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for JumpRope category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:36:46] [显存监控] 已分配=16.93GB, 已保留=17.51GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+MLLM description: The JumpRope in all three images is a single, flexible object used for exercise. It has a distinct physical feature: a handle at each end connected by a rope. The color pattern and markings are not clearly visible due to the angle and lighting. The size and proportions vary slightly between the images, with one appearing longer than the others. There are no behavioral characteristics as it is an inanimate object. The unique identifying trait is its flexibility and the handles at each end, which allow for various exercises like jumping and agility training.
+类别 JumpRope 文本特征维度: (512,)
+描述: The JumpRope in all three images is a single, flexible object used for exercise. It has a distinct p...
+处理类别: JumpingJack
+[2025-11-28 15:36:49] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:52] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:55] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+[2025-11-28 15:36:58] [显存监控] 已分配=16.91GB, 已保留=17.51GB, 空闲=30.50GB
+wiki desc: Description for JumpingJack category.
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 15:37:01] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.47GB
+[2025-11-28 15:37:04] [显存监控] 已分配=16.94GB, 已保留=17.51GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+ 48%|████▊     | 48/101 [14:21<15:43, 17.80s/it] 49%|████▊     | 49/101 [14:38<15:26, 17.81s/it]

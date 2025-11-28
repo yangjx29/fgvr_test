@@ -1,4 +1,4 @@
-from data.data_stats import BIRD_STATS, DOG_STATS, FLOWER_STATS, PET_STATS, CAR_STATS, POKEMON_STATS, AIRCRAFT_STATS, EUROSAT_STATS, FOOD_STATS, DTD_STATS, CALTECH101_STATS, CALTECH256_STATS, DEEPFASHION_MULTIMODAL_STATS, SUN397_STATS, IMAGENET_A_STATS, IMAGENET_R_STATS, BIRDSNAP_STATS, IMAGENET_1K_STATS
+from data.data_stats import BIRD_STATS, DOG_STATS, FLOWER_STATS, PET_STATS, CAR_STATS, POKEMON_STATS, AIRCRAFT_STATS, EUROSAT_STATS, FOOD_STATS, DTD_STATS, CALTECH101_STATS, CALTECH256_STATS, DEEPFASHION_MULTIMODAL_STATS, SUN397_STATS, IMAGENET_A_STATS, IMAGENET_R_STATS, BIRDSNAP_STATS, IMAGENET_1K_STATS, UCF101_STATS
 from data.bird200 import build_bird_prompter, build_bird200_discovery, build_bird200_test, bird_how_to1, bird_how_to2, build_bird200_swav_train
 from data.dog120 import build_dog_prompter, build_dog120_discovery, build_dog120_test, dog_how_to1, dog_how_to2, build_dog120_swav_train
 from data.flower102 import build_flower_prompter, build_flower102_discovery, build_flower102_test, flower_how_to1, flower_how_to2, build_flower102_swav_train
@@ -16,6 +16,7 @@ from data.imagenet_a import build_imagenet_a_prompter, build_imagenet_a_discover
 from data.imagenet_r import build_imagenet_r_prompter, build_imagenet_r_discovery, build_imagenet_r_test, imagenet_r_how_to1, imagenet_r_how_to2, build_imagenet_r_swav_train
 from data.birdsnap import build_birdsnap_prompter, build_birdsnap_discovery, build_birdsnap_test, birdsnap_how_to1, birdsnap_how_to2, build_birdsnap_swav_train
 from data.imagenet_1k import build_imagenet_1k_prompter, build_imagenet_1k_discovery, build_imagenet_1k_test, how_to1 as imagenet_1k_how_to1, how_to2 as imagenet_1k_how_to2, build_imagenet_1k_swav_train
+from data.ucf101 import build_ucf101_prompter, build_ucf101_discovery, build_ucf101_test, ucf101_how_to1, ucf101_how_to2, build_ucf101_swav_train
 
 from data.bird200 import _transform as bird_transform
 from data.car196 import _transform as car_transform
@@ -34,6 +35,7 @@ from data.imagenet_a import _transform as imagenet_a_transform
 from data.imagenet_r import _transform as imagenet_r_transform
 from data.birdsnap import _transform as birdsnap_transform
 from data.imagenet_1k import _transform as imagenet_1k_transform
+from data.ucf101 import _transform as ucf101_transform
 
 from .utils import random_augmentation
 
@@ -67,6 +69,7 @@ HOW_TOS1 = {
     "imagenet_r": imagenet_r_how_to1,
     "birdsnap": birdsnap_how_to1,
     "imagenet_1k": imagenet_1k_how_to1,
+    "ucf": ucf101_how_to1,
 }
 
 HOW_TOS2 = {
@@ -87,6 +90,7 @@ HOW_TOS2 = {
     "imagenet_r": imagenet_r_how_to2,
     "birdsnap": birdsnap_how_to2,
     "imagenet_1k": imagenet_1k_how_to2,
+    "ucf": ucf101_how_to2,
 }
 
 DATA_STATS = {
@@ -107,6 +111,7 @@ DATA_STATS = {
     "imagenet_r": IMAGENET_R_STATS,
     "birdsnap": BIRDSNAP_STATS,
     "imagenet_1k": IMAGENET_1K_STATS,
+    "ucf": UCF101_STATS,
 }
 
 
@@ -128,6 +133,7 @@ PROMPTERS = {
     "imagenet_r": build_imagenet_r_prompter,
     "birdsnap": build_birdsnap_prompter,
     "imagenet_1k": build_imagenet_1k_prompter,
+    "ucf": build_ucf101_prompter,
 }
 
 
@@ -149,6 +155,7 @@ DATA_DISCOVERY = {
     "imagenet_r": build_imagenet_r_discovery,
     "birdsnap": build_birdsnap_discovery,
     "imagenet_1k": build_imagenet_1k_discovery,
+    "ucf": build_ucf101_discovery,
 }
 
 
@@ -170,6 +177,7 @@ DATA_GROUPING = {
     "imagenet_r": build_imagenet_r_test,
     "birdsnap": build_birdsnap_test,
     "imagenet_1k": build_imagenet_1k_test,
+    "ucf": build_ucf101_test,
 }
 
 
@@ -191,6 +199,7 @@ DATA_TRANSFORM = {
     "imagenet_r": imagenet_r_transform,
     "birdsnap": birdsnap_transform,
     "imagenet_1k": imagenet_1k_transform,
+    "ucf": ucf101_transform,
 }
 
 
@@ -212,6 +221,7 @@ DATA_SWAV = {
     "imagenet_r": build_imagenet_r_swav_train,
     "birdsnap": build_birdsnap_swav_train,
     "imagenet_1k": build_imagenet_1k_swav_train,
+    "ucf": build_ucf101_swav_train,
 }
 
 DATA_AUGMENTATION = random_augmentation
