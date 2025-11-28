@@ -257,9 +257,14 @@ case "${DATASET}" in
         CONFIG_FILE="imagenet_sketch1000_all.yml"
         DATASET_DIR="ImageNet_Sketch"
         ;;
+    "imagenet_v2")
+        DATASET_NUM="1000"
+        CONFIG_FILE="imagenet_v2_1000_all.yml"
+        DATASET_DIR="ImageNet_v2"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf, imagenet_sketch"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf, imagenet_sketch, imagenet_v2"
         exit 1
         ;;
 esac
@@ -273,6 +278,10 @@ if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DA
     EXPERIMENT_DIR="${DATASET_NAME}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"
+elif [ "${DATASET}" = "imagenet_sketch" ]; then
+    EXPERIMENT_DIR="ImageNet_Sketch1000"
+elif [ "${DATASET}" = "imagenet_v2" ]; then
+    EXPERIMENT_DIR="imagenet_v2_1000"
 else
     EXPERIMENT_DIR="${DATASET}${DATASET_NUM}"
 fi
