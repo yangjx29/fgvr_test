@@ -216,14 +216,26 @@ class ExperienceBaseBuilder:
         Returns:
             List[Dict]: 伪轨迹列表，每个轨迹包含 {image_path, cot, prediction, label, top_k_candidates}
         """
+        from datetime import datetime
         print("开始构造伪轨迹...")
         self.pseudo_trajectories = []
         
-        total_samples = sum(len(paths) for paths in validation_samples.values())
+        # 计算总样本数
+        total_samples = sum(min(len(paths), max_samples_per_category) if max_samples_per_category else len(paths) 
+                           for paths in validation_samples.values())
         processed = 0
+        total_categories = len(validation_samples)
+        completed_categories = 0
         
-        for true_category, image_paths in validation_samples.items():
-            print(f"处理类别: {true_category} ({len(image_paths)} 张图像)")
+        for cat_idx, (true_category, image_paths) in enumerate(validation_samples.items()):
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cat_progress = (cat_idx / total_categories) * 100
+            img_progress = (processed / total_samples) * 100 if total_samples > 0 else 0
+            remaining_categories = total_categories - cat_idx
+            remaining_images = total_samples - processed
+            print(f"\n[{current_time}] 构造伪轨迹 - 类别进度: {cat_progress:5.1f}%|{'█' * int(cat_progress // 5)}{'░' * (20 - int(cat_progress // 5))}| {cat_idx}/{total_categories} (待完成: {remaining_categories})")
+            print(f"[{current_time}] 构造伪轨迹 - 图像进度: {img_progress:5.1f}%|{'█' * int(img_progress // 5)}{'░' * (20 - int(img_progress // 5))}| {processed}/{total_samples} (待完成: {remaining_images})")
+            print(f"[{current_time}] 当前类别: {true_category} ({len(image_paths)} 张图像)")
             
             # 限制每个类别的样本数
             if max_samples_per_category:
@@ -232,13 +244,19 @@ class ExperienceBaseBuilder:
             # 获取World-Belief：该类别的描述
             world_belief_context = self._get_world_belief_context(true_category)
             
-            for img_path in tqdm(image_paths, desc=f"处理 {true_category}"):
+            for img_idx, img_path in enumerate(image_paths):
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                overall_progress = (processed / total_samples) * 100 if total_samples > 0 else 0
+                remaining_images = total_samples - processed
+                print(f"[{current_time}] 构造伪轨迹: {overall_progress:5.1f}%|{'█' * int(overall_progress // 5)}{'░' * (20 - int(overall_progress // 5))}| {processed}/{total_samples} (待完成: {remaining_images}) 图像: {img_idx+1}/{len(image_paths)} ({true_category})")
+                
                 # 1. 快思考获取Top-K候选
                 fast_result = self.fast_thinking.fast_thinking_pipeline(img_path, top_k)
                 top_k_candidates = fast_result.get("fused_results", [])[:top_k]
                 
                 if not top_k_candidates:
                     print(f"警告: {img_path} 没有检索到候选类别")
+                    processed += 1
                     continue
                 
                 # 2. 使用Self-Belief生成CoT和预测
@@ -258,10 +276,18 @@ class ExperienceBaseBuilder:
                 
                 self.pseudo_trajectories.append(trajectory)
                 processed += 1
+            
+            # 类别完成后输出进度
+            completed_categories += 1
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cat_completed_pct = (completed_categories / total_categories) * 100
+            img_completed_pct = (processed / total_samples) * 100 if total_samples > 0 else 0
+            print(f"[{current_time}] ✓ 类别 {true_category} 完成 - 类别: {completed_categories}/{total_categories} ({cat_completed_pct:.1f}%), 图像: {processed}/{total_samples} ({img_completed_pct:.1f}%)")
         
-        print(f"伪轨迹构造完成! 共 {len(self.pseudo_trajectories)} 条轨迹")
-        print(f"正确预测: {sum(1 for t in self.pseudo_trajectories if t['is_correct'])}")
-        print(f"错误预测: {sum(1 for t in self.pseudo_trajectories if not t['is_correct'])}")
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"\n[{current_time}] 伪轨迹构造完成! 共 {len(self.pseudo_trajectories)} 条轨迹")
+        print(f"[{current_time}] 正确预测: {sum(1 for t in self.pseudo_trajectories if t['is_correct'])}")
+        print(f"[{current_time}] 错误预测: {sum(1 for t in self.pseudo_trajectories if not t['is_correct'])}")
         
         return self.pseudo_trajectories
     
@@ -550,16 +576,38 @@ Return ONLY a JSON object:
         Returns:
             Dict: 评估结果 {accuracy, correct_count, total_count, ...}
         """
-        print("使用当前Self-Belief评估性能...")
+        from datetime import datetime
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"[{current_time}] 使用当前Self-Belief评估性能...")
         
         correct_count = 0
         total_count = 0
         category_stats = defaultdict(lambda: {"correct": 0, "total": 0})
         
-        for true_category, image_paths in validation_samples.items():
+        # 计算总样本数
+        total_samples = sum(len(paths) for paths in validation_samples.values())
+        processed = 0
+        total_categories = len(validation_samples)
+        completed_categories = 0
+        
+        for cat_idx, (true_category, image_paths) in enumerate(validation_samples.items()):
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cat_progress = (cat_idx / total_categories) * 100
+            img_progress = (processed / total_samples) * 100 if total_samples > 0 else 0
+            remaining_categories = total_categories - cat_idx
+            remaining_images = total_samples - processed
+            print(f"\n[{current_time}] 评估进度 - 类别: {cat_progress:5.1f}%|{'█' * int(cat_progress // 5)}{'░' * (20 - int(cat_progress // 5))}| {cat_idx}/{total_categories} (待完成: {remaining_categories})")
+            print(f"[{current_time}] 评估进度 - 图像: {img_progress:5.1f}%|{'█' * int(img_progress // 5)}{'░' * (20 - int(img_progress // 5))}| {processed}/{total_samples} (待完成: {remaining_images})")
+            print(f"[{current_time}] 当前类别: {true_category} ({len(image_paths)} 张图像)")
+            
             world_belief_context = self._get_world_belief_context(true_category)
             
-            for img_path in image_paths:
+            for img_idx, img_path in enumerate(image_paths):
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                overall_progress = (processed / total_samples) * 100 if total_samples > 0 else 0
+                remaining_images = total_samples - processed
+                print(f"[{current_time}] 评估进度: {overall_progress:5.1f}%|{'█' * int(overall_progress // 5)}{'░' * (20 - int(overall_progress // 5))}| {processed}/{total_samples} (待完成: {remaining_images}) 图像: {img_idx+1}/{len(image_paths)} ({true_category})")
+                
                 # 快思考获取Top-K
                 fast_result = self.fast_thinking.fast_thinking_pipeline(img_path, top_k)
                 top_k_candidates = fast_result.get("fused_results", [])[:top_k]
@@ -572,13 +620,21 @@ Return ONLY a JSON object:
                 
                 # 判断是否正确
                 is_correct = is_similar(prediction, true_category, threshold=0.4)
-                print(f"evaluate_with_current_belief, 预测: {prediction}, 真实: {true_category}, 是否正确: {is_correct}")
+                print(f"[{current_time}] evaluate_with_current_belief, 预测: {prediction}, 真实: {true_category}, 是否正确: {is_correct}")
                 if is_correct:
                     correct_count += 1
                     category_stats[true_category]["correct"] += 1
                 
                 total_count += 1
                 category_stats[true_category]["total"] += 1
+                processed += 1
+            
+            # 类别完成后输出进度
+            completed_categories += 1
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cat_completed_pct = (completed_categories / total_categories) * 100
+            img_completed_pct = (processed / total_samples) * 100 if total_samples > 0 else 0
+            print(f"[{current_time}] ✓ 类别 {true_category} 完成 - 类别: {completed_categories}/{total_categories} ({cat_completed_pct:.1f}%), 图像: {processed}/{total_samples} ({img_completed_pct:.1f}%)")
         
         accuracy = correct_count / total_count if total_count > 0 else 0.0
         result = {
@@ -588,7 +644,8 @@ Return ONLY a JSON object:
             "category_stats": dict(category_stats)
         }
         
-        print(f"评估完成: 准确率 = {accuracy:.4f} ({correct_count}/{total_count})")
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"[{current_time}] 评估完成: 准确率 = {accuracy:.4f} ({correct_count}/{total_count})")
         
         return result
     
@@ -613,8 +670,10 @@ Return ONLY a JSON object:
         Returns:
             Dict: 构建结果
         """
+        from datetime import datetime
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print("=" * 60)
-        print("开始构建经验库（模型自反思与优化）")
+        print(f"[{current_time}] 开始构建经验库（模型自反思与优化）")
         print("=" * 60)
         
         # 初始化Self-Belief

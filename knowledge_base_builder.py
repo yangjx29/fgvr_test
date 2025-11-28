@@ -244,20 +244,39 @@ class KnowledgeBaseBuilder:
         Returns:
             Dict[str, np.ndarray]: {category: image_features}
         """
+        from datetime import datetime
         print("构建图像知识库...")
         image_kb = {}
         
-        for category, image_paths in tqdm(train_samples.items()):
-            print(f"处理类别: {category}")
+        total_categories = len(train_samples)
+        total_images = sum(len(paths) for paths in train_samples.values())
+        processed_images = 0
+        
+        for cat_idx, (category, image_paths) in enumerate(train_samples.items()):
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cat_progress_pct = (cat_idx / total_categories) * 100
+            img_progress_pct = (processed_images / total_images) * 100 if total_images > 0 else 0
+            remaining_categories = total_categories - cat_idx
+            remaining_images = total_images - processed_images
+            print(f"\n[{current_time}] 构建图像知识库 - 类别进度: {cat_progress_pct:5.1f}%|{'█' * int(cat_progress_pct // 5)}{'░' * (20 - int(cat_progress_pct // 5))}| {cat_idx}/{total_categories} (待完成: {remaining_categories})")
+            print(f"[{current_time}] 构建图像知识库 - 图像进度: {img_progress_pct:5.1f}%|{'█' * int(img_progress_pct // 5)}{'░' * (20 - int(img_progress_pct // 5))}| {processed_images}/{total_images} (待完成: {remaining_images})")
+            print(f"[{current_time}] 当前类别: {category} ({len(image_paths)} 张图像)")
             category_features = []
             
-            for img_path in image_paths:
+            for img_idx, img_path in enumerate(image_paths):
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                img_progress_pct = (processed_images / total_images) * 100 if total_images > 0 else 0
+                remaining_images = total_images - processed_images
+                print(f"[{current_time}] 图像进度: {img_progress_pct:5.1f}%|{'█' * int(img_progress_pct // 5)}{'░' * (20 - int(img_progress_pct // 5))}| {processed_images}/{total_images} (待完成: {remaining_images}) - {category} [{img_idx+1}/{len(image_paths)}]")
+                
                 # 提取原始图像特征
                 try:
                     feat = self.retrieval.extract_image_feat(img_path)
                     category_features.append(feat)
+                    processed_images += 1
                 except Exception as e:
                     print(f"提取图像特征失败 {img_path}: {e}")
+                    processed_images += 1
                     continue
                 
                 # 数据增强
@@ -283,7 +302,14 @@ class KnowledgeBaseBuilder:
                 category_features = np.array(category_features)
                 avg_feature = np.mean(category_features, axis=0)
                 image_kb[category] = avg_feature
-                print(f"类别 {category} 图像特征维度: {avg_feature.shape}")
+                
+                # 类别完成后输出进度
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                completed_categories = cat_idx + 1
+                cat_completed_pct = (completed_categories / total_categories) * 100
+                img_completed_pct = (processed_images / total_images) * 100 if total_images > 0 else 0
+                print(f"[{current_time}] ✓ 类别 {category} 完成 - 类别: {completed_categories}/{total_categories} ({cat_completed_pct:.1f}%), 图像: {processed_images}/{total_images} ({img_completed_pct:.1f}%)")
+                print(f"[{current_time}] 图像特征维度: {avg_feature.shape}")
             else:
                 print(f"警告: 类别 {category} 没有有效的图像特征")
         
@@ -301,11 +327,19 @@ class KnowledgeBaseBuilder:
         Returns:
             Dict[str, np.ndarray]: {category: text_features}
         """
+        from datetime import datetime
         print("构建文本知识库...")
         text_kb = {}
         
-        for category, image_paths in tqdm(train_samples.items()):
-            print(f"处理类别: {category}")
+        total_categories = len(train_samples)
+        processed_categories = 0
+        
+        for cat_idx, (category, image_paths) in enumerate(train_samples.items()):
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cat_progress_pct = (cat_idx / total_categories) * 100
+            remaining_categories = total_categories - cat_idx
+            print(f"\n[{current_time}] 构建文本知识库 - 类别进度: {cat_progress_pct:5.1f}%|{'█' * int(cat_progress_pct // 5)}{'░' * (20 - int(cat_progress_pct // 5))}| {cat_idx}/{total_categories} (待完成: {remaining_categories})")
+            print(f"[{current_time}] 当前类别: {category}")
             
             # 生成类别描述
             description = self.generate_category_description(mllm_bot, category, image_paths)
@@ -315,8 +349,11 @@ class KnowledgeBaseBuilder:
             try:
                 text_feat = self.retrieval.extract_text_feat(description)
                 text_kb[category] = text_feat
-                print(f"类别 {category} 文本特征维度: {text_feat.shape}")
-                print(f"描述: {description[:100]}...")
+                processed_categories += 1
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                completed_pct = (processed_categories / total_categories) * 100
+                print(f"[{current_time}] 类别 {category} 完成 - 已完成: {processed_categories}/{total_categories} ({completed_pct:.1f}%), 待完成: {total_categories - processed_categories}")
+                print(f"[{current_time}] 文本特征维度: {text_feat.shape}, 描述: {description[:100]}...")
             except Exception as e:
                 print(f"提取文本特征失败 {category}: {e}")
                 continue
