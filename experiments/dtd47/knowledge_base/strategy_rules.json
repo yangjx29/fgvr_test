@@ -184,5 +184,67 @@
             "effectiveness": 0.0,
             "applicability": 0.0
         }
+    ],
+    [
+        {
+            "rule": "Carefully differentiate between textures based on specific visual cues such as pattern, graininess, and surface consistency.",
+            "failure_pattern": "The model misclassified 'fibrous' as 'blotchy' due to the lack of clear differentiation between the two classes.",
+            "applicability_signals": "When dealing with fine-grained recognition tasks involving textural differences.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/dtd/images/blotchy/blotchy_0129.jpg"
+            ],
+            "labels": [
+                "blotchy"
+            ],
+            "root_cause": "The visual characteristics of 'fibrous' and 'blotchy' were not distinctly separated in the reasoning process, leading to an incorrect prediction.",
+            "source_reasoning": "1. **Observation**: The image shows a textured surface with a uniform, slightly mottled appearance. The color is predominantly orange with subtle variations in shade, which suggests a fibrous or matted texture rather than a stained or porous one.\n2. **Localization**: The texture appears granular and fibrous, with no distinct patterns or large flowing shapes that would suggest a waffled or stained surface.\n3. **Comparison**: The visual characteristics align closely with those described for \"fibrous\" surfaces, which typically have a granular or fibrous texture and can appear mottled due to the interplay of light and shadow.\n4. **Decision**: Based on the observed details and the similarity scores, the most likely class is \"fibrous.\"",
+            "normalized": "carefully differentiate between textures based on specific visual cues such as pattern graininess and surface consistency",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Prioritize visual texture analysis over similarity scores when distinguishing between closely related classes.",
+            "failure_pattern": "The model misclassified 'blotchy' as 'porous' due to the granular and mottled texture being mistaken for porosity.",
+            "applicability_signals": "When dealing with fine-grained recognition tasks involving visually similar classes.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/dtd/images/blotchy/blotchy_0133.jpg"
+            ],
+            "labels": [
+                "blotchy"
+            ],
+            "root_cause": "The model's similarity scores were close among several options, leading to a misinterpretation of the visual evidence.",
+            "source_reasoning": "1. **Observation**: The object in the image appears to be a rock with a rough, uneven surface. The texture looks granular and mottled, which suggests a certain level of porosity.\n2. **Localization**: The most discriminative local parts are the small, irregular patches and spots on the surface, which give it a blotchy appearance.\n3. **Comparison**: Comparing the visual characteristics of the candidate subcategories, \"porous\" aligns well with the observed texture and appearance of the rock. The other categories like \"pitted,\" \"cracked,\" \"potholed,\" and \"bumpy\" do not fit as closely as \"porous.\"\n4. **Decision**: Based on the match between the observed details and the description of \"porous,\" this is the most likely class.",
+            "normalized": "prioritize visual texture analysis over similarity scores when distinguishing between closely related classes",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Analyze the texture comprehensively before assigning a class, focusing on distinguishing between granular and pitted textures.",
+            "failure_pattern": "The model misclassified 'pitted' as 'bumpy' due to the granular texture being mistaken for pits.",
+            "applicability_signals": "When dealing with fine-grained recognition tasks involving textural differences.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/dtd/images/bumpy/bumpy_0190.jpg"
+            ],
+            "labels": [
+                "bumpy"
+            ],
+            "root_cause": "The model's similarity scores were close among several options, leading to a misclassification based on the highest score rather than a detailed analysis of the texture.",
+            "source_reasoning": "1. **Observe**: The image shows a light beige or tan textured surface with small, rounded protrusions that create a granular appearance. The texture is uniform and consistent throughout, with no significant variations in color or shape.\n2. **Localize**: The most discriminative local parts are the small, rounded protrusions that give the surface a granular appearance.\n3. **Compare**: The visual characteristics of the candidate subcategories include:\n   - **Porous**: The image does not show pores or holes; it is solid.\n   - **Fibrous**: The image does not show fibers or strands; it is a granular surface.\n   - **Flecked**: The image does not show flecks or specks; it is a uniform surface.\n   - **Cracked**: The image does not show cracks or fissures; it is smooth between the bumps.\n   - **Pitted**: The image shows small, rounded protrusions, which aligns with the description of a pitted surface.\n4. **Decide**: Based on the match between the observed details and the subcategory descriptions, the most likely class is \"pitted.\"",
+            "normalized": "analyze the texture comprehensively before assigning a class focusing on distinguishing between granular and pitted textures",
+            "failure_patterns": [],
+            "id": "R3",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
     ]
 ]
