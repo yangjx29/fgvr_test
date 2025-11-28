@@ -1,0 +1,123 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+Dataset: birdsnap (num_classes=500)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 10.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/birdsnap500/knowledge_base  # 知识库目录
+Results Out: ./results/birdsnap_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === Step1: 构建知识库 ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: birdsnap (birdsnap500)
+类别数: 500
+实验目录: ./experiments/birdsnap500
+✅ JSON文件检查通过: ./experiments/birdsnap500/images_split
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-11-28 20:45:22 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/birdsnap500_all.yml',
+ 'knowledge_base_dir': './experiments/birdsnap500/knowledge_base',
+ 'mode': 'build_knowledge_base',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': False}
+=== Configuration (cfg) ===
+{'batch_size': 32,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/birdsnap',
+ 'dataset_name': 'birdsnap',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/birdsnap500',
+ 'expt_dir_describe': './experiments/birdsnap500/describe',
+ 'expt_dir_gallery': './experiments/birdsnap500/gallery',
+ 'expt_dir_grouping': './experiments/birdsnap500/grouping',
+ 'expt_dir_guess': './experiments/birdsnap500/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 250,
+ 'num_classes': 500,
+ 'num_novel': 250,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/birdsnap500/gallery/birdsnap_image_descriptions_attn',
+ 'path_identify_answers': './experiments/birdsnap500/identify',
+ 'path_llm_gussed_names': './experiments/birdsnap500/guess/birdsnap_llm_gussed_names',
+ 'path_llm_prompts': './experiments/birdsnap500/describe/birdsnap_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/birdsnap500/guess/birdsnap_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/birdsnap500/guess/birdsnap_llm_replies_raw',
+ 'path_references': './experiments/birdsnap500/gallery/birdsnap_image_references',
+ 'path_regions': './experiments/birdsnap500/gallery/birdsnap_image_regions',
+ 'path_vqa_answers': './experiments/birdsnap500/describe/birdsnap_attributes_pairs',
+ 'path_vqa_questions': './experiments/birdsnap500/describe/birdsnap_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "birdsnap500",
+    "num_classes": 500,
+    "config_file": "birdsnap500_all.yml",
+    "data_dir": "birdsnap",
+    "experiment_dir": "birdsnap500",
+    "stats_file": "birdsnap500/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/birdsnap500/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/birdsnap500"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.92s/it]Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:12,  3.15s/it]
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 512, in <module>
+    system = FastSlowThinkingSystem(
+  File "/home/hdl/project/fgvr_test_new/fast_slow_thinking_system.py", line 73, in __init__
+    self.mllm_bot = MLLMBot(
+  File "/home/hdl/project/fgvr_test_new/agents/mllm_bot.py", line 113, in __init__
+    self.qwen2_5 = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 262, in _wrapper
+    return func(*args, **kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 4319, in from_pretrained
+    ) = cls._load_pretrained_model(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 4897, in _load_pretrained_model
+    new_error_msgs, offload_index, state_dict_index = _load_state_dict_into_meta_model(
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/transformers/modeling_utils.py", line 896, in _load_state_dict_into_meta_model
+    set_module_tensor_to_device(model, param_name, param_device, **set_module_kwargs)
+  File "/home/hdl/miniconda3/envs/finer_dynamic/lib/python3.9/site-packages/accelerate/utils/modeling.py", line 343, in set_module_tensor_to_device
+    new_value = value.to(device, non_blocking=non_blocking)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 130.00 MiB. GPU 0 has a total capacity of 47.40 GiB of which 116.94 MiB is free. Process 719641 has 42.15 GiB memory in use. Including non-PyTorch memory, this process has 5.13 GiB memory in use. Of the allocated memory 4.77 GiB is allocated by PyTorch, and 106.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=1)

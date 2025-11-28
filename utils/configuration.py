@@ -118,6 +118,14 @@ def setup_config(config_file_env: str, config_file_expt: str):
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "ucf_101")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "ucf101")  # 设置实验目录
         mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "imagenet_sketch":  # 如果是ImageNet-Sketch数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "ImageNet_Sketch")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "ImageNet_Sketch1000")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
+    elif cfg_expt['dataset_name'] == "imagenet_v2":  # 如果是ImageNetV2数据集
+        cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "ImageNet_v2")  # 设置数据目录
+        cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "imagenet_v2_1000")  # 设置实验目录
+        mkdir_if_missing(cfg_expt['expt_dir'])  # 创建实验目录（如果不存在）
     elif cfg_expt['dataset_name'] == "place":  # 如果是场景数据集
         cfg_expt['data_dir'] = os.path.join(cfg_env['data_root'], "place_365")  # 设置数据目录
         cfg_expt['expt_dir'] = os.path.join(cfg_env['expt_root'], "place365")  # 设置实验目录

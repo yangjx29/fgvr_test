@@ -107,6 +107,14 @@ def modify_paths_in_json(data, dataset_name):
             # imagenet_1k: paths are already in correct format (train/nXXXXXX/filename.jpg)
             # No path modification needed, just add the dataset prefix
             pass
+        elif dataset_name == 'ImageNet_Sketch':
+            # ImageNet_Sketch: paths are already in correct format (sketch/nXXXXXX/image.JPEG)
+            # No path modification needed, just add the dataset prefix
+            pass
+        elif dataset_name == 'ImageNet_v2':
+            # ImageNet_v2: paths are already in correct format (imagenetv2-xxx-format-val/cid/xxx.jpeg)
+            # No path modification needed, just add the dataset prefix
+            pass
         
         # Convert to full path relative to current working directory
         modified_path = f"./datasets/{dataset_name}/{path}"
@@ -250,7 +258,7 @@ def get_datasets_from_config(config_file, specific_dataset=None):
         'car', 'pet', 'aircraft', 'eurosat', 'food', 'dtd', 
         'caltech101', 'caltech256', 'deepfashion_multimodal', 
         'sun397', 'imagenet_a', 'imagenet_r', 'dog', 'bird', 'flower',
-        'ucf'
+        'ucf', 'imagenet_sketch', 'imagenet_v2'
     ]
     
     # Filter datasets based on specific_dataset or use all supported

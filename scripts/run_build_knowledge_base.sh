@@ -28,7 +28,7 @@ show_help() {
 
 位置参数:
     DATASET                  数据集名称 (可选)
-                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap
+                            支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf
                             如不指定，使用config.yaml中的配置
 
 选项:
@@ -239,9 +239,19 @@ case "${DATASET}" in
         CONFIG_FILE="birdsnap500_all.yml"
         DATASET_DIR="birdsnap"
         ;;
+    "ucf")
+        DATASET_NUM="101"
+        CONFIG_FILE="ucf101_all.yml"
+        DATASET_DIR="ucf101"
+        ;;
+    "imagenet_sketch")
+        DATASET_NUM="1000"
+        CONFIG_FILE="imagenet_sketch1000_all.yml"
+        DATASET_DIR="ImageNet_Sketch"
+        ;;
     *)
         echo "错误: 不支持的数据集 '${DATASET}'"
-        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap"
+        echo "支持的数据集: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf, imagenet_sketch"
         exit 1
         ;;
 esac
@@ -251,7 +261,7 @@ esac
 # deepfashion_multimodal 使用 deepfashion_multimodal23 作为实验目录名
 # sun397 使用 sun397 作为实验目录名（已包含编号）
 # imagenet_1k 使用 imagenet_1k 作为实验目录名（已包含编号）
-if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "birdsnap" ] || [ "${DATASET}" = "imagenet_1k" ]; then
+if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DATASET}" = "sun397" ] || [ "${DATASET}" = "imagenet_1k" ]; then
     EXPERIMENT_DIR="${DATASET}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"
