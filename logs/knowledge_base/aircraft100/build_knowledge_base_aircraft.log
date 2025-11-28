@@ -1,882 +1,0 @@
-[INFO] === Build Knowledge Base 启动, YAML 配置摘要 ===
-GPU: CUDA_VISIBLE_DEVICES=6  # 使用的GPU编号
-Dataset: aircraft (num_classes=)  # 数据集及类别数
-K-shot: 4  # 检索库使用每个类别的样本数目
-Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
-Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
-Knowledge Base Dir: ./experiments/aircraft100/knowledge_base  # 知识库目录
-Config File: ./configs/expts/aircraft100_all.yml  # 实验配置文件
-Log File: /home/hdl/project/fgvr_test_new/logs/knowledge_base/aircraft100/build_knowledge_base_aircraft.log  # 日志文件路径
-Run Mode: build_knowledge_base  # 运行模式
-[INFO] ========================================================
-
-Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
-当前数据集: aircraft (aircraft100)
-类别数: 100
-实验目录: ./experiments/aircraft100
-✅ JSON文件检查通过: ./experiments/aircraft100/images_split
-当前使用的 GPU 为：6
-
-=== Experiment Start Time: 2025-11-27 22:24:08 ===
-
-=== Experiment Arguments ===
-{'confidence_threshold': 0.8,
- 'config_file_env': './configs/env_machine.yml',
- 'config_file_expt': './configs/expts/aircraft100_all.yml',
- 'fusion_method': 'concat',
- 'gallery_out': None,
- 'knowledge_base_dir': './experiments/aircraft100/knowledge_base',
- 'kshot': None,
- 'mode': 'build_knowledge_base',
- 'num_per_category': '4',
- 'query_image': None,
- 'region_num': None,
- 'results_out': './results.json',
- 'similarity_threshold': 0.7,
- 'superclass': None,
- 'test_data_dir': None,
- 'test_percentage': 100.0,
- 'use_slow_thinking': None,
- 'use_test_data': False}
-=== Configuration (cfg) ===
-{'batch_size': 64,
- 'clustering_method': 'multi_clip_voting',
- 'data_dir': './datasets/fgvc_aircraft',
- 'dataset_name': 'aircraft',
- 'device': 'cuda',
- 'device_count': '1',
- 'device_id': '0',
- 'experiment': 5.0,
- 'expt_dir': './experiments/aircraft100',
- 'expt_dir_describe': './experiments/aircraft100/describe',
- 'expt_dir_gallery': './experiments/aircraft100/gallery',
- 'expt_dir_grouping': './experiments/aircraft100/grouping',
- 'expt_dir_guess': './experiments/aircraft100/guess',
- 'host': 'xiao',
- 'image_size': 224,
- 'model_size': 'ViT-B/16',
- 'model_size_mllm': 'Qwen2.5-VL-7B',
- 'model_size_vqa': 'OPT6.7B-COCO',
- 'model_type_llm': 'gpt-3.5-turbo',
- 'num_base': 50,
- 'num_classes': 100,
- 'num_novel': 50,
- 'num_workers': 16,
- 'path_descriptions': './experiments/aircraft100/gallery/aircraft_image_descriptions_attn',
- 'path_identify_answers': './experiments/aircraft100/identify',
- 'path_llm_gussed_names': './experiments/aircraft100/guess/aircraft_llm_gussed_names',
- 'path_llm_prompts': './experiments/aircraft100/describe/aircraft_llm_prompts',
- 'path_llm_replies_jsoned': './experiments/aircraft100/guess/aircraft_llm_replies_jsoned',
- 'path_llm_replies_raw': './experiments/aircraft100/guess/aircraft_llm_replies_raw',
- 'path_references': './experiments/aircraft100/gallery/aircraft_image_references',
- 'path_regions': './experiments/aircraft100/gallery/aircraft_image_regions',
- 'path_vqa_answers': './experiments/aircraft100/describe/aircraft_attributes_pairs',
- 'path_vqa_questions': './experiments/aircraft100/describe/aircraft_vqa_questions_ours',
- 'seed': 1,
- 'setup': 'ours',
- 'verbose': False}
-
-================= 快慢思考系统初始化 =================
-🖥️ 设备: cuda
-🤖 MLLM 模型标签: Qwen2.5-VL-7B
-🤖 MLLM 模型名称: Qwen2.5-VL-7B
-🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
-📄 文本编码器: ./models/Clip/clip-vit-base-patch32
-📚 数据集信息:
-{
-    "full_name": "aircraft100",
-    "num_classes": 100,
-    "config_file": "aircraft100_all.yml",
-    "data_dir": "fgvc_aircraft",
-    "experiment_dir": "aircraft100",
-    "stats_file": "aircraft100/knowledge_base/stats.json",
-    "experiments_root": "./experiments",
-    "stats_file_full": "./experiments/aircraft100/knowledge_base/stats.json",
-    "experiment_dir_full": "./experiments/aircraft100"
-}
-====================================================
-
-🚀初始化MLLM模型...
-
-================= 模型初始化（MLLMBot） =================
-📌 模型标识（model_tag）: Qwen2.5-VL-7B
-📌 模型名称（model_name）: Qwen2.5-VL-7B
-📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
-📁 图片最大尺寸: 1440 ，超出这个值将压缩
-🖥️ 设备: GPU - cuda:0
-🤖 使用 8bit 推理: 否
-🔍 使用数据类型: float16（FP32）
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.16s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.55s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.01s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.74s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.34s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.60s/it]
-✓ 已启用梯度检查点以节省显存
-📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
-🔢 当前使用的精度 dtype: float16（FP32）
-🔧 最大生成长度 max_answer_tokens: -1
-🚀 模型加载完成！
-========================================================
-
-✅ MLLM 初始化完成, 当前使用精度: 未知
-🚀 初始化知识库构建器...
-
-================= 知识库构建器初始化 =================
-🕒 初始化时间: 2025-11-27 22:24:17
-🖥️ 设备: cuda
-🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
-📝 文本编码器: ./models/Clip/clip-vit-base-patch32
-📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
-🔍 初始化 MultimodalRetrieval 模块...
-✓ 检索模块初始化完成
-📚 知识库初始化完成
-====================================================
-
-✅ 知识库构建器初始化完成
-🚀 初始化快思考模块...
-
-================= 快思考模块初始化 =================
-使用数据集stats文件: ./experiments/aircraft100/knowledge_base/stats.json
-📊 使用数据集 stats 文件: ./experiments/aircraft100/knowledge_base/stats.json
-🔧 置信度阈值 confidence_threshold: 0.8
-🔧 相似度阈值 similarity_threshold: 0.7
-🔧 融合权重 fusion_weight: 0.05
-🔧 softmax 温度 softmax_temp: 0.07
-🔧 融合阈值 fused_conf_threshold: 0.75
-🔧 融合边距阈值 fused_margin_threshold: 0.15
-🔧 单模态阈值 per_modality_conf_threshold: 0.65
-🔧 考虑 topk 重叠: True, topk_for_overlap: 3
-📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
-📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
-💾 缓存启用: True, 缓存大小: 1000
-====================================================
-
-已加载历史统计量: 791 次预测
-✅ 快思考模块初始化完成
-🚀 初始化慢思考模块...
-
-================= 慢思考模块初始化 =================
-🕒 初始化时间: 2025-11-27 22:25:59
-🖥️ 使用设备: cuda:0
-🧠 MLLM模型: Qwen2.5-VL-7B
-📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7f6022546220>
-⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7f60225460d0>
-📖 经验库构建器: None
-💾 启用缓存: 是, 缓存大小: 1000
-🔍 简化推理: 是
-🧩 使用经验库: 是, top_k_experience=1
-慢思考默认保存目录: ./experiments/aircraft100/knowledge_base
-使用数据集: aircraft, 类别数: 100
-✅ 慢思考模块初始化完成，类别映射数量: 100
-====================================================
-
-✅ 慢思考模块初始化完成
-⏱️ 启动显存监控线程...
-[2025-11-27 22:25:59] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
-🎉快慢思考系统初始化完成!
-====================================================
-
-🔄 从训练集随机抽取发现集 (模式: _4)
-✓ 加载训练数据: 90 个类别
-✓ 临时发现集已保存到: ./experiments/aircraft100/images_split/images_discovery_all_temp_4.json
-从JSON文件加载发现集: ./experiments/aircraft100/images_split/images_discovery_all_temp_4.json
-✓ 加载完成: 90 个类别，共 360 张图像
-✓ 创建JSON发现集对象: 90 个类别
-构建知识库，包含 90 个类别, dog datasets:100
-从 ./experiments/aircraft100/knowledge_base 加载知识库...
-Self-Belief已从 ./experiments/aircraft100/knowledge_base/self_belief.txt 加载
-知识库已从 ./experiments/aircraft100/knowledge_base 加载
-图像知识库类别数: 100
-文本知识库类别数: 100
-类别描述数: 100
-✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
-知识库加载完成!
-构建知识库...
-训练样本包含 90 个类别
-开始构建知识库...
-构建图像知识库...
-  0%|          | 0/90 [00:00<?, ?it/s]  1%|          | 1/90 [00:00<00:43,  2.07it/s]  2%|▏         | 2/90 [00:00<00:25,  3.46it/s]  3%|▎         | 3/90 [00:00<00:27,  3.21it/s]  4%|▍         | 4/90 [00:01<00:22,  3.85it/s]  6%|▌         | 5/90 [00:01<00:22,  3.83it/s]  7%|▋         | 6/90 [00:01<00:22,  3.74it/s]  8%|▊         | 7/90 [00:01<00:19,  4.22it/s]  9%|▉         | 8/90 [00:02<00:19,  4.23it/s] 10%|█         | 9/90 [00:02<00:20,  3.90it/s] 11%|█         | 10/90 [00:02<00:21,  3.70it/s] 12%|█▏        | 11/90 [00:02<00:20,  3.91it/s] 13%|█▎        | 12/90 [00:03<00:18,  4.14it/s] 14%|█▍        | 13/90 [00:03<00:24,  3.09it/s] 16%|█▌        | 14/90 [00:03<00:23,  3.18it/s] 17%|█▋        | 15/90 [00:04<00:23,  3.20it/s] 18%|█▊        | 16/90 [00:04<00:19,  3.78it/s] 19%|█▉        | 17/90 [00:04<00:20,  3.57it/s] 20%|██        | 18/90 [00:05<00:21,  3.39it/s] 21%|██        | 19/90 [00:05<00:18,  3.77it/s] 22%|██▏       | 20/90 [00:05<00:17,  4.09it/s] 23%|██▎       | 21/90 [00:05<00:17,  3.89it/s] 24%|██▍       | 22/90 [00:06<00:21,  3.17it/s] 26%|██▌       | 23/90 [00:06<00:18,  3.70it/s] 27%|██▋       | 24/90 [00:06<00:16,  3.98it/s] 28%|██▊       | 25/90 [00:06<00:16,  3.94it/s] 29%|██▉       | 26/90 [00:07<00:16,  3.99it/s] 30%|███       | 27/90 [00:07<00:14,  4.43it/s] 31%|███       | 28/90 [00:07<00:24,  2.57it/s] 32%|███▏      | 29/90 [00:08<00:20,  3.02it/s] 33%|███▎      | 30/90 [00:08<00:16,  3.67it/s] 34%|███▍      | 31/90 [00:08<00:15,  3.88it/s] 36%|███▌      | 32/90 [00:08<00:15,  3.67it/s] 37%|███▋      | 33/90 [00:09<00:14,  4.03it/s] 38%|███▊      | 34/90 [00:09<00:14,  3.89it/s] 39%|███▉      | 35/90 [00:09<00:14,  3.88it/s] 40%|████      | 36/90 [00:09<00:13,  3.98it/s] 41%|████      | 37/90 [00:10<00:12,  4.14it/s] 42%|████▏     | 38/90 [00:10<00:13,  3.82it/s] 43%|████▎     | 39/90 [00:10<00:12,  4.13it/s] 44%|████▍     | 40/90 [00:10<00:12,  4.05it/s] 46%|████▌     | 41/90 [00:10<00:11,  4.36it/s] 47%|████▋     | 42/90 [00:11<00:10,  4.54it/s] 48%|████▊     | 43/90 [00:11<00:10,  4.32it/s] 49%|████▉     | 44/90 [00:11<00:10,  4.46it/s] 50%|█████     | 45/90 [00:11<00:10,  4.30it/s] 51%|█████     | 46/90 [00:12<00:09,  4.51it/s] 52%|█████▏    | 47/90 [00:12<00:11,  3.87it/s] 53%|█████▎    | 48/90 [00:12<00:11,  3.54it/s] 54%|█████▍    | 49/90 [00:13<00:11,  3.43it/s] 56%|█████▌    | 50/90 [00:13<00:11,  3.59it/s] 57%|█████▋    | 51/90 [00:13<00:10,  3.83it/s] 58%|█████▊    | 52/90 [00:13<00:08,  4.24it/s] 59%|█████▉    | 53/90 [00:14<00:09,  4.08it/s] 60%|██████    | 54/90 [00:14<00:08,  4.14it/s] 61%|██████    | 55/90 [00:14<00:08,  4.14it/s] 62%|██████▏   | 56/90 [00:14<00:07,  4.51it/s] 63%|██████▎   | 57/90 [00:14<00:07,  4.25it/s] 64%|██████▍   | 58/90 [00:15<00:09,  3.55it/s] 66%|██████▌   | 59/90 [00:15<00:09,  3.36it/s] 67%|██████▋   | 60/90 [00:15<00:08,  3.59it/s] 68%|██████▊   | 61/90 [00:16<00:07,  3.79it/s] 69%|██████▉   | 62/90 [00:16<00:08,  3.41it/s] 70%|███████   | 63/90 [00:16<00:07,  3.69it/s] 71%|███████   | 64/90 [00:16<00:07,  3.60it/s] 72%|███████▏  | 65/90 [00:17<00:07,  3.42it/s] 73%|███████▎  | 66/90 [00:17<00:07,  3.19it/s] 74%|███████▍  | 67/90 [00:17<00:06,  3.42it/s] 76%|███████▌  | 68/90 [00:18<00:06,  3.52it/s] 77%|███████▋  | 69/90 [00:18<00:05,  4.02it/s] 78%|███████▊  | 70/90 [00:18<00:05,  3.93it/s] 79%|███████▉  | 71/90 [00:18<00:04,  3.95it/s] 80%|████████  | 72/90 [00:19<00:04,  3.92it/s] 81%|████████  | 73/90 [00:19<00:04,  4.19it/s] 82%|████████▏ | 74/90 [00:19<00:03,  4.32it/s] 83%|████████▎ | 75/90 [00:19<00:03,  4.51it/s] 84%|████████▍ | 76/90 [00:19<00:03,  4.56it/s] 86%|████████▌ | 77/90 [00:20<00:02,  4.55it/s] 87%|████████▋ | 78/90 [00:20<00:02,  4.72it/s] 88%|████████▊ | 79/90 [00:20<00:02,  4.45it/s] 89%|████████▉ | 80/90 [00:20<00:02,  4.80it/s] 90%|█████████ | 81/90 [00:20<00:01,  4.96it/s] 91%|█████████ | 82/90 [00:21<00:01,  4.91it/s] 92%|█████████▏| 83/90 [00:21<00:01,  4.59it/s] 93%|█████████▎| 84/90 [00:21<00:01,  4.44it/s] 94%|█████████▍| 85/90 [00:21<00:01,  4.46it/s] 96%|█████████▌| 86/90 [00:22<00:00,  4.15it/s] 97%|█████████▋| 87/90 [00:22<00:00,  3.59it/s] 98%|█████████▊| 88/90 [00:22<00:00,  3.56it/s] 99%|█████████▉| 89/90 [00:23<00:00,  3.71it/s]100%|██████████| 90/90 [00:23<00:00,  4.10it/s]100%|██████████| 90/90 [00:23<00:00,  3.87it/s]
-处理类别: 707-320
-类别 707-320 图像特征维度: (512,)
-处理类别: 727-200
-类别 727-200 图像特征维度: (512,)
-处理类别: 737-200
-类别 737-200 图像特征维度: (512,)
-处理类别: 737-300
-类别 737-300 图像特征维度: (512,)
-处理类别: 737-400
-类别 737-400 图像特征维度: (512,)
-处理类别: 737-500
-类别 737-500 图像特征维度: (512,)
-处理类别: 737-600
-类别 737-600 图像特征维度: (512,)
-处理类别: 737-700
-类别 737-700 图像特征维度: (512,)
-处理类别: 737-800
-类别 737-800 图像特征维度: (512,)
-处理类别: 737-900
-类别 737-900 图像特征维度: (512,)
-处理类别: 747-100
-[2025-11-27 22:26:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 747-100 图像特征维度: (512,)
-处理类别: 747-200
-类别 747-200 图像特征维度: (512,)
-处理类别: 747-300
-类别 747-300 图像特征维度: (512,)
-处理类别: 747-400
-类别 747-400 图像特征维度: (512,)
-处理类别: 757-200
-类别 757-200 图像特征维度: (512,)
-处理类别: 757-300
-类别 757-300 图像特征维度: (512,)
-处理类别: 767-200
-类别 767-200 图像特征维度: (512,)
-处理类别: 767-300
-类别 767-300 图像特征维度: (512,)
-处理类别: 767-400
-类别 767-400 图像特征维度: (512,)
-处理类别: 777-200
-类别 777-200 图像特征维度: (512,)
-处理类别: 777-300
-类别 777-300 图像特征维度: (512,)
-处理类别: A300B4
-[2025-11-27 22:26:05] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 A300B4 图像特征维度: (512,)
-处理类别: A310
-类别 A310 图像特征维度: (512,)
-处理类别: A318
-类别 A318 图像特征维度: (512,)
-处理类别: A319
-类别 A319 图像特征维度: (512,)
-处理类别: A320
-类别 A320 图像特征维度: (512,)
-处理类别: A321
-类别 A321 图像特征维度: (512,)
-处理类别: A330-200
-类别 A330-200 图像特征维度: (512,)
-处理类别: A330-300
-类别 A330-300 图像特征维度: (512,)
-处理类别: A340-200
-类别 A340-200 图像特征维度: (512,)
-处理类别: A340-300
-类别 A340-300 图像特征维度: (512,)
-处理类别: A340-500
-类别 A340-500 图像特征维度: (512,)
-处理类别: A340-600
-[2025-11-27 22:26:08] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 A340-600 图像特征维度: (512,)
-处理类别: A380
-类别 A380 图像特征维度: (512,)
-处理类别: ATR-42
-类别 ATR-42 图像特征维度: (512,)
-处理类别: ATR-72
-类别 ATR-72 图像特征维度: (512,)
-处理类别: An-12
-类别 An-12 图像特征维度: (512,)
-处理类别: Bae
-类别 Bae 图像特征维度: (512,)
-处理类别: BAE-125
-类别 BAE-125 图像特征维度: (512,)
-处理类别: Beechcraft
-类别 Beechcraft 图像特征维度: (512,)
-处理类别: Boeing
-类别 Boeing 图像特征维度: (512,)
-处理类别: C-130
-类别 C-130 图像特征维度: (512,)
-处理类别: C-47
-类别 C-47 图像特征维度: (512,)
-处理类别: CRJ-200
-类别 CRJ-200 图像特征维度: (512,)
-处理类别: CRJ-700
-[2025-11-27 22:26:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 CRJ-700 图像特征维度: (512,)
-处理类别: CRJ-900
-类别 CRJ-900 图像特征维度: (512,)
-处理类别: Cessna
-类别 Cessna 图像特征维度: (512,)
-处理类别: Challenger
-类别 Challenger 图像特征维度: (512,)
-处理类别: DC-10
-类别 DC-10 图像特征维度: (512,)
-处理类别: DC-3
-类别 DC-3 图像特征维度: (512,)
-处理类别: DC-6
-类别 DC-6 图像特征维度: (512,)
-处理类别: DC-8
-类别 DC-8 图像特征维度: (512,)
-处理类别: DC-9-30
-类别 DC-9-30 图像特征维度: (512,)
-处理类别: DH-82
-类别 DH-82 图像特征维度: (512,)
-处理类别: DHC-1
-类别 DHC-1 图像特征维度: (512,)
-处理类别: DHC-6
-类别 DHC-6 图像特征维度: (512,)
-处理类别: DHC-8-100
-[2025-11-27 22:26:14] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 DHC-8-100 图像特征维度: (512,)
-处理类别: DHC-8-300
-类别 DHC-8-300 图像特征维度: (512,)
-处理类别: DR-400
-类别 DR-400 图像特征维度: (512,)
-处理类别: Dornier
-类别 Dornier 图像特征维度: (512,)
-处理类别: E-170
-类别 E-170 图像特征维度: (512,)
-处理类别: E-190
-类别 E-190 图像特征维度: (512,)
-处理类别: E-195
-类别 E-195 图像特征维度: (512,)
-处理类别: EMB-120
-类别 EMB-120 图像特征维度: (512,)
-处理类别: Erj
-类别 Erj 图像特征维度: (512,)
-处理类别: Embraer
-类别 Embraer 图像特征维度: (512,)
-处理类别: Eurofighter
-[2025-11-27 22:26:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 Eurofighter 图像特征维度: (512,)
-处理类别: F-16A/B
-类别 F-16A/B 图像特征维度: (512,)
-处理类别: F/A-18
-类别 F/A-18 图像特征维度: (512,)
-处理类别: Falcon
-类别 Falcon 图像特征维度: (512,)
-处理类别: Fokker
-类别 Fokker 图像特征维度: (512,)
-处理类别: Global
-类别 Global 图像特征维度: (512,)
-处理类别: Gulfstream
-类别 Gulfstream 图像特征维度: (512,)
-处理类别: Hawk
-类别 Hawk 图像特征维度: (512,)
-处理类别: Il-76
-类别 Il-76 图像特征维度: (512,)
-处理类别: L-1011
-类别 L-1011 图像特征维度: (512,)
-处理类别: MD-11
-类别 MD-11 图像特征维度: (512,)
-处理类别: MD-80
-类别 MD-80 图像特征维度: (512,)
-处理类别: MD-87
-类别 MD-87 图像特征维度: (512,)
-处理类别: MD-90
-类别 MD-90 图像特征维度: (512,)
-处理类别: Metroliner
-[2025-11-27 22:26:20] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-类别 Metroliner 图像特征维度: (512,)
-处理类别: Model
-类别 Model 图像特征维度: (512,)
-处理类别: PA-28
-类别 PA-28 图像特征维度: (512,)
-处理类别: SR-20
-类别 SR-20 图像特征维度: (512,)
-处理类别: Saab
-类别 Saab 图像特征维度: (512,)
-处理类别: Spitfire
-类别 Spitfire 图像特征维度: (512,)
-处理类别: Tornado
-类别 Tornado 图像特征维度: (512,)
-处理类别: Tu-134
-类别 Tu-134 图像特征维度: (512,)
-处理类别: Tu-154
-类别 Tu-154 图像特征维度: (512,)
-处理类别: Yak-42
-类别 Yak-42 图像特征维度: (512,)
-构建文本知识库...
-  0%|          | 0/90 [00:00<?, ?it/s]  1%|          | 1/90 [00:12<18:42, 12.61s/it]  2%|▏         | 2/90 [00:40<31:38, 21.58s/it]  3%|▎         | 3/90 [01:15<39:57, 27.56s/it]  4%|▍         | 4/90 [01:41<38:53, 27.13s/it]处理类别: 707-320
-[2025-11-27 22:26:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-[2025-11-27 22:26:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-[2025-11-27 22:26:29] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-[2025-11-27 22:26:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
-wiki desc: Description for 707-320 category.
-推理前显存: 已分配=16.94GB, 已保留=17.13GB, 剩余=30.46GB
-MLLM描述生成失败: CUDA out of memory. Tried to allocate 14.60 GiB. GPU 0 has a total capacity of 47.40 GiB of which 14.02 GiB is free. Including non-PyTorch memory, this process has 33.37 GiB memory in use. Of the allocated memory 32.83 GiB is allocated by PyTorch, and 230.52 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-类别 707-320 文本特征维度: (512,)
-描述: Description for 707-320 category....
-处理类别: 727-200
-[2025-11-27 22:26:35] [显存监控] 已分配=16.91GB, 已保留=33.06GB, 空闲=30.50GB
-[2025-11-27 22:26:38] [显存监控] 已分配=16.91GB, 已保留=33.06GB, 空闲=30.50GB
-[2025-11-27 22:26:41] [显存监控] 已分配=16.91GB, 已保留=33.06GB, 空闲=30.50GB
-[2025-11-27 22:26:44] [显存监控] 已分配=16.91GB, 已保留=33.06GB, 空闲=30.50GB
-wiki desc: Description for 727-200 category.
-[2025-11-27 22:26:48] [显存监控] 已分配=16.93GB, 已保留=17.12GB, 空闲=30.47GB
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:26:51] [显存监控] 已分配=17.25GB, 已保留=33.79GB, 空闲=30.15GB
-[2025-11-27 22:26:54] [显存监控] 已分配=17.25GB, 已保留=33.79GB, 空闲=30.15GB
-[2025-11-27 22:26:57] [显存监控] 已分配=17.09GB, 已保留=33.79GB, 空闲=30.32GB
-[2025-11-27 22:27:00] [显存监控] 已分配=17.09GB, 已保留=33.79GB, 空闲=30.31GB
-推理后显存: 已分配=16.91GB, 已保留=33.79GB, 剩余=30.50GB
-MLLM description: The Boeing 727-200 is a narrow-body trijet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The 727-200 has a T-tail configuration, where the horizontal stabilizer is mounted on top of the vertical stabilizer. It features a rear-mounted engine design, which is characteristic of the 727 series. The aircraft also has a distinctive hump at the front of the fuselage, housing the cockpit windows.
-
-2. **Color Patterns and Markings**: The color patterns and markings can vary widely depending on the airline. In the first image, the aircraft displays a livery with "Metrojet" branding, featuring a blue and red stripe along the fuselage. The second image shows an aircraft with "Miami Air" branding in white with green accents. The third image depicts an aircraft with "Enerotail" branding, featuring a white fuselage with red and black markings.
-
-3. **Size and Proportions**: The 727-200 is a medium-sized jet, typically seating between 100 to 189 passengers. Its length is approximately 146 feet, and its wingspan is around 100 feet
-类别 727-200 文本特征维度: (512,)
-描述: The Boeing 727-200 is a narrow-body trijet airliner with several distinctive features:
-
-1. **Distinc...
-处理类别: 737-200
-[2025-11-27 22:27:03] [显存监控] 已分配=16.91GB, 已保留=33.79GB, 空闲=30.50GB
-[2025-11-27 22:27:06] [显存监控] 已分配=16.91GB, 已保留=33.79GB, 空闲=30.50GB
-[2025-11-27 22:27:09] [显存监控] 已分配=16.91GB, 已保留=33.79GB, 空闲=30.50GB
-[2025-11-27 22:27:12] [显存监控] 已分配=16.91GB, 已保留=33.79GB, 空闲=30.50GB
-[2025-11-27 22:27:15] [显存监控] 已分配=16.91GB, 已保留=33.79GB, 空闲=30.50GB
-wiki desc: Description for 737-200 category.
-推理前显存: 已分配=16.94GB, 已保留=17.15GB, 剩余=30.46GB
-[2025-11-27 22:27:19] [显存监控] 已分配=16.94GB, 已保留=17.15GB, 空闲=30.46GB
-[2025-11-27 22:27:22] [显存监控] 已分配=17.42GB, 已保留=46.64GB, 空闲=29.99GB
-[2025-11-27 22:27:25] [显存监控] 已分配=17.42GB, 已保留=46.64GB, 空闲=29.99GB
-[2025-11-27 22:27:28] [显存监控] 已分配=17.42GB, 已保留=46.64GB, 空闲=29.99GB
-[2025-11-27 22:27:31] [显存监控] 已分配=17.14GB, 已保留=46.65GB, 空闲=30.26GB
-[2025-11-27 22:27:34] [显存监控] 已分配=17.15GB, 已保留=46.65GB, 空闲=30.25GB
-[2025-11-27 22:27:37] [显存监控] 已分配=17.15GB, 已保留=46.65GB, 空闲=30.25GB
-推理后显存: 已分配=16.91GB, 已保留=46.65GB, 剩余=30.50GB
-MLLM description: The Boeing 737-200 is a narrow-body, twin-engine jet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The 737-200 has a short fuselage compared to later models in the 737 family. It features a T-tail design, where the horizontal stabilizer is mounted on top of the vertical stabilizer. The engines are mounted under the wings, which are swept back at approximately 35 degrees.
-
-2. **Color Patterns and Markings**: The color patterns and markings can vary widely depending on the airline's livery. In the provided images, one aircraft displays a white fuselage with "EUROPEAN" written along the side, while another shows a blue and green livery with "airflorida." The third aircraft has a white fuselage with "BATAVIA AIR" branding. These markings help identify the airline and its fleet.
-
-3. **Size and Proportions**: The 737-200 is smaller than the 737-300, -400, or -500 series. It has a shorter fuselage and wing span, making it more compact. The aircraft is designed for short
-类别 737-200 文本特征维度: (512,)
-描述: The Boeing 737-200 is a narrow-body, twin-engine jet airliner with several distinctive features:
-
-1....
-处理类别: 737-300
-[2025-11-27 22:27:40] [显存监控] 已分配=16.91GB, 已保留=46.65GB, 空闲=30.50GB
-[2025-11-27 22:27:44] [显存监控] 已分配=16.91GB, 已保留=46.65GB, 空闲=30.50GB
-[2025-11-27 22:27:47] [显存监控] 已分配=16.91GB, 已保留=46.65GB, 空闲=30.50GB
-wiki desc: Description for 737-300 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:27:50] [显存监控] 已分配=16.93GB, 已保留=17.12GB, 空闲=30.47GB
-[2025-11-27 22:27:53] [显存监控] 已分配=17.25GB, 已保留=33.35GB, 空闲=30.16GB
-[2025-11-27 22:27:56] [显存监控] 已分配=17.08GB, 已保留=33.35GB, 空闲=30.32GB
-[2025-11-27 22:27:59] [显存监控] 已分配=17.08GB, 已保留=33.35GB, 空闲=30.32GB
-[2025-11-27 22:28:02] [显存监控] 已分配=17.09GB, 已保留=33.35GB, 空闲=30.31GB
-推理后显存: 已分配=16.91GB, 已保留=33.35GB, 剩余=30.50GB
-MLLM description: The Boeing 737-300 is a narrow-body, twin-engine jet airliner with the following distinctive features:
-
-1. **Distinctive Physical Features**: The 737-300 has a short fuselage compared to its larger counterparts like the 737-800 or 737 MAX series. It features a T-tail configuration, where the horizontal stabilizer is mounted on top of the vertical stabilizer. The engines are mounted under the wings, which are swept back at approximately 35 degrees.
-
-2. **Color Patterns and Markings**: The 737-300 can come in various liveries depending on the airline. In the first image, the aircraft displays a silver body with red accents on the tail and winglets, representing Lauda Air. The second image shows a Delta Shuttle aircraft with a white fuselage, dark blue tail, and red and blue stripes along the fuselage. The third image depicts a TNT Express aircraft with an orange and white livery, featuring the company's logo prominently displayed.
-
-3. **Size and Proportions**: The 737-300 is smaller than the 737-800 or 737 MAX
-类别 737-300 文本特征维度: (512,)
-描述: The Boeing 737-300 is a narrow-body, twin-engine jet airliner with the following distinctive feature...
-处理类别: 737-400
-[2025-11-27 22:28:05] [显存监控] 已分配=16.91GB, 已保留=33.35GB, 空闲=30.50GB
-  6%|▌         | 5/90 [01:55<31:52, 22.50s/it]  7%|▋         | 6/90 [02:09<27:20, 19.53s/it]  8%|▊         | 7/90 [02:23<24:32, 17.75s/it]  9%|▉         | 8/90 [02:54<30:02, 21.98s/it][2025-11-27 22:28:08] [显存监控] 已分配=16.91GB, 已保留=33.35GB, 空闲=30.50GB
-[2025-11-27 22:28:11] [显存监控] 已分配=16.91GB, 已保留=33.35GB, 空闲=30.50GB
-[2025-11-27 22:28:14] [显存监控] 已分配=16.91GB, 已保留=33.35GB, 空闲=30.50GB
-wiki desc: Description for 737-400 category.
-图像过大 (1600x1079)，缩小到 (1440x971) 以节省显存
-推理前显存: 已分配=16.94GB, 已保留=17.15GB, 剩余=30.46GB
-[2025-11-27 22:28:19] [显存监控] 已分配=34.53GB, 已保留=34.74GB, 空闲=12.87GB
-MLLM描述生成失败: CUDA out of memory. Tried to allocate 16.20 GiB. GPU 0 has a total capacity of 47.40 GiB of which 12.34 GiB is free. Including non-PyTorch memory, this process has 35.05 GiB memory in use. Of the allocated memory 34.53 GiB is allocated by PyTorch, and 210.01 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-类别 737-400 文本特征维度: (512,)
-描述: Description for 737-400 category....
-处理类别: 737-500
-[2025-11-27 22:28:22] [显存监控] 已分配=16.91GB, 已保留=34.74GB, 空闲=30.50GB
-[2025-11-27 22:28:25] [显存监控] 已分配=16.91GB, 已保留=34.74GB, 空闲=30.50GB
-[2025-11-27 22:28:28] [显存监控] 已分配=16.91GB, 已保留=34.74GB, 空闲=30.50GB
-wiki desc: Description for 737-500 category.
-图像过大 (1600x1079)，缩小到 (1440x971) 以节省显存
-图像过大 (1515x1022)，缩小到 (1440x971) 以节省显存
-[2025-11-27 22:28:31] [显存监控] 已分配=16.91GB, 已保留=34.74GB, 空闲=30.50GB
-推理前显存: 已分配=16.94GB, 已保留=17.14GB, 剩余=30.46GB
-MLLM描述生成失败: CUDA out of memory. Tried to allocate 19.27 GiB. GPU 0 has a total capacity of 47.40 GiB of which 9.00 GiB is free. Including non-PyTorch memory, this process has 38.39 GiB memory in use. Of the allocated memory 37.81 GiB is allocated by PyTorch, and 268.78 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-类别 737-500 文本特征维度: (512,)
-描述: Description for 737-500 category....
-处理类别: 737-600
-[2025-11-27 22:28:34] [显存监控] 已分配=16.91GB, 已保留=38.07GB, 空闲=30.50GB
-[2025-11-27 22:28:37] [显存监控] 已分配=16.91GB, 已保留=38.07GB, 空闲=30.50GB
-[2025-11-27 22:28:40] [显存监控] 已分配=16.91GB, 已保留=38.07GB, 空闲=30.50GB
-[2025-11-27 22:28:43] [显存监控] 已分配=16.91GB, 已保留=38.07GB, 空闲=30.50GB
-wiki desc: Description for 737-600 category.
-图像过大 (1600x1078)，缩小到 (1440x970) 以节省显存
-[2025-11-27 22:28:46] [显存监控] 已分配=16.91GB, 已保留=38.07GB, 空闲=30.50GB
-推理前显存: 已分配=16.94GB, 已保留=17.14GB, 剩余=30.46GB
-MLLM描述生成失败: CUDA out of memory. Tried to allocate 15.26 GiB. GPU 0 has a total capacity of 47.40 GiB of which 13.27 GiB is free. Including non-PyTorch memory, this process has 34.12 GiB memory in use. Of the allocated memory 33.53 GiB is allocated by PyTorch, and 279.82 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-类别 737-600 文本特征维度: (512,)
-描述: Description for 737-600 category....
-处理类别: 737-700
-[2025-11-27 22:28:49] [显存监控] 已分配=16.91GB, 已保留=33.81GB, 空闲=30.50GB
-[2025-11-27 22:28:52] [显存监控] 已分配=16.91GB, 已保留=33.81GB, 空闲=30.50GB
-[2025-11-27 22:28:55] [显存监控] 已分配=16.91GB, 已保留=33.81GB, 空闲=30.50GB
-[2025-11-27 22:28:58] [显存监控] 已分配=16.91GB, 已保留=33.81GB, 空闲=30.50GB
-wiki desc: Description for 737-700 category.
-推理前显存: 已分配=16.94GB, 已保留=17.13GB, 剩余=30.47GB
-[2025-11-27 22:29:01] [显存监控] 已分配=17.41GB, 已保留=45.94GB, 空闲=29.99GB
-[2025-11-27 22:29:04] [显存监控] 已分配=17.41GB, 已保留=45.94GB, 空闲=29.99GB
-[2025-11-27 22:29:07] [显存监控] 已分配=17.41GB, 已保留=45.94GB, 空闲=29.99GB
-[2025-11-27 22:29:10] [显存监控] 已分配=17.14GB, 已保留=45.94GB, 空闲=30.26GB
-[2025-11-27 22:29:13] [显存监控] 已分配=17.19GB, 已保留=45.94GB, 空闲=30.21GB
-[2025-11-27 22:29:16] [显存监控] 已分配=17.15GB, 已保留=45.94GB, 空闲=30.25GB
-推理后显存: 已分配=16.91GB, 已保留=45.94GB, 剩余=30.50GB
-MLLM description: The Boeing 737-700 is a narrow-body, twin-engine jet airliner known for its compact size and efficient design. Here's a detailed description based on the provided images:
-
-### 1. **Distinctive Physical Features:**
-   - **Narrow Body:** The 737-700 has a slender fuselage compared to wide-body aircraft like the Airbus A330 or Boeing 777.
-   - **Twin Engines:** It features two engines mounted under the wings, which are positioned towards the rear of the fuselage.
-   - **Shorter Wingspan:** The wings are relatively short in comparison to the length of the fuselage, making it ideal for shorter routes.
-
-### 2. **Color Patterns and Markings:**
-   - **Air Berlin:** The first image shows a predominantly white fuselage with red accents on the tail and engine nacelles. The logo and name "airberlin" are prominently displayed along the side.
-   - **Cimber Sterling:** The second image displays a white fuselage with a red stripe running horizontally across the middle. The airline name "Cimber Sterling" is written in bold letters on the side.
-   - **Air Pacific Fiji:** The third
-类别 737-700 文本特征维度: (512,)
-描述: The Boeing 737-700 is a narrow-body, twin-engine jet airliner known for its compact size and efficie...
-处理类别: 737-800
-[2025-11-27 22:29:19] [显存监控] 已分配=16.91GB, 已保留=45.94GB, 空闲=30.50GB
-[2025-11-27 22:29:22] [显存监控] 已分配=16.91GB, 已保留=45.94GB, 空闲=30.50GB
-[2025-11-27 22:29:25] [显存监控] 已分配=16.91GB, 已保留=45.94GB, 空闲=30.50GB
-[2025-11-27 22:29:28] [显存监控] 已分配=16.91GB, 已保留=45.94GB, 空闲=30.50GB
-wiki desc: Description for 737-800 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:29:31] [显存监控] 已分配=17.27GB, 已保留=34.69GB, 空闲=30.14GB
-[2025-11-27 22:29:34] [显存监控] 已分配=17.27GB, 已保留=34.69GB, 空闲=30.14GB
-[2025-11-27 22:29:37] [显存监控] 已分配=17.09GB, 已保留=34.69GB, 空闲=30.31GB
-[2025-11-27 22:29:40] [显存监控] 已分配=17.09GB, 已保留=34.69GB, 空闲=30.31GB
-[2025-11-27 22:29:43] [显存监控] 已分配=17.10GB, 已保留=34.69GB, 空闲=30.30GB
-推理后显存: 已分配=16.91GB, 已保留=34.69GB, 剩余=30.50GB
- 10%|█         | 9/90 [03:20<31:17, 23.17s/it] 11%|█         | 10/90 [03:48<32:49, 24.62s/it] 12%|█▏        | 11/90 [04:22<36:08, 27.44s/it]MLLM description: The Boeing 737-800 is a narrow-body, twin-engine jet airliner known for its compact size and efficient design. Here's a detailed description based on the provided images:
-
-### 1. **Distinctive Physical Features:**
-   - **Wing Design:** The 737-800 has a high-mounted wing with a slight sweepback, which contributes to its aerodynamic efficiency.
-   - **Engine Placement:** The engines are mounted under the wings, providing thrust while minimizing drag.
-   - **Tail Design:** The vertical stabilizer is positioned at the rear of the fuselage, with a T-tail configuration for better control during flight.
-
-### 2. **Color Patterns and Markings:**
-   - **Image 1 (Novair):** The aircraft displays a white fuselage with gold and blue accents. The tail features a stylized logo with a heart shape.
-   - **Image 2 (Britannia):** This plane has a white body with dark blue stripes running along the fuselage. The tail features a figure holding a trident, symbolizing Britannia Airlines.
-   - **Image 3 (Excel Airways):** The livery is predominantly white with a blue tail fin. The Excel Airways
-类别 737-800 文本特征维度: (512,)
-描述: The Boeing 737-800 is a narrow-body, twin-engine jet airliner known for its compact size and efficie...
-处理类别: 737-900
-[2025-11-27 22:29:46] [显存监控] 已分配=16.91GB, 已保留=34.69GB, 空闲=30.50GB
-[2025-11-27 22:29:49] [显存监控] 已分配=16.91GB, 已保留=34.69GB, 空闲=30.50GB
-[2025-11-27 22:29:52] [显存监控] 已分配=16.91GB, 已保留=34.69GB, 空闲=30.50GB
-wiki desc: Description for 737-900 category.
-[2025-11-27 22:29:55] [显存监控] 已分配=16.91GB, 已保留=34.69GB, 空闲=30.50GB
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:29:58] [显存监控] 已分配=17.28GB, 已保留=35.45GB, 空闲=30.13GB
-[2025-11-27 22:30:01] [显存监控] 已分配=17.28GB, 已保留=35.45GB, 空闲=30.13GB
-[2025-11-27 22:30:04] [显存监控] 已分配=17.09GB, 已保留=35.45GB, 空闲=30.31GB
-[2025-11-27 22:30:07] [显存监控] 已分配=17.10GB, 已保留=35.45GB, 空闲=30.30GB
-[2025-11-27 22:30:10] [显存监控] 已分配=17.10GB, 已保留=35.45GB, 空闲=30.30GB
-推理后显存: 已分配=16.91GB, 已保留=35.45GB, 剩余=30.50GB
-MLLM description: The Boeing 737-900 is a narrow-body, twin-engine jet airliner known for its efficiency and versatility. Here's a detailed description based on the provided images:
-
-### 1. **Distinctive Physical Features:**
-   - **Wing Design:** The 737-900 has a high-mounted wing with a slight sweepback, which contributes to its aerodynamic efficiency.
-   - **Engine Placement:** The engines are mounted under the wings, providing good thrust-to-weight ratio and minimizing drag.
-   - **Tail Design:** The vertical stabilizer is positioned at the rear of the fuselage, with a T-tail configuration for better stability.
-
-### 2. **Color Patterns and Markings:**
-   - **Alaska Airlines:** The aircraft in Image 1 and Image 3 displays the Alaska Airlines livery, featuring a white fuselage with "Alaska" written in bold black script along the side. The tail features a stylized image of a man's face, a distinctive feature of Alaska Airlines branding.
-   - **Continental Airlines:** The aircraft in Image 2 shows the Continental Airlines livery, with a white fuselage and "Continental" written in blue on the side. The tail has a blue
-类别 737-900 文本特征维度: (512,)
-描述: The Boeing 737-900 is a narrow-body, twin-engine jet airliner known for its efficiency and versatili...
-处理类别: 747-100
-[2025-11-27 22:30:13] [显存监控] 已分配=16.91GB, 已保留=35.45GB, 空闲=30.50GB
-[2025-11-27 22:30:16] [显存监控] 已分配=16.91GB, 已保留=35.45GB, 空闲=30.50GB
-[2025-11-27 22:30:19] [显存监控] 已分配=16.91GB, 已保留=35.45GB, 空闲=30.50GB
-[2025-11-27 22:30:22] [显存监控] 已分配=16.91GB, 已保留=35.45GB, 空闲=30.50GB
-wiki desc: Description for 747-100 category.
-图像过大 (1600x1078)，缩小到 (1440x970) 以节省显存
-[2025-11-27 22:30:25] [显存监控] 已分配=16.91GB, 已保留=35.45GB, 空闲=30.50GB
-推理前显存: 已分配=16.94GB, 已保留=17.15GB, 剩余=30.47GB
-[2025-11-27 22:30:28] [显存监控] 已分配=17.40GB, 已保留=45.60GB, 空闲=30.00GB
-[2025-11-27 22:30:31] [显存监控] 已分配=17.40GB, 已保留=45.60GB, 空闲=30.00GB
-[2025-11-27 22:30:34] [显存监控] 已分配=17.40GB, 已保留=45.60GB, 空闲=30.00GB
-[2025-11-27 22:30:37] [显存监控] 已分配=17.13GB, 已保留=45.60GB, 空闲=30.27GB
-[2025-11-27 22:30:40] [显存监控] 已分配=17.14GB, 已保留=45.60GB, 空闲=30.26GB
-[2025-11-27 22:30:43] [显存监控] 已分配=17.14GB, 已保留=45.60GB, 空闲=30.26GB
-推理后显存: 已分配=16.91GB, 已保留=45.60GB, 剩余=30.50GB
-MLLM description: The Boeing 747-100 is a large, four-engine jet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The 747-100 is characterized by its massive size, with a wide fuselage and a hump on top of the forward fuselage housing the cockpit windows. It has four engines mounted under the wings, which are swept back at an angle. The aircraft's tail is tall and features a vertical stabilizer.
-
-2. **Color Patterns and Markings**: The 747-100 can come in various liveries depending on the airline. In the first image, it appears to have a dark blue and white livery, while the second image shows a white fuselage with red and blue accents on the tail. The third image depicts a NASA livery with "NASA" written on the tail and the space shuttle "Enterprise" mounted on top of the aircraft.
-
-3. **Size and Proportions**: The 747-100 is one of the largest passenger aircraft ever built, with a length of approximately 230 feet (70 meters) and a wingspan of about 230 feet (70 meters). Its height is around
-类别 747-100 文本特征维度: (512,)
-描述: The Boeing 747-100 is a large, four-engine jet airliner with several distinctive features:
-
-1. **Dis...
-处理类别: 747-200
-[2025-11-27 22:30:46] [显存监控] 已分配=16.91GB, 已保留=45.60GB, 空闲=30.50GB
-[2025-11-27 22:30:49] [显存监控] 已分配=16.91GB, 已保留=45.60GB, 空闲=30.50GB
-[2025-11-27 22:30:52] [显存监控] 已分配=16.91GB, 已保留=45.60GB, 空闲=30.50GB
-[2025-11-27 22:30:55] [显存监控] 已分配=16.91GB, 已保留=45.60GB, 空闲=30.50GB
-wiki desc: Description for 747-200 category.
-图像过大 (1600x1079)，缩小到 (1440x971) 以节省显存
-[2025-11-27 22:30:58] [显存监控] 已分配=16.91GB, 已保留=45.60GB, 空闲=30.50GB
-推理前显存: 已分配=16.94GB, 已保留=17.13GB, 剩余=30.47GB
-[2025-11-27 22:31:01] [显存监控] 已分配=17.40GB, 已保留=45.03GB, 空闲=30.01GB
-[2025-11-27 22:31:04] [显存监控] 已分配=17.40GB, 已保留=45.03GB, 空闲=30.01GB
-[2025-11-27 22:31:07] [显存监控] 已分配=17.40GB, 已保留=45.03GB, 空闲=30.01GB
-[2025-11-27 22:31:10] [显存监控] 已分配=17.14GB, 已保留=45.03GB, 空闲=30.27GB
-[2025-11-27 22:31:13] [显存监控] 已分配=17.14GB, 已保留=45.03GB, 空闲=30.26GB
-[2025-11-27 22:31:16] [显存监控] 已分配=17.15GB, 已保留=45.03GB, 空闲=30.26GB
-推理后显存: 已分配=16.91GB, 已保留=45.03GB, 剩余=30.50GB
- 13%|█▎        | 12/90 [04:53<37:18, 28.70s/it] 14%|█▍        | 13/90 [05:08<31:13, 24.33s/it] 16%|█▌        | 14/90 [05:21<26:26, 20.88s/it] 17%|█▋        | 15/90 [05:49<29:05, 23.28s/it]MLLM description: The Boeing 747-200 is a large, four-engine jet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The 747-200 is characterized by its massive size, with a long fuselage, wide body, and four engines mounted under the wings. It has a distinctive hump on the upper deck near the cockpit, which houses the flight crew. The aircraft's wingspan is relatively short compared to its length, giving it a squat appearance.
-
-2. **Color Patterns and Markings**: The color pattern can vary widely depending on the airline. In the first image, the aircraft appears in a plain white livery, while the second image shows a Continental Airlines aircraft with a white fuselage and a colorful tail featuring the airline's logo. The third image displays an Ocean Airlines aircraft with a white fuselage and blue accents, including the logo and tail design.
-
-3. **Size and Proportions**: The 747-200 is one of the largest passenger aircraft ever built, with a length of approximately 231 feet (70 meters) and a wingspan of about 200 feet (61 meters). Its height is around 56 feet (1
-类别 747-200 文本特征维度: (512,)
-描述: The Boeing 747-200 is a large, four-engine jet airliner with several distinctive features:
-
-1. **Dis...
-处理类别: 747-300
-[2025-11-27 22:31:19] [显存监控] 已分配=16.91GB, 已保留=45.03GB, 空闲=30.50GB
-[2025-11-27 22:31:22] [显存监控] 已分配=16.91GB, 已保留=45.03GB, 空闲=30.50GB
-[2025-11-27 22:31:25] [显存监控] 已分配=16.91GB, 已保留=45.03GB, 空闲=30.50GB
-[2025-11-27 22:31:28] [显存监控] 已分配=16.91GB, 已保留=45.03GB, 空闲=30.50GB
-wiki desc: Description for 747-300 category.
-图像过大 (1600x1079)，缩小到 (1440x971) 以节省显存
-推理前显存: 已分配=16.94GB, 已保留=17.13GB, 剩余=30.46GB
-[2025-11-27 22:31:31] [显存监控] 已分配=33.53GB, 已保留=33.80GB, 空闲=13.87GB
-MLLM描述生成失败: CUDA out of memory. Tried to allocate 15.26 GiB. GPU 0 has a total capacity of 47.40 GiB of which 13.28 GiB is free. Including non-PyTorch memory, this process has 34.12 GiB memory in use. Of the allocated memory 33.53 GiB is allocated by PyTorch, and 273.71 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-类别 747-300 文本特征维度: (512,)
-描述: Description for 747-300 category....
-处理类别: 747-400
-[2025-11-27 22:31:34] [显存监控] 已分配=16.91GB, 已保留=33.80GB, 空闲=30.50GB
-[2025-11-27 22:31:37] [显存监控] 已分配=16.91GB, 已保留=33.80GB, 空闲=30.50GB
-[2025-11-27 22:31:40] [显存监控] 已分配=16.91GB, 已保留=33.80GB, 空闲=30.50GB
-wiki desc: Description for 747-400 category.
-图像过大 (1600x1079)，缩小到 (1440x971) 以节省显存
-[2025-11-27 22:31:43] [显存监控] 已分配=16.91GB, 已保留=33.80GB, 空闲=30.50GB
-推理前显存: 已分配=16.94GB, 已保留=17.13GB, 剩余=30.46GB
-MLLM描述生成失败: CUDA out of memory. Tried to allocate 14.48 GiB. GPU 0 has a total capacity of 47.40 GiB of which 14.15 GiB is free. Including non-PyTorch memory, this process has 33.24 GiB memory in use. Of the allocated memory 32.70 GiB is allocated by PyTorch, and 232.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-类别 747-400 文本特征维度: (512,)
-描述: Description for 747-400 category....
-处理类别: 757-200
-[2025-11-27 22:31:46] [显存监控] 已分配=16.91GB, 已保留=32.92GB, 空闲=30.50GB
-[2025-11-27 22:31:49] [显存监控] 已分配=16.91GB, 已保留=32.92GB, 空闲=30.50GB
-[2025-11-27 22:31:52] [显存监控] 已分配=16.91GB, 已保留=32.92GB, 空闲=30.50GB
-[2025-11-27 22:31:55] [显存监控] 已分配=16.91GB, 已保留=32.92GB, 空闲=30.50GB
-wiki desc: Description for 757-200 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:31:58] [显存监控] 已分配=35.34GB, 已保留=37.83GB, 空闲=12.06GB
-[2025-11-27 22:32:01] [显存监控] 已分配=17.31GB, 已保留=37.83GB, 空闲=30.09GB
-[2025-11-27 22:32:04] [显存监控] 已分配=17.31GB, 已保留=37.83GB, 空闲=30.09GB
-[2025-11-27 22:32:07] [显存监控] 已分配=17.11GB, 已保留=37.84GB, 空闲=30.30GB
-[2025-11-27 22:32:10] [显存监控] 已分配=17.11GB, 已保留=37.84GB, 空闲=30.29GB
-推理后显存: 已分配=16.91GB, 已保留=37.84GB, 剩余=30.50GB
-MLLM description: The 757-200 is a mid-sized twin-engine jet airliner with a distinctive T-tail configuration, which sets it apart from other aircraft in its class. Here's a detailed breakdown of its key visual characteristics:
-
-1. **Distinctive Physical Features:**
-   - The 757-200 has a slender fuselage with a swept-back wing design, featuring winglets at the tips to reduce drag.
-   - It has two engines mounted under the wings, one on each side.
-
-2. **Color Patterns and Markings:**
-   - The images show the 757-200 in various liveries, including UPS, America West, and TNT Express. Each livery features bold, contrasting colors and logos.
-   - The UPS aircraft displays a white fuselage with black and gold accents, while the America West aircraft is predominantly red with white lettering and graphics.
-   - The TNT Express aircraft is orange and white, with the company's logo prominently displayed.
-
-3. **Size and Proportions:**
-   - The 757-200 is a medium-sized aircraft, slightly larger than a Boeing 737 but smaller than a Boeing 767 or 777
-类别 757-200 文本特征维度: (512,)
-描述: The 757-200 is a mid-sized twin-engine jet airliner with a distinctive T-tail configuration, which s...
-处理类别: 757-300
-[2025-11-27 22:32:13] [显存监控] 已分配=16.91GB, 已保留=37.84GB, 空闲=30.50GB
-[2025-11-27 22:32:16] [显存监控] 已分配=16.91GB, 已保留=37.84GB, 空闲=30.50GB
-[2025-11-27 22:32:19] [显存监控] 已分配=16.91GB, 已保留=37.84GB, 空闲=30.50GB
-[2025-11-27 22:32:22] [显存监控] 已分配=16.91GB, 已保留=37.84GB, 空闲=30.50GB
-[2025-11-27 22:32:25] [显存监控] 已分配=16.91GB, 已保留=37.84GB, 空闲=30.50GB
-wiki desc: Description for 757-300 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:32:28] [显存监控] 已分配=17.24GB, 已保留=32.90GB, 空闲=30.16GB
-[2025-11-27 22:32:31] [显存监控] 已分配=17.24GB, 已保留=32.90GB, 空闲=30.16GB
-[2025-11-27 22:32:34] [显存监控] 已分配=17.08GB, 已保留=32.90GB, 空闲=30.32GB
-[2025-11-27 22:32:37] [显存监控] 已分配=17.08GB, 已保留=32.90GB, 空闲=30.32GB
-[2025-11-27 22:32:40] [显存监控] 已分配=17.09GB, 已保留=32.90GB, 空闲=30.31GB
-推理后显存: 已分配=16.91GB, 已保留=32.90GB, 剩余=30.50GB
-MLLM description: The Boeing 757-300 is a twin-engine, narrow-body, long-range jet airliner designed to carry up to 289 passengers. Here's a detailed description of its distinctive features:
-
-### 1. **Distinctive Physical Features:**
-   - **Wing Design:** The 757-300 has a high-mounted wing with a slight sweepback, which contributes to its aerodynamic efficiency.
-   - **Engine Placement:** Two engines are mounted under the wings, one on each side.
-   - **Tail Design:** The vertical stabilizer is positioned at the rear of the fuselage, with a T-tail configuration.
-
-### 2. **Color Patterns and Markings:**
-   - **Image 1 (Northwest Airlines):** The aircraft displays a silver fuselage with a red stripe along the top and tail fin featuring a white "N" logo.
-   - **Image 2 (Condor):** The livery is predominantly white with blue accents on the tail and engine nacelles. The Condor logo and website URL are visible on the fuselage.
-   - **Image 3 (ATA Airlines):** The aircraft has a white fuselage with a dark blue and gold stripe running along the
- 18%|█▊        | 16/90 [06:18<30:34, 24.80s/it] 19%|█▉        | 17/90 [06:50<32:50, 27.00s/it] 20%|██        | 18/90 [07:18<32:44, 27.28s/it] 21%|██        | 19/90 [07:46<32:28, 27.44s/it]类别 757-300 文本特征维度: (512,)
-描述: The Boeing 757-300 is a twin-engine, narrow-body, long-range jet airliner designed to carry up to 28...
-处理类别: 767-200
-[2025-11-27 22:32:43] [显存监控] 已分配=16.91GB, 已保留=32.90GB, 空闲=30.50GB
-[2025-11-27 22:32:46] [显存监控] 已分配=16.91GB, 已保留=32.90GB, 空闲=30.50GB
-[2025-11-27 22:32:49] [显存监控] 已分配=16.91GB, 已保留=32.90GB, 空闲=30.50GB
-wiki desc: Description for 767-200 category.
-图像过大 (1500x1012)，缩小到 (1440x971) 以节省显存
-[2025-11-27 22:32:52] [显存监控] 已分配=16.91GB, 已保留=32.90GB, 空闲=30.50GB
-推理前显存: 已分配=16.94GB, 已保留=17.15GB, 剩余=30.46GB
-[2025-11-27 22:32:55] [显存监控] 已分配=46.44GB, 已保留=46.79GB, 空闲=0.96GB
-[2025-11-27 22:32:58] [显存监控] 已分配=17.42GB, 已保留=46.79GB, 空闲=29.98GB
-[2025-11-27 22:33:01] [显存监控] 已分配=17.42GB, 已保留=46.79GB, 空闲=29.98GB
-[2025-11-27 22:33:04] [显存监控] 已分配=17.42GB, 已保留=46.79GB, 空闲=29.98GB
-[2025-11-27 22:33:07] [显存监控] 已分配=17.14GB, 已保留=46.79GB, 空闲=30.26GB
-[2025-11-27 22:33:10] [显存监控] 已分配=17.15GB, 已保留=46.79GB, 空闲=30.25GB
-推理后显存: 已分配=16.91GB, 已保留=46.79GB, 剩余=30.50GB
-MLLM description: The Boeing 767-200 is a mid-sized twin-engine wide-body jet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The 767-200 has a long fuselage with a T-tail configuration, where the horizontal stabilizer is mounted on top of the vertical stabilizer. It features a high-mounted wing with winglets at the tips, which help reduce drag and improve fuel efficiency.
-
-2. **Color Patterns and Markings**: The 767-200 can come in various liveries, as seen in the images. The first image shows a white aircraft with a dark tail featuring a maple leaf emblem, indicating it might belong to Air Canada. The second image displays an ABX Air aircraft with a white body, red and black tail, and "ANA" branding, suggesting a partnership or leasing arrangement with All Nippon Airways. The third image showcases a Kam Air aircraft with a white fuselage, orange tail, and engine nacelles, along with the airline's logo and website address.
-
-3. **Size and Proportions**: The 767-200 is a medium-sized aircraft, larger than a typical narrow-body jet but smaller than a wide-body
-[2025-11-27 22:33:13] [显存监控] 已分配=16.91GB, 已保留=46.79GB, 空闲=30.50GB
-类别 767-200 文本特征维度: (512,)
-描述: The Boeing 767-200 is a mid-sized twin-engine wide-body jet airliner with several distinctive featur...
-处理类别: 767-300
-[2025-11-27 22:33:16] [显存监控] 已分配=16.91GB, 已保留=46.79GB, 空闲=30.50GB
-[2025-11-27 22:33:19] [显存监控] 已分配=16.91GB, 已保留=46.79GB, 空闲=30.50GB
-[2025-11-27 22:33:22] [显存监控] 已分配=16.91GB, 已保留=46.79GB, 空闲=30.50GB
-[2025-11-27 22:33:25] [显存监控] 已分配=16.91GB, 已保留=46.79GB, 空闲=30.50GB
-wiki desc: Description for 767-300 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:33:28] [显存监控] 已分配=17.26GB, 已保留=34.26GB, 空闲=30.14GB
-[2025-11-27 22:33:31] [显存监控] 已分配=17.26GB, 已保留=34.26GB, 空闲=30.14GB
-[2025-11-27 22:33:34] [显存监控] 已分配=17.09GB, 已保留=34.27GB, 空闲=30.32GB
-[2025-11-27 22:33:37] [显存监控] 已分配=17.09GB, 已保留=34.27GB, 空闲=30.31GB
-[2025-11-27 22:33:40] [显存监控] 已分配=17.10GB, 已保留=34.27GB, 空闲=30.30GB
-推理后显存: 已分配=16.91GB, 已保留=34.27GB, 剩余=30.50GB
-MLLM description: The Boeing 767-300 is a mid-sized twin-engine wide-body jet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The 767-300 has a long fuselage with a T-tail configuration, where the horizontal stabilizer is mounted on top of the vertical stabilizer. It features a high-mounted wing with leading-edge flaps and slats for improved aerodynamics during takeoff and landing.
-
-2. **Color Patterns and Markings**: The aircraft in the images display different liveries. The first image shows an Icelandair plane with a white fuselage, blue tail fin, and orange engine nacelles. The second image depicts a TACA Airlines plane with a white fuselage, blue tail fin, and a colorful stripe along the fuselage. The third image shows a MyTravel plane with a white fuselage, red and blue tail fin, and a red stripe along the fuselage.
-
-3. **Size and Proportions**: The 767-300 is a medium-sized aircraft, larger than the 737 but smaller than the 747. It has a length of approximately 63 meters and a wingspan of around 56 meters.
-类别 767-300 文本特征维度: (512,)
-描述: The Boeing 767-300 is a mid-sized twin-engine wide-body jet airliner with several distinctive featur...
-处理类别: 767-400
-[2025-11-27 22:33:43] [显存监控] 已分配=16.91GB, 已保留=34.27GB, 空闲=30.50GB
-[2025-11-27 22:33:46] [显存监控] 已分配=16.91GB, 已保留=34.27GB, 空闲=30.50GB
-[2025-11-27 22:33:49] [显存监控] 已分配=16.91GB, 已保留=34.27GB, 空闲=30.50GB
-[2025-11-27 22:33:52] [显存监控] 已分配=16.91GB, 已保留=34.27GB, 空闲=30.50GB
-wiki desc: Description for 767-400 category.
-[2025-11-27 22:33:56] [显存监控] 已分配=16.93GB, 已保留=17.12GB, 空闲=30.47GB
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:33:59] [显存监控] 已分配=17.24GB, 已保留=32.61GB, 空闲=30.17GB
-[2025-11-27 22:34:02] [显存监控] 已分配=17.08GB, 已保留=32.61GB, 空闲=30.32GB
-[2025-11-27 22:34:05] [显存监控] 已分配=17.08GB, 已保留=32.61GB, 空闲=30.32GB
-[2025-11-27 22:34:08] [显存监控] 已分配=17.09GB, 已保留=32.61GB, 空闲=30.31GB
-推理后显存: 已分配=16.91GB, 已保留=32.61GB, 剩余=30.50GB
-MLLM description: The Boeing 767-400 is a long-range, wide-body twin-engine jet airliner. Here's a detailed description of its distinctive features:
-
-1. **Distinctive Physical Features**: The 767-400 has a high T-tail configuration with a large vertical stabilizer. It features a double-deck fuselage with a spacious cabin, allowing for more passenger capacity compared to earlier models. The aircraft has two engines mounted under the wings, which are swept back at approximately 35 degrees.
-
-2. **Color Patterns and Markings**: The 767-400 can come in various liveries depending on the airline operating it. In the first image, the Continental Airlines livery is visible, featuring a white fuselage with "Continental" written in blue letters along the side. The tail fin displays the airline's logo. In the second image, Delta Air Lines' livery is evident, with a white fuselage and "Delta" written in black letters. The tail fin also features the airline's logo. The third image shows a special livery for the Boeing 767-400, with "767" prominently displayed on the tail and "Boeing 767
-类别 767-400 文本特征维度: (512,)
-描述: The Boeing 767-400 is a long-range, wide-body twin-engine jet airliner. Here's a detailed descriptio...
-处理类别: 777-200
-[2025-11-27 22:34:11] [显存监控] 已分配=16.91GB, 已保留=32.61GB, 空闲=30.50GB
-[2025-11-27 22:34:14] [显存监控] 已分配=16.91GB, 已保留=32.61GB, 空闲=30.50GB
-[2025-11-27 22:34:17] [显存监控] 已分配=16.91GB, 已保留=32.61GB, 空闲=30.50GB
-[2025-11-27 22:34:20] [显存监控] 已分配=16.91GB, 已保留=32.61GB, 空闲=30.50GB
-wiki desc: Description for 777-200 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:34:23] [显存监控] 已分配=17.31GB, 已保留=37.90GB, 空闲=30.09GB
-[2025-11-27 22:34:26] [显存监控] 已分配=17.31GB, 已保留=37.90GB, 空闲=30.09GB
-[2025-11-27 22:34:29] [显存监控] 已分配=17.10GB, 已保留=37.90GB, 空闲=30.30GB
-[2025-11-27 22:34:32] [显存监控] 已分配=17.11GB, 已保留=37.90GB, 空闲=30.29GB
-[2025-11-27 22:34:35] [显存监控] 已分配=17.12GB, 已保留=37.90GB, 空闲=30.29GB
-推理后显存: 已分配=16.91GB, 已保留=37.90GB, 剩余=30.50GB
- 22%|██▏       | 20/90 [08:13<32:05, 27.50s/it] 23%|██▎       | 21/90 [08:42<31:59, 27.81s/it] 24%|██▍       | 22/90 [09:07<30:37, 27.03s/it] 26%|██▌       | 23/90 [09:32<29:20, 26.28s/it]MLLM description: The Boeing 777-200 is a long-range, wide-body twin-engine jet airliner designed by Boeing Commercial Airplanes. Here's a detailed description of its distinctive features:
-
-### 1. **Distinctive Physical Features:**
-   - **Wing Design:** The 777-200 has a high-mounted wing with a distinctive "kink" at the wingtip, which is a hallmark of the 777 family. This design helps in reducing drag and improving fuel efficiency.
-   - **Engine Placement:** The engines are mounted under the wings, providing excellent thrust-to-weight ratio and allowing for a lower center of gravity.
-   - **Tail Design:** The vertical stabilizer is tall and narrow, contributing to better stability and control at high speeds.
-
-### 2. **Color Patterns and Markings:**
-   - **Alitalia (SkyTeam Livery):** The aircraft in Image 1 displays a silver fuselage with the SkyTeam logo prominently painted in blue and white on the tail and body. The Alitalia branding is also visible in green and white.
-   - **Vietnam Airlines:** The aircraft in Image 2 is painted in a vibrant teal color with the Vietnam Airlines logo and name in white,
-类别 777-200 文本特征维度: (512,)
-描述: The Boeing 777-200 is a long-range, wide-body twin-engine jet airliner designed by Boeing Commercial...
-处理类别: 777-300
-[2025-11-27 22:34:38] [显存监控] 已分配=16.91GB, 已保留=37.90GB, 空闲=30.50GB
-[2025-11-27 22:34:41] [显存监控] 已分配=16.91GB, 已保留=37.90GB, 空闲=30.50GB
-[2025-11-27 22:34:44] [显存监控] 已分配=16.91GB, 已保留=37.90GB, 空闲=30.50GB
-[2025-11-27 22:34:47] [显存监控] 已分配=16.91GB, 已保留=37.90GB, 空闲=30.50GB
-[2025-11-27 22:34:50] [显存监控] 已分配=16.91GB, 已保留=37.90GB, 空闲=30.50GB
-wiki desc: Description for 777-300 category.
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:34:53] [显存监控] 已分配=17.26GB, 已保留=34.54GB, 空闲=30.14GB
-[2025-11-27 22:34:56] [显存监控] 已分配=17.26GB, 已保留=34.54GB, 空闲=30.14GB
-[2025-11-27 22:34:59] [显存监控] 已分配=17.09GB, 已保留=34.54GB, 空闲=30.31GB
-[2025-11-27 22:35:02] [显存监控] 已分配=17.09GB, 已保留=34.54GB, 空闲=30.31GB
-[2025-11-27 22:35:05] [显存监控] 已分配=17.10GB, 已保留=34.54GB, 空闲=30.30GB
-推理后显存: 已分配=16.91GB, 已保留=34.54GB, 剩余=30.50GB
-MLLM description: The Boeing 777-300 is a long-range, wide-body twin-engine jet airliner known for its distinctive features:
-
-1. **Distinctive Physical Features**: The 777-300 has a large, swept-back wing design with winglets at the tips, which reduce drag and improve fuel efficiency. It features a double-deck fuselage, allowing for more passenger seating in both the main cabin and an upper deck. The aircraft's engines are mounted under the wings, and it has a T-tail configuration.
-
-2. **Color Patterns and Markings**: The color patterns and markings vary significantly between different airlines. For example, the first image shows a China Southern Airlines aircraft with a white body and blue stripe, while the second image displays an Emirates aircraft with a white body and red, green, and black tail featuring the airline's logo. The third image showcases an Air France aircraft with a white body, blue tail, and "SkyTeam" branding.
-
-3. **Size and Proportions**: The 777-300 is one of the largest commercial aircraft in service, with a length of approximately 63 meters (207 feet) and a wingspan of about 60 meters (19
-类别 777-300 文本特征维度: (512,)
-描述: The Boeing 777-300 is a long-range, wide-body twin-engine jet airliner known for its distinctive fea...
-处理类别: A300B4
-[2025-11-27 22:35:08] [显存监控] 已分配=16.91GB, 已保留=34.54GB, 空闲=30.50GB
-[2025-11-27 22:35:11] [显存监控] 已分配=16.91GB, 已保留=34.54GB, 空闲=30.50GB
-[2025-11-27 22:35:14] [显存监控] 已分配=16.91GB, 已保留=34.54GB, 空闲=30.50GB
-[2025-11-27 22:35:17] [显存监控] 已分配=16.91GB, 已保留=34.54GB, 空闲=30.50GB
-wiki desc: Description for A300B4 category.
-推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
-[2025-11-27 22:35:20] [显存监控] 已分配=17.18GB, 已保留=28.59GB, 空闲=30.23GB
-[2025-11-27 22:35:23] [显存监控] 已分配=17.05GB, 已保留=28.60GB, 空闲=30.35GB
-[2025-11-27 22:35:26] [显存监控] 已分配=17.06GB, 已保留=28.60GB, 空闲=30.34GB
-[2025-11-27 22:35:29] [显存监控] 已分配=17.06GB, 已保留=28.60GB, 空闲=30.34GB
-推理后显存: 已分配=16.91GB, 已保留=28.60GB, 剩余=30.50GB
-MLLM description: The Airbus A300B4 is a wide-body, twin-engine jet airliner with several distinctive features:
-
-1. **Distinctive Physical Features**: The A300B4 has a high-mounted wing design, which contributes to its aerodynamic efficiency. It features a T-tail configuration, where the horizontal stabilizer is mounted on top of the vertical stabilizer. The aircraft's fuselage is long and slender, designed to accommodate a large number of passengers.
-
-2. **Color Patterns and Markings**: The A300B4 can come in various color schemes, depending on the airline. In the first image, the aircraft displays a white body with blue accents, including a blue tail fin with a white bird logo. The second image shows an aircraft with a silver fuselage and red and blue tail markings. The third image presents an aircraft with a white fuselage and a dark tail fin featuring a bird logo.
-
-3. **Size and Proportions**: The A300B4 is a medium-sized aircraft, capable of carrying up to 366 passengers in a typical three-class configuration. Its wingspan is approximately 78 feet, and its length ranges from 149 to 154 feet, depending on the
-类别 A300B4 文本特征维度: (512,)
-描述: The Airbus A300B4 is a wide-body, twin-engine jet airliner with several distinctive features:
-
-1. **...
-处理类别: A310
-[2025-11-27 22:35:32] [显存监控] 已分配=16.91GB, 已保留=28.60GB, 空闲=30.50GB
-[2025-11-27 22:35:35] [显存监控] 已分配=16.91GB, 已保留=28.60GB, 空闲=30.50GB
-[2025-11-27 22:35:38] [显存监控] 已分配=16.91GB, 已保留=28.60GB, 空闲=30.50GB
-wiki desc: Description for A310 category.
-[2025-11-27 22:35:41] [显存监控] 已分配=16.91GB, 已保留=28.60GB, 空闲=30.50GB
-推理前显存: 已分配=16.93GB, 已保留=17.12GB, 剩余=30.47GB
-[2025-11-27 22:35:44] [显存监控] 已分配=17.25GB, 已保留=33.35GB, 空闲=30.15GB
-[2025-11-27 22:35:47] [显存监控] 已分配=16.98GB, 已保留=33.35GB, 空闲=30.42GB
-[2025-11-27 22:35:50] [显存监控] 已分配=17.09GB, 已保留=33.35GB, 空闲=30.32GB
-[2025-11-27 22:35:53] [显存监控] 已分配=17.09GB, 已保留=33.35GB, 空闲=30.31GB
-推理后显存: 已分配=16.91GB, 已保留=33.35GB, 剩余=30.50GB
-MLLM description: ### Description of the Airbus A310:
-
-#### 1. **Distinctive Physical Features:**
-   - The A310 is a mid-size twin-engine jet airliner with a T-tail configuration, where the horizontal stabilizer is mounted on top of the vertical stabilizer.
-   - It has a slender fuselage with a swept-back wing design, which contributes to its aerodynamic efficiency.
-
-#### 2. **Color Patterns and Markings:**
-   - The A310 in the first image displays a livery with "Balair" written prominently in red on the fuselage, along with a logo resembling a cross or a stylized "B" on the tail fin.
-   - The second image shows an aircraft with a white fuselage and a dark blue tail, typical of many commercial airliners.
-   - The third image depicts an Air France A310 with a white fuselage and the airline's logo and name clearly visible on the side.
-
-#### 3. **Size and Proportions:**
-   - The A310 is smaller than the Boeing 747 but larger than the Airbus A320 family. It has a length of approximately 60 meters and a wingspan of around 3
-类别 A310 文本特征维度: (512,)
-描述: ### Description of the Airbus A310:
-
-#### 1. **Distinctive Physical Features:**
-   - The A310 is a m...
-处理类别: A318
-[2025-11-27 22:35:56] [显存监控] 已分配=16.91GB, 已保留=33.35GB, 空闲=30.50GB
-[2025-11-27 22:35:59] [显存监控] 已分配=16.91GB, 已保留=33.35GB, 空闲=30.50GB
- 27%|██▋       | 24/90 [09:46<25:06, 22.82s/it] 28%|██▊       | 25/90 [10:18<27:28, 25.36s/it]Terminated

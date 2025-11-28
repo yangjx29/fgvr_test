@@ -1,5 +1,5 @@
 [INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
-GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+GPU: CUDA_VISIBLE_DEVICES=5  # 使用的GPU编号
 Dataset: caltech101 (num_classes=101)  # 数据集及类别数
 Test Mode: images_test  # 使用测试集
 Test Percentage: 100.0%  # 测试集采样百分比
@@ -16,25 +16,21 @@ Using a slow image processor as `use_fast` is unset and a slow processor was sav
 当前数据集: caltech101 (caltech101)
 类别数: 101
 实验目录: ./experiments/caltech101
-当前使用的 GPU 为：8
+✅ JSON文件检查通过: ./experiments/caltech101/images_split
+当前使用的 GPU 为：5
 
-=== Experiment Start Time: 2025-11-27 01:31:29 ===
+=== Experiment Start Time: 2025-11-28 21:41:33 ===
 
 === Experiment Arguments ===
 {'confidence_threshold': 0.8,
  'config_file_env': './configs/env_machine.yml',
  'config_file_expt': './configs/expts/caltech101_all.yml',
- 'fusion_method': 'concat',
- 'gallery_out': None,
  'knowledge_base_dir': './experiments/caltech101/knowledge_base',
- 'kshot': None,
  'mode': 'fast_slow',
  'num_per_category': '3',
  'query_image': None,
- 'region_num': None,
  'results_out': './results/caltech101_fast_slow_results.json',
  'similarity_threshold': 0.7,
- 'superclass': None,
  'test_data_dir': None,
  'test_percentage': 100.0,
  'use_slow_thinking': None,
@@ -103,9 +99,2248 @@ Using a slow image processor as `use_fast` is unset and a slow processor was sav
 📌 模型标识（model_tag）: Qwen2.5-VL-7B
 📌 模型名称（model_name）: Qwen2.5-VL-7B
 📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
-📁 图片最大尺寸: 1680 ，超出这个值将压缩
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
 🖥️ 设备: GPU - cuda:0
 🤖 使用 8bit 推理: 否
 🔍 使用数据类型: float16（FP32）
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.51s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.48s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:02,  1.46s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.42s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.14s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.28s/it]
-/tmp/run_fast_slow_caltech101_380667.sh: line 5: 380749 Killed                  python discovering.py --mode=fast_slow --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/caltech101_all.yml --use_test_data --test_percentage=100.0 --knowledge_base_dir=./experiments/caltech101/knowledge_base --results_out=./results/caltech101_fast_slow_results.json
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.14s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.47s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.95s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.73s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.31s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.57s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-28 21:41:42
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/caltech101/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/caltech101/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+已加载历史统计量: 510 次预测
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-28 21:43:23
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x762fc6c0ea60>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x762fc6c0eaf0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/caltech101/knowledge_base
+使用数据集: caltech101, 类别数: 101
+✅ 慢思考模块初始化完成，类别映射数量: 101
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-28 21:43:23] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/caltech101/knowledge_base 加载知识库...
+Self-Belief已从 ./experiments/caltech101/knowledge_base/self_belief.txt 加载
+知识库已从 ./experiments/caltech101/knowledge_base 加载
+图像知识库类别数: 100
+文本知识库类别数: 100
+类别描述数: 100
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x762fc6c0eaf0>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x762fb7de1190>
+📦 数据集信息: {'full_name': 'caltech101', 'num_classes': 101, 'config_file': 'caltech101_all.yml', 'data_dir': 'caltech101', 'experiment_dir': 'caltech101', 'stats_file': 'caltech101/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/caltech101/knowledge_base/stats.json', 'experiment_dir_full': './experiments/caltech101'}
+====================================================
+
+经验库构建器初始化完成!
+加载self_belief:You are an expert in fine-grained visual recognition. Please follow these steps:
+    1. Observe: First, look at the overall object and identify its coarse category (e.g., bird, dog, car).
+    2. Localize: Then, identify the most discriminative local parts.
+    3. Compare: Recall the visual characteristics of the candidate subcategories from your knowledge.
+    4. Decide: Based on the match between observed details and subcategory descriptions, choose the most likely class.
+    Answer only with the final class name.
+经验库已从 ./experiments/caltech101/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: caltech101
+数据集根目录: ./datasets
+测试百分比: 100.0%
+说明: 使用完整测试集的 100.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/caltech101/images_split/images_test.json
+  类别数量: 102
+  总图像数: 2737
+  平均每类: 26.8 张
+  图像范围: 9 - 240 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 2737 张图像，覆盖 102 个类别
+  平均每类: 26.8 张
+======================================================================
+test sample keys: ['BACKGROUND_Google', 'Faces', 'Faces_easy', 'Leopards', 'Motorbikes']...
+[fast and slow] 测试数据集包含 102 个类别
+  0%|          | 0/102 [00:00<?, ?it/s][2025-11-28 21:43:23] Processing fast-slow:   0%|          | 0/102 [00:00<?, ?it/s]开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0111.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0111.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Tick', 'Pigeon', 'Bonsai', 'Grand Piano', 'Faces', 'Dalmatian', 'Butterfly', 'Camera', 'Hedgehog', 'Platypus', 'Minaret', 'Ant', 'Euphonium', 'Stop Sign', 'Trilobite', 'Anchor', 'Mayfly', 'Sunflower', 'Octopus', 'Crab']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:26] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+模糊匹配类别修正: '[Hedgehog]' -> 'Hedgehog'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:29] [显存监控] 已分配=17.07GB, 已保留=17.35GB, 空闲=30.33GB
+[2025-11-28 21:43:32] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.8000)
+总耗时: 10.06秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0123.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0123.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Laptop', 'Accordion', 'Grand Piano', 'Electric Guitar', 'Pyramid', 'Dollar Bill', 'Stop Sign', 'Bonsai', 'Camera', 'Pigeon', 'Stapler', 'Wrench', 'Headphone', 'Cellphone', 'Scissors', 'Anchor', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:35] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 21:43:38] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:41] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:43:44] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Credit Card (置信度: 0.8500)
+总耗时: 12.12秒
+failed. pred cate:Credit Card, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0058.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0058.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Motorbikes', 'Dalmatian', 'Dragonfly', 'Octopus', 'Pigeon', 'Flamingo Head', 'Snoopy', 'Panda', 'Bonsai', 'Scorpion', 'Ceiling Fan', 'Anchor', 'Inline Skate', 'Wrench', 'Water Lilly', 'Stop Sign', 'Cup', 'Rooster', 'Binocular']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:47] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:43:51] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+发现新类别:None of the given classes match the activity depicted in the image.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:54] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Skiing (置信度: 0.8000)
+总耗时: 9.72秒
+failed. pred cate:Skiing, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0229.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0229.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Ibis', 'Pyramid', 'Schooner', 'Dolphin', 'Rooster', 'Watch', 'Kangaroo', 'Yin Yang', 'Llama', 'Trilobite', 'Starfish', 'Crocodile', 'Hawksbill', 'Minaret', 'Nautilus', 'Crab', 'Joshua Tree', 'Crocodile Head', 'Sea Horse']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:57] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+[2025-11-28 21:44:00] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1277)
+总耗时: 6.21秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1277
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0226.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0226.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dollar Bill', 'Laptop', 'Chair', 'Wheelchair', 'Grand Piano', 'Pyramid', 'Windsor Chair', 'Euphonium', 'Rooster', 'Accordion', 'Garfield', 'Cup', 'Stop Sign', 'Cannon', 'Brain', 'Anchor', 'Snoopy']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:03] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:44:06] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:09] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-28 21:44:12] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: blackboard (置信度: 0.8000)
+总耗时: 10.02秒
+succ. pred cate:blackboard, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0274.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0274.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Pigeon', 'Snoopy', 'Accordion', 'Electric Guitar', 'Grand Piano', 'Umbrella', 'Euphonium', 'Saxophone', 'Menorah', 'Car Side', 'Minaret', 'Pagoda', 'Cannon', 'Ferry', 'Anchor', 'Ceiling Fan', 'Schooner', 'Scissors']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:15] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-28 21:44:18] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+模糊匹配类别修正: 'based on the available information is "Building".' -> 'Dollar Bill'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:21] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Building (置信度: 0.9000)
+总耗时: 10.67秒
+failed. pred cate:Building, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0399.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0399.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Headphone', 'Watch', 'Bonsai', 'Laptop', 'Ibis', 'Menorah', 'Octopus', 'Ceiling Fan', 'Elephant', 'Euphonium', 'Cellphone', 'Stapler', 'Wrench', 'Anchor', 'Metronome', 'Binocular']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:24] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+模糊匹配类别修正: '[Laptop]' -> 'Laptop'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:27] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: none of the categories listed (置信度: 0.0000)
+总耗时: 7.05秒
+failed. pred cate:none of the categories listed, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0238.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0238.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Beaver', 'Hedgehog', 'Dolphin', 'Schooner', 'Anchor', 'Platypus', 'Pigeon', 'Ketch', 'Faces', 'Mandolin', 'Crab', 'Hawksbill', 'Crocodile', 'Crocodile Head', 'Crayfish', 'Sea Horse', 'Wild Cat', 'Trilobite']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:30] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+[2025-11-28 21:44:33] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:44:36] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:39] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Hedgehog (置信度: 0.8000)
+总耗时: 10.48秒
+succ. pred cate:Hedgehog, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0350.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Camera (置信度: 0.4934)
+总耗时: 0.05秒
+failed. pred cate:Camera, true cate:BACKGROUND_Google, used_slow:False, confidence:0.4934
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0220.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0220.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Beaver', 'Garfield', 'Accordion', 'Euphonium', 'Bonsai', 'Pyramid', 'Cannon', 'Schooner', 'Barrel', 'Pigeon', 'Brontosaurus', 'Panda', 'Snoopy', 'Cup', 'Rooster', 'Crocodile Head', 'Cougar Face', 'Sunflower', 'Octopus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:42] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 21:44:45] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:48] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:44:51] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Beaver (置信度: 0.8500)
+总耗时: 11.53秒
+failed. pred cate:Beaver, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0315.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0315.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Camera', 'Bonsai', 'Laptop', 'Sunflower', 'Lotus', 'Water Lilly', 'Elephant', 'Butterfly', 'Faces', 'Tick', 'Dragonfly', 'Flamingo Head', 'Pagoda', 'Nautilus', 'Flamingo', 'Strawberry']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:44:54] [显存监控] 已分配=17.03GB, 已保留=20.88GB, 空闲=30.38GB
+[2025-11-28 21:44:57] [显存监控] 已分配=17.03GB, 已保留=20.88GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.88GB, 剩余=30.50GB
+模糊匹配类别修正: 'Hibiscus' -> 'Ibis'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:45:00] [显存监控] 已分配=17.52GB, 已保留=20.88GB, 空闲=29.88GB
+[2025-11-28 21:45:03] [显存监控] 已分配=17.03GB, 已保留=20.88GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.88GB, 剩余=30.50GB
+分类完成: Hibiscus (置信度: 0.9500)
+总耗时: 13.17秒
+failed. pred cate:Hibiscus, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0310.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0310.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Accordion', 'Euphonium', 'Stop Sign', 'Garfield', 'Barrel', 'Cannon', 'Anchor', 'Grand Piano', 'Menorah', 'Wheelchair', 'Panda', 'Cup', 'Headphone', 'Wrench', 'Snoopy', 'Minaret', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:06] [显存监控] 已分配=16.93GB, 已保留=17.38GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:09] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:45:12] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Alien Food (置信度: 0.9500)
+总耗时: 9.34秒
+succ. pred cate:Alien Food, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0467.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0467.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Joshua Tree', 'Flamingo Head', 'Rooster', 'Octopus', 'Mandolin', 'Euphonium', 'Dolphin', 'Grand Piano', 'Yin Yang', 'Electric Guitar', 'Sunflower', 'Water Lilly', 'Hawksbill', 'Lotus', 'Nautilus', 'Minaret', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:15] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.47GB
+[2025-11-28 21:45:18] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:21] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:45:24] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Flamingo Head (置信度: 0.8000)
+总耗时: 11.63秒
+succ. pred cate:Flamingo Head, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0085.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0085.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Wheelchair', 'Chair', 'Accordion', 'Euphonium', 'Motorbikes', 'Menorah', 'Stop Sign', 'Umbrella', 'Barrel', 'Grand Piano', 'Car Side', 'Windsor Chair', 'Ceiling Fan', 'Headphone', 'Wrench', 'Cup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:45:27] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+模糊匹配类别修正: 'Shopping Cart' -> 'Minaret'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:30] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:45:33] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Shopping Cart (置信度: 0.9000)
+总耗时: 9.01秒
+failed. pred cate:Shopping Cart, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0369.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0369.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bonsai', 'Yin Yang', 'Dollar Bill', 'Euphonium', 'Accordion', 'Wheelchair', 'Pyramid', 'Cougar Body', 'Menorah', 'Garfield', 'Cup', 'Scissors', 'Sunflower', 'Water Lilly', 'Chair', 'Ceiling Fan', 'Laptop', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:36] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:39] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:45:42] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Affiliate Program Ad (置信度: 0.9000)
+总耗时: 7.92秒
+failed. pred cate:Affiliate Program Ad, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0323.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0323.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Euphonium', 'Electric Guitar', 'Revolver', 'Accordion', 'Umbrella', 'Faces', 'Barrel', 'Tick', 'Stop Sign', 'Pigeon', 'Octopus', 'Minaret', 'Headphone', 'Wrench', 'Cellphone', 'Garfield', 'Scorpion']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:45] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:45:48] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Revolver (置信度: 0.8000)
+总耗时: 5.78秒
+failed. pred cate:Revolver, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0110.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0110.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Barrel', 'Cannon', 'Car Side', 'Grand Piano', 'Wheelchair', 'Menorah', 'Inline Skate', 'Accordion', 'Bonsai', 'Minaret', 'Joshua Tree', 'Pagoda', 'Windsor Chair', 'Chair', 'Umbrella', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:45:51] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+[2025-11-28 21:45:54] [显存监控] 已分配=16.96GB, 已保留=17.47GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: Stop Sign (置信度: 0.1253)
+总耗时: 7.52秒
+failed. pred cate:Stop Sign, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1253
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0264.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0264.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Grand Piano', 'Windsor Chair', 'Bonsai', 'Barrel', 'Accordion', 'Water Lilly', 'Llama', 'Electric Guitar', 'Cougar Body', 'Cannon', 'Schooner', 'Lamp', 'Pagoda', 'Joshua Tree', 'Stop Sign', 'Ketch', 'Car Side', 'Chair', 'Chandelier']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 21:45:57] [显存监控] 已分配=17.01GB, 已保留=19.49GB, 空闲=30.39GB
+[2025-11-28 21:46:00] [显存监控] 已分配=17.02GB, 已保留=19.49GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.49GB, 剩余=30.50GB
+模糊匹配类别修正: '[None]' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:46:03] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:46:06] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+[2025-11-28 21:46:09] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: none of the above (置信度: 0.0000)
+总耗时: 14.66秒
+failed. pred cate:none of the above, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0451.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0451.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Octopus', 'Tick', 'Menorah', 'Yin Yang', 'Electric Guitar', 'Euphonium', 'Scorpion', 'Anchor', 'Wrench', 'Dragonfly', 'Brain', 'Sunflower', 'Minaret', 'Laptop', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2799x3999)，缩小到 (1007x1440) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:46:12] [显存监控] 已分配=17.12GB, 已保留=24.85GB, 空闲=30.28GB
+[2025-11-28 21:46:15] [显存监控] 已分配=17.08GB, 已保留=24.86GB, 空闲=30.32GB
+推理后显存: 已分配=16.91GB, 已保留=24.86GB, 剩余=30.50GB
+发现新类别:[None of the provided options fit the context of the image.]
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (2799x3999)，缩小到 (1007x1440) 以节省显存
+[2025-11-28 21:46:18] [显存监控] 已分配=16.91GB, 已保留=24.86GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:46:21] [显存监控] 已分配=16.96GB, 已保留=24.85GB, 空闲=30.44GB
+[2025-11-28 21:46:24] [显存监控] 已分配=17.05GB, 已保留=24.86GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=24.86GB, 剩余=30.50GB
+分类完成: Poster (置信度: 0.9000)
+总耗时: 15.41秒
+failed. pred cate:Poster, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0302.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0302.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bonsai', 'Menorah', 'Joshua Tree', 'Cougar Body', 'Octopus', 'Panda', 'Llama', 'Chandelier', 'Stegosaurus', 'Pigeon', 'Sunflower', 'Water Lilly', 'Stop Sign', 'Pagoda', 'Wheelchair', 'Lotus', 'Minaret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:27] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+模糊匹配类别修正: 'Classroom' -> 'Scissors'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:30] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: classroom (置信度: 0.9000)
+总耗时: 6.69秒
+succ. pred cate:classroom, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0154.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0154.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Laptop', 'Chair', 'Grand Piano', 'Tick', 'Soccer Ball', 'Wheelchair', 'Accordion', 'Trilobite', 'Octopus', 'Umbrella', 'Headphone', 'Cellphone', 'Yin Yang', 'Inline Skate', 'Gramophone', 'Wrench', 'Windsor Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:46:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:36] [显存监控] 已分配=16.95GB, 已保留=17.39GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:39] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Laptop (置信度: 0.9000)
+总耗时: 9.00秒
+failed. pred cate:Laptop, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0202.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0202.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Grand Piano', 'Euphonium', 'Scorpion', 'Umbrella', 'Barrel', 'Stop Sign', 'Sunflower', 'Yin Yang', 'Electric Guitar', 'Accordion', 'Crocodile Head', 'Joshua Tree', 'Crocodile', 'Helicopter', 'Dolphin', 'Cannon', 'Minaret', 'Gerenuk']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:46:42] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+[2025-11-28 21:46:45] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+模糊匹配类别修正: 'Tornado' -> 'Rhino'
+分类完成: Rhino (置信度: 0.0000)
+总耗时: 5.73秒
+failed. pred cate:Rhino, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0197.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0197.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Accordion', 'Euphonium', 'Soccer Ball', 'Electric Guitar', 'Mandolin', 'Saxophone', 'Inline Skate', 'Grand Piano', 'Garfield', 'Rooster', 'Anchor', 'Metronome', 'Ketch']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:46:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+发现新类别:[None of the provided categories match the image content.]
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:52] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-28 21:46:55] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Soccer Ball (置信度: 0.9500)
+总耗时: 8.98秒
+failed. pred cate:Soccer Ball, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0021.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Pizza (置信度: 0.2257)
+总耗时: 0.03秒
+failed. pred cate:Pizza, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2257
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0177.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0177.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Umbrella', 'Scorpion', 'Scissors', 'Schooner', 'Laptop', 'Yin Yang', 'Accordion', 'Garfield', 'Pyramid', 'Pigeon', 'Brain', 'Sunflower', 'Cup', 'Strawberry', 'Anchor', 'Water Lilly', 'Headphone', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:58] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+[2025-11-28 21:47:01] [显存监控] 已分配=16.95GB, 已保留=17.39GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+发现新类别:None of the given options fit the description of the image.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:04] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:47:07] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Apple (置信度: 0.9500)
+总耗时: 10.66秒
+failed. pred cate:Apple, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0023.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0023.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Anchor', 'Saxophone', 'Mandolin', 'Scorpion', 'Electric Guitar', 'Gramophone', 'Euphonium', 'Menorah', 'Ceiling Fan', 'Accordion', 'Ewer', 'Windsor Chair', 'Chandelier', 'Dragonfly', 'Lamp', 'Chair', 'Metronome']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:47:10] [显存监控] 已分配=16.98GB, 已保留=17.57GB, 空闲=30.42GB
+[2025-11-28 21:47:13] [显存监控] 已分配=16.98GB, 已保留=17.84GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.85GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:47:16] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:47:19] [显存监控] 已分配=16.95GB, 已保留=17.81GB, 空闲=30.45GB
+[2025-11-28 21:47:22] [显存监控] 已分配=16.96GB, 已保留=17.81GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.81GB, 剩余=30.50GB
+分类完成: Cowboy Boot Holder (置信度: 0.8500)
+总耗时: 15.41秒
+succ. pred cate:Cowboy Boot Holder, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0143.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Umbrella (置信度: 0.2729)
+总耗时: 0.02秒
+failed. pred cate:Umbrella, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2729
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0446.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0446.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cellphone', 'Minaret', 'Stop Sign', 'Yin Yang', 'Menorah', 'Cougar Body', 'Llama', 'Headphone', 'Euphonium', 'Dollar Bill', 'Pagoda', 'Wrench', 'Anchor', 'Joshua Tree', 'Sunflower', 'Cougar Face', 'Octopus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:25] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:28] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:47:31] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Space Needle (置信度: 0.9500)
+总耗时: 9.07秒
+succ. pred cate:Space Needle, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0134.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0134.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dalmatian', 'Llama', 'Hedgehog', 'Schooner', 'Cougar Body', 'Accordion', 'Rhino', 'Snoopy', 'Barrel', 'Panda', 'Ketch', 'Windsor Chair', 'Cup', 'Rooster', 'Sunflower', 'Mandolin', 'Lamp']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:34] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:47:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:41] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Sheep (置信度: 0.9500)
+总耗时: 10.41秒
+failed. pred cate:Sheep, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0162.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0162.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Pagoda', 'Ferry', 'Minaret', 'Anchor', 'Stop Sign', 'Grand Piano', 'Panda', 'Dalmatian', 'Bonsai', 'Car Side', 'Crocodile', 'Crocodile Head', 'Dolphin', 'Elephant']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:47:44] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.46GB
+[2025-11-28 21:47:47] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:47:50] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-28 21:47:53] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: Minaret (置信度: 0.8500)
+总耗时: 11.52秒
+failed. pred cate:Minaret, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0038.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Cellphone (置信度: 0.2358)
+总耗时: 0.02秒
+failed. pred cate:Cellphone, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2358
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0105.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0105.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Inline Skate', 'Ceiling Fan', 'Euphonium', 'Wrench', 'Saxophone', 'Umbrella', 'Lamp', 'Airplanes', 'Grand Piano', 'Anchor', 'Dragonfly', 'Binocular', 'Minaret', 'Cellphone', 'Stapler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:56] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:47:59] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:48:02] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Inline Skate (置信度: 0.8500)
+总耗时: 9.65秒
+failed. pred cate:Inline Skate, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0394.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0394.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Grand Piano', 'Bonsai', 'Barrel', 'Windsor Chair', 'Pagoda', 'Water Lilly', 'Pyramid', 'Menorah', 'Accordion', 'Metronome', 'Sunflower', 'Lotus', 'Joshua Tree', 'Ketch', 'Chandelier', 'Lamp', 'Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:05] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:48:08] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+模糊匹配类别修正: 'Pergola' -> 'Pagoda'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:11] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Pergola (置信度: 0.9000)
+总耗时: 9.34秒
+succ. pred cate:Pergola, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0086.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0086.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Accordion', 'Water Lilly', 'Euphonium', 'Gramophone', 'Dalmatian', 'Barrel', 'Windsor Chair', 'Grand Piano', 'Bonsai', 'Pigeon', 'Sunflower', 'Lamp', 'Butterfly', 'Rooster', 'Cup', 'Chandelier', 'Strawberry', 'Buddha']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:14] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+模糊匹配类别修正: 'None of the above' -> 'Inline Skate'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:17] [显存监控] 已分配=16.92GB, 已保留=17.18GB, 空闲=30.48GB
+[2025-11-28 21:48:20] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Water Lilly (置信度: 0.8000)
+总耗时: 8.96秒
+failed. pred cate:Water Lilly, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0039.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Camera (置信度: 0.2116)
+总耗时: 0.02秒
+failed. pred cate:Camera, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2116
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0124.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0124.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dolphin', 'Bonsai', 'Hawksbill', 'Rooster', 'Crab', 'Trilobite', 'Lobster', 'Yin Yang', 'Faces', 'Octopus', 'Pagoda', 'Joshua Tree', 'Crocodile', 'Water Lilly', 'Crocodile Head', 'Ferry', 'Flamingo Head', 'Lotus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:23] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+模糊匹配类别修正: '[Hawaii]' -> 'Hawksbill'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:26] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Hawaii Map (置信度: 0.9000)
+总耗时: 7.49秒
+failed. pred cate:Hawaii Map, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0200.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0200.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Crayfish', 'Euphonium', 'Scorpion', 'Airplanes', 'Cannon', 'Menorah', 'Crocodile', 'Octopus', 'Gramophone', 'Lobster', 'Dollar Bill', 'Brain', 'Wrench', 'Barrel', 'Schooner', 'Trilobite', 'Ketch', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:48:29] [显存监控] 已分配=16.91GB, 已保留=17.33GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.90GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:48:32] [显存监控] 已分配=16.95GB, 已保留=17.57GB, 空闲=30.46GB
+[2025-11-28 21:48:35] [显存监控] 已分配=16.96GB, 已保留=17.85GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.85GB, 剩余=30.50GB
+分类完成: United States Patent Office Document (置信度: 0.9500)
+总耗时: 8.34秒
+failed. pred cate:United States Patent Office Document, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0381.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0381.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dalmatian', 'Llama', 'Snoopy', 'Rooster', 'Tick', 'Stop Sign', 'Menorah', 'Bonsai', 'Euphonium', 'Faces', 'Okapi', 'Kangaroo', 'Panda', 'Elephant', 'Sunflower', 'Cougar Face', 'Dolphin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:38] [显存监控] 已分配=16.93GB, 已保留=17.38GB, 空闲=30.47GB
+[2025-11-28 21:48:41] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+分类完成: Dalmatian (置信度: 0.1565)
+总耗时: 6.35秒
+failed. pred cate:Dalmatian, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1565
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0092.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0092.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Gramophone', 'Euphonium', 'Barrel', 'Accordion', 'Electric Guitar', 'Dollar Bill', 'Cannon', 'Elephant', 'Scorpion', 'Tick', 'Mandolin', 'Metronome', 'Dragonfly', 'Garfield', 'Cup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:48:44] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:48:47] [显存监控] 已分配=16.96GB, 已保留=17.45GB, 空闲=30.44GB
+[2025-11-28 21:48:50] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: Electric Guitar (置信度: 0.8500)
+总耗时: 9.61秒
+failed. pred cate:Electric Guitar, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0256.jpg
+执行快思考...
+[2025-11-28 21:48:53] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+快思考结果确定，直接返回...
+分类完成: Llama (置信度: 0.2342)
+总耗时: 0.04秒
+failed. pred cate:Llama, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2342
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0219.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0219.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Rhino', 'Euphonium', 'Dollar Bill', 'Tick', 'Electric Guitar', 'Cannon', 'Anchor', 'Yin Yang', 'Menorah', 'Wrench', 'Laptop', 'Brain', 'Headphone', 'Binocular', 'Cellphone', 'Scissors', 'Stapler']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:56] [显存监控] 已分配=16.95GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:48:59] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Privacy (置信度: 0.8000)
+总耗时: 8.75秒
+failed. pred cate:Privacy, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0340.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0340.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Dolphin', 'Trilobite', 'Grand Piano', 'Anchor', 'Barrel', 'Platypus', 'Beaver', 'Crayfish', 'Cannon', 'Ketch', 'Minaret', 'Hawksbill', 'Dragonfly', 'Octopus', 'Pagoda', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:49:03] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:49:06] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Surfboard' -> 'Sunflower'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:49:09] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Kayak (置信度: 0.8000)
+总耗时: 9.11秒
+failed. pred cate:Kayak, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0460.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0460.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Euphonium', 'Saxophone', 'Trilobite', 'Crab', 'Electric Guitar', 'Accordion', 'Cannon', 'Barrel', 'Crayfish', 'Stop Sign', 'Brain', 'Minaret', 'Octopus', 'Brontosaurus', 'Anchor', 'Bass', 'Garfield', 'Pyramid']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (1792x1200)，缩小到 (1440x964) 以节省显存
+[2025-11-28 21:49:12] [显存监控] 已分配=16.91GB, 已保留=17.34GB, 空闲=30.50GB
+[2025-11-28 21:49:17] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:49:20] [显存监控] 已分配=17.05GB, 已保留=24.04GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=24.04GB, 剩余=30.50GB
+发现新类别:[No category listed matches the content of the image.]
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (1792x1200)，缩小到 (1440x964) 以节省显存
+[2025-11-28 21:49:23] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:26] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:49:29] [显存监控] 已分配=17.10GB, 已保留=24.04GB, 空闲=30.30GB
+[2025-11-28 21:49:32] [显存监控] 已分配=17.07GB, 已保留=24.04GB, 空闲=30.33GB
+[2025-11-28 21:49:35] [显存监控] 已分配=17.05GB, 已保留=24.04GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=24.04GB, 剩余=30.50GB
+分类完成: Whiteboard with handwritten notes (置信度: 0.9000)
+总耗时: 24.16秒
+failed. pred cate:Whiteboard with handwritten notes, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0069.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0069.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Windsor Chair', 'Barrel', 'Grand Piano', 'Mandolin', 'Water Lilly', 'Euphonium', 'Rooster', 'Pyramid', 'Beaver', 'Cup', 'Snoopy', 'Sunflower', 'Lamp', 'Car Side']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+模糊匹配类别修正: '[Signboard]' -> 'Stegosaurus'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:49:38] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:49:41] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Signboard (置信度: 0.8000)
+总耗时: 6.97秒
+failed. pred cate:Signboard, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0400.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0400.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Tick', 'Garfield', 'Pyramid', 'Barrel', 'Bonsai', 'Beaver', 'Elephant', 'Platypus', 'Umbrella', 'Sunflower', 'Rooster', 'Panda', 'Cup', 'Anchor', 'Cougar Face', 'Octopus', 'Strawberry', 'Snoopy']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:49:44] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+模糊匹配类别修正: 'Globe' -> 'Lobster'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:49:47] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-28 21:49:50] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Umbrella (置信度: 0.8000)
+总耗时: 8.24秒
+failed. pred cate:Umbrella, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0005.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Ferry (置信度: 0.3338)
+总耗时: 0.03秒
+failed. pred cate:Ferry, true cate:BACKGROUND_Google, used_slow:False, confidence:0.3338
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0010.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0010.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Yin Yang', 'Soccer Ball', 'Water Lilly', 'Mandolin', 'Electric Guitar', 'Tick', 'Wheelchair', 'Cannon', 'Cup', 'Barrel', 'Brain', 'Octopus', 'Sunflower', 'Trilobite', 'Nautilus', 'Dragonfly', 'Pagoda', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:49:53] [显存监控] 已分配=16.95GB, 已保留=17.69GB, 空闲=30.45GB
+[2025-11-28 21:49:56] [显存监控] 已分配=16.96GB, 已保留=17.70GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.70GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:49:59] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:50:02] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: Water Lilly (置信度: 0.8500)
+总耗时: 13.86秒
+failed. pred cate:Water Lilly, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0091.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0091.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Rhino', 'Faces', 'Llama', 'Elephant', 'Rooster', 'Barrel', 'Tick', 'Panda', 'Dalmatian', 'Crocodile Head', 'Kangaroo', 'Okapi', 'Cougar Face', 'Gerenuk', 'Emu']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:50:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:50:09] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+模糊匹配类别修正: 'Cow' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:50:12] [显存监控] 已分配=16.94GB, 已保留=17.49GB, 空闲=30.46GB
+[2025-11-28 21:50:15] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+分类完成: Cow (置信度: 0.9500)
+总耗时: 11.89秒
+failed. pred cate:Cow, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0223.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0223.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Dollar Bill', 'Wheelchair', 'Yin Yang', 'Cannon', 'Umbrella', 'Buddha', 'Octopus', 'Garfield', 'Bonsai', 'Revolver', 'Tick', 'Joshua Tree', 'Pyramid', 'Brain', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 21:50:18] [显存监控] 已分配=16.96GB, 已保留=18.05GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.05GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 21:50:21] [显存监控] 已分配=16.96GB, 已保留=18.00GB, 空闲=30.45GB
+[2025-11-28 21:50:24] [显存监控] 已分配=16.98GB, 已保留=18.00GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=18.00GB, 剩余=30.50GB
+分类完成: Document (置信度: 0.9500)
+总耗时: 9.05秒
+failed. pred cate:Document, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0212.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0212.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Crab', 'Pigeon', 'Faces', 'Scorpion', 'Octopus', 'Pyramid', 'Lobster', 'Hawksbill', 'Inline Skate', 'Panda', 'Minaret', 'Sunflower', 'Elephant', 'Water Lilly', 'Pagoda', 'Pizza', 'Wheelchair', 'Strawberry', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:50:28] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:50:31] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:50:35] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 21:50:38] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Crab (置信度: 0.8000)
+总耗时: 13.64秒
+failed. pred cate:Crab, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0028.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0028.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Electric Guitar', 'Grand Piano', 'Chair', 'Accordion', 'Mandolin', 'Metronome', 'Windsor Chair', 'Saxophone', 'Euphonium', 'Wheelchair', 'Chandelier', 'Barrel', 'Minaret', 'Headphone', 'Lamp']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:50:41] [显存监控] 已分配=16.98GB, 已保留=17.52GB, 空闲=30.42GB
+[2025-11-28 21:50:44] [显存监控] 已分配=16.96GB, 已保留=17.76GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.76GB, 剩余=30.50GB
+模糊匹配类别修正: 'Mannequin' -> 'Mandolin'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:50:47] [显存监控] 已分配=16.95GB, 已保留=17.76GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.76GB, 剩余=30.50GB
+分类完成: Mannequin (置信度: 0.9500)
+总耗时: 10.23秒
+failed. pred cate:Mannequin, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0420.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0420.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Garfield', 'Soccer Ball', 'Wheelchair', 'Umbrella', 'Barrel', 'Cannon', 'Tick', 'Euphonium', 'Grand Piano', 'Cougar Body', 'Inline Skate', 'Stop Sign', 'Car Side', 'Dolphin', 'Headphone', 'Helicopter', 'Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:50:50] [显存监控] 已分配=16.93GB, 已保留=17.38GB, 空闲=30.47GB
+[2025-11-28 21:50:53] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:50:56] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:50:59] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Basketball (置信度: 0.9500)
+总耗时: 10.51秒
+failed. pred cate:Basketball, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0465.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0465.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Wild Cat', 'Cougar Body', 'Garfield', 'Faces', 'Leopards', 'Dalmatian', 'Dolphin', 'Scorpion', 'Accordion', 'Camera', 'Cougar Face', 'Kangaroo', 'Hedgehog', 'Panda', 'Llama', 'Elephant', 'Beaver']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Cats' -> 'Ant'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:51:02] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:05] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Domestic Cat (置信度: 0.9500)
+总耗时: 7.63秒
+failed. pred cate:Domestic Cat, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0411.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0411.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Euphonium', 'Yin Yang', 'Saxophone', 'Mandolin', 'Elephant', 'Garfield', 'Electric Guitar', 'Airplanes', 'Scissors', 'Accordion', 'Anchor', 'Minaret', 'Wrench', 'Headphone', 'Pagoda', 'Cellphone', 'Octopus', 'Dragonfly', 'Sunflower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:51:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:12] [显存监控] 已分配=16.95GB, 已保留=17.41GB, 空闲=30.45GB
+[2025-11-28 21:51:15] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+发现新类别:None of the given options seem to fit the observed details accurately. The image might represent a custom logo or a specific brand that is
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:18] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Airplane (置信度: 0.8000)
+总耗时: 12.99秒
+succ. pred cate:Airplane, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0342.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0342.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Garfield', 'Faces', 'Laptop', 'Euphonium', 'Menorah', 'Windsor Chair', 'Yin Yang', 'Saxophone', 'Wild Cat', 'Chair', 'Wheelchair', 'Stop Sign', 'Helicopter', 'Bass', 'Car Side', 'Revolver']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:21] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:51:24] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:27] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.8000)
+总耗时: 8.45秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0317.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0317.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Garfield', 'Snoopy', 'Accordion', 'Hedgehog', 'Gramophone', 'Grand Piano', 'Bonsai', 'Panda', 'Menorah', 'Stegosaurus', 'Octopus', 'Minaret', 'Cup', 'Pagoda', 'Brain', 'Water Lilly', 'Cougar Face', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:51:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:33] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+分类完成: Garfield (置信度: 0.1503)
+总耗时: 5.30秒
+failed. pred cate:Garfield, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1503
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0279.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0279.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dalmatian', 'Snoopy', 'Platypus', 'Hedgehog', 'Faces', 'Panda', 'Beaver', 'Yin Yang', 'Tick', 'Pigeon', 'Okapi', 'Llama', 'Garfield', 'Cup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 21:51:36] [显存监控] 已分配=16.98GB, 已保留=17.96GB, 空闲=30.43GB
+[2025-11-28 21:51:39] [显存监控] 已分配=16.99GB, 已保留=18.01GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.01GB, 剩余=30.50GB
+模糊匹配类别修正: 'Dog' -> 'Hedgehog'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:51:43] [显存监控] 已分配=16.95GB, 已保留=17.93GB, 空闲=30.45GB
+[2025-11-28 21:51:46] [显存监控] 已分配=16.96GB, 已保留=18.00GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.00GB, 剩余=30.50GB
+分类完成: Dog (置信度: 0.9000)
+总耗时: 14.51秒
+succ. pred cate:Dog, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0240.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Yin Yang (置信度: 0.2215)
+总耗时: 0.03秒
+failed. pred cate:Yin Yang, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2215
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0007.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0007.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Soccer Ball', 'Barrel', 'Yin Yang', 'Cannon', 'Snoopy', 'Metronome', 'Stegosaurus', 'Lamp', 'Wheelchair', 'Grand Piano', 'Chair', 'Sunflower', 'Anchor', 'Car Side', 'Ceiling Fan', 'Gramophone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:51:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:54] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:57] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Touch Screen (置信度: 0.8500)
+总耗时: 11.10秒
+failed. pred cate:Touch Screen, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0312.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0312.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Barrel', 'Minaret', 'Cup', 'Crab', 'Crayfish', 'Pyramid', 'Wheelchair', 'Crocodile', 'Chair', 'Sunflower', 'Anchor', 'Wrench', 'Metronome', 'Octopus', 'Water Lilly', 'Pagoda', 'Headphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:00] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+[2025-11-28 21:52:03] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+模糊匹配类别修正: 'None of the provided categories fit the image.' -> 'Electric Guitar'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:06] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:52:09] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: book cover (置信度: 0.9000)
+总耗时: 9.93秒
+failed. pred cate:book cover, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0079.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0079.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Menorah', 'Dalmatian', 'Garfield', 'Octopus', 'Wheelchair', 'Water Lilly', 'Electric Guitar', 'Rhino', 'Accordion', 'Scissors', 'Wrench', 'Stapler', 'Cup', 'Brain', 'Anchor', 'Headphone', 'Sunflower', 'Cellphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:52:12] [显存监控] 已分配=17.02GB, 已保留=18.90GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=18.91GB, 剩余=30.50GB
+模糊匹配类别修正: '[None]' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:52:15] [显存监控] 已分配=16.99GB, 已保留=18.90GB, 空闲=30.41GB
+[2025-11-28 21:52:18] [显存监控] 已分配=17.00GB, 已保留=18.90GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.91GB, 剩余=30.50GB
+分类完成: Traffic Ticket (置信度: 0.9500)
+总耗时: 10.40秒
+failed. pred cate:Traffic Ticket, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0089.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0089.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Yin Yang', 'Electric Guitar', 'Crab', 'Pyramid', 'Soccer Ball', 'Grand Piano', 'Wheelchair', 'Mandolin', 'Chandelier', 'Pagoda', 'Sunflower', 'Minaret', 'Hawksbill', 'Crocodile Head', 'Crocodile', 'Joshua Tree', 'Water Lilly', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:21] [显存监控] 已分配=16.94GB, 已保留=17.47GB, 空闲=30.46GB
+[2025-11-28 21:52:24] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+发现新类别:None of the provided categories fit the image accurately.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:27] [显存监控] 已分配=16.93GB, 已保留=17.37GB, 空闲=30.47GB
+[2025-11-28 21:52:30] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+分类完成: Bridge (置信度: 0.9500)
+总耗时: 10.80秒
+succ. pred cate:Bridge, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0425.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0425.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cannon', 'Barrel', 'Euphonium', 'Umbrella', 'Minaret', 'Binocular', 'Stop Sign', 'Lamp', 'Yin Yang', 'Camera', 'Anchor', 'Joshua Tree', 'Crocodile', 'Ceiling Fan', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:33] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+[2025-11-28 21:52:36] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: Cannon (置信度: 0.1862)
+总耗时: 5.76秒
+failed. pred cate:Cannon, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1862
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0402.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0402.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Windsor Chair', 'Yin Yang', 'Bonsai', 'Metronome', 'Wheelchair', 'Airplanes', 'Pigeon', 'Scissors', 'Headphone', 'Dollar Bill', 'Chair', 'Ceiling Fan', 'Laptop', 'Wrench', 'Motorbikes', 'Helicopter']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:39] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+发现新类别:None of the provided categories fit the image content.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:42] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-28 21:52:45] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Testimonial (置信度: 0.9500)
+总耗时: 10.19秒
+failed. pred cate:Testimonial, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0006.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0006.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Bonsai', 'Electric Guitar', 'Stop Sign', 'Hedgehog', 'Garfield', 'Pyramid', 'Buddha', 'Dalmatian', 'Tick', 'Sunflower', 'Wrench', 'Anchor', 'Rooster', 'Headphone', 'Water Lilly', 'Mandolin', 'Octopus', 'Panda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:52:48] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:52:51] [显存监控] 已分配=17.00GB, 已保留=18.66GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.66GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:52:54] [显存监控] 已分配=16.91GB, 已保留=18.66GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:52:57] [显存监控] 已分配=17.00GB, 已保留=18.66GB, 空闲=30.41GB
+[2025-11-28 21:53:00] [显存监控] 已分配=17.00GB, 已保留=18.66GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.66GB, 剩余=30.50GB
+分类完成: None of the categories listed (置信度: 0.0000)
+总耗时: 14.16秒
+failed. pred cate:None of the categories listed, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0390.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0390.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Electric Guitar', 'Laptop', 'Soccer Ball', 'Bonsai', 'Camera', 'Helicopter', 'Anchor', 'Grand Piano', 'Yin Yang', 'Euphonium', 'Brain', 'Wrench', 'Binocular', 'Octopus', 'Ceiling Fan', 'Pagoda', 'Minaret', 'Cellphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:03] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+[2025-11-28 21:53:06] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:09] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:53:12] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Scientist in Laboratory (置信度: 0.8000)
+总耗时: 12.81秒
+failed. pred cate:Scientist in Laboratory, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0106.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0106.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cougar Body', 'Bonsai', 'Beaver', 'Crab', 'Faces', 'Electric Guitar', 'Inline Skate', 'Scorpion', 'Pyramid', 'Wild Cat', 'Joshua Tree', 'Sunflower', 'Dolphin', 'Water Lilly', 'Wheelchair', 'Crocodile Head', 'Buddha', 'Panda', 'Gerenuk']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:15] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:53:19] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:22] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Person sitting on a rocky cliff (置信度: 0.9000)
+总耗时: 8.60秒
+failed. pred cate:Person sitting on a rocky cliff, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0209.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0209.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bonsai', 'Pyramid', 'Euphonium', 'Brontosaurus', 'Llama', 'Stegosaurus', 'Pagoda', 'Cougar Body', 'Windsor Chair', 'Yin Yang', 'Joshua Tree', 'Sunflower', 'Water Lilly', 'Crocodile Head', 'Lotus', 'Leopards', 'Flamingo Head', 'Crocodile', 'Gerenuk']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:25] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.47GB
+[2025-11-28 21:53:28] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:53:31] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:34] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:53:37] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Brontosaurus (置信度: 0.8000)
+总耗时: 15.16秒
+succ. pred cate:Brontosaurus, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0189.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0189.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Binocular', 'Camera', 'Metronome', 'Inline Skate', 'Gramophone', 'Anchor', 'Wrench', 'Stapler', 'Watch', 'Accordion', 'Headphone', 'Minaret', 'Revolver', 'Ceiling Fan', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:53:40] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+分类完成: Binocular (置信度: 0.1492)
+总耗时: 5.93秒
+succ. pred cate:Binocular, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1492
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0055.jpg
+执行快思考...
+[2025-11-28 21:53:43] [显存监控] 已分配=16.91GB, 已保留=17.68GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0055.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Wheelchair', 'Stop Sign', 'Scorpion', 'Inline Skate', 'Cougar Body', 'Snoopy', 'Octopus', 'Motorbikes', 'Accordion', 'Barrel', 'Anchor', 'Scissors', 'Rooster', 'Minaret', 'Headphone', 'Garfield', 'Cellphone', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:46] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:53:49] [显存监控] 已分配=16.95GB, 已保留=17.42GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Motorb' -> 'Motorbikes'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:53:52] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Bicyclist (置信度: 0.9000)
+总耗时: 11.52秒
+failed. pred cate:Bicyclist, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0072.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0072.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Dalmatian', 'Crab', 'Snoopy', 'Faces', 'Dolphin', 'Camera', 'Umbrella', 'Tick', 'Octopus', 'Panda', 'Ketch', 'Schooner', 'Joshua Tree', 'Elephant', 'Sunflower', 'Flamingo Head', 'Hawksbill']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:53:55] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+[2025-11-28 21:53:58] [显存监控] 已分配=16.95GB, 已保留=17.60GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.60GB, 剩余=30.50GB
+分类完成: Dalmatian (置信度: 0.1263)
+总耗时: 4.73秒
+failed. pred cate:Dalmatian, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1263
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0239.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0239.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Garfield', 'Stegosaurus', 'Brontosaurus', 'Pyramid', 'Snoopy', 'Crab', 'Hedgehog', 'Llama', 'Buddha', 'Pigeon', 'Laptop', 'Brain', 'Stop Sign', 'Octopus', 'Water Lilly', 'Yin Yang', 'Anchor', 'Cup', 'Sunflower', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:54:01] [显存监控] 已分配=16.95GB, 已保留=17.23GB, 空闲=30.45GB
+[2025-11-28 21:54:04] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:54:08] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:54:11] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Snoopy (置信度: 0.8000)
+总耗时: 12.76秒
+failed. pred cate:Snoopy, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0033.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0033.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Yin Yang', 'Saxophone', 'Grand Piano', 'Scissors', 'Euphonium', 'Bonsai', 'Pigeon', 'Octopus', 'Scorpion', 'Lobster', 'Sunflower', 'Water Lilly', 'Stop Sign', 'Snoopy', 'Anchor', 'Cup', 'Rooster', 'Panda', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:54:14] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:54:17] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+发现新类别:None of the provided classes match the content of the image.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:54:20] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: none of the above (置信度: 0.5000)
+总耗时: 9.41秒
+failed. pred cate:none of the above, true cate:BACKGROUND_Google, used_slow:True, confidence:0.5000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0127.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0127.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Pyramid', 'Airplanes', 'Minaret', 'Pagoda', 'Cannon', 'Dragonfly', 'Pigeon', 'Scorpion', 'Bonsai', 'Ceiling Fan', 'Binocular', 'Euphonium', 'Barrel', 'Cellphone', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:54:23] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+[2025-11-28 21:54:26] [显存监控] 已分配=16.95GB, 已保留=17.61GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:54:29] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.46GB
+[2025-11-28 21:54:32] [显存监控] 已分配=16.95GB, 已保留=17.56GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.56GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.8500)
+总耗时: 10.71秒
+succ. pred cate:Airplanes, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0258.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0258.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Laptop', 'Menorah', 'Accordion', 'Wheelchair', 'Dollar Bill', 'Yin Yang', 'Garfield', 'Octopus', 'Grand Piano', 'Barrel', 'Cellphone', 'Stapler', 'Wrench', 'Brain', 'Anchor', 'Binocular', 'Ceiling Fan', 'Scissors', 'Headphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:54:35] [显存监控] 已分配=16.96GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+发现新类别:None of the provided categories match the image content.
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:54:38] [显存监控] 已分配=16.95GB, 已保留=17.53GB, 空闲=30.45GB
+[2025-11-28 21:54:41] [显存监控] 已分配=16.95GB, 已保留=17.54GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.54GB, 剩余=30.50GB
+分类完成: Software Interface (置信度: 0.9500)
+总耗时: 10.47秒
+failed. pred cate:Software Interface, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0246.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0246.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Soccer Ball', 'Brain', 'Water Lilly', 'Bonsai', 'Dolphin', 'Yin Yang', 'Laptop', 'Mandolin', 'Scorpion', 'Camera', 'Trilobite', 'Nautilus', 'Sunflower', 'Hawksbill', 'Minaret', 'Pagoda', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:54:45] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+[2025-11-28 21:54:48] [显存监控] 已分配=17.03GB, 已保留=21.50GB, 空闲=30.37GB
+[2025-11-28 21:54:51] [显存监控] 已分配=17.03GB, 已保留=21.50GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.50GB, 剩余=30.50GB
+模糊匹配类别修正: 'Earth' -> 'Watch'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:54:54] [显存监控] 已分配=17.03GB, 已保留=21.50GB, 空闲=30.37GB
+[2025-11-28 21:54:57] [显存监控] 已分配=17.03GB, 已保留=21.50GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.50GB, 剩余=30.50GB
+分类完成: Earth (置信度: 0.9500)
+总耗时: 15.66秒
+failed. pred cate:Earth, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0357.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0357.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Helicopter', 'Airplanes', 'Camera', 'Electric Guitar', 'Anchor', 'Metronome', 'Ceiling Fan', 'Stapler', 'Platypus', 'Car Side', 'Wrench', 'Binocular', 'Euphonium', 'Octopus', 'Cellphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:55:00] [显存监控] 已分配=16.94GB, 已保留=17.49GB, 空闲=30.46GB
+[2025-11-28 21:55:03] [显存监控] 已分配=16.95GB, 已保留=17.51GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.51GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:55:06] [显存监控] 已分配=16.94GB, 已保留=17.44GB, 空闲=30.46GB
+[2025-11-28 21:55:09] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: Airplanes (置信度: 0.9500)
+总耗时: 10.47秒
+succ. pred cate:Airplanes, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0437.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: Laptop (置信度: 0.2690)
+总耗时: 0.03秒
+failed. pred cate:Laptop, true cate:BACKGROUND_Google, used_slow:False, confidence:0.2690
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0253.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0253.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Ferry', 'Ketch', 'Anchor', 'Cannon', 'Barrel', 'Helicopter', 'Lobster', 'Dollar Bill', 'Octopus', 'Dolphin', 'Hawksbill', 'Minaret', 'Joshua Tree', 'Starfish']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:12] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+[2025-11-28 21:55:15] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:18] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Schooner (置信度: 0.8500)
+总耗时: 10.57秒
+succ. pred cate:Schooner, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0203.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0203.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Lamp', 'Umbrella', 'Minaret', 'Camera', 'Saxophone', 'Mandolin', 'Chandelier', 'Ceiling Fan', 'Garfield', 'Scorpion', 'Laptop', 'Pagoda', 'Airplanes', 'Dollar Bill', 'Menorah', 'Ferry', 'Helicopter']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:55:22] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:25] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+模糊匹配类别修正: 'Eiffel Tower' -> 'Sunflower'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:28] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+[2025-11-28 21:55:31] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Eiffel Tower (置信度: 0.9500)
+总耗时: 12.74秒
+failed. pred cate:Eiffel Tower, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0254.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0254.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Car Side', 'Menorah', 'Euphonium', 'Electric Guitar', 'Wrench', 'Yin Yang', 'Wheelchair', 'Pyramid', 'Brontosaurus', 'Ceiling Fan', 'Anchor', 'Barrel', 'Minaret', 'Joshua Tree', 'Brain']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:55:34] [显存监控] 已分配=16.96GB, 已保留=17.77GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.77GB, 剩余=30.50GB
+模糊匹配类别修正: 'Map' -> 'Lamp'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:55:37] [显存监控] 已分配=16.95GB, 已保留=17.76GB, 空闲=30.45GB
+[2025-11-28 21:55:40] [显存监控] 已分配=16.95GB, 已保留=17.76GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.76GB, 剩余=30.50GB
+分类完成: Map (置信度: 0.9500)
+总耗时: 8.25秒
+failed. pred cate:Map, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0185.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0185.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Water Lilly', 'Bonsai', 'Electric Guitar', 'Grand Piano', 'Chair', 'Crab', 'Saxophone', 'Crayfish', 'Hawksbill', 'Chandelier', 'Lamp', 'Accordion', 'Car Side', 'Ketch', 'Pagoda', 'Dragonfly', 'Windsor Chair', 'Buddha']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:43] [显存监控] 已分配=16.94GB, 已保留=17.50GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:46] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+分类完成: Electric Guitar (置信度: 0.8000)
+总耗时: 7.76秒
+failed. pred cate:Electric Guitar, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0017.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0017.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Water Lilly', 'Grand Piano', 'Yin Yang', 'Beaver', 'Bonsai', 'Ferry', 'Schooner', 'Snoopy', 'Mandolin', 'Euphonium', 'Sunflower', 'Lotus', 'Buddha', 'Ketch', 'Pagoda', 'Minaret', 'Nautilus']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:55:51] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:54] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:57] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.47GB
+[2025-11-28 21:56:00] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+分类完成: Rowboat on a Lake (置信度: 0.8500)
+总耗时: 12.43秒
+succ. pred cate:Rowboat on a Lake, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0429.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0429.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Sunflower', 'Yin Yang', 'Bonsai', 'Snoopy', 'Mayfly', 'Motorbikes', 'Nautilus', 'Soccer Ball', 'Dalmatian', 'Electric Guitar', 'Joshua Tree', 'Ceiling Fan', 'Helicopter', 'Schooner', 'Trilobite', 'Crocodile', 'Car Side', 'Minaret', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:56:03] [显存监控] 已分配=16.96GB, 已保留=17.84GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.84GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:56:06] [显存监控] 已分配=16.94GB, 已保留=17.54GB, 空闲=30.46GB
+[2025-11-28 21:56:09] [显存监控] 已分配=16.96GB, 已保留=17.80GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.80GB, 剩余=30.50GB
+分类完成: Satellite Image (置信度: 0.9500)
+总耗时: 9.52秒
+failed. pred cate:Satellite Image, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0327.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0327.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Scorpion', 'Helicopter', 'Electric Guitar', 'Menorah', 'Brontosaurus', 'Euphonium', 'Dolphin', 'Airplanes', 'Snoopy', 'Ibis', 'Minaret', 'Crocodile', 'Crocodile Head', 'Joshua Tree', 'Mayfly', 'Gerenuk', 'Stop Sign', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:56:12] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.47GB
+[2025-11-28 21:56:15] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:56:18] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Lightning (置信度: 0.9500)
+总耗时: 9.99秒
+failed. pred cate:Lightning, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0353.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0353.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Pigeon', 'Platypus', 'Faces', 'Rooster', 'Flamingo Head', 'Electric Guitar', 'Tick', 'Dragonfly', 'Dolphin', 'Kangaroo', 'Garfield', 'Crocodile Head', 'Snoopy', 'Brontosaurus', 'Bass', 'Stegosaurus', 'Panda', 'Emu']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:56:21] [显存监控] 已分配=16.95GB, 已保留=17.68GB, 空闲=30.45GB
+[2025-11-28 21:56:24] [显存监控] 已分配=16.96GB, 已保留=17.68GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+模糊匹配类别修正: 'Duck' -> 'Tick'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:56:27] [显存监控] 已分配=16.95GB, 已保留=17.63GB, 空闲=30.46GB
+[2025-11-28 21:56:30] [显存监控] 已分配=16.95GB, 已保留=17.65GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.65GB, 剩余=30.50GB
+分类完成: Darkwing Duck (置信度: 0.9500)
+总耗时: 11.27秒
+failed. pred cate:Darkwing Duck, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0292.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0292.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bonsai', 'Joshua Tree', 'Pigeon', 'Lobster', 'Dragonfly', 'Crab', 'Inline Skate', 'Scorpion', 'Hedgehog', 'Ibis', 'Sunflower', 'Water Lilly', 'Lotus', 'Flamingo Head', 'Yin Yang', 'Snoopy', 'Pagoda', 'Minaret', 'Cup']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:56:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 21:56:36] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+[2025-11-28 21:56:39] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:56:42] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: Hiking Boots (置信度: 0.8000)
+总耗时: 13.68秒
+succ. pred cate:Hiking Boots, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0172.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0172.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Snoopy', 'Garfield', 'Hedgehog', 'Tick', 'Octopus', 'Crab', 'Dalmatian', 'Platypus', 'Water Lilly', 'Beaver', 'Panda', 'Stop Sign', 'Rooster', 'Bass', 'Anchor', 'Cup', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:56:45] [显存监控] 已分配=16.92GB, 已保留=17.12GB, 空闲=30.48GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Snoopy (置信度: 0.1412)
+总耗时: 1.92秒
+failed. pred cate:Snoopy, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1412
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0016.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0016.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Garfield', 'Snoopy', 'Cannon', 'Car Side', 'Yin Yang', 'Barrel', 'Grand Piano', 'Wheelchair', 'Euphonium', 'Hedgehog', 'Stop Sign', 'Brontosaurus', 'Cup', 'Panda', 'Octopus', 'Rooster', 'Brain', 'Bass']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:56:49] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=17.79GB, 剩余=30.50GB
+模糊匹配类别修正: 'Train' -> 'Brain'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:56:52] [显存监控] 已分配=16.95GB, 已保留=17.78GB, 空闲=30.45GB
+[2025-11-28 21:56:55] [显存监控] 已分配=16.96GB, 已保留=17.78GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.78GB, 剩余=30.50GB
+分类完成: Train (置信度: 0.8000)
+总耗时: 7.67秒
+failed. pred cate:Train, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0301.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0301.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Lamp', 'Schooner', 'Panda', 'Cougar Body', 'Anchor', 'Elephant', 'Yin Yang', 'Wild Cat', 'Crab', 'Joshua Tree', 'Buddha', 'Nautilus', 'Cougar Face', 'Stegosaurus', 'Trilobite', 'Hawksbill', 'Ketch', 'Metronome']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:56:58] [显存监控] 已分配=16.96GB, 已保留=17.84GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.84GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1508)
+总耗时: 4.11秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1508
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0137.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0137.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stapler', 'Wrench', 'Revolver', 'Camera', 'Laptop', 'Accordion', 'Electric Guitar', 'Airplanes', 'Car Side', 'Scissors', 'Binocular', 'Cellphone', 'Headphone', 'Ceiling Fan', 'Anchor', 'Minaret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:57:01] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:57:04] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 21:57:07] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Car Side (置信度: 0.8500)
+总耗时: 8.74秒
+succ. pred cate:Car Side, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0330.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0330.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Laptop', 'Accordion', 'Wrench', 'Menorah', 'Grand Piano', 'Euphonium', 'Electric Guitar', 'Mandolin', 'Wheelchair', 'Garfield', 'Cellphone', 'Headphone', 'Anchor', 'Brain', 'Car Side', 'Chair', 'Windsor Chair', 'Scissors']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:57:11] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+推理后显存: 已分配=16.91GB, 已保留=18.61GB, 剩余=30.50GB
+模糊匹配类别修正: '[Laptop]' -> 'Laptop'
+分类完成: Laptop (置信度: 0.1467)
+总耗时: 5.67秒
+failed. pred cate:Laptop, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1467
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0393.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0393.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Barrel', 'Cannon', 'Camera', 'Dragonfly', 'Binocular', 'Yin Yang', 'Minaret', 'Lamp', 'Helicopter', 'Tick', 'Brain', 'Euphonium', 'Wrench', 'Anchor', 'Stapler', 'Trilobite', 'Ceiling Fan', 'Metronome', 'Headphone']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:57:14] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.47GB
+[2025-11-28 21:57:17] [显存监控] 已分配=16.96GB, 已保留=17.67GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.68GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:57:20] [显存监控] 已分配=16.94GB, 已保留=17.59GB, 空闲=30.46GB
+[2025-11-28 21:57:23] [显存监控] 已分配=16.95GB, 已保留=17.61GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.61GB, 剩余=30.50GB
+分类完成: Convex Lens (置信度: 0.8500)
+总耗时: 10.76秒
+ J    �  Xk    J  �  �#    E1  �  h  �  \   ]P �   \P #succ. pred cate:Convex Lens, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0273.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0273.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Cannon', 'Leopards', 'Crayfish', 'Ketch', 'Euphonium', 'Scorpion', 'Stegosaurus', 'Brontosaurus', 'Yin Yang', 'Joshua Tree', 'Windsor Chair', 'Trilobite', 'Minaret', 'Pagoda', 'Pyramid', 'Metronome']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (3481x2955)，缩小到 (1440x1222) 以节省显存
+[2025-11-28 21:57:26] [显存监控] 已分配=16.91GB, 已保留=17.61GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:57:29] [显存监控] 已分配=17.18GB, 已保留=28.58GB, 空闲=30.22GB
+[2025-11-28 21:57:32] [显存监控] 已分配=17.08GB, 已保留=28.59GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=28.59GB, 剩余=30.50GB
+模糊匹配类别修正: 'Map' -> 'Lamp'
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (3481x2955)，缩小到 (1440x1222) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:57:35] [显存监控] 已分配=17.18GB, 已保留=28.58GB, 空闲=30.22GB
+[2025-11-28 21:57:38] [显存监控] 已分配=17.07GB, 已保留=28.58GB, 空闲=30.33GB
+[2025-11-28 21:57:41] [显存监控] 已分配=17.07GB, 已保留=28.58GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=28.58GB, 剩余=30.50GB
+分类完成: Map (置信度: 0.9500)
+总耗时: 18.15秒
+failed. pred cate:Map, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0001.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0001.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Barrel', 'Buddha', 'Menorah', 'Garfield', 'Dollar Bill', 'Faces', 'Saxophone', 'Snoopy', 'Rooster', 'Octopus', 'Sunflower', 'Water Lilly', 'Cup', 'Strawberry', 'Yin Yang', 'Stop Sign']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:57:44] [显存监控] 已分配=16.93GB, 已保留=17.35GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+模糊匹配类别修正: 'Bottle' -> 'Butterfly'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:57:48] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:57:51] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Buddha (置信度: 0.8000)
+总耗时: 9.66秒
+failed. pred cate:Buddha, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0308.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0308.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Barrel', 'Stop Sign', 'Joshua Tree', 'Accordion', 'Garfield', 'Crab', 'Yin Yang', 'Menorah', 'Panda', 'Car Side', 'Cannon', 'Dollar Bill', 'Wheelchair', 'Crocodile Head', 'Schooner', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:57:54] [显存监控] 已分配=16.95GB, 已保留=17.58GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.58GB, 剩余=30.50GB
+模糊匹配类别修正: '[Dollar Bill]' -> 'Dollar Bill'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:57:57] [显存监控] 已分配=16.95GB, 已保留=17.50GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+分类完成: Ballot Paper (置信度: 0.9500)
+总耗时: 7.72秒
+failed. pred cate:Ballot Paper, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0355.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0355.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Electric Guitar', 'Saxophone', 'Mandolin', 'Bonsai', 'Accordion', 'Barrel', 'Euphonium', 'Cougar Body', 'Grand Piano', 'Chandelier', 'Ketch', 'Schooner', 'Metronome', 'Car Side', 'Pagoda']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:00] [显存监控] 已分配=16.93GB, 已保留=17.36GB, 空闲=30.47GB
+[2025-11-28 21:58:03] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:06] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Mandolin (置信度: 0.8000)
+总耗时: 8.24秒
+succ. pred cate:Mandolin, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0139.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0139.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Stop Sign', 'Hedgehog', 'Pyramid', 'Schooner', 'Grand Piano', 'Llama', 'Yin Yang', 'Garfield', 'Accordion', 'Gramophone', 'Dollar Bill', 'Cup', 'Brain', 'Windsor Chair', 'Sunflower', 'Anchor', 'Rooster', 'Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:58:11] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:14] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:58:19] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:22] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Book Cover (置信度: 0.9500)
+总耗时: 16.24秒
+failed. pred cate:Book Cover, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0379.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0379.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Pagoda', 'Elephant', 'Panda', 'Buddha', 'Laptop', 'Chair', 'Accordion', 'Pigeon', 'Bonsai', 'Ibis', 'Water Lilly', 'Minaret', 'Lotus', 'Rooster']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:58:26] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 21:58:29] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+模糊匹配类别修正: 'Magazine' -> 'Minaret'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:32] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: News vendor relaxing in Rangoon, 2001 (置信度: 0.9000)
+总耗时: 8.72秒
+failed. pred cate:News vendor relaxing in Rangoon, 2001, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0221.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0221.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Wheelchair', 'Ibis', 'Chair', 'Windsor Chair', 'Pigeon', 'Grand Piano', 'Headphone', 'Cannon', 'Inline Skate', 'Crab', 'Garfield', 'Okapi', 'Soccer Ball', 'Stop Sign', 'Rooster', 'Snoopy', 'Crocodile Head']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:35] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 21:58:38] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Chair (置信度: 0.1025)
+总耗时: 5.01秒
+failed. pred cate:Chair, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1025
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0003.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0003.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Euphonium', 'Snoopy', 'Scissors', 'Elephant', 'Accordion', 'Headphone', 'Yin Yang', 'Menorah', 'Bonsai', 'Scorpion', 'Stop Sign', 'Water Lilly', 'Sunflower', 'Panda', 'Cup', 'Octopus', 'Anchor', 'Brain']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:41] [显存监控] 已分配=16.93GB, 已保留=17.39GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+模糊匹配类别修正: 'based on the given options.' -> 'Scorpion'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:44] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:58:47] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: none of the above (置信度: 0.5000)
+总耗时: 9.48秒
+failed. pred cate:none of the above, true cate:BACKGROUND_Google, used_slow:True, confidence:0.5000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0120.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0120.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Wheelchair', 'Laptop', 'Dollar Bill', 'Umbrella', 'Ferry', 'Faces', 'Camera', 'Chair', 'Soccer Ball', 'Helicopter', 'Hawksbill', 'Minaret', 'Dolphin', 'Schooner', 'Water Lilly', 'Sunflower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:50] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 21:58:53] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:56] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+[2025-11-28 21:58:59] [显存监控] 已分配=16.94GB, 已保留=17.32GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: People at an event (置信度: 0.8000)
+总耗时: 11.65秒
+failed. pred cate:People at an event, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0384.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0384.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Scissors', 'Laptop', 'Stapler', 'Accordion', 'Wrench', 'Stop Sign', 'Dollar Bill', 'Leopards', 'Garfield', 'Octopus', 'Cellphone', 'Anchor', 'Bonsai', 'Headphone', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:02] [显存监控] 已分配=16.95GB, 已保留=17.22GB, 空闲=30.45GB
+[2025-11-28 21:59:05] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:08] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-28 21:59:11] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: No category found (置信度: 0.0000)
+总耗时: 11.67秒
+succ. pred cate:No category found, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0343.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0343.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Cellphone', 'Headphone', 'Garfield', 'Grand Piano', 'Faces', 'Windsor Chair', 'Stop Sign', 'Yin Yang', 'Menorah', 'Saxophone', 'Cup', 'Car Side', 'Rooster', 'Wheelchair', 'Lamp', 'Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:14] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:59:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:20] [显存监控] 已分配=16.95GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Television Show (置信度: 0.8000)
+总耗时: 9.88秒
+failed. pred cate:Television Show, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0348.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0348.jpg
+步骤1: 提取快思考候选类别...
+      }lw���!��^g��?���dk�?��b��        ��O�֝����gj��?�ƓV���?快思考Top-10候选类别: ['Strawberry', 'Mandolin', 'Bonsai', 'Tick', 'Yin Yang', 'Menorah', 'Electric Guitar', 'Platypus', 'Rooster', 'Crab', 'Wrench', 'Lobster', 'Sunflower', 'Ewer', 'Anchor', 'Lamp', 'Nautilus', 'Headphone', 'Windsor Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:23] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+分类完成: Strawberry (置信度: 0.1441)
+总耗时: 4.68秒
+failed. pred cate:Strawberry, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1441
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0211.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0211.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Barrel', 'Euphonium', 'Pyramid', 'Yin Yang', 'Trilobite', 'Nautilus', 'Tick', 'Cannon', 'Dragonfly', 'Soccer Ball', 'Brain', 'Sunflower', 'Octopus', 'Brontosaurus', 'Joshua Tree', 'Hawksbill', 'Menorah']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:59:26] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.44GB
+[2025-11-28 21:59:29] [显存监控] 已分配=16.96GB, 已保留=17.59GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.59GB, 剩余=30.50GB
+模糊匹配类别修正: 'None of the above' -> 'Inline Skate'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:59:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:59:35] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: Solar System Diagram (置信度: 0.9500)
+总耗时: 12.20秒
+failed. pred cate:Solar System Diagram, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0236.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0236.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Car Side', 'Headphone', 'Scissors', 'Wheelchair', 'Wrench', 'Yin Yang', 'Electric Guitar', 'Camera', 'Hedgehog', 'Soccer Ball', 'Grand Piano', 'Motorbikes', 'Chair', 'Watch', 'Stapler', 'Windsor Chair']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:59:39] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:59:42] [显存监控] 已分配=16.95GB, 已保留=17.49GB, 空闲=30.45GB
+[2025-11-28 21:59:45] [显存监控] 已分配=16.96GB, 已保留=17.49GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.49GB, 剩余=30.50GB
+分类完成: Car Side (置信度: 0.1524)
+总耗时: 7.67秒
+succ. pred cate:Car Side, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1524
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0414.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0414.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Trilobite', 'Pyramid', 'Brain', 'Stegosaurus', 'Minaret', 'Schooner', 'Crocodile', 'Crocodile Head', 'Brontosaurus', 'Cannon', 'Starfish', 'Nautilus', 'Octopus', 'Pagoda', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:59:48] [显存监控] 已分配=16.96GB, 已保留=17.76GB, 空闲=30.45GB
+[2025-11-28 21:59:51] [显存监控] 已分配=16.97GB, 已保留=17.76GB, 空闲=30.43GB
+推理后显存: 已分配=16.91GB, 已保留=17.76GB, 剩余=30.50GB
+分类完成: Trilobite (置信度: 0.1346)
+总耗时: 6.88秒
+failed. pred cate:Trilobite, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1346
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0331.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0331.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Crab', 'Lobster', 'Cougar Body', 'Crayfish', 'Nautilus', 'Rooster', 'Scorpion', 'Wild Cat', 'Octopus', 'Brain', 'Trilobite', 'Hawksbill', 'Joshua Tree', 'Ketch', 'Schooner', 'Crocodile', 'Crocodile Head', 'Pyramid']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 21:59:54] [显存监控] 已分配=16.99GB, 已保留=18.77GB, 空闲=30.41GB
+[2025-11-28 21:59:57] [显存监控] 已分配=17.00GB, 已保留=18.77GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.77GB, 剩余=30.50GB
+模糊匹配类别修正: '[No applicable category]' -> 'Inline Skate'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 22:00:00] [显存监控] 已分配=17.00GB, 已保留=18.77GB, 空闲=30.41GB
+[2025-11-28 22:00:03] [显存监控] 已分配=17.01GB, 已保留=18.77GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=18.77GB, 剩余=30.50GB
+分类完成: No Category (置信度: 0.0000)
+总耗时: 11.89秒
+failed. pred cate:No Category, true cate:BACKGROUND_Google, used_slow:True, confidence:0.0000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0234.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0234.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Metronome', 'Cannon', 'Anchor', 'Wrench', 'Menorah', 'Electric Guitar', 'Accordion', 'Ceiling Fan', 'Wheelchair', 'Camera', 'Stapler', 'Binocular', 'Euphonium', 'Watch', 'Trilobite', 'Chair', 'Grand Piano']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:06] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 22:00:09] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:12] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Electric Motor (置信度: 0.8500)
+总耗时: 11.00秒
+failed. pred cate:Electric Motor, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0263.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0263.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Octopus', 'Hawksbill', 'Bonsai', 'Dolphin', 'Crab', 'Ceiling Fan', 'Starfish', 'Nautilus', 'Snoopy', 'Trilobite', 'Water Lilly', 'Sunflower', 'Flamingo Head', 'Lotus', 'Stop Sign', 'Anchor', 'Crocodile Head', 'Yin Yang']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 22:00:17] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 22:00:20] [显存监控] 已分配=16.95GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+模糊匹配类别修正: 'Coral' -> 'Crab'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:24] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 22:00:27] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Coral Reef (置信度: 0.8000)
+总耗时: 13.75秒
+failed. pred cate:Coral Reef, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0121.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0121.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Sunflower', 'Tick', 'Trilobite', 'Water Lilly', 'Brain', 'Soccer Ball', 'Dollar Bill', 'Yin Yang', 'Crocodile', 'Octopus', 'Buddha', 'Dragonfly', 'Rooster', 'Nautilus', 'Minaret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 22:00:30] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1263)
+总耗时: 4.22秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1263
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0056.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0056.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Menorah', 'Barrel', 'Inline Skate', 'Saxophone', 'Accordion', 'Dalmatian', 'Faces', 'Anchor', 'Leopards', 'Cannon', 'Octopus', 'Trilobite', 'Wrench', 'Dragonfly', 'Brain', 'Pagoda', 'Euphonium', 'Minaret']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:33] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.39GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:36] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 22:00:39] [显存监控] 已分配=16.93GB, 已保留=17.33GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.33GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.8500)
+总耗时: 7.30秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0233.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0233.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Umbrella', 'Buddha', 'Dollar Bill', 'Yin Yang', 'Wheelchair', 'Watch', 'Euphonium', 'Faces', 'Camera', 'Headphone', 'Water Lilly', 'Minaret', 'Sunflower', 'Cannon', 'Elephant', 'Rooster', 'Joshua Tree', 'Stop Sign']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:42] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:46] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+[2025-11-28 22:00:49] [显存监控] 已分配=16.93GB, 已保留=17.32GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: People (置信度: 0.9000)
+总耗时: 9.46秒
+failed. pred cate:People, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0094.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0094.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Hawksbill', 'Ferry', 'Umbrella', 'Elephant', 'Crocodile', 'Soccer Ball', 'Tick', 'Anchor', 'Rooster', 'Rhino', 'Minaret', 'Wheelchair', 'Lotus', 'Flamingo Head', 'Water Lilly', 'Dolphin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:52] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+分类完成: Faces (置信度: 0.1298)
+总耗时: 4.79秒
+failed. pred cate:Faces, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1298
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0015.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0015.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Faces', 'Tick', 'Scorpion', 'Wild Cat', 'Cannon', 'Leopards', 'Elephant', 'Rooster', 'Lobster', 'Cougar Body', 'Bonsai', 'Minaret', 'Brain', 'Laptop', 'Cellphone', 'Octopus', 'Pagoda', 'Stegosaurus', 'Anchor', 'Metronome']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.12GB, 剩余=30.49GB
+[2025-11-28 22:00:55] [显存监控] 已分配=16.91GB, 已保留=17.12GB, 空闲=30.49GB
+[2025-11-28 22:00:58] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+[2025-11-28 22:01:01] [显存监控] 已分配=16.99GB, 已保留=18.04GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.04GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 22:01:04] [显存监控] 已分配=16.97GB, 已保留=18.11GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=18.11GB, 剩余=30.50GB
+分类完成: Tick (置信度: 0.8500)
+总耗时: 12.71秒
+failed. pred cate:Tick, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0374.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0374.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Yin Yang', 'Starfish', 'Sunflower', 'Euphonium', 'Pyramid', 'Electric Guitar', 'Llama', 'Bonsai', 'Pigeon', 'Watch', 'Water Lilly', 'Brain', 'Nautilus', 'Joshua Tree', 'Minaret', 'Lotus', 'Octopus', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 22:01:09] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 22:01:12] [显存监控] 已分配=16.91GB, 已保留=17.41GB, 空闲=30.50GB
+  �      �      �      �      �      �      �      �      �  推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:15] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: Galaxy (置信度: 0.8500)
+总耗时: 10.55秒
+failed. pred cate:Galaxy, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0320.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0320.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bass', 'Faces', 'Nautilus', 'Crab', 'Dolphin', 'Octopus', 'Hawksbill', 'Starfish', 'Trilobite', 'Panda', 'Crayfish', 'Sea Horse', 'Crocodile Head', 'Flamingo Head', 'Rhino']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:18] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 22:01:21] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+[2025-11-28 22:01:24] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+模糊匹配类别修正: 'Angelfish' -> 'Starfish'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:27] [显存监控] 已分配=16.95GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Hawksbill (置信度: 0.8500)
+总耗时: 12.10秒
+failed. pred cate:Hawksbill, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0255.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0255.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Schooner', 'Beaver', 'Water Lilly', 'Stop Sign', 'Euphonium', 'Pyramid', 'Dolphin', 'Accordion', 'Platypus', 'Crocodile', 'Ketch', 'Ferry', 'Pagoda', 'Crocodile Head', 'Joshua Tree', 'Minaret', 'Helicopter', 'Hawksbill', 'Sunflower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 22:01:30] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:33] [显存监控] 已分配=16.95GB, 已保留=17.48GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:36] [显存监控] 已分配=16.94GB, 已保留=17.20GB, 空闲=30.46GB
+[2025-11-28 22:01:39] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.36GB, 剩余=30.50GB
+分类完成: Lake (置信度: 0.9000)
+总耗时: 11.37秒
+failed. pred cate:Lake, true cate:BACKGROUND_Google, used_slow:True, confidence:0.9000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0338.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0338.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Bonsai', 'Stop Sign', 'Yin Yang', 'Barrel', 'Grand Piano', 'Ketch', 'Soccer Ball', 'Octopus', 'Anchor', 'Schooner', 'Brain', 'Pagoda', 'Minaret', 'Flamingo Head', 'Wrench', 'Pyramid']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:42] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+[2025-11-28 22:01:45] [显存监控] 已分配=16.94GB, 已保留=17.39GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+模糊匹配类别修正: 'None' -> 'Cannon'
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:48] [显存监控] 已分配=16.94GB, 已保留=17.33GB, 空闲=30.46GB
+[2025-11-28 22:01:51] [显存监控] 已分配=16.94GB, 已保留=17.34GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.34GB, 剩余=30.50GB
+分类完成: job postings (置信度: 0.8000)
+总耗时: 10.18秒
+failed. pred cate:job postings, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0098.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0098.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Laptop', 'Wheelchair', 'Grand Piano', 'Euphonium', 'Yin Yang', 'Accordion', 'Umbrella', 'Dalmatian', 'Electric Guitar', 'Ibis', 'Brain', 'Cellphone', 'Stop Sign', 'Octopus', 'Anchor', 'Garfield', 'Wrench']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 22:01:54] [显存监控] 已分配=16.95GB, 已保留=17.55GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.55GB, 剩余=30.50GB
+模糊匹配类别修正: '[Laptop]' -> 'Laptop'
+分类完成: Laptop (置信度: 0.1249)
+总耗时: 4.02秒
+failed. pred cate:Laptop, true cate:BACKGROUND_Google, used_slow:True, confidence:0.1249
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0453.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0453.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Lobster', 'Bonsai', 'Lamp', 'Water Lilly', 'Bass', 'Euphonium', 'Scorpion', 'Accordion', 'Crab', 'Rooster', 'Ewer', 'Stapler', 'Sunflower', 'Windsor Chair', 'Chair', 'Crayfish', 'Strawberry', 'Ceiling Fan']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:01:57] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+[2025-11-28 22:02:00] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.41GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:02:03] [显存监控] 已分配=16.93GB, 已保留=17.31GB, 空闲=30.47GB
+推理后显存: 已分配=16.91GB, 已保留=17.32GB, 剩余=30.50GB
+分类完成: Aquarium (置信度: 0.8000)
+总耗时: 9.38秒
+failed. pred cate:Aquarium, true cate:BACKGROUND_Google, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0305.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/caltech101/101_ObjectCategories/BACKGROUND_Google/image_0305.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['Water Lilly', 'Yin Yang', 'Dragonfly', 'Sunflower', 'Scorpion', 'Bonsai', 'Butterfly', 'Lamp', 'Buddha', 'Tick', 'Nautilus', 'Pagoda', 'Minaret', 'Accordion', 'Lotus', 'Anchor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 22:02:07] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 22:02:10] [显存监控] 已分配=16.96GB, 已保留=17.54GB, 空闲=30.44GB

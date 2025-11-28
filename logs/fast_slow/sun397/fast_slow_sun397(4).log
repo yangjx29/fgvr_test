@@ -1,0 +1,1217 @@
+[INFO] === Fast-Slow Thinking 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=6  # 使用的GPU编号
+Dataset: sun397 (num_classes=397)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Project Root: /home/hdl/project/fgvr_test_new  # 项目根目录
+Knowledge Base Dir: ./experiments/sun397/knowledge_base  # 知识库目录
+Results Out: ./results/sun397_fast_slow_results.json  # 快慢思考评估结果输出文件
+Config File: ./configs/expts/sun397_all.yml  # 实验配置文件
+Log File: /home/hdl/project/fgvr_test_new/logs/fast_slow/sun397/fast_slow_sun397(4).log  # 日志文件路径
+Run Mode: fast_slow  # 运行模式
+[INFO] ========================================================
+
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+当前数据集: sun397 (sun397)
+类别数: 397
+实验目录: ./experiments/sun397
+✅ JSON文件检查通过: ./experiments/sun397/images_split
+当前使用的 GPU 为：6
+
+=== Experiment Start Time: 2025-11-28 21:42:07 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/sun397_all.yml',
+ 'knowledge_base_dir': './experiments/sun397/knowledge_base',
+ 'mode': 'fast_slow',
+ 'num_per_category': '3',
+ 'query_image': None,
+ 'results_out': './results/sun397_fast_slow_results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 64,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/SUN397',
+ 'dataset_name': 'sun397',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/sun397',
+ 'expt_dir_describe': './experiments/sun397/describe',
+ 'expt_dir_gallery': './experiments/sun397/gallery',
+ 'expt_dir_grouping': './experiments/sun397/grouping',
+ 'expt_dir_guess': './experiments/sun397/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 198,
+ 'num_classes': 397,
+ 'num_novel': 199,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/sun397/gallery/sun397_image_descriptions_attn',
+ 'path_identify_answers': './experiments/sun397/identify',
+ 'path_llm_gussed_names': './experiments/sun397/guess/sun397_llm_gussed_names',
+ 'path_llm_prompts': './experiments/sun397/describe/sun397_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/sun397/guess/sun397_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/sun397/guess/sun397_llm_replies_raw',
+ 'path_references': './experiments/sun397/gallery/sun397_image_references',
+ 'path_regions': './experiments/sun397/gallery/sun397_image_regions',
+ 'path_vqa_answers': './experiments/sun397/describe/sun397_attributes_pairs',
+ 'path_vqa_questions': './experiments/sun397/describe/sun397_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "sun397",
+    "num_classes": 397,
+    "config_file": "sun397_all.yml",
+    "data_dir": "SUN397",
+    "experiment_dir": "sun397",
+    "stats_file": "sun397/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/sun397/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/sun397"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.18s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.30s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:05,  2.57s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.20s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.64s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.78s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-11-28 21:42:17
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/sun397/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/sun397/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-11-28 21:43:22
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7a2ca0b1b8e0>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7a2ca0b1b820>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/sun397/knowledge_base
+使用数据集: sun397, 类别数: 397
+✅ 慢思考模块初始化完成，类别映射数量: 397
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-11-28 21:43:22] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+从 ./experiments/sun397/knowledge_base 加载知识库...
+知识库已从 ./experiments/sun397/knowledge_base 加载
+图像知识库类别数: 396
+文本知识库类别数: 396
+类别描述数: 396
+✓ 文本特征维度验证通过: 所有类别特征维度为 (512,)
+知识库加载完成!
+初始化经验库构建器...
+
+================= 经验库构建器初始化 =================
+🖥️ 设备: cuda
+🤖 使用的 MLLM 模型: MLLMBot
+📚 知识库构建器: KnowledgeBaseBuilder
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7a2ca0b1b820>
+🐢 慢思考模块: <slow_thinking_optimized.SlowThinkingOptimized object at 0x7a2c8fde3130>
+📦 数据集信息: {'full_name': 'sun397', 'num_classes': 397, 'config_file': 'sun397_all.yml', 'data_dir': 'SUN397', 'experiment_dir': 'sun397', 'stats_file': 'sun397/knowledge_base/stats.json', 'experiments_root': './experiments', 'stats_file_full': './experiments/sun397/knowledge_base/stats.json', 'experiment_dir_full': './experiments/sun397'}
+====================================================
+
+经验库构建器初始化完成!
+经验库已从 ./experiments/sun397/knowledge_base 加载完成
+经验库已设置到慢思考模块
+经验库加载完成!
+======================================================================
+📊 测试数据来源: images_test (测试集)
+======================================================================
+数据集标识: sun397397
+数据集根目录: ./datasets
+测试百分比: 100.0%
+说明: 使用完整测试集的 100.0% 进行评估
+======================================================================
+✓ 测试集验证成功（JSON文件）
+  测试集文件: ./experiments/sun397/images_split/images_test.json
+  类别数量: 397
+  总图像数: 19850
+  平均每类: 50.0 张
+  图像范围: 50 - 50 张/类
+从JSON文件加载测试数据...
+✓ 采样完成: 19850 张图像，覆盖 397 个类别
+  平均每类: 50.0 张
+======================================================================
+test sample keys: ['abbey', 'airplane_cabin', 'airport_terminal', 'alley', 'amphitheater']...
+[fast and slow] 测试数据集包含 397 个类别
+  0%|          | 0/397 [00:00<?, ?it/s][2025-11-28 21:43:22] Processing fast-slow:   0%|          | 0/397 [00:00<?, ?it/s]开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ajkqrqitspwywirx.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ajkqrqitspwywirx.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'c/courthouse', 'a/abbey', 'c/catacomb', 'c/church/outdoor', 'b/basilica', 'a/apse/indoor', 'd/doorway/outdoor', 'o/outhouse/outdoor', 'r/rock_arch', 'c/cathedral/outdoor', 'c/castle', 'c/cloister/indoor', 'p/pulpit', 'p/palace', 'b/bridge', 'p/phone_booth']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:43:25] [显存监控] 已分配=17.04GB, 已保留=20.58GB, 空闲=30.37GB
+[2025-11-28 21:43:28] [显存监控] 已分配=17.03GB, 已保留=20.58GB, 空闲=30.38GB
+[2025-11-28 21:43:31] [显存监控] 已分配=17.05GB, 已保留=20.58GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=20.58GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:43:34] [显存监控] 已分配=17.02GB, 已保留=20.58GB, 空闲=30.38GB
+[2025-11-28 21:43:37] [显存监控] 已分配=17.03GB, 已保留=20.58GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=20.58GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8500)
+总耗时: 15.53秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ajhtswxgrqbeiikc.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ajhtswxgrqbeiikc.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['m/monastery/outdoor', 'c/church/outdoor', 'w/wheat_field', 'c/catacomb', 'a/abbey', 'b/basilica', 'h/hunting_lodge/outdoor', 'g/general_store/outdoor', 'y/youth_hostel', 'v/village', 'a/alley', 'a/aqueduct', 'v/vineyard', 'k/kasbah', 'h/hill', 'f/field/cultivated', 'c/cloister/indoor', 'f/field/wild', 'b/barn']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2560x1920)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:43:40] [显存监控] 已分配=17.14GB, 已保留=26.18GB, 空闲=30.26GB
+[2025-11-28 21:43:43] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+[2025-11-28 21:43:46] [显存监控] 已分配=17.07GB, 已保留=26.18GB, 空闲=30.33GB
+[2025-11-28 21:43:49] [显存监控] 已分配=17.07GB, 已保留=26.18GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: m/monastery/outdoor (置信度: 0.1319)
+总耗时: 12.43秒
+failed. pred cate:m/monastery/outdoor, true cate:abbey, used_slow:True, confidence:0.1319
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ahebfjooupcqbjht.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ahebfjooupcqbjht.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'f/formal_garden', 'r/restaurant', 'b/balcony/exterior', 'h/hunting_lodge/outdoor', 'b/banquet_hall', 'y/youth_hostel', 'a/apartment_building/outdoor', 'h/hotel_room', 'b/bow_window/outdoor', 'm/mansion', 'l/library/outdoor', 'p/parlor', 'c/courthouse', 'p/park', 'b/barn', 'c/courtyard', 's/ski_lodge']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:52] [显存监控] 已分配=16.94GB, 已保留=17.43GB, 空闲=30.46GB
+[2025-11-28 21:43:55] [显存监控] 已分配=16.96GB, 已保留=17.45GB, 空闲=30.44GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:43:58] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.47GB
+[2025-11-28 21:44:01] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: abbey (置信度: 0.8500)
+总耗时: 10.87秒
+succ. pred cate:abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_amdwiijwnagslgef.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_amdwiijwnagslgef.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/apse/indoor', 'l/library/indoor', 'c/cloister/indoor', 'c/catacomb', 'a/abbey', 'c/cathedral/outdoor', 't/temple/south_asia', 'c/church/indoor', 'b/bow_window/indoor', 'b/basilica', 'p/pulpit', 'c/castle', 'c/church/outdoor', 'c/cathedral/indoor', 'o/oast_house']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:44:04] [显存监控] 已分配=17.00GB, 已保留=19.50GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:44:07] [显存监控] 已分配=17.01GB, 已保留=19.48GB, 空闲=30.39GB
+[2025-11-28 21:44:10] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: c/cathedral/indoor (置信度: 0.8500)
+总耗时: 11.57秒
+failed. pred cate:c/cathedral/indoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_awzqxzqukmbujwzm.jpg
+执行快思考...
+[2025-11-28 21:44:13] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_awzqxzqukmbujwzm.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'a/abbey', 'a/apse/indoor', 'c/church/outdoor', 'o/oast_house', 'c/courthouse', 'c/cloister/indoor', 'c/cathedral/outdoor', 'c/catacomb', 'r/rock_arch', 'p/pulpit', 'c/castle', 'd/doorway/outdoor', 't/tower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:44:16] [显存监控] 已分配=17.03GB, 已保留=21.55GB, 空闲=30.37GB
+[2025-11-28 21:44:19] [显存监控] 已分配=17.03GB, 已保留=21.55GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.55GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:44:22] [显存监控] 已分配=17.06GB, 已保留=21.54GB, 空闲=30.35GB
+[2025-11-28 21:44:25] [显存监控] 已分配=17.03GB, 已保留=21.54GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.54GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8500)
+总耗时: 14.52秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aupohozmrmtfgcsw.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aupohozmrmtfgcsw.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['m/moat/water', 'p/pond', 'a/abbey', 't/temple/south_asia', 'p/palace', 'f/formal_garden', 'c/castle', 'l/lake/natural', 'h/house', 'h/hunting_lodge/outdoor', 'p/park', 'c/church/outdoor', 'o/oast_house', 'c/cloister/indoor', 'b/barn']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:44:28] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+[2025-11-28 21:44:31] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+[2025-11-28 21:44:34] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:44:37] [显存监控] 已分配=17.02GB, 已保留=19.48GB, 空闲=30.39GB
+[2025-11-28 21:44:40] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8500)
+总耗时: 14.09秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_alwjgbdpxuskytjo.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_alwjgbdpxuskytjo.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 't/temple/south_asia', 'a/apse/indoor', 'b/basilica', 'c/cathedral/outdoor', 'c/catacomb', 'c/church/outdoor', 'b/bullring', 'c/courthouse', 'c/church/indoor', 'p/pulpit', 'c/castle', 'c/cloister/indoor', 'p/phone_booth', 't/tower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:44:43] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:46] [显存监控] 已分配=16.95GB, 已保留=17.44GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:44:50] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:53] [显存监控] 已分配=16.95GB, 已保留=17.36GB, 空闲=30.45GB
+[2025-11-28 21:44:56] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8500)
+总耗时: 15.19秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_autcnwvjhdroaklu.jpg
+执行快思考...
+快思考结果确定，直接返回...
+分类完成: f/formal_garden (置信度: 0.2041)
+总耗时: 0.07秒
+failed. pred cate:f/formal_garden, true cate:abbey, used_slow:False, confidence:0.2041
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_akgjeakhepssnilh.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_akgjeakhepssnilh.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['s/synagogue/outdoor', 'm/monastery/outdoor', 'a/abbey', 's/synagogue/indoor', 'c/church/outdoor', 't/temple/south_asia', 'm/mosque/outdoor', 'c/catacomb', 'm/mausoleum', 'm/mosque/indoor', 'k/kasbah', 'c/castle', 'c/cathedral/indoor', 'a/aqueduct', 'c/cloister/indoor', 'a/apse/indoor', 'r/ruin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:44:59] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:45:02] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:45:06] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:45:09] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+分类完成: m/monastery/outdoor (置信度: 0.8500)
+总耗时: 13.90秒
+failed. pred cate:m/monastery/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_awmdgbfmljliozsj.jpg
+执行快思考...
+[2025-11-28 21:45:12] [显存监控] 已分配=16.91GB, 已保留=17.38GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_awmdgbfmljliozsj.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/apse/indoor', 'm/monastery/outdoor', 'c/cloister/indoor', 'a/abbey', 'c/cathedral/outdoor', 'c/catacomb', 'r/ruin', 'y/youth_hostel', 'c/church/indoor', 'f/formal_garden', 'c/church/outdoor', 'a/aqueduct', 'm/moat/water', 'b/barn', 'p/pulpit', 'o/oast_house', 'v/viaduct']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2816x2112)，缩小到 (1440x1080) 以节省显存
+[2025-11-28 21:45:15] [显存监控] 已分配=16.91GB, 已保留=17.38GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:45:18] [显存监控] 已分配=17.14GB, 已保留=26.18GB, 空闲=30.26GB
+[2025-11-28 21:45:21] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+[2025-11-28 21:45:24] [显存监控] 已分配=17.07GB, 已保留=26.18GB, 空闲=30.33GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (2816x2112)，缩小到 (1440x1080) 以节省显存
+[2025-11-28 21:45:27] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:45:30] [显存监控] 已分配=17.14GB, 已保留=26.17GB, 空闲=30.26GB
+[2025-11-28 21:45:33] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.35GB
+[2025-11-28 21:45:36] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: m/monastery/outdoor (置信度: 0.8500)
+总耗时: 25.66秒
+failed. pred cate:m/monastery/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_arugtxzwnaacuosf.jpg
+执行快思考...
+[2025-11-28 21:45:39] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:45:42] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_arugtxzwnaacuosf.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'c/church/outdoor', 'a/abbey', 'e/electrical_substation', 'c/cathedral/outdoor', 'c/courthouse', 'c/catacomb', 's/synagogue/outdoor', 'a/apse/indoor', 'b/building_facade', 'p/phone_booth', 'b/basilica', 'c/cloister/indoor', 'p/pulpit', 'b/bridge', 'd/doorway/outdoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:45:45] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+图像过大 (2080x1544)，缩小到 (1440x1068) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:45:49] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+[2025-11-28 21:45:52] [显存监控] 已分配=17.09GB, 已保留=25.72GB, 空闲=30.31GB
+[2025-11-28 21:45:55] [显存监控] 已分配=17.06GB, 已保留=25.72GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=25.72GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:45:58] [显存监控] 已分配=16.91GB, 已保留=25.72GB, 空闲=30.50GB
+图像过大 (2080x1544)，缩小到 (1440x1068) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+��,z  g
+gH_���,z  ���,z  lQ�hX�p��,z  0��,z  CP��v�VO���,z [2025-11-28 21:46:01] [显存监控] 已分配=17.13GB, 已保留=25.72GB, 空闲=30.27GB
+[2025-11-28 21:46:04] [显存监控] 已分配=17.05GB, 已保留=25.72GB, 空闲=30.35GB
+[2025-11-28 21:46:07] [显存监控] 已分配=17.06GB, 已保留=25.72GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=25.72GB, 剩余=30.50GB
+分类完成: c/cathedral/outdoor (置信度: 0.8500)
+总耗时: 33.19秒
+failed. pred cate:c/cathedral/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_abcjnjasireqlrex.jpg
+执行快思考...
+[2025-11-28 21:46:10] [显存监控] 已分配=16.91GB, 已保留=25.72GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_abcjnjasireqlrex.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'a/abbey', 'e/electrical_substation', 'b/balcony/exterior', 't/temple/east_asia', 'a/apse/indoor', 'c/catacomb', 'o/oast_house', 'b/bow_window/outdoor', 'm/museum/indoor', 'c/castle', 'p/palace', 'c/cloister/indoor', 'c/cathedral/outdoor', 'p/pulpit', 'd/doorway/outdoor', 's/synagogue/outdoor', 'b/basilica']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:13] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:46:16] [显存监控] 已分配=16.91GB, 已保留=17.45GB, 空闲=30.50GB
+[2025-11-28 21:46:19] [显存监控] 已分配=16.91GB, 已保留=17.45GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:46:22] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8000)
+总耗时: 15.32秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aasgdbvvfthiibcm.jpg
+执行快思考...
+[2025-11-28 21:46:25] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:46:28] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aasgdbvvfthiibcm.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 't/temple/south_asia', 'c/cathedral/outdoor', 'c/catacomb', 'a/apse/indoor', 'b/basilica', 'c/cloister/indoor', 'm/monastery/outdoor', 'c/church/indoor', 'y/youth_hostel', 'p/pulpit', 'c/church/outdoor', 't/tower', 'c/cathedral/indoor', 'p/park']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:46:31] [显存监控] 已分配=17.00GB, 已保留=19.50GB, 空闲=30.40GB
+[2025-11-28 21:46:34] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:46:37] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:46:40] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+[2025-11-28 21:46:43] [显存监控] 已分配=17.02GB, 已保留=19.48GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: cathedral (置信度: 0.8500)
+总耗时: 18.37秒
+failed. pred cate:cathedral, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_axqggoktkgjyjmgn.jpg
+执行快思考...
+[2025-11-28 21:46:46] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_axqggoktkgjyjmgn.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/apse/indoor', 'a/abbey', 'c/cloister/indoor', 'c/cathedral/outdoor', 'c/church/outdoor', 'c/catacomb', 'm/monastery/outdoor', 'f/formal_garden', 'c/church/indoor', 'c/castle', 'p/pulpit', 'b/barn', 'o/oast_house', 'm/moat/water', 'a/aqueduct']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2592x1944)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:46:49] [显存监控] 已分配=17.14GB, 已保留=26.18GB, 空闲=30.26GB
+[2025-11-28 21:46:52] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+[2025-11-28 21:46:55] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:46:58] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:01] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:04] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:07] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+图像过大 (2592x1944)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:47:10] [显存监控] 已分配=17.14GB, 已保留=26.17GB, 空闲=30.26GB
+[2025-11-28 21:47:13] [显存监控] 已分配=17.05GB, 已保留=26.18GB, 空闲=30.35GB
+[2025-11-28 21:47:16] [显存监控] 已分配=17.09GB, 已保留=26.18GB, 空闲=30.31GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8500)
+总耗时: 35.31秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_azdfeubmpjrwxyxa.jpg
+执行快思考...
+[2025-11-28 21:47:19] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:22] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:25] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:28] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:31] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:34] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_azdfeubmpjrwxyxa.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/church/outdoor', 'm/monastery/outdoor', 'b/basilica', 'c/catacomb', 'a/apse/indoor', 's/synagogue/outdoor', 'y/youth_hostel', 'c/cathedral/outdoor', 't/temple/south_asia', 'c/cloister/indoor', 'p/pulpit', 'm/moat/water', 'a/alley']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:47:37] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:40] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:43] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:47:46] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:47:49] [显存监控] 已分配=17.00GB, 已保留=19.50GB, 空闲=30.40GB
+[2025-11-28 21:47:52] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+模糊匹配类别修正: 'a/' -> 'a/arch'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:47:55] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:47:58] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:48:01] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:48:04] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:48:07] [显存监控] 已分配=17.01GB, 已保留=19.48GB, 空闲=30.39GB
+[2025-11-28 21:48:10] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.9500)
+总耗时: 53.99秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aawuolpiucltqaal.jpg
+执行快思考...
+[2025-11-28 21:48:13] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:16] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:19] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:22] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:25] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:28] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aawuolpiucltqaal.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'r/restaurant', 'c/corridor', 'm/monastery/outdoor', 'd/doorway/outdoor', 'c/cloister/indoor', 'c/catacomb', 'a/apse/indoor', 't/temple/south_asia', 'a/atrium/public', 'c/courtyard', 'a/alley', 'v/veranda', 'm/medina', 'c/cathedral/indoor', 's/synagogue/indoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:48:31] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:34] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:37] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+图像过大 (1504x1000)，缩小到 (1440x957) 以节省显存
+[2025-11-28 21:48:40] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:48:43] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:48:46] [显存监控] 已分配=17.11GB, 已保留=24.04GB, 空闲=30.30GB
+[2025-11-28 21:48:49] [显存监控] 已分配=17.05GB, 已保留=24.05GB, 空闲=30.36GB
+[2025-11-28 21:48:52] [显存监控] 已分配=17.05GB, 已保留=24.05GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=24.05GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:48:55] [显存监控] 已分配=16.91GB, 已保留=24.05GB, 空闲=30.50GB
+[2025-11-28 21:48:58] [显存监控] 已分配=16.91GB, 已保留=24.05GB, 空闲=30.50GB
+[2025-11-28 21:49:01] [显存监控] 已分配=16.91GB, 已保留=24.05GB, 空闲=30.50GB
+图像过大 (1504x1000)，缩小到 (1440x957) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:49:04] [显存监控] 已分配=17.11GB, 已保留=24.04GB, 空闲=30.30GB
+[2025-11-28 21:49:07] [显存监控] 已分配=17.04GB, 已保留=24.04GB, 空闲=30.36GB
+[2025-11-28 21:49:10] [显存监控] 已分配=17.05GB, 已保留=24.04GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=24.04GB, 剩余=30.50GB
+分类完成: c/corridor (置信度: 0.8000)
+总耗时: 58.04秒
+failed. pred cate:c/corridor, true cate:abbey, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_awtecnclijzwygbv.jpg
+执行快思考...
+[2025-11-28 21:49:13] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:16] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:19] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:22] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:25] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:28] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_awtecnclijzwygbv.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/catacomb', 'j/jail/indoor', 'm/monastery/outdoor', 'b/basilica', 's/synagogue/outdoor', 'c/cloister/indoor', 'c/church/outdoor', 'i/inn/outdoor', 'y/youth_hostel', 'a/alley', 'a/aqueduct', 'd/doorway/outdoor', 'a/apse/indoor', 'c/castle', 'm/moat/water', 'r/ruin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:49:31] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:34] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:37] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+图像过大 (1710x1110)，缩小到 (1440x934) 以节省显存
+[2025-11-28 21:49:40] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+[2025-11-28 21:49:43] [显存监控] 已分配=16.91GB, 已保留=24.04GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:49:46] [显存监控] 已分配=17.10GB, 已保留=23.65GB, 空闲=30.30GB
+[2025-11-28 21:49:49] [显存监控] 已分配=17.08GB, 已保留=23.66GB, 空闲=30.33GB
+[2025-11-28 21:49:52] [显存监控] 已分配=17.05GB, 已保留=23.66GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=23.66GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1450)
+总耗时: 43.83秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1450
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_alupmaeypnfyjlvu.jpg
+执行快思考...
+[2025-11-28 21:49:55] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:49:58] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:01] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:04] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:07] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:10] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_alupmaeypnfyjlvu.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'a/apse/indoor', 't/temple/south_asia', 'c/church/outdoor', 'c/catacomb', 'c/cemetery', 'c/cathedral/outdoor', 'c/church/indoor', 'b/basilica', 'r/rock_arch', 'p/pulpit', 'o/oast_house', 'c/cloister/indoor', 'p/park', 'b/barn', 't/tower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:50:13] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:16] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:19] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+[2025-11-28 21:50:22] [显存监控] 已分配=16.91GB, 已保留=23.66GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:50:25] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+[2025-11-28 21:50:28] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1274)
+总耗时: 34.15秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1274
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_afkhvtwktbyrgtmw.jpg
+执行快思考...
+[2025-11-28 21:50:31] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:34] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:37] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:40] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:43] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:46] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_afkhvtwktbyrgtmw.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'c/cathedral/outdoor', 'g/gazebo/exterior', 'c/courthouse', 'a/apse/indoor', 'b/bullring', 'c/catacomb', 'b/bow_window/outdoor', 'a/atrium/public', 'l/library/indoor', 'c/cloister/indoor', 'a/abbey', 'c/castle', 'b/bridge', 'p/palace', 'c/canal/urban', 'p/pulpit', 'b/basilica', 'd/doorway/outdoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:50:49] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:52] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:50:55] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:50:58] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:51:01] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:51:04] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:51:07] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:51:10] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+[2025-11-28 21:51:13] [显存监控] 已分配=17.00GB, 已保留=19.48GB, 空闲=30.40GB
+推理后显存: 已分配=16.91GB, 已保留=19.48GB, 剩余=30.50GB
+分类完成: c/cathedral/outdoor (置信度: 0.8500)
+总耗时: 46.57秒
+failed. pred cate:c/cathedral/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ajjhxrlqpztswaoz.jpg
+执行快思考...
+[2025-11-28 21:51:16] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:51:19] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:51:22] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:51:25] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:51:28] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ajjhxrlqpztswaoz.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/apse/indoor', 'c/catacomb', 'y/youth_hostel', 'f/formal_garden', 'm/moat/water', 'm/monastery/outdoor', 'a/abbey', 'h/hunting_lodge/outdoor', 't/topiary_garden', 'c/cottage_garden', 'c/church/outdoor', 'o/oast_house', 'b/barn', 'v/viaduct', 'c/cloister/indoor', 'p/pulpit', 'a/aqueduct']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:51:31] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:51:34] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+[2025-11-28 21:51:37] [显存监控] 已分配=16.91GB, 已保留=19.48GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:40] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:51:43] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:51:46] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:51:49] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:51:52] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.47GB
+[2025-11-28 21:51:55] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: monastery/outdoor (置信度: 0.8500)
+总耗时: 41.12秒
+failed. pred cate:monastery/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ayeawwicqkywqxfg.jpg
+执行快思考...
+[2025-11-28 21:51:58] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:01] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:04] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ayeawwicqkywqxfg.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['c/church/outdoor', 't/temple/south_asia', 'c/cathedral/outdoor', 'p/pulpit', 'a/abbey', 'a/apse/indoor', 'b/basilica', 't/temple/east_asia', 'c/catacomb', 'c/church/indoor', 't/tower', 'c/castle', 'p/palace', 'p/phone_booth']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:52:07] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:10] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:52:13] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.42GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:52:16] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+[2025-11-28 21:52:19] [显存监控] 已分配=16.91GB, 已保留=17.42GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:52:22] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.47GB
+[2025-11-28 21:52:25] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: c/cathedral/outdoor (置信度: 0.8500)
+总耗时: 30.51秒
+failed. pred cate:c/cathedral/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_alzgrphhrvbjuyzl.jpg
+执行快思考...
+[2025-11-28 21:52:28] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:31] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:34] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:37] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:40] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_alzgrphhrvbjuyzl.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'c/church/outdoor', 'c/courthouse', 'c/catacomb', 'a/abbey', 'c/cathedral/outdoor', 'b/basilica', 'p/pulpit', 'a/apse/indoor', 'o/outhouse/outdoor', 'p/phone_booth', 'b/bridge', 'c/castle', 'c/cloister/indoor', 'p/palace', 't/tower']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:52:43] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+图像过大 (2112x2816)，缩小到 (1080x1440) 以节省显存
+[2025-11-28 21:52:46] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:49] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:52] [显存监控] 已分配=16.91GB, 已保留=17.37GB, 空闲=30.50GB
+[2025-11-28 21:52:55] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:52:58] [显存监控] 已分配=17.17GB, 已保留=26.17GB, 空闲=30.24GB
+[2025-11-28 21:53:01] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:53:04] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+图像过大 (2112x2816)，缩小到 (1080x1440) 以节省显存
+[2025-11-28 21:53:07] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:53:10] [显存监控] 已分配=17.14GB, 已保留=26.17GB, 空闲=30.26GB
+[2025-11-28 21:53:13] [显存监控] 已分配=17.05GB, 已保留=26.18GB, 空闲=30.35GB
+[2025-11-28 21:53:16] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: c/cathedral/outdoor (置信度: 0.8000)
+总耗时: 51.86秒
+failed. pred cate:c/cathedral/outdoor, true cate:abbey, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_afdaysohbwpayaqu.jpg
+执行快思考...
+[2025-11-28 21:53:19] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:53:22] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:53:25] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_afdaysohbwpayaqu.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['c/cloister/indoor', 'a/apse/indoor', 'f/formal_garden', 'l/library/indoor', 'b/bow_window/indoor', 't/temple/south_asia', 'a/abbey', 'b/bow_window/outdoor', 'm/monastery/outdoor', 'a/atrium/public', 'p/pulpit', 'c/church/outdoor', 'p/park', 'c/cathedral/outdoor', 's/synagogue/indoor', 'd/doorway/outdoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:53:28] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:53:31] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:53:34] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:53:39] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:53:42] [显存监控] 已分配=17.03GB, 已保留=22.79GB, 空闲=30.37GB
+[2025-11-28 21:53:45] [显存监控] 已分配=17.04GB, 已保留=22.79GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=22.79GB, 剩余=30.50GB
+分类完成: c/cloister/indoor (置信度: 0.1341)
+总耗时: 27.25秒
+failed. pred cate:c/cloister/indoor, true cate:abbey, used_slow:True, confidence:0.1341
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aaalbzqrimafwbiv.jpg
+执行快思考...
+[2025-11-28 21:53:48] [显存监控] 已分配=16.91GB, 已保留=22.79GB, 空闲=30.50GB
+[2025-11-28 21:53:51] [显存监控] 已分配=16.91GB, 已保留=22.79GB, 空闲=30.50GB
+[2025-11-28 21:53:54] [显存监控] 已分配=16.91GB, 已保留=22.79GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aaalbzqrimafwbiv.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/castle', 'p/palace', 'm/mansion', 'h/house', 'y/youth_hostel', 'm/monastery/outdoor', 'b/bow_window/outdoor', 'h/hunting_lodge/outdoor', 't/temple/south_asia', 'f/formal_garden', 'b/barn', 'b/boathouse', 'p/park', 'w/waterfall/fan', 'm/moat/water']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:53:57] [显存监控] 已分配=16.91GB, 已保留=22.79GB, 空闲=30.50GB
+[2025-11-28 21:54:01] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:54:04] [显存监控] 已分配=17.03GB, 已保留=19.50GB, 空闲=30.37GB
+[2025-11-28 21:54:07] [显存监控] 已分配=17.02GB, 已保留=19.50GB, 空闲=30.38GB
+推理后显存: 已分配=16.91GB, 已保留=19.50GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1267)
+总耗时: 23.76秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1267
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aiogdgjrbrgwoldg.jpg
+执行快思考...
+[2025-11-28 21:54:10] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:54:13] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+[2025-11-28 21:54:16] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aiogdgjrbrgwoldg.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/catacomb', 'b/bullring', 'c/cathedral/outdoor', 't/temple/south_asia', 'b/basilica', 's/street', 'c/courthouse', 'a/apse/indoor', 'c/church/indoor', 'p/pulpit', 'c/church/outdoor', 'c/cloister/indoor', 'c/castle', 't/tower', 'c/cathedral/indoor', 'o/oast_house']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:54:19] [显存监控] 已分配=16.91GB, 已保留=19.50GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:54:23] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 21:54:26] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1511)
+总耗时: 17.82秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1511
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ajhedatnstgfblsz.jpg
+执行快思考...
+[2025-11-28 21:54:29] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:54:32] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:54:35] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ajhedatnstgfblsz.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'y/youth_hostel', 'm/mansion', 'h/house', 'c/castle', 'p/palace', 'b/bow_window/outdoor', 'm/monastery/outdoor', 'h/hunting_lodge/outdoor', 't/temple/south_asia', 'b/barn', 'h/harbor', 'b/beach', 'b/boathouse', 'p/park', 'i/islet']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:54:38] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:54:41] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+[2025-11-28 21:54:45] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:54:48] [显存监控] 已分配=17.13GB, 已保留=26.17GB, 空闲=30.27GB
+[2025-11-28 21:54:51] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+模糊匹配类别修正: 'abbey' -> 'a/abbey'
+分类完成: a/abbey (置信度: 0.1322)
+总耗时: 25.49秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1322
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_arammhphxaojjaro.jpg
+执行快思考...
+[2025-11-28 21:54:54] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:54:57] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:55:00] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:55:03] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_arammhphxaojjaro.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['t/temple/south_asia', 'y/youth_hostel', 'a/abbey', 'm/monastery/outdoor', 'c/cathedral/outdoor', 't/temple/east_asia', 'f/formal_garden', 'b/basilica', 't/topiary_garden', 'b/burial_chamber', 'c/cloister/indoor', 's/sky', 'a/aqueduct', 'a/apse/indoor', 'p/pulpit', 'c/castle', 'p/park', 'r/ruin']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:55:06] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:55:09] [显存监控] 已分配=17.06GB, 已保留=21.54GB, 空闲=30.34GB
+[2025-11-28 21:55:12] [显存监控] 已分配=17.03GB, 已保留=21.54GB, 空闲=30.37GB
+[2025-11-28 21:55:15] [显存监控] 已分配=17.03GB, 已保留=21.54GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.54GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:55:18] [显存监控] 已分配=16.91GB, 已保留=21.54GB, 空闲=30.50GB
+[2025-11-28 21:55:22] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:55:25] [显存监控] 已分配=17.03GB, 已保留=21.54GB, 空闲=30.37GB
+[2025-11-28 21:55:28] [显存监控] 已分配=17.03GB, 已保留=21.54GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.54GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8000)
+总耗时: 35.80秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_agmujncxfjrtenzs.jpg
+执行快思考...
+[2025-11-28 21:55:31] [显存监控] 已分配=16.91GB, 已保留=21.54GB, 空闲=30.50GB
+[2025-11-28 21:55:34] [显存监控] 已分配=16.91GB, 已保留=21.54GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_agmujncxfjrtenzs.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 't/temple/south_asia', 'c/catacomb', 'a/apse/indoor', 'c/cathedral/outdoor', 'b/basilica', 'c/courthouse', 'l/library/indoor', 'b/balcony/exterior', 'b/bow_window/outdoor', 'c/cloister/indoor', 'c/castle', 'p/pulpit', 'c/church/outdoor', 't/tower', 'a/aqueduct']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:55:37] [显存监控] 已分配=16.91GB, 已保留=21.54GB, 空闲=30.50GB
+[2025-11-28 21:55:40] [显存监控] 已分配=16.91GB, 已保留=21.54GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:43] [显存监控] 已分配=16.94GB, 已保留=17.48GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.48GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:55:46] [显存监控] 已分配=16.91GB, 已保留=17.48GB, 空闲=30.50GB
+[2025-11-28 21:55:49] [显存监控] 已分配=16.91GB, 已保留=17.48GB, 空闲=30.50GB
+[2025-11-28 21:55:52] [显存监控] 已分配=16.91GB, 已保留=17.48GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:55:55] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+[2025-11-28 21:55:58] [显存监控] 已分配=16.94GB, 已保留=17.40GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+分类完成: c/cathedral/outdoor (置信度: 0.8500)
+总耗时: 30.12秒
+failed. pred cate:c/cathedral/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ajltxqytnwvdtqkv.jpg
+执行快思考...
+[2025-11-28 21:56:01] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+[2025-11-28 21:56:04] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+[2025-11-28 21:56:07] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ajltxqytnwvdtqkv.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/church/outdoor', 'c/catacomb', 'a/apse/indoor', 't/temple/south_asia', 'c/cathedral/outdoor', 'm/monastery/outdoor', 'b/basilica', 'r/ruin', 'y/youth_hostel', 'a/aqueduct', 'c/cloister/indoor', 'p/pulpit', 'a/alley']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:56:10] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+[2025-11-28 21:56:13] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+图像过大 (3072x2304)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:56:16] [显存监控] 已分配=17.02GB, 已保留=26.18GB, 空闲=30.38GB
+[2025-11-28 21:56:19] [显存监控] 已分配=17.09GB, 已保留=26.18GB, 空闲=30.31GB
+[2025-11-28 21:56:22] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1509)
+总耗时: 24.95秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1509
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_alilutzfjseivfim.jpg
+执行快思考...
+[2025-11-28 21:56:25] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:56:28] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:56:31] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+[2025-11-28 21:56:34] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_alilutzfjseivfim.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'd/doorway/outdoor', 'c/catacomb', 'a/apse/indoor', 'b/balcony/exterior', 'r/ruin', 'a/arrival_gate/outdoor', 'b/basilica', 'a/arch', 'r/rock_arch', 'c/cloister/indoor', 'p/pulpit', 'c/cathedral/outdoor', 'a/alley', 'c/church/outdoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:56:37] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+图像过大 (1158x1714)，缩小到 (972x1440) 以节省显存
+[2025-11-28 21:56:40] [显存监控] 已分配=16.91GB, 已保留=26.18GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:56:43] [显存监控] 已分配=17.11GB, 已保留=24.45GB, 空闲=30.29GB
+[2025-11-28 21:56:46] [显存监控] 已分配=17.08GB, 已保留=24.45GB, 空闲=30.32GB
+[2025-11-28 21:56:49] [显存监控] 已分配=17.06GB, 已保留=24.45GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=24.45GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1405)
+总耗时: 27.74秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1405
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_astejolvvimrpdad.jpg
+执行快思考...
+[2025-11-28 21:56:52] [显存监控] 已分配=16.91GB, 已保留=24.45GB, 空闲=30.50GB
+[2025-11-28 21:56:55] [显存监控] 已分配=16.91GB, 已保留=24.45GB, 空闲=30.50GB
+[2025-11-28 21:56:58] [显存监控] 已分配=16.91GB, 已保留=24.45GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_astejolvvimrpdad.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/church/outdoor', 't/temple/south_asia', 'b/basilica', 'c/cathedral/outdoor', 'c/catacomb', 'y/youth_hostel', 'a/apse/indoor', 'm/monastery/outdoor', 'c/courthouse', 'c/cloister/indoor', 'p/pulpit', 'c/cathedral/indoor', 's/synagogue/outdoor', 'c/castle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:57:01] [显存监控] 已分配=16.91GB, 已保留=24.45GB, 空闲=30.50GB
+[2025-11-28 21:57:04] [显存监控] 已分配=16.91GB, 已保留=24.45GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:57:07] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+[2025-11-28 21:57:10] [显存监控] 已分配=16.95GB, 已保留=17.52GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.52GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:57:13] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+[2025-11-28 21:57:16] [显存监控] 已分配=16.91GB, 已保留=17.52GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.49GB
+[2025-11-28 21:57:19] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 21:57:22] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: cathedral (置信度: 0.8500)
+总耗时: 31.30秒
+failed. pred cate:cathedral, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_arhsdnbcmspfqsiu.jpg
+执行快思考...
+[2025-11-28 21:57:25] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:57:28] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+[2025-11-28 21:57:31] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_arhsdnbcmspfqsiu.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['f/formal_garden', 'm/moat/water', 't/topiary_garden', 'y/youth_hostel', 'a/abbey', 'g/golf_course', 'c/cottage_garden', 'a/apse/indoor', 'b/botanical_garden', 'c/cloister/indoor', 'c/church/outdoor', 'o/oast_house', 'p/park', 'a/aqueduct', 'v/viaduct', 'c/castle']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:57:34] [显存监控] 已分配=16.91GB, 已保留=17.47GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:57:37] [显存监控] 已分配=16.94GB, 已保留=17.46GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:57:40] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:57:43] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.40GB, 剩余=30.50GB
+分类完成: abbey (置信度: 0.8000)
+总耗时: 22.61秒
+succ. pred cate:abbey, true cate:abbey, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aqaeatsjrcvlcccq.jpg
+执行快思考...
+[2025-11-28 21:57:46] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aqaeatsjrcvlcccq.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['c/courthouse', 't/temple/south_asia', 'a/abbey', 'b/basilica', 'm/mausoleum', 'c/church/outdoor', 's/synagogue/outdoor', 'm/monastery/outdoor', 'l/labyrinth/outdoor', 't/temple/east_asia', 't/tower', 's/synagogue/indoor', 'b/barn', 'c/cathedral/outdoor', 'm/mansion']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:57:49] [显存监控] 已分配=16.91GB, 已保留=17.40GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:57:52] [显存监控] 已分配=17.03GB, 已保留=20.89GB, 空闲=30.38GB
+[2025-11-28 21:57:55] [显存监控] 已分配=17.03GB, 已保留=20.89GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.89GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:57:58] [显存监控] 已分配=16.91GB, 已保留=20.89GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:58:01] [显存监控] 已分配=17.03GB, 已保留=20.88GB, 空闲=30.37GB
+[2025-11-28 21:58:04] [显存监控] 已分配=17.03GB, 已保留=20.88GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=20.88GB, 剩余=30.50GB
+分类完成: church/outdoor (置信度: 0.8500)
+总耗时: 19.59秒
+failed. pred cate:church/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_alhgyfkfhkzxopco.jpg
+执行快思考...
+[2025-11-28 21:58:07] [显存监控] 已分配=16.91GB, 已保留=20.89GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_alhgyfkfhkzxopco.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['r/rock_arch', 'a/abbey', 'm/monastery/outdoor', 'a/apse/indoor', 'r/ruin', 'c/castle', 'r/rope_bridge', 'r/recreation_room', 'y/youth_hostel', 'm/moat/water', 'a/aqueduct', 'c/church/outdoor', 'v/viaduct', 'c/cathedral/outdoor', 'c/cloister/indoor', 'p/pulpit']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:10] [显存监控] 已分配=16.94GB, 已保留=17.41GB, 空闲=30.46GB
+[2025-11-28 21:58:13] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.43GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:58:16] [显存监控] 已分配=16.91GB, 已保留=17.43GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:19] [显存监控] 已分配=16.93GB, 已保留=17.34GB, 空闲=30.47GB
+[2025-11-28 21:58:22] [显存监控] 已分配=16.94GB, 已保留=17.35GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.35GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.8500)
+总耗时: 18.63秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aiggdfvttgcbhrqo.jpg
+执行快思考...
+[2025-11-28 21:58:25] [显存监控] 已分配=16.91GB, 已保留=17.35GB, 空闲=30.50GB
+[2025-11-28 21:58:28] [显存监控] 已分配=16.91GB, 已保留=17.35GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aiggdfvttgcbhrqo.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'c/courthouse', 'b/balcony/exterior', 'h/hunting_lodge/outdoor', 's/squash_court', 'b/building_facade', 'h/hospital', 't/tennis_court/indoor', 't/tennis_court/outdoor', 'b/banquet_hall', 'o/oast_house', 'c/church/outdoor', 'a/apartment_building/outdoor', 'd/doorway/outdoor', 'l/library/outdoor', 'm/mansion', 'c/canal/urban', 'b/barn']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:58:33] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:36] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+模糊匹配类别修正: 'mansion' -> 'm/mansion'
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:58:40] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:58:43] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: abbey (置信度: 0.8500)
+总耗时: 21.30秒
+succ. pred cate:abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_ahyuitoalauzruph.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_ahyuitoalauzruph.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 't/temple/south_asia', 'r/ruin', 'a/apse/indoor', 'r/rock_arch', 'm/moat/water', 'b/bow_window/outdoor', 'y/youth_hostel', 'm/monastery/outdoor', 'c/catacomb', 'a/aqueduct', 'c/castle', 'c/cloister/indoor', 'c/church/outdoor', 'v/viaduct', 'c/cathedral/outdoor', 'p/pulpit']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:58:47] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:58:50] [显存监控] 已分配=17.03GB, 已保留=21.57GB, 空闲=30.37GB
+[2025-11-28 21:58:53] [显存监控] 已分配=17.03GB, 已保留=21.57GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.57GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:58:56] [显存监控] 已分配=17.06GB, 已保留=21.56GB, 空闲=30.34GB
+[2025-11-28 21:58:59] [显存监控] 已分配=17.03GB, 已保留=21.56GB, 空闲=30.37GB
+[2025-11-28 21:59:02] [显存监控] 已分配=17.03GB, 已保留=21.56GB, 空闲=30.37GB
+推理后显存: 已分配=16.91GB, 已保留=21.56GB, 剩余=30.50GB
+分类完成: abbey (置信度: 0.8500)
+总耗时: 17.95秒
+succ. pred cate:abbey, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aikftgxhesyxsvwx.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aikftgxhesyxsvwx.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'f/formal_garden', 'h/house', 't/temple/south_asia', 'm/mansion', 'p/palace', 'b/banquet_hall', 'b/bow_window/outdoor', 's/squash_court', 't/tennis_court/outdoor', 'o/oast_house', 'c/castle', 'c/church/outdoor', 'c/campus', 'b/barn', 'l/library/outdoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:05] [显存监控] 已分配=16.94GB, 已保留=17.42GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.44GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:10] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+[2025-11-28 21:59:13] [显存监控] 已分配=16.94GB, 已保留=17.37GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.37GB, 剩余=30.50GB
+分类完成: mansion (置信度: 0.8000)
+总耗时: 11.66秒
+failed. pred cate:mansion, true cate:abbey, used_slow:True, confidence:0.8000
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_adwaigzwuxuvitrh.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_adwaigzwuxuvitrh.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 't/temple/south_asia', 'a/apse/indoor', 'l/library/indoor', 'r/ruin', 'c/cathedral/outdoor', 'c/catacomb', 'b/basilica', 'r/rock_arch', 'm/monastery/outdoor', 'c/church/outdoor', 'c/cloister/indoor', 'p/pulpit', 'o/oast_house', 'b/barn', 'a/aqueduct']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 21:59:17] [显存监控] 已分配=16.91GB, 已保留=17.11GB, 空闲=30.49GB
+推理前显存: 已分配=16.91GB, 已保留=17.11GB, 剩余=30.49GB
+[2025-11-28 21:59:20] [显存监控] 已分配=16.99GB, 已保留=18.06GB, 空闲=30.41GB
+[2025-11-28 21:59:23] [显存监控] 已分配=16.99GB, 已保留=18.06GB, 空闲=30.41GB
+推理后显存: 已分配=16.91GB, 已保留=18.06GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1438)
+总耗时: 9.08秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1438
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_atuiowpnwrcnalxb.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_atuiowpnwrcnalxb.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['c/church/outdoor', 'b/barn', 'c/courthouse', 'a/apse/indoor', 'b/building_facade', 'r/rock_arch', 's/synagogue/outdoor', 'm/monastery/outdoor', 'c/cathedral/outdoor', 'b/bow_window/outdoor', 'd/doorway/outdoor', 's/schoolhouse', 'c/campus', 'm/mansion', 'p/pavilion', 'l/library/outdoor']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:26] [显存监控] 已分配=16.95GB, 已保留=17.43GB, 空闲=30.45GB
+[2025-11-28 21:59:29] [显存监控] 已分配=16.95GB, 已保留=17.45GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.45GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+[2025-11-28 21:59:32] [显存监控] 已分配=16.91GB, 已保留=17.10GB, 空闲=30.50GB
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 21:59:35] [显存监控] 已分配=16.94GB, 已保留=17.36GB, 空闲=30.46GB
+[2025-11-28 21:59:38] [显存监控] 已分配=16.94GB, 已保留=17.38GB, 空闲=30.46GB
+推理后显存: 已分配=16.91GB, 已保留=17.38GB, 剩余=30.50GB
+分类完成: c/church/outdoor (置信度: 0.8500)
+总耗时: 15.15秒
+failed. pred cate:c/church/outdoor, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aemytrbhywxpeety.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aemytrbhywxpeety.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['h/hunting_lodge/outdoor', 'h/house', 'c/cottage_garden', 'f/formal_garden', 'i/inn/outdoor', 't/topiary_garden', 's/schoolhouse', 'm/mansion', 'b/barn', 'g/golf_course', 'o/oast_house', 'c/church/outdoor', 'd/driveway', 'm/manufactured_home', 'r/residential_neighborhood', 'p/pavilion']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (2592x1944)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.12GB, 剩余=30.48GB
+[2025-11-28 21:59:41] [显存监控] 已分配=17.14GB, 已保留=26.18GB, 空闲=30.26GB
+[2025-11-28 21:59:44] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+[2025-11-28 21:59:47] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (2592x1944)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:59:50] [显存监控] 已分配=17.14GB, 已保留=26.17GB, 空闲=30.26GB
+[2025-11-28 21:59:53] [显存监控] 已分配=17.05GB, 已保留=26.18GB, 空闲=30.35GB
+[2025-11-28 21:59:56] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: h/house (置信度: 0.8500)
+总耗时: 18.25秒
+failed. pred cate:h/house, true cate:abbey, used_slow:True, confidence:0.8500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_axquoexnzjfsidxs.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_axquoexnzjfsidxs.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['m/monastery/outdoor', 'b/barn', 'a/abbey', 'd/doorway/outdoor', 'c/catacomb', 'c/courthouse', 'r/restaurant', 'b/basilica', 'h/house', 'g/gazebo/exterior', 'c/church/outdoor', 'c/courtyard', 'a/alley', 'm/mansion', 's/synagogue/outdoor', 'c/cloister/indoor', 'o/oast_house']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 21:59:59] [显存监控] 已分配=17.14GB, 已保留=26.17GB, 空闲=30.26GB
+[2025-11-28 22:00:02] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+[2025-11-28 22:00:05] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (1600x1200)，缩小到 (1440x1080) 以节省显存
+[2025-11-28 22:00:09] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 22:00:12] [显存监控] 已分配=17.36GB, 已保留=26.17GB, 空闲=30.04GB
+[2025-11-28 22:00:15] [显存监控] 已分配=17.06GB, 已保留=26.18GB, 空闲=30.34GB
+推理后显存: 已分配=16.91GB, 已保留=26.18GB, 剩余=30.50GB
+分类完成: m/monastery/outdoor (置信度: 0.9500)
+总耗时: 21.22秒
+failed. pred cate:m/monastery/outdoor, true cate:abbey, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_amekwrzkkuxreihg.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_amekwrzkkuxreihg.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 'r/ruin', 't/temple/south_asia', 'm/moat/water', 'm/monastery/outdoor', 'm/marsh', 'c/church/outdoor', 'y/youth_hostel', 'c/catacomb', 'r/rock_arch', 'a/aqueduct', 'c/castle', 'c/cloister/indoor', 'c/cathedral/outdoor', 'b/boardwalk', 'a/apse/indoor', 'b/butte']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:18] [显存监控] 已分配=16.91GB, 已保留=17.16GB, 空闲=30.49GB
+[2025-11-28 22:00:21] [显存监控] 已分配=16.95GB, 已保留=17.47GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.47GB, 剩余=30.50GB
+分类完成: a/abbey (置信度: 0.1655)
+总耗时: 4.75秒
+succ. pred cate:a/abbey, true cate:abbey, used_slow:True, confidence:0.1655
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aqkbqfqkuwuskqcj.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aqkbqfqkuwuskqcj.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['a/abbey', 't/temple/south_asia', 'c/cathedral/outdoor', 'a/apse/indoor', 'b/basilica', 'c/courthouse', 'c/catacomb', 'c/church/outdoor', 'c/church/indoor', 'b/bullring', 'c/castle', 'p/pulpit', 'c/cloister/indoor', 's/synagogue/outdoor', 'b/bridge']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+图像过大 (1800x1222)，缩小到 (1440x977) 以节省显存
+[2025-11-28 22:00:24] [显存监控] 已分配=16.92GB, 已保留=17.11GB, 空闲=30.48GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 22:00:27] [显存监控] 已分配=17.05GB, 已保留=24.45GB, 空闲=30.36GB
+[2025-11-28 22:00:30] [显存监控] 已分配=17.05GB, 已保留=24.45GB, 空闲=30.35GB
+推理后显存: 已分配=16.91GB, 已保留=24.45GB, 剩余=30.50GB
+快慢思考结果不一致，进行最终融合决策...
+图像过大 (1800x1222)，缩小到 (1440x977) 以节省显存
+[2025-11-28 22:00:33] [显存监控] 已分配=16.91GB, 已保留=24.45GB, 空闲=30.50GB
+推理前显存: 已分配=16.92GB, 已保留=17.11GB, 剩余=30.48GB
+[2025-11-28 22:00:36] [显存监控] 已分配=17.04GB, 已保留=24.45GB, 空闲=30.36GB
+[2025-11-28 22:00:39] [显存监控] 已分配=17.05GB, 已保留=24.45GB, 空闲=30.36GB
+推理后显存: 已分配=16.91GB, 已保留=24.45GB, 剩余=30.50GB
+分类完成: cathedral (置信度: 0.9500)
+总耗时: 18.63秒
+failed. pred cate:cathedral, true cate:abbey, used_slow:True, confidence:0.9500
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_aunaywwmnattpjmn.jpg
+执行快思考...
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_aunaywwmnattpjmn.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['s/synagogue/outdoor', 's/synagogue/indoor', 'e/electrical_substation', 'a/apse/indoor', 's/shopfront', 's/schoolhouse', 'b/banquet_hall', 'r/restaurant', 'h/hunting_lodge/outdoor', 'c/church/indoor', 'c/church/outdoor', 'o/oast_house', 'h/house', 'a/abbey', 'a/apartment_building/outdoor', 'p/pulpit', 'b/barn', 'm/mansion', 'd/doorway/outdoor', 'd/driveway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+推理前显存: 已分配=16.91GB, 已保留=17.10GB, 剩余=30.50GB
+[2025-11-28 22:00:42] [显存监控] 已分配=16.94GB, 已保留=17.45GB, 空闲=30.46GB
+[2025-11-28 22:00:45] [显存监控] 已分配=16.95GB, 已保留=17.46GB, 空闲=30.45GB
+[2025-11-28 22:00:49] [显存监控] 已分配=16.96GB, 已保留=17.46GB, 空闲=30.45GB
+推理后显存: 已分配=16.91GB, 已保留=17.46GB, 剩余=30.50GB
+分类完成: s/synagogue/outdoor (置信度: 0.1082)
+总耗时: 7.65秒
+failed. pred cate:s/synagogue/outdoor, true cate:abbey, used_slow:True, confidence:0.1082
+开始分类图像: ./datasets/SUN397/images/a/abbey/sun_atonkoshubmkxlyk.jpg
+执行快思考...
+[2025-11-28 22:00:52] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:00:55] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:00:58] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:01] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:04] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:07] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:10] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:13] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:16] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:19] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+快思考结果不确定，执行慢思考...
+开始优化后的慢思考流程，查询图像: ./datasets/SUN397/images/a/abbey/sun_atonkoshubmkxlyk.jpg
+步骤1: 提取快思考候选类别...
+快思考Top-10候选类别: ['c/church/outdoor', 's/shopfront', 'b/building_facade', 'r/restaurant', 'i/ice_cream_parlor', 'f/florist_shop/indoor', 's/schoolhouse', 'i/inn/outdoor', 'd/dentists_office', 't/temple/south_asia', 'o/oast_house', 'b/barn', 'a/abbey', 'p/pulpit', 'm/mansion', 't/tower', 'g/gazebo/exterior', 'd/driveway']
+步骤3: 使用MLLM进行最终推理（基于经验库）...
+[2025-11-28 22:01:22] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:25] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:28] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:31] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
+[2025-11-28 22:01:34] [显存监控] 已分配=16.91GB, 已保留=17.46GB, 空闲=30.50GB
