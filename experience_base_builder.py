@@ -16,14 +16,29 @@ from tqdm import tqdm
 from PIL import Image
 import re
 from collections import defaultdict
+import yaml
 
 from agents.mllm_bot import MLLMBot
 from knowledge_base_builder import KnowledgeBaseBuilder
 from utils.fileios import dump_json, load_json
 from utils.util import is_similar
 
-# 最大经验条数超参数
-experience_base_max_number = 8
+# 从配置文件读取超参数
+def load_hyperparameters():
+    """加载超参数配置"""
+    config_path = "/home/hdl/project/fgvr_test_new/configs/hyperparameters.yaml"
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+        return config.get('experience_base_max_number', 8)  # 默认值为8
+    except FileNotFoundError:
+        print(f"Warning: Configuration file {config_path} not found, using default value 8")
+        return 8
+    except Exception as e:
+        print(f"Error loading configuration: {e}, using default value 8")
+        return 8
+
+experience_base_max_number = load_hyperparameters()
 
 
 class ExperienceBaseBuilder:

@@ -434,6 +434,30 @@ def prepare_test_samples(cfg, args):
 
 
 if __name__ == "__main__":
+    # 打印超参数配置
+    print("=" * 60)
+    print("🔧 超参数配置信息")
+    print("=" * 60)
+    try:
+        hyperparam_file = "./configs/hyperparameters.yaml"
+        if os.path.exists(hyperparam_file):
+            with open(hyperparam_file, 'r', encoding='utf-8') as f:
+                hyperparams = yaml.safe_load(f)
+            
+            print(f"📁 配置文件: {hyperparam_file}")
+            print("📋 参数列表:")
+            for key, value in hyperparams.items():
+                if isinstance(value, (int, float, str, bool)):
+                    print(f"   • {key}: {value}")
+                else:
+                    print(f"   • {key}: {value} (类型: {type(value).__name__})")
+        else:
+            print(f"⚠️  警告: 超参数配置文件不存在: {hyperparam_file}")
+    except Exception as e:
+        print(f"❌ 错误: 读取超参数配置失败: {e}")
+    print("=" * 60)
+    print()
+    
     parser = argparse.ArgumentParser(description='Discovery', formatter_class=argparse.ArgumentDefaultsHelpFormatter) 
 
     parser.add_argument('--mode',  

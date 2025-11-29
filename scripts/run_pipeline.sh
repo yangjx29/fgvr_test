@@ -255,6 +255,15 @@ run_pipeline_bg() {
         echo "---------------------------"
         echo ""
 
+        # 设置超参数
+        echo "[INFO] === 设置超参数 ==="
+        if ! bash "${SCRIPT_DIR}/set_hyperparameters.sh" --config; then
+            echo "[ERROR] 超参数设置失败，退出 pipeline"
+            exit 1
+        fi
+        echo "[SUCCESS] 超参数设置完成"
+        echo ""
+
         # 激活环境
         source "${CONDA_BASE}/envs/${CONDA_ENV}/bin/activate"
 

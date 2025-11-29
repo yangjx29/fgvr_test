@@ -314,6 +314,17 @@ generate_log_filename() {
 LOG_FILE=$(generate_log_filename "fast_slow_${DATASET}" "${LOG_DIR}")
 
 # =============================================================================
+# 超参数设置 - HYPERPARAMETERS SETUP
+# =============================================================================
+
+print_info "设置超参数..."
+if ! bash "${SCRIPT_DIR}/set_hyperparameters.sh" --config; then
+    print_error "超参数设置失败"
+    exit 1
+fi
+print_success "超参数设置完成"
+
+# =============================================================================
 # 脚本执行区域 - SCRIPT EXECUTION SECTION
 # =============================================================================
 
