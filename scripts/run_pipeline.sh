@@ -6,14 +6,24 @@
 # 用法示例：
 #   bash run_pipeline.sh                           # 使用YAML配置
 #   bash run_pipeline.sh aircraft                  # 指定数据集
-#   bash run_pipeline.sh eurosat --gpu 2 --kshot 5 # 多参数
+#   bash run_pipeline.sh eurosat --gpu 2 --kshot    # 指定超参数
+#   bash run_pipeline.sh dog --experience_number 12 --classify_top_k 15
+
+#   # 消融实验：不使用经验库
+#   bash run_pipeline.sh bird --use_experience_base false --gpu 1   # 消融实验：不使用经验库
+#   bash run_pipeline.sh eurosat --vocabulary_free true --gpu 2   # 消融实验：使用开放词汇
+#
+# 优先级: 命令行参数 > YAML配置文件 
+#   bash run_pipeline.sh car --gpu 0 --kshot 5 --experience_number 10      # 完整参数
 #
 # 命令行参数：
-#   位置参数1: 数据集名称 (dog, bird, flower, pet, car, aircraft, eurosat, food, dtd)
+#   位置参数1: 数据集名称 (dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf, imagenet_sketch, imagenet_v2)
 #   --gpu GPU_ID              GPU编号
 #   --kshot NUM               每类样本数
 #   --test_suffix NUM         测试数据后缀
-#   --conda_env ENV_NAME      Conda环境名
+#   --use_experience_base BOOL  是否使用经验库 (消融实验用)
+#   --vocabulary_free BOOL    是否使用开放词汇 (消融实验用)
+#   --conda_env ENV_NAME      Conda环境名 (覆盖YAML配置)
 #   --help                    显示帮助信息
 
 # =============================================================================
@@ -36,6 +46,9 @@ FGVR Pipeline 脚本 - 完整流程（知识库构建 + 快慢思考评估）
     --test_suffix NUM       测试数据后缀（使用discovery集时）
     --use_test_data         使用images_test目录进行测试
     --test_percentage NUM   测试集采样百分比 (0-100)
+    --experience_number NUM 经验库最大经验条数
+    --classify_top_k NUM    分类时返回的类别数目
+    --use_experience_base BOOL 是否使用经验库（消融实验用）
     --conda_env ENV_NAME    Conda环境名称
     --help                  显示此帮助信息
 
@@ -65,6 +78,7 @@ EOF
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="${SCRIPT_DIR}/config.yaml"
 
+
 if [ ! -f "${CONFIG_FILE}" ]; then
     echo "[ERROR] 配置文件不存在: ${CONFIG_FILE}"
     exit 1
@@ -86,12 +100,19 @@ get_yaml_value() {
 # =============================================================================
 
 # 首先从YAML读取默认配置
-CUDA_VISIBLE_DEVICES=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
+# 优先使用环境变量中的 CUDA_VISIBLE_DEVICES，否则从 YAML 读取
+if [ -z "${CUDA_VISIBLE_DEVICES}" ]; then
+    CUDA_VISIBLE_DEVICES=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
+fi
 DATASET=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
 USE_TEST_DATA=$(get_yaml_value "use_test_data" "${CONFIG_FILE}")
 TEST_PERCENTAGE=$(get_yaml_value "test_percentage" "${CONFIG_FILE}")
 KSHOT=$(get_yaml_value "kshot" "${CONFIG_FILE}")
+EXPERIENCE_NUMBER=$(get_yaml_value "experience_base_max_number" "${CONFIG_FILE}")
+CLASSIFY_TOP_K=$(get_yaml_value "classify_top_k" "${CONFIG_FILE}")
+USE_EXPERIENCE_BASE=$(get_yaml_value "use_experience_base" "${CONFIG_FILE}")
+VOCABULARY_FREE=$(get_yaml_value "vocabulary_free" "${CONFIG_FILE}")
 CONDA_ENV=$(get_yaml_value "conda_env" "${CONFIG_FILE}")
 CONDA_BASE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
 PROJECT_ROOT=$(get_yaml_value "project_root" "${CONFIG_FILE}")
@@ -126,6 +147,22 @@ while [[ $# -gt 0 ]]; do
             ;;
         --conda_env)
             CONDA_ENV="$2"
+            shift 2
+            ;;
+        --experience_number)
+            EXPERIENCE_NUMBER="$2"
+            shift 2
+            ;;
+        --classify_top_k)
+            CLASSIFY_TOP_K="$2"
+            shift 2
+            ;;
+        --use_experience_base)
+            USE_EXPERIENCE_BASE="$2"
+            shift 2
+            ;;
+        --vocabulary_free)
+            VOCABULARY_FREE="$2"
             shift 2
             ;;
         --*)
@@ -180,6 +217,8 @@ if [ "${DATASET}" = "caltech101" ] || [ "${DATASET}" = "caltech256" ] || [ "${DA
     EXPERIMENT_DIR="${DATASET}"
 elif [ "${DATASET}" = "deepfashion_multimodal" ]; then
     EXPERIMENT_DIR="deepfashion_multimodal23"
+elif [ "${DATASET}" = "imagenet_sketch" ]; then
+    EXPERIMENT_DIR="ImageNet_Sketch1000"
 elif [ "${DATASET}" = "imagenet_v2" ]; then
     EXPERIMENT_DIR="imagenet_v2_1000"
 else
@@ -249,63 +288,59 @@ run_pipeline_bg() {
             echo "Test Data Json: ${TEST_DATA_JSON}  # 测试数据JSON文件"
         fi
         echo "K-shot: ${KSHOT}  # 检索库使用每个类别的样本数目"
+        echo "Experience Number: ${EXPERIENCE_NUMBER}  # 经验库最大经验条数"
+        echo "Classify Top K: ${CLASSIFY_TOP_K}  # 分类时返回的类别数目"
+        echo "Use Experience Base: ${USE_EXPERIENCE_BASE}  # 是否使用经验库（消融实验用）"
+        echo "Vocabulary Free: ${VOCABULARY_FREE}  # 是否使用开放词汇（消融实验用）"
         echo "Conda Env: ${CONDA_ENV}  # Conda环境名称, Conda Base: ${CONDA_BASE}  # Conda安装路径"
         echo "Knowledge Base Dir: ${KNOWLEDGE_BASE_DIR}  # 知识库目录"
         echo "Results Out: ${RESULTS_OUT}  # 快慢思考评估结果输出文件"
         echo "---------------------------"
         echo ""
 
-        # 设置超参数
-        echo "[INFO] === 设置超参数 ==="
-        if ! bash "${SCRIPT_DIR}/set_hyperparameters.sh" --config; then
-            echo "[ERROR] 超参数设置失败，退出 pipeline"
-            exit 1
-        fi
-        echo "[SUCCESS] 超参数设置完成"
+        # 超参数配置
+        EXPERIENCE_NUMBER="${EXPERIENCE_NUMBER:-8}"
+        CLASSIFY_TOP_K="${CLASSIFY_TOP_K:-10}"
+        echo "Experience Number: ${EXPERIENCE_NUMBER}  # 经验库最大经验条数"
+        echo "Classify Top K: ${CLASSIFY_TOP_K}  # 分类时返回的类别数目"
         echo ""
 
         # 激活环境
         source "${CONDA_BASE}/envs/${CONDA_ENV}/bin/activate"
 
-        # Step1: 构建知识库
-        echo "[INFO] === Step1: 构建知识库 ==="
-        python discovering.py --mode=build_knowledge_base \
-            --config_file_env=./configs/env_machine.yml \
-            --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
-            --num_per_category=${KSHOT} \
-            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR}
-        EXIT_CODE=$?
-        if [ $EXIT_CODE -ne 0 ]; then
-            echo "[ERROR] Step1: 知识库构建失败，退出 pipeline (exit code=${EXIT_CODE})"
-            exit $EXIT_CODE
-        fi
-        echo "[SUCCESS] Step1: 知识库构建完成"
-
-        # Step2: 快慢思考评估
-        echo "[INFO] === Step2: 快慢思考评估 ==="
+        # 使用 discovering.py 的 pipeline 模式：内部依次执行 build_knowledge_base 和 fast_slow
+        echo "[INFO] === 运行 discovering.py --mode=pipeline ==="
         if [ "${USE_TEST_DATA}" = "true" ]; then
-            python discovering.py --mode=fast_slow \
-                --config_file_env=./configs/env_machine.yml \
-                --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
-                --use_test_data \
-                --test_percentage=${TEST_PERCENTAGE} \
-                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-                --results_out=${RESULTS_OUT}
+                python discovering.py --mode=pipeline \
+                    --config_file_env=./configs/env_machine.yml \
+                    --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
+                    --num_per_category=${KSHOT} \
+                    --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+                    --use_test_data \
+                    --test_percentage=${TEST_PERCENTAGE} \
+                    --experience_number=${EXPERIENCE_NUMBER} \
+                    --classify_top_k=${CLASSIFY_TOP_K} \
+                    --use_experience_base=${USE_EXPERIENCE_BASE} \
+                    --vocabulary_free=${VOCABULARY_FREE}
         else
-        python discovering.py --mode=fast_slow \
-            --config_file_env=./configs/env_machine.yml \
-            --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
-            --test_data_dir=${TEST_DATA_JSON} \
-            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-            --results_out=${RESULTS_OUT}
+                python discovering.py --mode=pipeline \
+                    --config_file_env=./configs/env_machine.yml \
+                    --config_file_expt=./configs/expts/${CONFIG_FILE_DS} \
+                    --num_per_category=${KSHOT} \
+                    --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+                    --test_data_dir=${TEST_DATA_JSON} \
+                    --experience_number=${EXPERIENCE_NUMBER} \
+                    --classify_top_k=${CLASSIFY_TOP_K} \
+                    --use_experience_base=${USE_EXPERIENCE_BASE} \
+                    --vocabulary_free=${VOCABULARY_FREE}
         fi
 
         EXIT_CODE=$?
         if [ $EXIT_CODE -ne 0 ]; then
-            echo "[ERROR] Step2: 快慢思考评估失败 (exit code=${EXIT_CODE})"
+            echo "[ERROR] Pipeline 模式执行失败 (exit code=${EXIT_CODE})"
             exit $EXIT_CODE
         fi
-        echo "[SUCCESS] Step2: 快慢思考评估完成"
+        echo "[SUCCESS] Pipeline 模式执行完成"
     ) >> "${LOG_FILE}" 2>&1 &
     PID_BG=$!
     echo $PID_BG

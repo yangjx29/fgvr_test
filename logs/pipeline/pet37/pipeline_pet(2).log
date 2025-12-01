@@ -1,0 +1,121 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=8  # 使用的GPU编号
+Dataset: pet (num_classes=37)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/pet37/knowledge_base  # 知识库目录
+Results Out: ./results/pet_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+Experience Number: 8  # 经验库最大经验条数
+Classify Top K: 10  # 分类时返回的类别数目
+
+[INFO] === 运行 discovering.py --mode=pipeline ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+============================================================
+🔧 超参数配置信息
+============================================================
+   • experience_number: 8
+   • classify_top_k: 10
+============================================================
+
+当前数据集: pet (pet37)
+类别数: 37
+实验目录: ./experiments/pet37
+✅ JSON文件检查通过: ./experiments/pet37/images_split
+当前使用的 GPU 为：8
+
+=== Experiment Start Time: 2025-12-01 14:39:04 ===
+
+=== Experiment Arguments ===
+{'classify_top_k': 10,
+ 'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/pet37_all.yml',
+ 'experience_number': 8,
+ 'knowledge_base_dir': './experiments/pet37/knowledge_base',
+ 'mode': 'pipeline',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 16,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/pet_37',
+ 'dataset_name': 'pet',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/pet37',
+ 'expt_dir_describe': './experiments/pet37/describe',
+ 'expt_dir_gallery': './experiments/pet37/gallery',
+ 'expt_dir_grouping': './experiments/pet37/grouping',
+ 'expt_dir_guess': './experiments/pet37/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 19,
+ 'num_classes': 37,
+ 'num_novel': 18,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/pet37/gallery/pet_image_descriptions_attn',
+ 'path_identify_answers': './experiments/pet37/identify',
+ 'path_llm_gussed_names': './experiments/pet37/guess/pet_llm_gussed_names',
+ 'path_llm_prompts': './experiments/pet37/describe/pet_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/pet37/guess/pet_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/pet37/guess/pet_llm_replies_raw',
+ 'path_references': './experiments/pet37/gallery/pet_image_references',
+ 'path_regions': './experiments/pet37/gallery/pet_image_regions',
+ 'path_vqa_answers': './experiments/pet37/describe/pet_attributes_pairs',
+ 'path_vqa_questions': './experiments/pet37/describe/pet_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+=== Pipeline Mode: Build Knowledge Base + Fast-Slow Evaluation ===
+
+--- Step 1: Building Knowledge Base ---
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "pet37",
+    "num_classes": 37,
+    "config_file": "pet37_all.yml",
+    "data_dir": "pet_37",
+    "experiment_dir": "pet37",
+    "stats_file": "pet37/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/pet37/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/pet37"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:05,  1.34s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.35s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:02,  1.38s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.41s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.08s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.21s/it]
+scripts/run_pipeline.sh: line 494: 2594571 Killed                  python discovering.py --mode=pipeline --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/${CONFIG_FILE_DS} --num_per_category=${KSHOT} --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} --use_test_data --test_percentage=${TEST_PERCENTAGE} --experience_number=${EXPERIENCE_NUMBER} --classify_top_k=${CLASSIFY_TOP_K}
+[ERROR] Pipeline 模式执行失败 (exit code=137)

@@ -7,13 +7,23 @@
 #   bash run_discovery.sh                                # 使用YAML配置
 #   bash run_discovery.sh dog evaluate                   # 指定数据集和模式
 #   bash run_discovery.sh bird fast_slow --gpu 1 --kshot 5  # 多参数
+#   bash run_discovery.sh eurosat evaluate --experience_number 10 --classify_top_k 20  # 指定超参数
+#   bash run_discovery.sh bird fast_slow --gpu 1 --kshot 3 --experience_number 8      # 完整参数
+#   bash run_discovery.sh pet --mode pipeline --gpu 0 --kshot 5                     # 指定pipeline模式
+#   bash run_discovery.sh bird --mode classify --query_image ./test.jpg --gpu 1   # 单图分类
+#   bash run_discovery.sh dog --mode fastonly --use_test_data --test_percentage 30 # 仅快思考评估
+#   bash run_discovery.sh bird --mode slowonly --gpu 2 --kshot 3                  # 仅慢思考评估
+#   bash run_discovery.sh dog --mode fastonly --use_experience_base false --gpu 1  # 消融实验：不使用经验库
+#   bash run_discovery.sh bird --mode classify --vocabulary_free true --gpu 2   # 消融实验：使用开放词汇
 #
 # 命令行参数：
 #   位置参数1: 数据集名称 (dog, bird, flower, pet, car, aircraft, eurosat, food, dtd)
-#   位置参数2: 运行模式 (build_knowledge_base, classify, evaluate, etc.)
+#   --mode MODE               运行模式 (build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow, pipeline)
 #   --gpu GPU_ID              GPU编号
 #   --kshot NUM               每类样本数
 #   --test_suffix NUM         测试数据后缀
+#   --use_experience_base BOOL 是否使用经验库 (消融实验用)
+#   --vocabulary_free BOOL    是否使用开放词汇 (消融实验用)
 #   --conda_env ENV_NAME      Conda环境名
 #   --help                    显示帮助信息
 # 
@@ -24,6 +34,7 @@
 # - fastonly: 仅使用快思考评估
 # - slowonly: 仅使用慢思考评估
 # - fast_slow: 完整的快慢思考系统评估
+# - pipeline: 串行执行构建知识库 + 快慢思考评估
 
 # =============================================================================
 # 帮助函数
@@ -38,16 +49,29 @@ show_help() {
 位置参数:
     DATASET                  数据集名称 (可选)
                             支持: dog, bird, flower, pet, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf
-    MODE                    运行模式 (可选)
+                            如不指定，使用config.yaml中的配置
+    MODE                    运行模式 (可选，优先级低于--mode)
                             支持: build_knowledge_base, classify, evaluate, 
-                                  fastonly, slowonly, fast_slow
+                                  fastonly, slowonly, fast_slow, pipeline
 
 选项:
+    --mode MODE             运行模式 (优先级高于位置参数)
+                            支持: build_knowledge_base, classify, evaluate, 
+                                  fastonly, slowonly, fast_slow, pipeline
     --gpu GPU_ID            GPU编号
     --kshot NUM             每个类别的样本数
     --test_suffix NUM       测试数据后缀（使用discovery集时）
     --use_test_data         使用images_test目录进行测试
     --test_percentage NUM   测试集采样百分比 (0-100)
+    --query_image PATH      图像路径（classify模式需要）
+    --results_out PATH      结果输出路径
+    --confidence_threshold NUM  置信度阈值
+    --similarity_threshold NUM   相似度阈值
+    --use_slow_thinking BOOL     强制使用慢思考
+    --experience_number NUM 经验库最大经验条数
+    --classify_top_k NUM    分类时返回的类别数目
+    --use_experience_base BOOL 是否使用经验库（消融实验用）
+    --vocabulary_free BOOL  是否使用开放词汇（消融实验用）
     --conda_env ENV_NAME    Conda环境名称
     --help                  显示此帮助信息
 
@@ -55,16 +79,37 @@ show_help() {
     # 使用YAML配置
     bash run_discovery.sh
 
-    # 指定数据集和模式
+    # 指定数据集和模式（位置参数）
     bash run_discovery.sh aircraft evaluate
 
-    # 使用discovery集
+    # 使用--mode指定模式（推荐方式）
+    bash run_discovery.sh pet --mode pipeline --gpu 0 --kshot 5
+
+    # 单张图像分类
+    bash run_discovery.sh bird --mode classify --query_image ./test.jpg --gpu 1
+
+    # 仅快思考评估
+    bash run_discovery.sh dog --mode fastonly --use_test_data --test_percentage 30
+
+    # 仅慢思考评估
+    bash run_discovery.sh flower --mode slowonly --gpu 2 --kshot 3
+
+    # 快慢思考系统评估
     bash run_discovery.sh food fast_slow --gpu 2 --kshot 6
     
     # 使用测试集评估
     bash run_discovery.sh pet evaluate --gpu 0 --use_test_data --test_percentage 20
 
-优先级: 命令行参数 > YAML配置文件
+    # 指定超参数
+    bash run_discovery.sh eurosat evaluate --experience_number 10 --classify_top_k 20
+
+    # 消融实验：不使用经验库
+    bash run_discovery.sh dog --mode fastonly --use_experience_base false --gpu 1
+
+    # 消融实验：使用开放词汇
+    bash run_discovery.sh bird --mode classify --vocabulary_free true --gpu 2
+
+优先级: --mode参数 > 位置参数 > YAML配置文件
 
 EOF
     exit 0
@@ -77,6 +122,7 @@ EOF
 # 获取脚本目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="${SCRIPT_DIR}/config.yaml"
+
 
 # 检查配置文件是否存在
 if [ ! -f "${CONFIG_FILE}" ]; then
@@ -102,12 +148,21 @@ get_yaml_value() {
 # =============================================================================
 
 # 首先从YAML读取默认配置
-CUDA_VISIBLE_DEVICES_VALUE=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
+# 优先使用环境变量中的 CUDA_VISIBLE_DEVICES，否则从 YAML 读取
+if [ -z "${CUDA_VISIBLE_DEVICES}" ]; then
+    CUDA_VISIBLE_DEVICES_VALUE=$(get_yaml_value "cuda_visible_devices" "${CONFIG_FILE}")
+else
+    CUDA_VISIBLE_DEVICES_VALUE="${CUDA_VISIBLE_DEVICES}"
+fi
 DATASET_NAME=$(get_yaml_value "name" "${CONFIG_FILE}")
 TEST_DATA_SUFFIX_VALUE=$(get_yaml_value "test_data_suffix" "${CONFIG_FILE}")
 USE_TEST_DATA_VALUE=$(get_yaml_value "use_test_data" "${CONFIG_FILE}")
 TEST_PERCENTAGE_VALUE=$(get_yaml_value "test_percentage" "${CONFIG_FILE}")
 KSHOT_VALUE=$(get_yaml_value "kshot" "${CONFIG_FILE}")
+EXPERIENCE_NUMBER_VALUE=$(get_yaml_value "experience_base_max_number" "${CONFIG_FILE}")
+CLASSIFY_TOP_K_VALUE=$(get_yaml_value "classify_top_k" "${CONFIG_FILE}")
+USE_EXPERIENCE_BASE_VALUE=$(get_yaml_value "use_experience_base" "${CONFIG_FILE}")
+VOCABULARY_FREE_VALUE=$(get_yaml_value "vocabulary_free" "${CONFIG_FILE}")
 MODE_VALUE=$(get_yaml_value "discovery_mode" "${CONFIG_FILE}")
 CONDA_ENV_VALUE=$(get_yaml_value "conda_env" "${CONFIG_FILE}")
 CONDA_BASE_VALUE=$(get_yaml_value "conda_base" "${CONFIG_FILE}")
@@ -120,6 +175,11 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --help|-h)
             show_help
+            ;;
+        --mode)
+            MODE_VALUE="$2"
+            MODE_FROM_CMDLINE="true"
+            shift 2
             ;;
         --gpu)
             CUDA_VISIBLE_DEVICES_VALUE="$2"
@@ -141,8 +201,44 @@ while [[ $# -gt 0 ]]; do
             TEST_PERCENTAGE_VALUE="$2"
             shift 2
             ;;
+                --query_image)
+            QUERY_IMAGE="$2"
+            shift 2
+            ;;
+        --results_out)
+            RESULTS_OUT="$2"
+            shift 2
+            ;;
+        --confidence_threshold)
+            CONFIDENCE_THRESHOLD="$2"
+            shift 2
+            ;;
+        --similarity_threshold)
+            SIMILARITY_THRESHOLD="$2"
+            shift 2
+            ;;
+        --use_slow_thinking)
+            USE_SLOW_THINKING="$2"
+            shift 2
+            ;;
         --conda_env)
             CONDA_ENV_VALUE="$2"
+            shift 2
+            ;;
+        --experience_number)
+            EXPERIENCE_NUMBER_VALUE="$2"
+            shift 2
+            ;;
+        --classify_top_k)
+            CLASSIFY_TOP_K_VALUE="$2"
+            shift 2
+            ;;
+        --use_experience_base)
+            USE_EXPERIENCE_BASE_VALUE="$2"
+            shift 2
+            ;;
+        --vocabulary_free)
+            VOCABULARY_FREE_VALUE="$2"
             shift 2
             ;;
         --*)
@@ -158,10 +254,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 # 处理位置参数（数据集名称和模式）
+# 注意：--mode参数优先级高于位置参数
 if [ ${#POSITIONAL_ARGS[@]} -gt 0 ]; then
     DATASET_NAME="${POSITIONAL_ARGS[0]}"
 fi
-if [ ${#POSITIONAL_ARGS[@]} -gt 1 ]; then
+# 只有在没有使用--mode参数时，才使用位置参数中的模式
+if [ ${#POSITIONAL_ARGS[@]} -gt 1 ] && [ -z "${MODE_FROM_CMDLINE}" ]; then
     MODE_VALUE="${POSITIONAL_ARGS[1]}"
 fi
 
@@ -179,6 +277,12 @@ USE_TEST_DATA="${USE_TEST_DATA_VALUE}"
 TEST_PERCENTAGE="${TEST_PERCENTAGE_VALUE}"
 KSHOT="${KSHOT_VALUE}"
 MODE="${MODE_VALUE}"
+
+# 超参数配置
+EXPERIENCE_NUMBER="${EXPERIENCE_NUMBER_VALUE}"
+CLASSIFY_TOP_K="${CLASSIFY_TOP_K_VALUE}"
+USE_EXPERIENCE_BASE="${USE_EXPERIENCE_BASE_VALUE}"
+VOCABULARY_FREE="${VOCABULARY_FREE_VALUE}"
 
 # 环境配置
 CONDA_ENV="${CONDA_ENV_VALUE}"
@@ -344,16 +448,9 @@ generate_log_filename() {
 
 LOG_FILE=$(generate_log_filename "discovery_${DATASET}_${MODE}" "${LOG_DIR}")
 
-# =============================================================================
-# 超参数设置 - HYPERPARAMETERS SETUP
-# =============================================================================
-
-print_info "设置超参数..."
-if ! bash "${SCRIPT_DIR}/set_hyperparameters.sh" --config; then
-    print_error "超参数设置失败"
-    exit 1
-fi
-print_success "超参数设置完成"
+# 超参数配置
+EXPERIENCE_NUMBER="${EXPERIENCE_NUMBER_VALUE:-8}"
+CLASSIFY_TOP_K="${CLASSIFY_TOP_K_VALUE:-10}"
 
 # =============================================================================
 # 脚本执行区域 - SCRIPT EXECUTION SECTION
@@ -407,6 +504,10 @@ echo "数据集: ${DATASET}"
 echo "配置文件: ${CONFIG_FILE}"
 echo "运行模式: ${MODE}"
 echo "K-shot: ${KSHOT}"
+echo "Experience Number: ${EXPERIENCE_NUMBER}  # 经验库最大经验条数"
+echo "Classify Top K: ${CLASSIFY_TOP_K}  # 分类时返回的类别数目"
+echo "Use Experience Base: ${USE_EXPERIENCE_BASE}  # 是否使用经验库（消融实验用）"
+echo "Vocabulary Free: ${VOCABULARY_FREE}  # 是否使用开放词汇（消融实验用）"
 echo "知识库目录: ${KNOWLEDGE_BASE_DIR}"
 echo "测试数据JSON: ${TEST_DATA_JSON}"
 echo "结果输出: ${RESULTS_OUT}"
@@ -458,7 +559,11 @@ case "${MODE}" in
             --config_file_env=./configs/env_machine.yml \
             --config_file_expt=./configs/expts/${CONFIG_FILE} \
             --num_per_category=${KSHOT} \
-            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR}"
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --experience_number=${EXPERIENCE_NUMBER} \
+            --classify_top_k=${CLASSIFY_TOP_K} \
+            --use_experience_base=${USE_EXPERIENCE_BASE} \
+            --vocabulary_free=${VOCABULARY_FREE}"
         ;;
     "classify")
         if [ ! -d "${KNOWLEDGE_BASE_DIR}" ]; then
@@ -484,13 +589,17 @@ case "${MODE}" in
         if [ "${USE_TEST_DATA}" = "true" ]; then
             # 使用测试集
             CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
-                --mode=${MODE} \
-                --config_file_env=./configs/env_machine.yml \
-                --config_file_expt=./configs/expts/${CONFIG_FILE} \
-                --use_test_data \
-                --test_percentage=${TEST_PERCENTAGE} \
-                --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-                --results_out=${RESULTS_OUT}"
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --use_test_data \
+            --test_percentage=${TEST_PERCENTAGE} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --results_out=${RESULTS_OUT} \
+            --experience_number=${EXPERIENCE_NUMBER} \
+            --classify_top_k=${CLASSIFY_TOP_K} \
+            --use_experience_base=${USE_EXPERIENCE_BASE} \
+            --vocabulary_free=${VOCABULARY_FREE}"
         else
             # 使用discovery集
         if [ ! -f "${TEST_DATA_JSON}" ]; then
@@ -504,7 +613,47 @@ case "${MODE}" in
             --config_file_expt=./configs/expts/${CONFIG_FILE} \
             --test_data_dir=${TEST_DATA_JSON} \
             --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
-            --results_out=${RESULTS_OUT}"
+            --results_out=${RESULTS_OUT} \
+            --experience_number=${EXPERIENCE_NUMBER} \
+            --classify_top_k=${CLASSIFY_TOP_K} \
+            --use_experience_base=${USE_EXPERIENCE_BASE} \
+            --vocabulary_free=${VOCABULARY_FREE}"
+        fi
+        ;;
+    "pipeline")
+        # pipeline模式：串行执行build_knowledge_base和fast_slow
+        if [ "${USE_TEST_DATA}" = "true" ]; then
+            # 使用测试集
+            CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --num_per_category=${KSHOT} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --use_test_data \
+            --test_percentage=${TEST_PERCENTAGE} \
+            --experience_number=${EXPERIENCE_NUMBER} \
+            --classify_top_k=${CLASSIFY_TOP_K} \
+            --use_experience_base=${USE_EXPERIENCE_BASE} \
+            --vocabulary_free=${VOCABULARY_FREE}"
+        else
+            # 使用discovery集
+            if [ ! -f "${TEST_DATA_JSON}" ]; then
+                print_error "测试数据JSON文件不存在: ${TEST_DATA_JSON}"
+                print_info "请确保JSON文件已复制到experiments目录"
+                exit 1
+            fi
+            CMD="source /home/hdl/miniconda3/envs/${CONDA_ENV}/bin/activate && python discovering.py \
+            --mode=${MODE} \
+            --config_file_env=./configs/env_machine.yml \
+            --config_file_expt=./configs/expts/${CONFIG_FILE} \
+            --num_per_category=${KSHOT} \
+            --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} \
+            --test_data_dir=${TEST_DATA_JSON} \
+            --experience_number=${EXPERIENCE_NUMBER} \
+            --classify_top_k=${CLASSIFY_TOP_K} \
+            --use_experience_base=${USE_EXPERIENCE_BASE} \
+            --vocabulary_free=${VOCABULARY_FREE}"
         fi
         ;;
     
@@ -518,6 +667,7 @@ case "${MODE}" in
         print_error "  - fastonly: 仅使用快思考评估"
         print_error "  - slowonly: 仅使用慢思考评估"
         print_error "  - fast_slow: 完整的快慢思考系统评估"
+        print_error "  - pipeline: 串行执行构建知识库 + 快慢思考评估"
         exit 1
         ;;
 esac
@@ -533,28 +683,24 @@ ${CMD}
 EOF
 chmod +x "${TEMP_SCRIPT}"
 
-# 后台运行并记录日志
+# 后台运行逻辑
 print_info "开始后台运行..."
-nohup bash "${TEMP_SCRIPT}" > "${LOG_FILE}" 2>&1 &
-PID=$!
+    nohup bash "${TEMP_SCRIPT}" > "${LOG_FILE}" 2>&1 &
+    PID=$!
+    print_success "任务已启动！"
+    print_info "进程ID: ${PID}"
+    print_info "日志文件: ${LOG_FILE}"
+    print_info "查看实时日志: tail -f '${LOG_FILE}'"
+    print_info "停止任务: kill ${PID}"
 
-# 清理临时配置文件
-sleep 1
-rm -f "${TEMP_HEADER}" 2>/dev/null
-
-print_success "任务已启动！"
-print_info "进程ID: ${PID}"
-print_info "日志文件: ${LOG_FILE}"
-print_info "查看实时日志: tail -f '${LOG_FILE}'"
-print_info "停止任务: kill ${PID}"
-
-# 等待几秒钟检查进程是否正常启动
-sleep 3
-if kill -0 ${PID} 2>/dev/null; then
-    print_success "进程运行正常"
-else
-    print_error "进程可能已经退出，请检查日志文件"
-fi
+    # 等待几秒钟检查进程是否正常启动
+    sleep 3
+    if kill -0 ${PID} 2>/dev/null; then
+        print_success "进程运行正常"
+    else
+        print_error "进程启动失败，请检查日志文件"
+        exit 1
+    fi
 
 # 清理临时文件
 print_info "清理临时文件..."

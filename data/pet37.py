@@ -265,33 +265,41 @@ class PetPrompter:
 
 class PetDiscovery37:
     def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
+        # 使用JSON文件加载发现集数据
+        # 从数据集目录构建到实验目录的JSON文件路径
+        json_file = os.path.join(os.path.dirname(os.path.dirname(root)), 'experiments', 'pet37', 'images_split', f'images_discovery_all{folder_suffix}.json')
+        
+        if not os.path.exists(json_file):
+            raise FileNotFoundError(f"发现集JSON文件不存在: {json_file}")
+        
+        print(f"📁 使用JSON文件加载发现集: {json_file}")
+        self._load_from_json(json_file)
 
-        self.class_folders = os.listdir(img_root)  # 100 x 1
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
-
+    def _load_from_json(self, json_file):
+        """从JSON文件加载发现集数据"""
+        import json
+        from collections import defaultdict
+        
+        with open(json_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
         self.samples = []
         self.targets = []
-        for folder in self.class_folders:
-            label = int(folder.split('/')[-1][:3])
-            file_names = os.listdir(folder)
-            for name in file_names:
-                self.targets.append(label)
-                self.samples.append(os.path.join(folder, name))
-
+        self.subcat_to_sample = defaultdict(list)
+        
+        for class_entry in data:
+            if len(class_entry) >= 3:
+                class_name, class_id, image_paths = class_entry[0], class_entry[1], class_entry[2]
+                
+                # 添加所有图像路径
+                for img_path in image_paths:
+                    self.samples.append(img_path)
+                    self.targets.append(class_id)
+                    self.subcat_to_sample[class_name].append(img_path)
+        
         self.classes = PET_STATS['class_names']
         self.index = 0
-
-        # 新增subcat_to_sample属性，按类别名分组图片路径
-        self.subcat_to_sample = {}
-        for folder in self.class_folders:
-            # 文件夹名格式如'000.ClassName'，提取类别名
-            folder_name = os.path.basename(folder)
-            class_name = folder_name[4:]
-            file_names = os.listdir(folder)
-            img_paths = [os.path.join(folder, name) for name in file_names]
-            self.subcat_to_sample[class_name] = img_paths
+        print(f"✓ 从JSON文件加载 {len(self.subcat_to_sample)} 个类别，共 {len(self.samples)} 张图像")
 
     def __len__(self):
         return len(self.samples)

@@ -36,14 +36,15 @@ import time
 # Import the extract_from_trainsets module
 from data.extract_from_trainsets import load_train_data, extract_discovery_set, save_discovery_set
 
-test_data_true_random =True # 测试集采样是否实现真随机，每次运行结果都不一样
-randomly_extract_discoverying_set=True #控制是否从训练集中随机抽取图片来创建发现集，而不是直接加载发现集
-discovery_data_true_random=True #发现集采样是否实现真随机，每次运行结果都不一样
+test_data_true_random =False # 测试集采样是否实现真随机，每次运行结果都不一样
+randomly_extract_discoverying_set=False #控制是否从训练集中随机抽取图片来创建发现集，而不是直接加载发现集
+discovery_data_true_random=False #发现集采样是否实现真随机，每次运行结果都不一样
 DEBUG = False  # 设置调试模式为关闭状态
 
 # 全局数据集配置
 DATASET_CONFIG = None
 CURRENT_DATASET = None
+
 
 def get_or_create_discovery_set(cfg, folder_suffix='', args=None):
     """
@@ -433,37 +434,31 @@ def prepare_test_samples(cfg, args):
     return dict(test_samples)
 
 
-if __name__ == "__main__":
-    # 打印超参数配置
-    print("=" * 60)
-    print("🔧 超参数配置信息")
-    print("=" * 60)
-    try:
-        hyperparam_file = "./configs/hyperparameters.yaml"
-        if os.path.exists(hyperparam_file):
-            with open(hyperparam_file, 'r', encoding='utf-8') as f:
-                hyperparams = yaml.safe_load(f)
-            
-            print(f"📁 配置文件: {hyperparam_file}")
-            print("📋 参数列表:")
-            for key, value in hyperparams.items():
-                if isinstance(value, (int, float, str, bool)):
-                    print(f"   • {key}: {value}")
-                else:
-                    print(f"   • {key}: {value} (类型: {type(value).__name__})")
-        else:
-            print(f"⚠️  警告: 超参数配置文件不存在: {hyperparam_file}")
-    except Exception as e:
-        print(f"❌ 错误: 读取超参数配置失败: {e}")
-    print("=" * 60)
-    print()
+# =============================================================================
+# 全局超参数对象
+# =============================================================================
+class Hyperparameters:
+    """超参数配置类，用于存储和管理运行时超参数"""
+    def __init__(self, experience_number: int = 8, classify_top_k: int = 10, use_experience_base: bool = True, vocabulary_free: bool = False):
+        self.experience_number = experience_number  # 经验库最大经验条数
+        self.classify_top_k = classify_top_k        # 分类时的top_k候选数
+        self.use_experience_base = use_experience_base  # 是否使用经验库（消融实验用）
+        self.vocabulary_free = vocabulary_free      # 是否使用开放词汇（消融实验用）
     
+    def __repr__(self):
+        return f"Hyperparameters(experience_number={self.experience_number}, classify_top_k={self.classify_top_k}, use_experience_base={self.use_experience_base}, vocabulary_free={self.vocabulary_free})"
+
+# 全局超参数实例（默认值，会在main中被命令行参数覆盖）
+hyperparams = Hyperparameters()
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Discovery', formatter_class=argparse.ArgumentDefaultsHelpFormatter) 
 
     parser.add_argument('--mode',  
                         type=str, 
                         default='build_knowledge_base', 
-                        choices=['build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow'],  # 可选值列表
+                        choices=['build_knowledge_base', 'classify', 'evaluate', 'fastonly', 'slowonly', 'fast_slow', 'pipeline'],  # 可选值列表
                         help='operating mode for each stage')  
     parser.add_argument('--config_file_env',  
                         type=str,  
@@ -489,8 +484,32 @@ if __name__ == "__main__":
     parser.add_argument('--use_slow_thinking', type=bool, default=None, help='force use slow thinking (None for auto)')
     parser.add_argument('--confidence_threshold', type=float, default=0.8, help='confidence threshold for fast thinking')
     parser.add_argument('--similarity_threshold', type=float, default=0.7, help='similarity threshold for trigger mechanism')
+    
+    # 超参数配置（替代YAML配置文件）
+    parser.add_argument('--experience_number', type=int, default=8, help='经验库最大经验条数')
+    parser.add_argument('--classify_top_k', type=int, default=10, help='分类时的top_k候选数')
+    parser.add_argument('--use_experience_base', type=bool, default=True, help='是否使用经验库（消融实验用）')
+    parser.add_argument('--vocabulary_free', type=bool, default=False, help='是否使用开放词汇（消融实验用）')
 
     args = parser.parse_args()    
+    
+    # 更新全局超参数对象
+    hyperparams.experience_number = args.experience_number
+    hyperparams.classify_top_k = args.classify_top_k
+    hyperparams.use_experience_base = args.use_experience_base
+    hyperparams.vocabulary_free = args.vocabulary_free
+    
+    # 打印超参数配置
+    print("=" * 60)
+    print("🔧 超参数配置信息")
+    print("=" * 60)
+    print(f"   • experience_number: {hyperparams.experience_number}")
+    print(f"   • classify_top_k: {hyperparams.classify_top_k}")
+    print(f"   • use_experience_base: {hyperparams.use_experience_base}")
+    print(f"   • vocabulary_free: {hyperparams.vocabulary_free}")
+    print("=" * 60)
+    print()
+    
     cfg = setup_config(args.config_file_env, args.config_file_expt)  
     
     # 设置当前数据集
@@ -810,8 +829,8 @@ if __name__ == "__main__":
             now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             pbar.set_description(f"[{now_str}] Processing fast-slow")
             for path in paths:
-                # 使用完整的快慢思考系统分类
-                result = system.classify_single_image(path, use_slow_thinking=None, top_k=10)
+                # 使用完整的快慢思考系统分类（从超参数对象读取top_k）
+                result = system.classify_single_image(path, use_slow_thinking=None, top_k=hyperparams.classify_top_k)
                 
                 pred = result.get('final_prediction', 'unknown')
                 ok = is_similar(pred, true_cat, threshold=0.3)
@@ -925,6 +944,171 @@ if __name__ == "__main__":
             print(f"⚠️  保存分类结果时出错: {e}")
             import traceback
             traceback.print_exc()
+            
+    elif args.mode == 'pipeline':
+        """
+        串行执行 build_knowledge_base 和 fast_slow 模式
+        使用示例:
+        CUDA_VISIBLE_DEVICES=3 python discovering.py --mode=pipeline --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/dog120_all.yml --num_per_category=10 --knowledge_base_dir=/data/yjx/MLLM/Try_again/experiments/dog120/knowledge_base --use_test_data --test_percentage=50 2>&1 | tee ./logs/pipeline_dog120.log
+        """
+        print(colored("=== Pipeline Mode: Build Knowledge Base + Fast-Slow Evaluation ===", "cyan"))
+        
+        # ========== 第一步：构建知识库 ==========
+        print(colored("\n--- Step 1: Building Knowledge Base ---", "yellow"))
+        
+        # 初始化快慢思考系统
+        system = FastSlowThinkingSystem(
+            model_tag=cfg['model_size_mllm'],
+            model_name=cfg['model_size_mllm'],
+            device='cuda' if cfg['host'] in ["xiao"] else 'cpu',
+            cfg=cfg,
+            dataset_info=CURRENT_DATASET
+        )
+            
+        # 加载训练样本
+        data_discovery = get_or_create_discovery_set(cfg, folder_suffix=expt_id_suffix, args=args)
+        train_samples = defaultdict(list)
+        for name, path in data_discovery.subcat_to_sample.items():
+            for p in path:
+                train_samples[name].append(p)
+        print(f"构建知识库，包含 {len(train_samples)} 个类别, dataset classes:{len(DATA_STATS[cfg['dataset_name']]['class_names'])}")
+            
+        # 构建知识库
+        system.load_knowledge_base(args.knowledge_base_dir)  # 方便构建stats
+        image_kb, text_kb = system.build_knowledge_base(
+            train_samples, 
+            save_dir=args.knowledge_base_dir,
+            augmentation=True
+        )
+        print(colored(f"✓ 知识库构建完成，保存到: {args.knowledge_base_dir}", "green"))
+        
+        # ========== 第二步：快慢思考评估 ==========
+        print(colored("\n--- Step 2: Fast-Slow Evaluation ---", "yellow"))
+        
+        # 重新加载知识库和经验库（确保最新状态）
+        system.load_knowledge_base(args.knowledge_base_dir)
+        system.load_experience_base(args.knowledge_base_dir)
+        
+        # 准备测试样本
+        test_samples = prepare_test_samples(cfg, args)
+        print(f'test sample keys: {list(test_samples.keys())[:5]}...')
+        print(f"[pipeline fast-slow] 测试数据集包含 {len(test_samples)} 个类别")
+        
+        # 使用完整的快慢思考系统评估
+        correct = 0
+        total = 0
+        fast_only_correct = 0
+        slow_triggered = 0
+        slow_triggered_correct = 0
+        
+        # 导入结果保存模块
+        from data.result_saver import (
+            save_classification_result,
+            create_result_entry,
+            get_experiment_dir_from_dataset_info
+        )
+        
+        # 准备结果列表用于保存
+        classification_results = []
+        
+        from datetime import datetime
+        from tqdm import tqdm
+
+        pbar = tqdm(test_samples.items())
+        for true_cat, paths in pbar:
+            now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            pbar.set_description(f"[{now_str}] Processing pipeline fast-slow")
+            for path in paths:
+                # 使用完整的快慢思考系统分类
+                result = system.classify_single_image(path, use_slow_thinking=None, top_k=hyperparams.classify_top_k)
+                
+                pred = result.get('final_prediction', 'unknown')
+                ok = is_similar(pred, true_cat, threshold=0.3)
+                used_slow = result.get('used_slow_thinking', False)
+                
+                # 提取快思考和慢思考结果
+                fast_result = result.get('fast_result', {})
+                fast_result_data = {
+                    'predicted_category': fast_result.get('predicted_category', 'unknown'),
+                    'predicted_fast': fast_result.get('predicted_fast', 'unknown'),
+                    'confidence': fast_result.get('confidence', 0.0),
+                    'fused_top1': fast_result.get('fused_top1', 'unknown'),
+                    'fused_top1_prob': fast_result.get('fused_top1_prob', 0.0),
+                    'need_slow_thinking': fast_result.get('need_slow_thinking', False),
+                    'img_category': fast_result.get('img_category', 'unknown'),
+                    'text_category': fast_result.get('text_category', 'unknown')
+                }
+                
+                slow_result_data = {}
+                if used_slow:
+                    slow_result = result.get('slow_result', {})
+                    slow_result_data = {
+                        'predicted_category': slow_result.get('predicted_category', 'unknown'),
+                        'confidence': slow_result.get('confidence', 0.0),
+                        'reasoning': slow_result.get('reasoning', '')
+                    }
+                
+                # 获取项目根目录用于路径转换
+                project_root = os.path.dirname(os.path.abspath(__file__))
+                
+                # 创建结果条目
+                result_entry = create_result_entry(
+                    label=true_cat,
+                    prediction=pred,
+                    is_correct=ok,
+                    fast_result=fast_result_data,
+                    slow_result=slow_result_data if used_slow else None,
+                    image_path=path,
+                    confidence=result.get('final_confidence', 0.0),
+                    project_root=project_root
+                )
+                classification_results.append(result_entry)
+                
+                if ok:
+                    print(f"succ. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
+                    correct += 1
+                    if not used_slow:
+                        fast_only_correct += 1
+                    if used_slow:
+                        slow_triggered_correct += 1
+                else:
+                    print(f"failed. pred cate:{pred}, true cate:{true_cat}, used_slow:{used_slow}, confidence:{result.get('final_confidence', 0):.4f}")
+                total += 1
+                if used_slow:
+                    slow_triggered += 1
+        
+        # 计算并打印统计信息
+        accuracy = correct / total if total > 0 else 0
+        fast_only_accuracy = fast_only_correct / total if total > 0 else 0
+        slow_trigger_rate = slow_triggered / total if total > 0 else 0
+        slow_success_rate = slow_triggered_correct / slow_triggered if slow_triggered > 0 else 0
+        
+        print(colored(f"\n=== Pipeline Mode Final Results ===", "cyan"))
+        print(f"总体准确率: {accuracy:.4f} ({correct}/{total})")
+        print(f"仅快思考正确率: {fast_only_accuracy:.4f} ({fast_only_correct}/{total})")
+        print(f"慢思考触发率: {slow_trigger_rate:.4f} ({slow_triggered}/{total})")
+        print(f"慢思考成功率: {slow_success_rate:.4f} ({slow_triggered_correct}/{slow_triggered})")
+        
+        # 保存结果
+        try:
+            experiment_dir = get_experiment_dir_from_dataset_info(CURRENT_DATASET)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            default_filename = f"pipeline_results_{timestamp}.json"
+            
+            save_classification_result(
+                classification_results,
+                experiment_dir=experiment_dir,
+                filename=default_filename,
+                mode='pipeline'
+            )
+            print(colored(f"✓ 结果已保存到: {experiment_dir}/{default_filename}", "green"))
+        except Exception as e:
+            print(f"⚠️  保存分类结果时出错: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        print(colored("=== Pipeline Mode Completed ===", "cyan"))
+        
     else:
         raise NotImplementedError 
 

@@ -1,0 +1,205 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=0  # 使用的GPU编号
+Dataset: dog (num_classes=120)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Experience Number: 20  # 经验库最大经验条数
+Classify Top K: 12  # 分类时返回的类别数目
+Use Experience Base: true  # 是否使用经验库（消融实验用）
+Vocabulary Free: false  # 是否使用开放词汇（消融实验用）
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/dog120/knowledge_base  # 知识库目录
+Results Out: ./results/dog_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+Experience Number: 20  # 经验库最大经验条数
+Classify Top K: 12  # 分类时返回的类别数目
+
+[INFO] === 运行 discovering.py --mode=pipeline ===
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+============================================================
+🔧 超参数配置信息
+============================================================
+   • experience_number: 20
+   • classify_top_k: 12
+   • use_experience_base: True
+   • vocabulary_free: True
+============================================================
+
+当前数据集: dog (dog120)
+类别数: 120
+实验目录: ./experiments/dog120
+✅ JSON文件检查通过: ./experiments/dog120/images_split
+当前使用的 GPU 为：0
+
+=== Experiment Start Time: 2025-12-01 15:24:36 ===
+
+=== Experiment Arguments ===
+{'classify_top_k': 12,
+ 'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/dog120_all.yml',
+ 'experience_number': 20,
+ 'knowledge_base_dir': './experiments/dog120/knowledge_base',
+ 'mode': 'pipeline',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_experience_base': True,
+ 'use_slow_thinking': None,
+ 'use_test_data': True,
+ 'vocabulary_free': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/dogs_120',
+ 'dataset_name': 'dog',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/dog120',
+ 'expt_dir_describe': './experiments/dog120/describe',
+ 'expt_dir_gallery': './experiments/dog120/gallery',
+ 'expt_dir_grouping': './experiments/dog120/grouping',
+ 'expt_dir_guess': './experiments/dog120/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 60,
+ 'num_classes': 120,
+ 'num_novel': 60,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/dog120/gallery/dog_image_descriptions_attn',
+ 'path_identify_answers': './experiments/dog120/identify',
+ 'path_llm_gussed_names': './experiments/dog120/guess/dog_llm_gussed_names',
+ 'path_llm_prompts': './experiments/dog120/describe/dog_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/dog120/guess/dog_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/dog120/guess/dog_llm_replies_raw',
+ 'path_references': './experiments/dog120/gallery/dog_image_references',
+ 'path_regions': './experiments/dog120/gallery/dog_image_regions',
+ 'path_vqa_answers': './experiments/dog120/describe/dog_attributes_pairs',
+ 'path_vqa_questions': './experiments/dog120/describe/dog_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+=== Pipeline Mode: Build Knowledge Base + Fast-Slow Evaluation ===
+
+--- Step 1: Building Knowledge Base ---
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "dog120",
+    "num_classes": 120,
+    "config_file": "dog120_all.yml",
+    "data_dir": "dogs_120",
+    "experiment_dir": "dog120",
+    "stats_file": "dog120/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/dog120/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/dog120"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.08s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.16s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:02,  1.17s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:04<00:01,  1.20s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.06it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:05<00:00,  1.04s/it]
+✓ 已启用梯度检查点以节省显存
+📁 local_model_path: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+🔢 当前使用的精度 dtype: float16（FP32）
+🔧 最大生成长度 max_answer_tokens: -1
+🚀 模型加载完成！
+========================================================
+
+✅ MLLM 初始化完成, 当前使用精度: 未知
+🚀 初始化知识库构建器...
+
+================= 知识库构建器初始化 =================
+🕒 初始化时间: 2025-12-01 15:24:42
+🖥️ 设备: cuda
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📝 文本编码器: ./models/Clip/clip-vit-base-patch32
+📊 数据集信息 keys: ['full_name', 'num_classes', 'config_file', 'data_dir', 'experiment_dir', 'stats_file', 'experiments_root', 'stats_file_full', 'experiment_dir_full']
+🔍 初始化 MultimodalRetrieval 模块...
+✓ 检索模块初始化完成
+📚 知识库初始化完成
+====================================================
+
+✅ 知识库构建器初始化完成
+🚀 初始化快思考模块...
+
+================= 快思考模块初始化 =================
+使用数据集stats文件: ./experiments/dog120/knowledge_base/stats.json
+📊 使用数据集 stats 文件: ./experiments/dog120/knowledge_base/stats.json
+🔧 置信度阈值 confidence_threshold: 0.8
+🔧 相似度阈值 similarity_threshold: 0.7
+🔧 融合权重 fusion_weight: 0.05
+🔧 softmax 温度 softmax_temp: 0.07
+🔧 融合阈值 fused_conf_threshold: 0.75
+🔧 融合边距阈值 fused_margin_threshold: 0.15
+🔧 单模态阈值 per_modality_conf_threshold: 0.65
+🔧 考虑 topk 重叠: True, topk_for_overlap: 3
+📈 LCB 阈值: 0.65, 自适应: True, 范围: [0.55, 0.75]
+📈 LCB 先验: strength=2.0, p=0.6, eta=1.0, alpha=0.5, epsilon=1e-06
+💾 缓存启用: True, 缓存大小: 1000
+====================================================
+
+未找到历史统计量文件，将从头开始
+✅ 快思考模块初始化完成
+🚀 初始化慢思考模块...
+
+================= 慢思考模块初始化 =================
+🕒 初始化时间: 2025-12-01 15:25:54
+🖥️ 使用设备: cuda:0
+🧠 MLLM模型: Qwen2.5-VL-7B
+📚 知识库构建器: <knowledge_base_builder.KnowledgeBaseBuilder object at 0x7c5936459790>
+⚡ 快思考模块: <fast_thinking_optimized.FastThinkingOptimized object at 0x7c594101fbb0>
+📖 经验库构建器: None
+💾 启用缓存: 是, 缓存大小: 1000
+🔍 简化推理: 是
+🧩 使用经验库: 是, top_k_experience=1
+慢思考默认保存目录: ./experiments/dog120/knowledge_base
+使用数据集: dog, 类别数: 120
+✅ 慢思考模块初始化完成，类别映射数量: 120
+====================================================
+
+✅ 慢思考模块初始化完成
+⏱️ 启动显存监控线程...
+[2025-12-01 15:25:54] [显存监控] 已分配=16.90GB, 已保留=17.10GB, 空闲=30.50GB
+🎉快慢思考系统初始化完成!
+====================================================
+
+📁 使用现有发现集 (后缀: _4)
+构建发现集,img_root: ./datasets/dogs_120/images_discovery_all_4
+Traceback (most recent call last):
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 969, in <module>
+    data_discovery = get_or_create_discovery_set(cfg, folder_suffix=expt_id_suffix, args=args)
+  File "/home/hdl/project/fgvr_test_new/discovering.py", line 109, in get_or_create_discovery_set
+    return DATA_DISCOVERY[dataset_name](cfg, folder_suffix=folder_suffix)
+  File "/home/hdl/project/fgvr_test_new/data/dog120.py", line 331, in build_dog120_discovery
+    set_to_discover = DogDiscovery120(cfg['data_dir'], folder_suffix=folder_suffix)
+  File "/home/hdl/project/fgvr_test_new/data/dog120.py", line 194, in __init__
+    self.class_folders = os.listdir(img_root) # ["000.Chihuaha", "001.Poodle", ...]
+FileNotFoundError: [Errno 2] No such file or directory: './datasets/dogs_120/images_discovery_all_4'
+[ERROR] Pipeline 模式执行失败 (exit code=1)

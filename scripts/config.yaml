@@ -5,10 +5,10 @@
 
 # GPU配置
 gpu:
-  cuda_visible_devices: "5" # GPU编号，多GPU用逗号分隔如 "0,1,2"
+  cuda_visible_devices: "0" # GPU编号，多GPU用逗号分隔如 "0,1,2"
 # 数据集配置
 dataset:
-  name: "sun397" # 数据集名称: dog, bird, flower, car, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf, imagenet_sketch, imagenet_v2
+  name: "dog" # 数据集名称: dog, bird, flower, car, pet, aircraft, eurosat, food, dtd, caltech101, caltech256, deepfashion_multimodal, sun397, imagenet_a, imagenet_r, imagenet_1k, birdsnap, ucf, imagenet_sketch, imagenet_v2
   test_data_suffix: "1" # 测试数据后缀: 每个类别的样本数量
   # 可选值: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, random
   # 例如: "5" 表示每个类别使用5个样本进行测试
@@ -16,11 +16,16 @@ dataset:
   test_percentage: 100.0 # 测试集采样百分比 (0-100), 从每个类别中采样指定百分比的图片
 # 模型超参数
 hyperparameters:
-  kshot: 3 # 检索库使用每个类别的样本数目
-  experience_base_max_number: 5 # 最大经验条数超参数
+  kshot: 4 # 检索库使用每个类别的样本数目
+  experience_base_max_number: 20 # 最大经验条数超参数
+  classify_top_k: 12 # 分类时返回的类别数目
+# 消融实验设置
+ablation:
+  use_experience_base: true # 是否使用经验库(默认true，暂未实现)
+  vocabulary_free: false # 是否使用开放词汇(默认false，暂未实现)
 # 运行模式配置 (仅用于run_discovery.sh)
 modes:
-  # 快慢思考系统: build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow  
+  # 快慢思考系统: build_knowledge_base, classify, evaluate, fastonly, slowonly, fast_slow, pipeline
   discovery_mode: "build_knowledge_base"
 # 环境配置
 environment:

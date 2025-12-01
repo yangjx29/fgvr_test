@@ -23,22 +23,15 @@ from knowledge_base_builder import KnowledgeBaseBuilder
 from utils.fileios import dump_json, load_json
 from utils.util import is_similar
 
-# 从配置文件读取超参数
-def load_hyperparameters():
-    """加载超参数配置"""
-    config_path = "/home/hdl/project/fgvr_test_new/configs/hyperparameters.yaml"
+# 从discovering模块获取超参数
+def get_experience_number():
+    """从discovering模块获取experience_number超参数"""
     try:
-        with open(config_path, 'r', encoding='utf-8') as f:
-            config = yaml.safe_load(f)
-        return config.get('experience_base_max_number', 8)  # 默认值为8
-    except FileNotFoundError:
-        print(f"Warning: Configuration file {config_path} not found, using default value 8")
+        from discovering import hyperparams
+        return hyperparams.experience_number
+    except ImportError:
+        print("Warning: Cannot import hyperparams from discovering, using default value 8")
         return 8
-    except Exception as e:
-        print(f"Error loading configuration: {e}, using default value 8")
-        return 8
-
-experience_base_max_number = load_hyperparameters()
 
 
 class ExperienceBaseBuilder:
@@ -77,7 +70,7 @@ class ExperienceBaseBuilder:
         self.dataset_info = dataset_info or {}
         
         # Self-Belief：当前推理策略
-        self.max_strategy_rules = experience_base_max_number    ### todo 经验条数
+        self.max_strategy_rules = get_experience_number()    # 从discovering模块获取经验条数
         self.strategy_rules = []
         self.next_rule_id = 1
         self.self_belief_core = self.INITIAL_SELF_BELIEF

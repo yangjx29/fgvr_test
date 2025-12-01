@@ -1,0 +1,138 @@
+[INFO] === Pipeline 启动, YAML 配置摘要 ===
+GPU: CUDA_VISIBLE_DEVICES=6  # 使用的GPU编号
+Dataset: flower (num_classes=102)  # 数据集及类别数
+Test Mode: images_test  # 使用测试集
+Test Percentage: 100.0%  # 测试集采样百分比
+K-shot: 4  # 检索库使用每个类别的样本数目
+Conda Env: finer_dynamic  # Conda环境名称, Conda Base: /home/hdl/miniconda3  # Conda安装路径
+Knowledge Base Dir: ./experiments/flower102/knowledge_base  # 知识库目录
+Results Out: ./results/flower_fast_slow_results.json  # 快慢思考评估结果输出文件
+---------------------------
+
+[INFO] === 设置超参数 ===
+=== 超参数设置脚本 ===
+项目根目录: /home/hdl/project/fgvr_test_new
+超参数文件: /home/hdl/project/fgvr_test_new/configs/hyperparameters.yaml
+配置文件: /home/hdl/project/fgvr_test_new/scripts/config.yaml
+
+正在从 /home/hdl/project/fgvr_test_new/scripts/config.yaml 读取配置...
+从配置文件读取到经验条数: 12
+
+正在更新超参数文件: /home/hdl/project/fgvr_test_new/configs/hyperparameters.yaml
+✅ 超参数更新成功: experience_base_max_number = 12
+
+=== 超参数设置完成 ===
+[SUCCESS] 超参数设置完成
+
+[INFO] === 运行 discovering.py --mode=pipeline ===
+/home/hdl/project/fgvr_test_new/scripts/run_pipeline.sh: line 351: update_uni_id_status: command not found
+[INFO] Python 进程 PID: 1590629 (uni_id: compete_756898)
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.48, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+============================================================
+🔧 超参数配置信息
+============================================================
+📁 配置文件: ./configs/hyperparameters.yaml
+📋 参数列表:
+   • experience_base_max_number: 12
+   • classify_single_image_top_k: 10
+============================================================
+
+当前数据集: flower (flower102)
+类别数: 102
+实验目录: ./experiments/flower102
+✅ JSON文件检查通过: ./experiments/flower102/images_split
+当前使用的 GPU 为：6
+
+=== Experiment Start Time: 2025-11-30 21:14:40 ===
+
+=== Experiment Arguments ===
+{'confidence_threshold': 0.8,
+ 'config_file_env': './configs/env_machine.yml',
+ 'config_file_expt': './configs/expts/flower102_all.yml',
+ 'knowledge_base_dir': './experiments/flower102/knowledge_base',
+ 'mode': 'pipeline',
+ 'num_per_category': '4',
+ 'query_image': None,
+ 'results_out': './results.json',
+ 'similarity_threshold': 0.7,
+ 'test_data_dir': None,
+ 'test_percentage': 100.0,
+ 'use_slow_thinking': None,
+ 'use_test_data': True}
+=== Configuration (cfg) ===
+{'batch_size': 128,
+ 'clustering_method': 'multi_clip_voting',
+ 'data_dir': './datasets/flowers_102',
+ 'dataset_name': 'flower',
+ 'device': 'cuda',
+ 'device_count': '1',
+ 'device_id': '0',
+ 'experiment': 5.0,
+ 'expt_dir': './experiments/flower102',
+ 'expt_dir_describe': './experiments/flower102/describe',
+ 'expt_dir_gallery': './experiments/flower102/gallery',
+ 'expt_dir_grouping': './experiments/flower102/grouping',
+ 'expt_dir_guess': './experiments/flower102/guess',
+ 'host': 'xiao',
+ 'image_size': 224,
+ 'model_size': 'ViT-B/16',
+ 'model_size_mllm': 'Qwen2.5-VL-7B',
+ 'model_size_vqa': 'OPT6.7B-COCO',
+ 'model_type_llm': 'gpt-3.5-turbo',
+ 'num_base': 51,
+ 'num_classes': 102,
+ 'num_novel': 51,
+ 'num_workers': 16,
+ 'path_descriptions': './experiments/flower102/gallery/flower_image_descriptions_attn',
+ 'path_identify_answers': './experiments/flower102/identify',
+ 'path_llm_gussed_names': './experiments/flower102/guess/flower_llm_gussed_names',
+ 'path_llm_prompts': './experiments/flower102/describe/flower_llm_prompts',
+ 'path_llm_replies_jsoned': './experiments/flower102/guess/flower_llm_replies_jsoned',
+ 'path_llm_replies_raw': './experiments/flower102/guess/flower_llm_replies_raw',
+ 'path_references': './experiments/flower102/gallery/flower_image_references',
+ 'path_regions': './experiments/flower102/gallery/flower_image_regions',
+ 'path_vqa_answers': './experiments/flower102/describe/flower_attributes_pairs',
+ 'path_vqa_questions': './experiments/flower102/describe/flower_vqa_questions_ours',
+ 'seed': 1,
+ 'setup': 'ours',
+ 'verbose': False}
+=== Pipeline Mode: Build Knowledge Base + Fast-Slow Evaluation ===
+
+--- Step 1: Building Knowledge Base ---
+
+================= 快慢思考系统初始化 =================
+🖥️ 设备: cuda
+🤖 MLLM 模型标签: Qwen2.5-VL-7B
+🤖 MLLM 模型名称: Qwen2.5-VL-7B
+🖼️ 图像编码器: ./models/Clip/clip-vit-base-patch32
+📄 文本编码器: ./models/Clip/clip-vit-base-patch32
+📚 数据集信息:
+{
+    "full_name": "flower102",
+    "num_classes": 102,
+    "config_file": "flower102_all.yml",
+    "data_dir": "flowers_102",
+    "experiment_dir": "flower102",
+    "stats_file": "flower102/knowledge_base/stats.json",
+    "experiments_root": "./experiments",
+    "stats_file_full": "./experiments/flower102/knowledge_base/stats.json",
+    "experiment_dir_full": "./experiments/flower102"
+}
+====================================================
+
+🚀初始化MLLM模型...
+
+================= 模型初始化（MLLMBot） =================
+📌 模型标识（model_tag）: Qwen2.5-VL-7B
+📌 模型名称（model_name）: Qwen2.5-VL-7B
+📁 本地模型路径: ./models/Qwen/Qwen2.5-VL-7B-Instruct
+📁 图片最大尺寸: 1440 ，超出这个值将压缩
+🖥️ 设备: GPU - cuda:0
+🤖 使用 8bit 推理: 否
+🔍 使用数据类型: float16（FP32）
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.73it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:01,  1.95it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:00,  2.09it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.13it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.49it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.25it/s]
+Some parameters are on the meta device because they were offloaded to the cpu.
+/home/hdl/project/fgvr_test_new/scripts/run_pipeline.sh: line 356: 1590629 Killed                  python discovering.py --mode=pipeline --config_file_env=./configs/env_machine.yml --config_file_expt=./configs/expts/${CONFIG_FILE_DS} --num_per_category=${KSHOT} --knowledge_base_dir=${KNOWLEDGE_BASE_DIR} --use_test_data --test_percentage=${TEST_PERCENTAGE}
+/home/hdl/project/fgvr_test_new/scripts/run_pipeline.sh: line 372: update_uni_id_status: command not found
+[ERROR] 进程异常退出 (uni_id: compete_756898, exit_code: 137, error_type: unknown)
+[SUCCESS] Pipeline 模式执行完成
