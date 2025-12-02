@@ -153,92 +153,44 @@ class Sun397Prompter:
 
 
 class Sun397Discovery:
-    """
-    SUN397 Discovery数据集加载器
+    """SUN397数据集的发现集加载器（基于JSON文件）"""
     
-    注意：SUN397有嵌套的类别结构（如 a/abbey, a/apartment_building/outdoor），
-    但discovery集是扁平化的（每个类别一个目录）。
-    类别名需要保持完整的嵌套路径格式。
-    """
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-        print(f"构建发现集,img_root: {img_root}")
+    def __init__(self, cfg, folder_suffix=''):
+        # 使用配置中的实验目录路径加载JSON文件
+        json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+        print(f"构建发现集,json_path: {json_path}")
         
-        # discovery集是扁平化的，每个类别一个目录
-        self.class_folders = os.listdir(img_root)
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
-
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON文件不存在: {json_path}")
+        
+        # 加载JSON文件
+        import json
+        with open(json_path, 'r') as f:
+            self.data = json.load(f)
+        
         self.classes = SUN397_STATS['class_names']
         self.samples = []
         self.targets = []
         self.subcategories = []
         
-        for folder in self.class_folders:
-            # discovery集中的文件夹名是扁平化的（如 "abbey"），需要映射到嵌套格式（如 "a/abbey"）
-            folder_name = folder.split('/')[-1]
+        # 解析JSON数据 - 格式: [class_name, class_id, image_list]
+        for class_data in self.data:
+            class_name = class_data[0]
+            class_id = class_data[1]
+            image_list = class_data[2]
             
-            # 查找对应的嵌套类别名
-            # 首先尝试精确匹配（如果discovery集使用了嵌套格式）
-            class_name = None
-            label = None
-            
-            # 尝试直接匹配（如果discovery集已经使用了嵌套格式）
-            for idx, cls_name in enumerate(self.classes):
-                # 提取嵌套类别名的最后部分进行比较
-                cls_name_parts = cls_name.split('/')
-                cls_name_last = cls_name_parts[-1]
-                
-                if cls_name_last == folder_name or cls_name == folder_name:
-                    class_name = cls_name
-                    label = idx
-                    break
-            
-            # 如果还是找不到，尝试模糊匹配（处理下划线和空格）
-            if label is None:
-                folder_name_normalized = folder_name.replace('_', ' ').lower()
-                for idx, cls_name in enumerate(self.classes):
-                    cls_name_parts = cls_name.split('/')
-                    cls_name_last = cls_name_parts[-1].replace('_', ' ').lower()
-                    if cls_name_last == folder_name_normalized:
-                        class_name = cls_name
-                        label = idx
-                        break
-
-            # 如果仍然找不到，尝试基于词袋的嵌套类别匹配（处理 "indoor casino"、"urban canal" 等多词情况）
-            if label is None:
-                # 将文件夹名拆分为小写词列表（支持空格和下划线）
-                folder_tokens = sorted(folder_name.lower().replace('_', ' ').split())
-                if folder_tokens:
-                    for idx, cls_name in enumerate(self.classes):
-                        # 跳过前缀字母（如 a/badlands 的 "a"），只使用后续路径片段
-                        parts = cls_name.split('/')[1:]
-                        cls_tokens = []
-                        for part in parts:
-                            cls_tokens.extend(part.lower().replace('_', ' ').split())
-                        if sorted(cls_tokens) == folder_tokens:
-                            class_name = cls_name
-                            label = idx
-                            break
-            
-            if label is None:
-                print(f"Warning: Could not find label for class folder: {folder_name}")
-                continue
-            
-            file_names = os.listdir(folder)
-            for name in file_names:
-                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                    self.subcategories.append(class_name)  # 使用完整的嵌套类别名
-                    self.samples.append(os.path.join(folder, name))
-                    self.targets.append(label)
+            for img_path in image_list:
+                self.samples.append(img_path)
+                self.subcategories.append(class_name)
+                self.targets.append(class_id)
         
-        # 添加subcat_to_sample属性，按类别名分组图片路径
+        # 创建子类别到样本的映射
         from collections import defaultdict
         self.subcat_to_sample = defaultdict(list)
         for subcat, sample in zip(self.subcategories, self.samples):
             self.subcat_to_sample[subcat].append(sample)
         
-        print(f'subcat_to_sample: {len(self.subcat_to_sample)} classes')
+        print(f'从JSON加载 {len(self.data)} 个类别，共 {len(self.samples)} 张图像')
         self.index = 0
 
     def __len__(self):
@@ -317,7 +269,7 @@ def build_sun397_prompter(cfg: dict):
 
 
 def build_sun397_discovery(cfg: dict, folder_suffix=''):
-    set_to_discover = Sun397Discovery(cfg['data_dir'], folder_suffix=folder_suffix)
+    set_to_discover = Sun397Discovery(cfg, folder_suffix=folder_suffix)
     return set_to_discover
 
 

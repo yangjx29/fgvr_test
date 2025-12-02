@@ -167,59 +167,44 @@ class Caltech256Prompter:
 
 
 class Caltech256Discovery:
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-
-        self.class_folders = os.listdir(img_root)  # ["001.ak47", "002.american-flag", ...]
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
-
+    """Caltech256数据集的发现集加载器（基于JSON文件）"""
+    
+    def __init__(self, cfg, folder_suffix=''):
+        # 使用配置中的实验目录路径加载JSON文件
+        json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+        print(f"构建发现集,json_path: {json_path}")
+        
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON文件不存在: {json_path}")
+        
+        # 加载JSON文件
+        import json
+        with open(json_path, 'r') as f:
+            self.data = json.load(f)
+        
+        self.classes = CALTECH256_STATS['class_names']
         self.samples = []
         self.targets = []
         self.subcategories = []
-        for folder in self.class_folders:
-            folder_name = folder.split('/')[-1]
-            # 从文件夹名称提取类别编号和名称
-            # 格式: "001.ak47" 或 "001.american-flag"
-            if '.' in folder_name:
-                parts = folder_name.split('.', 1)
-                label_str = parts[0]
-                class_name_raw = parts[1]
-                try:
-                    label = int(label_str) - 1  # 转换为0-based索引
-                except ValueError:
-                    continue
-            else:
-                # 如果没有编号前缀，尝试通过名称匹配
-                class_name_raw = folder_name
-                label = None
-                # 尝试匹配类别名称
-                class_name_normalized = class_name_raw.replace('-', ' ').title()
-                for idx, cls_name in enumerate(CALTECH256_STATS['class_names']):
-                    if cls_name.lower() == class_name_normalized.lower():
-                        label = idx
-                        break
-                if label is None:
-                    continue
-            
-            file_names = os.listdir(folder)
-            for name in file_names:
-                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                    self.targets.append(label)
-                    self.samples.append(os.path.join(folder, name))
-                    # 从文件夹名称提取类别名称
-                    class_name = folder_name.split('.', 1)[1] if '.' in folder_name else folder_name
-                    class_name = class_name.replace('-', ' ').title()
-                    self.subcategories.append(class_name)
-
-        self.classes = CALTECH256_STATS['class_names']
         
-        # 添加subcat_to_sample属性，按类别名分组图片路径
+        # 解析JSON数据 - 格式: [class_name, class_id, image_list]
+        for class_data in self.data:
+            class_name = class_data[0]
+            class_id = class_data[1]
+            image_list = class_data[2]
+            
+            for img_path in image_list:
+                self.samples.append(img_path)
+                self.subcategories.append(class_name)
+                self.targets.append(class_id)
+        
+        # 创建子类别到样本的映射
         from collections import defaultdict
         self.subcat_to_sample = defaultdict(list)
         for subcat, sample in zip(self.subcategories, self.samples):
             self.subcat_to_sample[subcat].append(sample)
         
+        print(f'从JSON加载 {len(self.data)} 个类别，共 {len(self.samples)} 张图像')
         self.index = 0
 
     def __len__(self):
@@ -330,7 +315,7 @@ def build_caltech256_prompter(cfg: dict):
 
 
 def build_caltech256_discovery(cfg: dict, folder_suffix=''):
-    set_to_discover = Caltech256Discovery(cfg['data_dir'], folder_suffix=folder_suffix)
+    set_to_discover = Caltech256Discovery(cfg, folder_suffix=folder_suffix)
     return set_to_discover
 
 

@@ -193,36 +193,44 @@ class FlowerPrompter:
 
 
 class FlowerDiscovery102:
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-
-        self.class_folders = os.listdir(img_root)  # 100 x 1
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
-
+    """Flower102数据集的发现集加载器（基于JSON文件）"""
+    
+    def __init__(self, cfg, folder_suffix=''):
+        # 使用配置中的实验目录路径加载JSON文件
+        json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+        print(f"构建发现集,json_path: {json_path}")
+        
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON文件不存在: {json_path}")
+        
+        # 加载JSON文件
+        import json
+        with open(json_path, 'r') as f:
+            self.data = json.load(f)
+        
+        self.classes = FLOWER_STATS['class_names']
         self.samples = []
         self.targets = []
         self.subcategories = []
-        for folder in self.class_folders:
-            label = int(folder.split('/')[-1][:3])
-            # label = label - 1
-            file_names = os.listdir(folder)
-
-            for name in file_names:
-                self.targets.append(label)
-                self.samples.append(os.path.join(folder, name))
-                # 从文件夹名称提取类别名称
-                class_name = folder.split('/')[-1].split('.', 1)[1] if '.' in folder.split('/')[-1] else folder.split('/')[-1]
-                self.subcategories.append(class_name)
-
-        self.classes = FLOWER_STATS['class_names']
         
-        # 添加subcat_to_sample属性，按类别名分组图片路径
+        # 解析JSON数据 - 格式: [class_name, class_id, image_list]
+        for class_data in self.data:
+            class_name = class_data[0]
+            class_id = class_data[1]
+            image_list = class_data[2]
+            
+            for img_path in image_list:
+                self.samples.append(img_path)
+                self.subcategories.append(class_name)
+                self.targets.append(class_id)
+        
+        # 创建子类别到样本的映射
         from collections import defaultdict
         self.subcat_to_sample = defaultdict(list)
         for subcat, sample in zip(self.subcategories, self.samples):
             self.subcat_to_sample[subcat].append(sample)
         
+        print(f'从JSON加载 {len(self.data)} 个类别，共 {len(self.samples)} 张图像')
         self.index = 0
 
     def __len__(self):
@@ -361,7 +369,7 @@ def build_flower_prompter(cfg: dict):
 
 
 def build_flower102_discovery(cfg: dict, folder_suffix=''):
-    set_to_discover = FlowerDiscovery102(cfg['data_dir'], folder_suffix=folder_suffix)
+    set_to_discover = FlowerDiscovery102(cfg, folder_suffix=folder_suffix)
     return set_to_discover
 
 

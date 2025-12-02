@@ -20,5 +20,111 @@
             "effectiveness": 0.0,
             "applicability": 0.0
         }
+    ],
+    [],
+    [],
+    [
+        {
+            "rule": "Verify breed-specific traits before making a final classification decision.",
+            "failure_pattern": "The model incorrectly identified a cat as a Bengal breed based on visual characteristics that were not specific enough to distinguish it from other breeds.",
+            "applicability_signals": "When the image contains ambiguous visual features or when the confidence in the prediction is low.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/pet_37/images/Egyptian_Mau_189.jpg"
+            ],
+            "labels": [
+                "Egyptian"
+            ],
+            "root_cause": "The model's reliance on broad visual features like tabby patterns and eye color led to an incorrect classification, as these features are common across multiple breeds.",
+            "source_reasoning": "1. **Observe**: The overall object is a cat with distinctive markings that resemble those of a Bengal cat breed.\n2. **Localize**: The most discriminative local parts include the tabby pattern, the large yellow eyes, and the overall body shape which is consistent with the Bengal breed.\n3. **Compare**: The visual characteristics such as the tabby pattern, the large yellow eyes, and the sleek body shape align closely with the Bengal breed description.\n4. **Decide**: Based on the match between the observed details and the Bengal breed description, the most likely class is the Bengal cat.",
+            "normalized": "verify breed specific traits before making a final classification decision",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the breed classification by considering the overall body shape and coloration, not just the coat patterns.",
+            "failure_pattern": "The model incorrectly identified a Bengal cat as a Bengal cat when the ground truth was an Egyptian cat due to the presence of spotted and striped patterns.",
+            "applicability_signals": "This rule should be recalled whenever the image contains a cat with distinctive coat patterns that could belong to multiple breeds.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/pet_37/images/Egyptian_Mau_196.jpg"
+            ],
+            "labels": [
+                "Egyptian"
+            ],
+            "root_cause": "The model's reliance on specific discriminative features such as the spotted coat and striped tail led it to misclassify the cat as a Bengal, overlooking the fact that these features are also present in other breeds like the Egyptian Mau.",
+            "source_reasoning": "1. **Observe**: The overall object is a cat with a distinctive coat pattern that includes spots and stripes, which are characteristic of certain breeds.\n2. **Localize**: The most discriminative local parts include the spotted coat, the striped tail, and the overall body shape.\n3. **Compare**: \n   - **Bengal**: Known for their spotted and marbled coats, often with a striped tail.\n   - **British**: Typically have a short, dense coat and come in various colors but usually without the spotted pattern.\n   - **Maine**: Also known for their spotted coats but generally larger and more muscular than the cat in the image.\n   - **Siamese**: Characterized by a sleek, slender body and a solid color with darker points, not matching the spotted pattern.\n   - **Bombay**: Known for their sleek, short-haired coat and dark coloration, not matching the spotted pattern.\n4. **Decide**: Based on the spotted coat and the striped tail, the cat in the image most closely matches the description of a Bengal cat.",
+            "normalized": "verify the breed classification by considering the overall body shape and coloration not just the coat patterns",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
+    ],
+    [
+        {
+            "rule": "Focus on the overall facial structure and head shape when distinguishing between breeds like Russian and British.",
+            "failure_pattern": "The model misclassified the cat as 'Russian' instead of 'British', despite the cat having features more characteristic of the British breed.",
+            "applicability_signals": "When analyzing cats with gray coats and rounded faces, especially if the facial structure is short and rounded.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/pet_37/images/British_Shorthair_137.jpg"
+            ],
+            "labels": [
+                "British"
+            ],
+            "root_cause": "The model may have overemphasized the gray coat and facial structure while overlooking the distinct rounded face and shorter muzzle of the British breed.",
+            "source_reasoning": "1. **Observe**: The overall object is a cat, identifiable by its fur, eyes, ears, and whiskers.\n2. **Localize**: The most discriminative local parts include the cat's fur color, eye color, and facial structure. The cat has a gray coat, yellow eyes, and a short, rounded face typical of certain breeds.\n3. **Compare**: Recalling the visual characteristics of the candidate subcategories:\n   - **Russian**: Typically has a solid gray or blue coat, which matches this cat.\n   - **Bengal**: Usually has a spotted or marbled coat, which does not match.\n   - **Bombay**: Has a black coat, which does not match.\n   - **Siamese**: Has a light-colored body with darker points, which does not match.\n   - **Ragdoll**: Has a white coat with patches, which does not match.\n4. **Decide**: Based on the match between observed details and subcategory descriptions, the cat's gray coat and facial structure align most closely with the \"Russian\" breed description.",
+            "normalized": "focus on the overall facial structure and head shape when distinguishing between breeds like russian and british",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the presence of distinctive breed-specific features before making a final classification decision.",
+            "failure_pattern": "The model incorrectly identified the cat as 'Russian' instead of 'British', despite the cat having features typical of a British breed.",
+            "applicability_signals": "This rule should be recalled when analyzing images of cats where the primary distinguishing feature is the coat texture and eye color, especially if these features are shared between multiple breeds.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/pet_37/images/British_Shorthair_197.jpg"
+            ],
+            "labels": [
+                "British"
+            ],
+            "root_cause": "The model may have been misled by the short, dense fur and the yellow eyes, which are common traits in both Russian and British breeds. However, the specific combination of these traits, along with the cat's facial structure and body shape, more closely aligns with the British breed.",
+            "source_reasoning": "1. **Observe**: The overall object is a cat with a distinct coat color and eye color. The cat has a short, dense fur, which is characteristic of certain breeds.\n2. **Localize**: The most discriminative local parts include the cat's fur texture, eye color, and facial structure. The fur appears short and dense, the eyes are large and yellow, and the ears are pointed but not too large.\n3. **Compare**: Recalling the visual characteristics of the candidate subcategories:\n   - **Russian**: Typically has a short, dense coat and can have a variety of eye colors.\n   - **Bengal**: Has a spotted or marbled coat pattern, which this cat does not have.\n   - **Siamese**: Has a slender body, long legs, and a long tail, none of which apply here.\n   - **Bombay**: Similar to the Russian breed but often has a sleeker build and darker coat.\n   - **Ragdoll**: Has a fluffy coat and large, round eyes, which do not match the cat in the image.\n4. **Decide**: Based on the observed details, the cat matches the description of a British breed, characterized by its short, dense coat and",
+            "normalized": "verify the presence of distinctive breed specific features before making a final classification decision",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the presence of breed-specific features before relying solely on common visual traits.",
+            "failure_pattern": "The model incorrectly identified the cat as a Bengal despite the presence of tabby-like markings, which are not typical of the Bengal breed.",
+            "applicability_signals": "This rule should be recalled when dealing with images of cats where tabby-like patterns are present, especially if the cat's overall body shape and eye color do not align with typical Bengal characteristics.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/pet_37/images/Egyptian_Mau_189.jpg"
+            ],
+            "labels": [
+                "Egyptian"
+            ],
+            "root_cause": "The model's reliance on the tabby-like coat pattern as the primary distinguishing feature led to an incorrect classification, as the cat in the image is actually an Egyptian Mau, which shares some visual similarities with the Bengal but has distinct features.",
+            "source_reasoning": "1. **Observe**: The overall object is a cat with distinctive markings that resemble those of a specific breed.\n2. **Localize**: The most discriminative local parts include the tabby-like coat pattern, the large yellow eyes, and the overall body shape.\n3. **Compare**: \n   - **Bombay**: Typically has a solid black or brown coat with no markings.\n   - **Bengal**: Known for their spotted or marbled coat patterns, which closely match the image.\n   - **Sphynx**: Characterized by a lack of fur, which does not apply here.\n   - **Siamese**: Usually has a solid color with darker points, which does not match the image.\n   - **Ragdoll**: Typically has a solid color with a white chest and paws, which also does not match the image.\n4. **Decide**: Based on the tabby-like coat pattern and the large yellow eyes, the most likely class is the Bengal.",
+            "normalized": "verify the presence of breed specific features before relying solely on common visual traits",
+            "failure_patterns": [],
+            "id": "R3",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
     ]
 ]

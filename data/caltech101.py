@@ -152,56 +152,44 @@ class Caltech101Prompter:
 
 
 class Caltech101Discovery:
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-        print(f"构建发现集,img_root: {img_root}")
-        self.class_folders = os.listdir(img_root)  # ["accordion", "airplanes", ...]
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i])
-
+    """Caltech101数据集的发现集加载器（基于JSON文件）"""
+    
+    def __init__(self, cfg, folder_suffix=''):
+        # 使用配置中的实验目录路径加载JSON文件
+        json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+        print(f"构建发现集,json_path: {json_path}")
+        
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON文件不存在: {json_path}")
+        
+        # 加载JSON文件
+        import json
+        with open(json_path, 'r') as f:
+            self.data = json.load(f)
+        
         self.classes = CALTECH101_STATS['class_names']
         self.samples = []
         self.targets = []
         self.subcategories = []
         
-        for folder in self.class_folders:
-            folder_name = folder.split('/')[-1]
-            # 从文件夹名称映射到类别索引
-            # 文件夹名可能是 "accordion" 或 "Accordion" 等格式
-            class_name = folder_name.replace('_', ' ').title()
+        # 解析JSON数据 - 格式: [class_name, class_id, image_list]
+        for class_data in self.data:
+            class_name = class_data[0]
+            class_id = class_data[1]
+            image_list = class_data[2]
             
-            # 查找对应的类别索引
-            label = None
-            for idx, cls_name in enumerate(self.classes):
-                if cls_name.lower() == class_name.lower() or cls_name.replace(' ', '').lower() == class_name.replace(' ', '').lower():
-                    label = idx
-                    break
-            
-            if label is None:
-                # 如果找不到，尝试模糊匹配
-                for idx, cls_name in enumerate(self.classes):
-                    if class_name.lower() in cls_name.lower() or cls_name.lower() in class_name.lower():
-                        label = idx
-                        class_name = cls_name
-                        break
-            
-            if label is None:
-                continue  # 跳过无法匹配的类别
-            
-            file_names = os.listdir(folder)
-            for name in file_names:
-                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                    self.subcategories.append(class_name)
-                    self.samples.append(os.path.join(folder, name))
-                    self.targets.append(label)
+            for img_path in image_list:
+                self.samples.append(img_path)
+                self.subcategories.append(class_name)
+                self.targets.append(class_id)
         
-        # 添加subcat_to_sample属性，按类别名分组图片路径
+        # 创建子类别到样本的映射
         from collections import defaultdict
         self.subcat_to_sample = defaultdict(list)
         for subcat, sample in zip(self.subcategories, self.samples):
             self.subcat_to_sample[subcat].append(sample)
         
-        print(f'subcat_to_sample: {len(self.subcat_to_sample)} classes')
+        print(f'从JSON加载 {len(self.data)} 个类别，共 {len(self.samples)} 张图像')
         self.index = 0
 
     def __len__(self):
@@ -285,7 +273,7 @@ def build_caltech101_prompter(cfg: dict):
 
 
 def build_caltech101_discovery(cfg: dict, folder_suffix=''):
-    set_to_discover = Caltech101Discovery(cfg['data_dir'], folder_suffix=folder_suffix)
+    set_to_discover = Caltech101Discovery(cfg, folder_suffix=folder_suffix)
     return set_to_discover
 
 

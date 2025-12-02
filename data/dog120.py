@@ -188,38 +188,45 @@ class DogPrompter:
 
 
 class DogDiscovery120:
-    def __init__(self, root, folder_suffix=''):
-        img_root = os.path.join(root, f'images_discovery_all{folder_suffix}')
-        print(f"构建发现集,img_root: {img_root}")
-        self.class_folders = os.listdir(img_root) # ["000.Chihuaha", "001.Poodle", ...]
-        for i in range(len(self.class_folders)):
-            self.class_folders[i] = os.path.join(img_root, self.class_folders[i]) # ["./datasets/dogs_120/images_discovery_all_3/000.Chihuaha", ...]
-
+    """Dog120数据集的发现集加载器（基于JSON文件）"""
+    
+    def __init__(self, cfg, folder_suffix=''):
+        # 使用配置中的实验目录路径加载JSON文件
+        json_path = os.path.join(cfg['expt_dir'], 'images_split', f'images_discovery_all{folder_suffix}.json')
+        print(f"构建发现集,json_path: {json_path}")
+        
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"JSON文件不存在: {json_path}")
+        
+        # 加载JSON文件
+        import json
+        with open(json_path, 'r') as f:
+            self.data = json.load(f)
+        
         self.classes = DOG_STATS['class_names']
-        self.samples = [] # ["./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", ...]
-        self.targets = [] 
-        self.subcategories = [] # ["Chihuaha", "Poodle", ...]
-        for folder in self.class_folders:
-            label = int(folder.split('/')[-1][:3]) # 000
-            # label = label - 1
-            file_names = os.listdir(folder) # ["000.Chihuaha_000000.jpg", "000.Chihuaha_000001.jpg", ...]
-            for name in file_names:
-                subcat = name.split('.')[1].replace('_', ' ') # "Chihuaha 000000"
-                for class_name in self.classes:
-                    if class_name.lower().replace('-', ' ') in subcat.lower():
-                        subcat = class_name
-                        break
-                self.subcategories.append(subcat) # ["Chihuaha", "Poodle", ...]
-                self.samples.append(os.path.join(folder, name)) # ["./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", ...]
-                self.targets.append(label) # [0, 1, 2, ...]
-        # self.subcat_to_sample = dict(zip(self.subcategories, self.samples)) # {"Chihuaha": "./datasets/dogs_120/images_discovery_all_3/000.Chihuaha_000000.jpg", "Poodle": "./datasets/dogs_120/images_discovery_all_3/001.Poodle_000000.jpg", ...}
+        self.samples = []
+        self.targets = []
+        self.subcategories = []
+        
+        # 解析JSON数据 - 格式: [class_name, class_id, image_list]
+        for class_data in self.data:
+            class_name = class_data[0]
+            class_id = class_data[1]
+            image_list = class_data[2]
+            
+            # 为每个图片创建样本
+            for img_path in image_list:
+                self.samples.append(img_path)
+                self.subcategories.append(class_name)
+                self.targets.append(class_id)
+        
+        # 创建子类别到样本的映射
         from collections import defaultdict
         self.subcat_to_sample = defaultdict(list)
         for subcat, sample in zip(self.subcategories, self.samples):
             self.subcat_to_sample[subcat].append(sample)
-        # print(f'self.subcategories:{self.subcategories}')
-        # print(f'self.samples:{self.samples}')
-        print(f'subcat_to_sample: {self.subcat_to_sample}')
+        
+        print(f'从JSON加载 {len(self.data)} 个类别，共 {len(self.samples)} 张图像')
         self.index = 0
 
     def __len__(self):
@@ -328,7 +335,7 @@ def build_dog_prompter(cfg: dict):
 
 
 def build_dog120_discovery(cfg: dict, folder_suffix=''):
-    set_to_discover = DogDiscovery120(cfg['data_dir'], folder_suffix=folder_suffix)
+    set_to_discover = DogDiscovery120(cfg, folder_suffix=folder_suffix)
     return set_to_discover
 
 

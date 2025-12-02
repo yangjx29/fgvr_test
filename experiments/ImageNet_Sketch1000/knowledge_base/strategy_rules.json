@@ -60,5 +60,67 @@
             "effectiveness": 0.0,
             "applicability": 0.0
         }
+    ],
+    [
+        {
+            "rule": "Verify the presence of distinct shark-specific features such as the shape of the head, the position of the eyes, and the structure of the fins before making a prediction.",
+            "failure_pattern": "The model incorrectly predicted 'coho' instead of 'tiger_shark', despite the image clearly depicting a tiger shark.",
+            "applicability_signals": "This rule should be recalled when the image contains a fish-like creature with fins but lacks clear identification features of specific species.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/ImageNet_Sketch/sketch/n01491361/sketch_34.JPEG"
+            ],
+            "labels": [
+                "tiger_shark"
+            ],
+            "root_cause": "The model misclassified the image due to a lack of sufficient context or training data for distinguishing between different shark species based on the provided features.",
+            "source_reasoning": "1. **Observation**: The image depicts a shark with a robust, streamlined body, a broad, flattened head, and a wide mouth filled with sharp, triangular teeth. The pectoral fins are large and broad, extending forward over the eyes, which are positioned high on the head. The dorsal fin is tall and slightly curved, located near the middle of the back, and the caudal fin is long and powerful, with a prominent lower lobe. These features are characteristic of a tiger shark.\n\n2. **Localization**: The most discriminative local parts include the broad, flattened head, the wide mouth with sharp, triangular teeth, the large pectoral fins extending over the eyes, the tall and slightly curved dorsal fin, and the long, powerful caudal fin with a prominent lower lobe.\n\n3. **Comparison**: The visual characteristics of the candidate subcategories include:\n   - **Tiger Shark**: Robust, streamlined body, broad flattened head, wide mouth with sharp triangular teeth, large pectoral fins, tall and slightly curved dorsal fin, and long powerful caudal fin with a prominent lower lobe.\n   - **Coho**: Not applicable as it is a type of salmon, not a shark.",
+            "normalized": "verify the presence of distinct shark specific features such as the shape of the head the position of the eyes and the structure of the fins before making a prediction",
+            "failure_patterns": [],
+            "id": "R1",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Focus on the overall body shape and fin structure rather than specific head features when identifying marine animals.",
+            "failure_pattern": "The model incorrectly identified 'hammerhead' as the most likely class due to the presence of a hammer-shaped head, which is a characteristic of hammerhead sharks, despite the image depicting an electric ray.",
+            "applicability_signals": "This rule should be recalled whenever the image contains a fish-like creature with a flat, disc-shaped body and wing-like pectoral fins, regardless of the presence or absence of a hammer-shaped head.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/ImageNet_Sketch/sketch/n01496331/sketch_1.JPEG"
+            ],
+            "labels": [
+                "electric_ray"
+            ],
+            "root_cause": "The model focused on the hammer-shaped head, which is a distinctive feature of hammerhead sharks, leading it to misclassify the image as a hammerhead shark instead of an electric ray.",
+            "source_reasoning": "1. **Observation**: The image shows a fish-like creature with a flat, disc-shaped body and a long, slender tail ending in a whip-like structure. This matches the physical features of an electric ray, particularly the wing-like pectoral fins and the tail with a caudal fin.\n2. **Localization**: The most discriminative local parts include the large, wing-like pectoral fins extending along the sides of the body and the long, slender tail with a whip-like caudal fin.\n3. **Comparison**: The visual characteristics of the candidate subcategories include:\n   - **hammerhead**: This has a distinct hammer-shaped head but lacks the long, slender tail and whip-like caudal fin.\n   - **great white shark**: This has a streamlined body and dorsal fin, not the disc shape and pectoral fins.\n   - **whippet**: This is a dog breed and does not resemble the image at all.\n   - **eel**: This has a long, cylindrical body and lacks the disc shape and pectoral fins.\n   - **patas**: This is a primate and does not resemble the image at all.\n4. **Decision**: Based on the match between the observed details and the sub",
+            "normalized": "focus on the overall body shape and fin structure rather than specific head features when identifying marine animals",
+            "failure_patterns": [],
+            "id": "R2",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        },
+        {
+            "rule": "Verify the presence of specific class-defining features before making a final decision.",
+            "failure_pattern": "The model incorrectly classified a rooster as 'cock' instead of 'hen', despite the presence of rooster-specific features like the comb and wattle.",
+            "applicability_signals": "When the image contains distinct features that are unique to certain classes but not others.",
+            "priority": "high",
+            "support": 1,
+            "source_images": [
+                "./datasets/ImageNet_Sketch/sketch/n01514859/sketch_14.JPEG"
+            ],
+            "labels": [
+                "hen"
+            ],
+            "root_cause": "The model's similarity scores for 'cock' were higher than expected due to the prominence of rooster-specific features, leading to an incorrect classification.",
+            "source_reasoning": "1. **Observation**: The image depicts a bird with features characteristic of a chicken, specifically a rooster given the comb and wattle.\n2. **Localization**: The most discriminative local parts include the comb, wattle, and the tail feathering, which are typical of a rooster.\n3. **Comparison**: The visual characteristics align closely with those of a rooster, including the comb and wattle, which are not present in hens.\n4. **Decision**: Based on the observed details and the comparison with the candidate subcategories, the most likely class is \"cock\".",
+            "normalized": "verify the presence of specific class defining features before making a final decision",
+            "failure_patterns": [],
+            "id": "R3",
+            "effectiveness": 0.0,
+            "applicability": 0.0
+        }
     ]
 ]
